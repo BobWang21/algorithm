@@ -15,12 +15,17 @@ def fib(n):
 
 
 # top down
-def fib2(n, dic):
-    if n in dic:
-        return dic[n]
-    res = fib2(n - 1, dic) + fib2(n - 2, dic)
-    dic.setdefault(n, res)
-    return res
+def fib2(n):
+    dic = {0: 0, 1: 1}
+
+    def helper(n):
+        if n in dic:
+            return dic[n]
+        res = helper(n - 1) + helper(n - 2)
+        dic.setdefault(n, res)
+        return res
+
+    return helper(n)
 
 
 # 股票买卖最佳时机
@@ -112,11 +117,21 @@ def coin_change(nums, tar):
     return arr[-1]
 
 
+def max_product(m):
+    res = [1, 1, 2]
+    if m == 2:
+        return res[m]
+    for i in range(3, m + 1):
+        res.append(-1)
+        for j in range(i - 1, 0, -1):
+            res[i] = max(res[i], j * res[i - j])
+    return res
+
+
 if __name__ == '__main__':
     print('Fibonacci sequence')
     print(fib(40)[39])
-    dic = {0: 0, 1: 1}
-    print(fib2(39, dic))
+    print(fib2(39))
 
     print('股票的最佳买卖时机')
     print(stock([5, 10, 15, 1, 20]))
@@ -138,3 +153,6 @@ if __name__ == '__main__':
 
     print('换硬币')
     print(coin_change([1, 2, 5, 10], 11))
+
+    print('割绳子')
+    print(max_product(8))

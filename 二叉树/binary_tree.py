@@ -7,58 +7,58 @@ Created on Thu Jul  6 20:02:41 2017
 """
 
 
-class BiTree():
+class TreeNode():
     def __init__(self):
-        self.data = None
+        self.val = None
         self.left = None
         self.right = None
 
 
 # 创建完全二叉树
-def create_full_binary_tree(lists):
-    tree = BiTree()
+def create_full_binary_tree(nums):
+    node = TreeNode()
     queue = []
-    tree.data = lists[0]
-    queue.append(tree)
-
-    for data in lists[1:]:
+    node.val = nums[0]
+    queue.append(node)
+    for val in nums[1:]:
         head = queue[0]
         if not head.left:
-            new_tree = BiTree()
-            new_tree.data = data
+            new_tree = TreeNode()
+            new_tree.val = val
             head.left = new_tree
-            queue.append(queue[0].left)
+            queue.append(new_tree)
         elif not head.right:
-            head.right = BiTree()
-            head.right.data = data
-            queue.append(head.right)
-            queue.pop(0)
-    return tree
+            new_tree = TreeNode()
+            new_tree.val = val
+            head.right = new_tree
+            queue.append(new_tree)
+            queue.pop(0)  # 出队列
+    return node
 
 
-def pre_order(tree):
-    # 先序遍历(递归)
+# 先序遍历(递归)
+def preorder(tree):
     if tree:
-        print(tree.data)
-        pre_order(tree.left)
-        pre_order(tree.right)
+        print(tree.val, end=' ')
+        preorder(tree.left)
+        preorder(tree.right)
 
 
-def pre_order_1(tree):
-    # 先序遍历(非递归先)
-    stack = []
-    if tree:
-        stack.append(tree)
-
+# 先序遍历(非递归)
+def preorder2(tree):
+    if not tree:
+        return
+    stack = [tree]
     while stack:
         tail = stack.pop(-1)
-        print(tail.data, end=' ')  # 访问根节点
+        print(tail.val, end=' ')  # 访问根节点
+        left, right = tail.left, tail.right
         # 右子树先进栈 
-        if tail.right:
-            stack.append(tail.right)  # 右子树先进栈
+        if right:
+            stack.append(right)  # 右子树先进栈
         # 左子树进栈
-        if tail.left:
-            stack.append(tail.left)
+        if left:
+            stack.append(left)
 
 
 def traversal_left(tree):
@@ -66,18 +66,18 @@ def traversal_left(tree):
     if not tree:
         return
     stack = []
-    print(tree.data)
+    print(tree.val)
 
     while tree.left is not None:
-        print(tree.left.data)
+        print(tree.left.val)
         if tree.right is not None:
             stack.append(tree.right)
         tree = tree.left
     return stack
 
 
-def pre_order_2(tree):
-    # 非递归遍历2
+# 非递归遍历2
+def preorder2(tree):
     stack = traversal_left(tree)
 
     while len(stack):
@@ -87,35 +87,66 @@ def pre_order_2(tree):
         stack += new_stack
 
 
-def level_order(tree):
-    # 层次遍历二叉树，使用队列保存信息
-    queue = []
-    if tree:
-        queue.append(tree)
+# 中序遍历 左子树一直向下
+# 访问到头就出栈
+def inorder_traversal(tree):
+    if not tree:
+        return
+    stack = []
+    res = []
+    node = tree
+    while node or stack:
+        while node:
+            stack.append(node)
+            node = node.left
+        if stack:
+            node = stack.pop(-1)
+            res.append(node.val)
+            node = node.right
+    return res
 
+
+# 层次遍历二叉树 使用一个queue
+def level(tree):
+    if not tree:
+        return
+    queue = [tree]
     while queue:
-        head = queue[0]
-        print(head.data, end=' ')
-
-        if head.left is not None:
-            queue.append(head.left)
-
-        if head.right is not None:
-            queue.append(head.right)
-        queue.pop(0)
+        node = queue.pop(0)
+        left, right = node.left, node.right
+        print(node.val, end=' ')
+        if left:
+            queue.append(left)
+        if right:
+            queue.append(right)
 
 
-def transfer(tree):
-    # 二叉树翻转
-    if tree:
-        tree.left, tree.right = tree.right, tree.left
-        transfer(tree.left)
-        transfer(tree.right)
-    return tree
+# 层次遍历2 使用2个queue
+def level2(root):
+    if not root:
+        return []
+    curr_level = [root]
+    ret = []
+    while curr_level:
+        next_level = []
+        for tree in curr_level:  # 访问当前层的每个节点, 并将叶节点放入下一层
+            ret.append(tree.val)
+            left = tree.left
+            right = tree.right
+            if left:
+                next_level.append(left)
+            if right:
+                next_level.append(right)
+        curr_level = next_level
+    return ret
 
 
 if __name__ == '__main__':
-    lists = [i for i in range(10)]
-    tree = create_full_binary_tree(lists)
-    pre_order(tree)
-    level_order(tree)
+    nums = [i for i in range(7)]
+    tree = create_full_binary_tree(nums)
+    print('\n先序遍历')
+    preorder(tree)
+    print('\n中序遍历')
+    print(inorder_traversal(tree))
+    print('\n层次遍历')
+    level(tree)

@@ -44,4 +44,18 @@ def find_duplicate_num(nums):
     return ptr1
 
 
-print(find_duplicate_num([1, 2, 3, 4, 2]))
+# O(n)
+def find_duplicate_num2(nums):
+    for i in range(len(nums)):
+        while i != nums[i]:  # 循环后保证i = nums[i]
+            if nums[i] == nums[nums[i]]:
+                return nums[i]
+            else:
+                tmp = nums[i]
+                nums[i] = nums[tmp]
+                nums[tmp] = tmp
+
+
+if __name__ == '__main__':
+    print(find_duplicate_num([1, 2, 3, 4, 2]))
+    print(find_duplicate_num2([1, 2, 3, 2, 0]))
