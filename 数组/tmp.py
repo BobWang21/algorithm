@@ -79,7 +79,9 @@ def three_sum(nums, target):
             dic.setdefault(nums[j], j)
 
 
-def four_sum(nums, target):
+# 输入有重复数字, 每个数字只能用一次
+# 输出不包含重复
+def n_sum(nums, target):
     if not nums:
         return
     res = []
@@ -91,6 +93,8 @@ def four_sum(nums, target):
         if k == 4:
             return
         for i in range(idx, len(nums)):
+            if i > idx and nums[i] == nums[i - 1]:
+                continue
             dfs(nums, i + 1, k + 1, target - nums[i], path + [i], res)
 
     dfs(nums, 0, 0, target, [], res)

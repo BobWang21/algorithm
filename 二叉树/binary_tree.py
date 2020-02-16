@@ -99,10 +99,10 @@ def inorder_traversal(tree):
         while node:
             stack.append(node)
             node = node.left
-        if stack:
-            node = stack.pop(-1)
-            res.append(node.val)
-            node = node.right
+
+        node = stack.pop(-1)
+        res.append(node.val)
+        node = node.right
     return res
 
 

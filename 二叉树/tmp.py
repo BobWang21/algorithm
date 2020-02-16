@@ -307,6 +307,75 @@ def deserialize(string):
     return helper()
 
 
+# 二叉搜索树 第K大的数
+def top_k_binary_search_tree(tree, k):
+    if not tree:
+        return
+    stack = []
+    node = tree
+    count = 0
+    while node or stack:
+        while node:
+            stack.append(node)
+            node = node.right
+        node = stack.pop(-1)
+        count += 1
+        if count == k:
+            return node.val
+        node = node.left
+
+
+# 递归 无论返回什么 都会继续
+def top_k_binary_search_tree2(tree, k):
+    if not tree:
+        return
+    res = [k]
+
+    def helper(tree):
+        if not tree:
+            return
+        if res[0] <= 0:
+            # print(res[0])
+            return
+        l, r = tree.left, tree.right
+        if r:
+            helper(r)
+        res[0] -= 1
+        if res[0] == 0:
+            res.append(tree.val)
+            return
+        if l:
+            helper(l)
+
+    helper(tree)
+    return res[1]
+
+
+'''
+        5
+    3          7
+ 2      4   6      8
+def top_k_binary_search_tree2(tree, k):
+    if not tree:
+        return
+    res = []
+
+    def helper(tree):
+        if not tree:
+            return
+        l, r = tree.left, tree.right
+        if r:
+            helper(r)
+        res.append(tree.val)
+        if len(res) == k:  # 并不能跳出递归!!! 比如6
+            return
+        if l:
+            helper(l)
+
+    helper(tree)
+    return res[1]
+'''
+
 if __name__ == '__main__':
     tree = create_full_binary_tree([i for i in range(7)])
     print(level(tree))
@@ -362,3 +431,7 @@ if __name__ == '__main__':
     print('二叉树反序列化')
     tree = deserialize(string)
     print(level(tree))
+
+    print('二叉搜索树的第k大节点')
+    tree = create_full_binary_tree([5, 3, 7, 2, 4, 6, 8])
+    print(top_k_binary_search_tree2(tree, 1))

@@ -58,8 +58,7 @@ def combination_sum2(nums, tar):
     return res
 
 
-# 全排列
-# 输入数组中不含重复数字
+# 全排列 输入数组中不含重复数字
 def permutations(nums):
     res = []
 
