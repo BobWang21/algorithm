@@ -1,6 +1,19 @@
 import math
 
 
+# 二分查找
+def binary_search(nums, tar, lo, hi):
+    if lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == tar:
+            return mid
+        if nums[mid] < tar:
+            return binary_search(nums, tar, mid + 1, hi)
+        if nums[mid] > tar:
+            return binary_search(nums, tar, lo, mid - 1)
+    return hi  # 返回小于target最大数所在索引
+
+
 # 双指标的法
 def partition(nums, lo, hi):
     pivot = nums[lo]
@@ -25,12 +38,17 @@ def quick_sort(nums, lo, hi):
 
 # 快速幂
 def power(x, n):
+    if n < 0:
+        return 1 / power(x, -n)
+    if n == 0:  # base
+        return 1
     if n == 1:  # base
         return x
+    b = power(x, n // 2)
     if n % 2 == 0:
-        return power(x, n / 2) ** 2
+        return b * b
     else:
-        return x * power(x, n // 2) ** 2
+        return x * b * b
 
 
 #  二分查找 递归
