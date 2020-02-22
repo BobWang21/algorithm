@@ -32,7 +32,7 @@ def reverse_string(s):
         return s
     left = 0
     right = len(s) - 1
-    l = list(s) # 字符串不可原地修改
+    l = list(s)
     # 重合在一个就没有交换的必要了，因此是 left < right
     while left < right:
         l[left], l[right] = l[right], l[left]
@@ -110,6 +110,7 @@ def length_of_longest_substring2(s):
 
 
 if __name__ == '__main__':
+
     print('最小覆盖子串')
     print(min_window('aaaaaaaaaaaabbbbbcdd', 'abcdd'))
 

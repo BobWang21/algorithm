@@ -126,6 +126,9 @@ def merge_linked_list(a, b):
     return new
 
 
+
+
+
 if __name__ == '__main__':
     a = [1, 4, 19, 30]
     link_a = LinkList()

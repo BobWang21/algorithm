@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jun 28 13:20:38 2019
-
-@author: wangbao
+原地修改数组  删除重复数字
 """
 
 

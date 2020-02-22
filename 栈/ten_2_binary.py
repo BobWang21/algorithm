@@ -23,10 +23,9 @@ def ten_2_binary(value):
 
 def valid_parentheses(vals):
     pair_dic = {']': '[', '}': '{', ')': '('}
-    post_set = set(pair_dic.keys())
     stack = []
     for val in vals:
-        if val in post_set:
+        if val in pair_dic:
             if stack and stack.pop(-1) == pair_dic[val]:
                 continue
             else:
