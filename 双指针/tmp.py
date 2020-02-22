@@ -42,6 +42,18 @@ def remove_duplicates(nums):
     return l + 1
 
 
+def remove_duplicates2(nums):
+    n = len(nums)
+    if n < 2:
+        return n
+    pointer = 0  # 第一个指针
+    for i in range(1, n):  # 第二个指针
+        if nums[i] != nums[pointer]:
+            pointer += 1
+            nums[pointer] = nums[i]
+    return pointer + 1
+
+
 # 数组中的重复数字
 # 1-n n+1个数中 只有一个数重复一次或多次
 def find_duplicate_num(nums):
