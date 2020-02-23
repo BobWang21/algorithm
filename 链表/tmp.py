@@ -35,6 +35,26 @@ def reverse(head):
     return pre
 
 
+# 1->2->3->4 转换成 2->1->4->3
+def swap_pairs(head):
+    if not head:
+        return
+    if not head.next:
+        return head
+    new_head = ListNode(-1)
+    last = new_head
+    while head and head.next:
+        cur = head.next.next
+        last.next = head.next
+        head.next.next = head
+        head.next = None
+        last = last.next.next
+        head = cur
+
+    last.next = head
+    return new_head.next
+
+
 # 链表倒数第N个元素
 def tail(head, k):
     if not head:
