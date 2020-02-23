@@ -185,6 +185,44 @@ def get_intersection_node2(headA, headB):
     return s1
 
 
+# 判断链表存在环
+def detect_cycle(head):
+    if not head:
+        return
+    if not head.next:
+        return False
+    fast = slow = head
+    while fast and fast.next:
+        fast = fast.next.next
+        slow = slow.next
+        if fast == slow:
+            break
+    if fast != slow:
+        return False
+    slow = head
+    while slow != fast:
+        fast = fast.next
+        slow = slow.next
+    return slow.val
+
+
+def find_duplicate_num(nums):
+    fast = slow = nums[0]
+    # 证明有环 快慢两个指针
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+        if fast == slow:
+            break
+    # 入口
+    ptr1 = nums[0]
+    ptr2 = fast
+    while ptr1 != ptr2:
+        ptr1 = nums[ptr1]
+        ptr2 = nums[ptr2]
+    return ptr1
+
+
 if __name__ == '__main__':
     head = construct_listnode([1, 3, 5, 7])
     print_listnode(head)
@@ -202,3 +240,13 @@ if __name__ == '__main__':
     print('删除链表中重复元素')
     head = construct_listnode([1, 1, 2, 3, 3])
     print_listnode(remove_duplicates(head))
+
+    print('链表是否存在环')
+    a = ListNode(1)
+    b = ListNode(2)
+    c = ListNode(3)
+    a.next = b
+    b.next = c
+    c.next = b
+    head = a
+    print(detect_cycle(head))

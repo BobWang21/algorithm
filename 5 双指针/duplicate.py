@@ -24,7 +24,23 @@ def most_data(data):
     return value
 
 
-# 移除重复数字
+# 数字在0-n 之间
+def find_duplicate_num2(nums):
+    for i in range(len(nums)):
+        while i != nums[i]:  # 循环后保证i = nums[i]
+            if nums[i] == nums[nums[i]]:
+                return nums[i]
+            else:
+                tmp = nums[i]
+                nums[i] = nums[tmp]
+                nums[tmp] = tmp
+
+
+# 26
+# Given nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
+# Your function should return length = 5,
+# with the first five elements of nums being modified to 0, 1, 2, 3, and 4 respectively.
+# It doesn't matter what values are set beyond the returned length.
 def remove_duplicates(nums):
     n = len(nums)
     if n < 2:
@@ -40,11 +56,6 @@ def remove_duplicates(nums):
     return l + 1
 
 
-# 26
-# Given nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
-# Your function should return length = 5,
-# with the first five elements of nums being modified to 0, 1, 2, 3, and 4 respectively.
-# It doesn't matter what values are set beyond the returned length.
 def remove_duplicates2(nums):
     n = len(nums)
     if n < 2:
@@ -77,15 +88,6 @@ def find_duplicate_num(nums):
 
 
 # O(n) 剑指offer 1
-def find_duplicate_num2(nums):
-    for i in range(len(nums)):
-        while i != nums[i]:  # 循环后保证i = nums[i]
-            if nums[i] == nums[nums[i]]:
-                return nums[i]
-            else:
-                tmp = nums[i]
-                nums[i] = nums[tmp]
-                nums[tmp] = tmp
 
 
 if __name__ == '__main__':
