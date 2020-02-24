@@ -351,6 +351,31 @@ def top_k_binary_search_tree2(tree, k):
     return res[1]
 
 
+def top_k_binary_search_tree3(tree, k):
+    if not tree:
+        return
+    res = [None, k]
+
+    def helper(tree):
+        if not tree:
+            return
+        if res[1] <= 0:
+            # print(res[0])
+            return
+        l, r = tree.left, tree.right
+        if r:
+            helper(r)
+        res[1] -= 1
+        if res[1] == 0:
+            res[0] = tree.val
+            return
+        if l:
+            helper(l)
+
+    helper(tree)
+    return res[0]
+
+
 '''
         5
     3          7
@@ -375,6 +400,53 @@ def top_k_binary_search_tree2(tree, k):
     helper(tree)
     return res[1]
 '''
+
+
+def construct_parent():
+    a = TreeNode()
+    a.val = 10
+    b = TreeNode()
+    b.val = 5
+    c = TreeNode()
+    c.val = 4
+    d = TreeNode()
+    d.val = 6
+    e = TreeNode()
+    e.val = 11
+
+    a.left = b
+    a.right = e
+    b.left = c
+    b.right = d
+
+    a.parent = None
+    b.parent = a
+    e.parent = a
+    c.parent = b
+    d.parent = b
+    return [a, b, c, d, e]
+
+
+# 中序遍历 节点的下一个节点
+def inorder_tra_next_node(node):
+    if not node:
+        return
+    if node.right:
+        node = node.right
+        while node.left:
+            node = node.left
+        return node.val
+    elif not node.parent:
+        return
+    elif node.parent.left == node:
+        return node.parent.val
+    else:
+        while node.parent:
+            if node == node.parent.left:
+                return node.parent.val
+            node = node.parent
+        return
+
 
 if __name__ == '__main__':
     tree = create_full_binary_tree([i for i in range(7)])
@@ -434,4 +506,8 @@ if __name__ == '__main__':
 
     print('二叉搜索树的第k大节点')
     tree = create_full_binary_tree([5, 3, 7, 2, 4, 6, 8])
-    print(top_k_binary_search_tree2(tree, 1))
+    print(top_k_binary_search_tree3(tree, 1))
+
+    print('中序遍历的下一个节点')
+    node = construct_parent()[3]
+    print(inorder_tra_next_node(node))

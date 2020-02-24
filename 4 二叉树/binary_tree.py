@@ -92,9 +92,8 @@ def preorder2(tree):
 def inorder_traversal(tree):
     if not tree:
         return
-    stack = []
     res = []
-    node = tree
+    node, stack = tree, []
     while node or stack:
         while node:
             stack.append(node)

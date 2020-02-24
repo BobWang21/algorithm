@@ -35,13 +35,6 @@ def valid_parentheses(vals):
     return True if not stack else False
 
 
-def longest_valid_parentheses(s):
-    if not s:
-        return
-
-    return
-
-
 if __name__ == '__main__':
-    print('符合表达式是否合法')
-    print(valid_parentheses(['{', '}', '(', '(']))
+    print('表达式是否合法')
+    print(valid_parentheses(['{', '}', '(', ')']))

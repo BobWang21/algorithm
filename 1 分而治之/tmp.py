@@ -1,19 +1,6 @@
 import math
 
 
-# 二分查找
-def binary_search(nums, tar, lo, hi):
-    if lo <= hi:
-        mid = (lo + hi) // 2
-        if nums[mid] == tar:
-            return mid
-        if nums[mid] < tar:
-            return binary_search(nums, tar, mid + 1, hi)
-        if nums[mid] > tar:
-            return binary_search(nums, tar, lo, mid - 1)
-    return hi  # 返回小于target最大数所在索引
-
-
 # 双指标的法
 def partition(nums, lo, hi):
     pivot = nums[lo]
@@ -98,22 +85,22 @@ def second_largest(nums):
 
 
 # 第K大的数
-def k_largest(arr, k):
+def k_largest(nums, k):
     '''
     可以用冒泡排序 也可以使用快排的思想
     判断pivot的坐标
     '''
-    size = len(arr)
+    size = len(nums)
     if size < k:
         raise Exception('>= K')
-    mid = partition(arr, 0, size - 1)
+    mid = partition(nums, 0, size - 1)
     while True:
         if mid == size - k:  # 升序
-            return arr[mid]
+            return nums[mid]
         if mid > size - k:
-            mid = partition(arr, 0, mid - 1)
+            mid = partition(nums, 0, mid - 1)
         else:
-            mid = partition(arr, mid + 1, size - 1)
+            mid = partition(nums, mid + 1, size - 1)
 
 
 # 归并排序

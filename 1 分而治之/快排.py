@@ -2,40 +2,48 @@
 # -*- coding: utf-8 -*-
 
 
-def quick_sort(arr, lo, hi):
+def quick_sort(nums, lo, hi):
     if lo < hi:  # 此处为小于号 而不是等于号
-        mid = partition(arr, lo, hi)
-        quick_sort(arr, lo, mid - 1)
-        quick_sort(arr, mid + 1, hi)
+        mid = partition(nums, lo, hi)
+        quick_sort(nums, lo, mid - 1)
+        quick_sort(nums, mid + 1, hi)
+        return nums
 
 
-def partition(arr, lo, hi):
-    pivot = arr[lo]
+def partition(nums, lo, hi):
+    pivot = nums[lo]
     while lo < hi:
-        while lo < hi and pivot <= arr[hi]:
+        while lo < hi and pivot <= nums[hi]:
             hi -= 1
-        arr[lo] = arr[hi]  # 替换已保持的数据
-        while lo < hi and arr[lo] <= pivot:
+        nums[lo] = nums[hi]  # 替换已保存的数据
+        while lo < hi and nums[lo] <= pivot:
             lo += 1
-        arr[hi] = arr[lo]
-    arr[lo] = pivot
+        nums[hi] = nums[lo]  # 替换已保存的数据
+    nums[lo] = pivot
     return lo
 
 
-# 比 pivot小的全部放在左边
-def partition2(arr, lo, hi):
-    i = lo - 1  # index of smaller element
-    pivot = arr[hi]  # pivot
-    for j in range(lo, hi):  # 不包含hi
-        if arr[j] <= pivot:
-            i = i + 1
-            arr[i], arr[j] = arr[j], arr[i]
-    arr[i + 1], arr[hi] = arr[hi], arr[i + 1]
-    return i + 1
+# 奇数在左边 偶数在右边
+def sort_array_by_parity(nums):
+    n = len(nums)
+    if n < 2:
+        return nums
+    l, r = 0, n - 1
+    pivot = nums[0]
+    while l < r:
+        while l < r and nums[r] % 2 == 1:
+            r -= 1
+        nums[l] = nums[r]
+        while l < r and nums[l] % 2 == 0:
+            l += 1
+        nums[r] = nums[l]
+    nums[l] = pivot
+    return nums
 
 
 if __name__ == '__main__':
-    lists = [4, 3, 8, 9, 7]
-    partition2(lists, 0, 4)
-    # quick_sort(lists, 0, 2)
-    print(lists)
+    print('快排')
+    lists = [4, 3, 8, 9, 7, 1]
+    print(quick_sort(lists, 0, 5))
+    print('奇偶分离')
+    print(sort_array_by_parity([1, 2, 3, 4]))

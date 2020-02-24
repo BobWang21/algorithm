@@ -127,6 +127,27 @@ def three_sum_closet(nums, target):
     return closet_sum
 
 
+# 和为s的连续正数序列 至少两个数
+def find_continuous_sequence(tar):
+    if tar < 3:
+        return
+    l, r = 1, 2
+    s = l + r
+    res = []
+    while r <= (1 + tar) / 2:  # 缩减计算
+        if s == tar:
+            res.append(list(range(l, r + 1)))
+            r += 1
+            s += r
+        elif s < tar:
+            r += 1
+            s += r
+        else:
+            s -= l
+            l += 1
+    return res
+
+
 if __name__ == '__main__':
     print('2 sum')
     print(two_sum([1, 2, 7, 8, 11, 15], 9))
@@ -139,3 +160,6 @@ if __name__ == '__main__':
 
     print('3 sum closet')
     print(three_sum_closet([-1, 2, 1, -4], 1))
+
+    print('和为S的连续子序列')
+    print(find_continuous_sequence(15))
