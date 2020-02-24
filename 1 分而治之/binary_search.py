@@ -43,7 +43,7 @@ def find_min(nums):
     if n == 1:
         return nums[0]
     l, r = 0, n - 1
-    while l < r:
+    while l <= r:
         mid = (l + r) // 2
         if nums[l] <= nums[mid] <= nums[r]:  # 因为索引可能重叠 因此这里使用等号
             return nums[l]
@@ -144,4 +144,4 @@ if __name__ == '__main__':
     print(get_number_of_k2(nums, 1, 0, len(nums) - 1))
 
     print('找出0 - n之间缺少的一个数字')
-    print(find_missed_val([0, 1, 3]))
+    print(find_missed_val([1, 2, 3]))

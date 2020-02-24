@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-原地修改数组  删除重复数字
 """
 
 
@@ -24,7 +23,9 @@ def most_data(data):
     return value
 
 
-# 数字在0-n 之间
+# 数字在 0 - n 之间
+# 可能有多个数字重复 返回任意重复的数字
+# 数字从0开始, 把数字放在对应的位置上
 def find_duplicate_num2(nums):
     for i in range(len(nums)):
         while i != nums[i]:  # 循环后保证i = nums[i]
@@ -36,7 +37,27 @@ def find_duplicate_num2(nums):
                 nums[tmp] = tmp
 
 
-# 26
+# 数组中的重复数字
+# 1 - n 的 n + 1 个数中 只有一个数重复一次或多次
+# 要求 O(1)空间复杂度!!!
+def find_duplicate_num(nums):
+    fast = slow = nums[0]
+    # 证明有环 快慢两个指针
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+        if fast == slow:
+            break
+    # 入口
+    ptr1 = nums[0]
+    ptr2 = fast
+    while ptr1 != ptr2:
+        ptr1 = nums[ptr1]
+        ptr2 = nums[ptr2]
+    return ptr1
+
+
+# 26 升序数组中的重复数字
 # Given nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
 # Your function should return length = 5,
 # with the first five elements of nums being modified to 0, 1, 2, 3, and 4 respectively.
@@ -66,28 +87,6 @@ def remove_duplicates2(nums):
             pointer += 1
             nums[pointer] = nums[i]
     return pointer + 1
-
-
-# 数组中的重复数字
-# 1-n n+1个数中 只有一个数重复一次或多次
-def find_duplicate_num(nums):
-    fast = slow = nums[0]
-    # 证明有环 快慢两个指针
-    while True:
-        slow = nums[slow]
-        fast = nums[nums[fast]]
-        if fast == slow:
-            break
-    # 入口
-    ptr1 = nums[0]
-    ptr2 = fast
-    while ptr1 != ptr2:
-        ptr1 = nums[ptr1]
-        ptr2 = nums[ptr2]
-    return ptr1
-
-
-# O(n) 剑指offer 1
 
 
 if __name__ == '__main__':

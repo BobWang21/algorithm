@@ -43,7 +43,8 @@ def sort_array_by_parity(nums):
 
 if __name__ == '__main__':
     print('快排')
-    lists = [4, 3, 8, 9, 7, 1]
-    print(quick_sort(lists, 0, 5))
+    nums = [4, 3, 8, 9, 7, 1]
+    print(quick_sort(nums, 0, 5))
+
     print('奇偶分离')
-    print(sort_array_by_parity([1, 2, 3, 4]))
+    print(sort_array_by_parity(nums))
