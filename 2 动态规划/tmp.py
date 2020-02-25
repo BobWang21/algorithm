@@ -139,6 +139,7 @@ def combination_sum(nums, target):
     return res[-1]
 
 
+# 割绳子
 def max_product(m):
     res = [1, 1, 2]
     if m == 2:
@@ -148,6 +149,17 @@ def max_product(m):
         for j in range(i - 1, 0, -1):
             res[i] = max(res[i], j * res[i - j])
     return res
+
+
+def max_gift(matrix):
+    if not matrix:
+        return
+    row, col = len(matrix), len(matrix[0])
+    res = [[0] * (col + 1) for _ in range(row + 1)]
+    for i in range(row):
+        for j in range(col):
+            res[i + 1][j + 1] = max(res[i][j + 1], res[i + 1][j]) + matrix[i][j]
+    return res[-1][-1]
 
 
 if __name__ == '__main__':
@@ -178,3 +190,10 @@ if __name__ == '__main__':
 
     print('割绳子')
     print(max_product(8))
+
+    print('最大礼物')
+    matrix = [[1, 10, 3, 8],
+              [12, 2, 9, 6],
+              [5, 7, 4, 11],
+              [3, 7, 16, 5]]
+    print(max_gift(matrix))
