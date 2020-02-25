@@ -117,6 +117,28 @@ def coin_change(nums, tar):
     return arr[-1]
 
 
+# 给定一个正整数数组 求和为target的所有组合数
+def combination_sum(nums, target):
+    '''
+    NUMS = [1，2，3]
+    目标 = 4种的一种可能的组合方式有：
+    （1，1，1，1）
+    （1，1,2）
+    （1，2,1）
+    （1,3）
+    （2,1 ，1）
+    （2，2）
+    （3，1）
+    '''
+    res = [0] * (target + 1)
+    res[0] = 1
+    for i in range(target + 1):
+        for v in nums:
+            if i >= v:
+                res[i] += res[i - v]
+    return res[-1]
+
+
 def max_product(m):
     res = [1, 1, 2]
     if m == 2:

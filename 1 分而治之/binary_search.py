@@ -135,6 +135,8 @@ if __name__ == '__main__':
     data = [1, 3, 5, 9, 10, 16, 17]
     print(binary_search2(data, 3))
 
+    print('二维数组查找')
+
     print('旋转数组中的最小值')
     print(find_min([3, 4, 5, 1, 2]))
 

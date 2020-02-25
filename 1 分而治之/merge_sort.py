@@ -19,14 +19,13 @@ def merge_sort(nums):
 
 # 合并两个有序数组
 def merge(a, b):
-    len_a, len_b = len(a), len(b)
-    if len_a == 0:
+    if not a:
         return b
-    if len_b == 0:
+    if not b:
         return a
     i, j = 0, 0
     res = []
-    while i < len_a and j < len_b:
+    while i < len(a) and j < len(b):
         if a[i] <= b[j]:
             res.append(a[i])
             i += 1
@@ -34,28 +33,27 @@ def merge(a, b):
             res.append(b[j])
             j += 1
     # 判断循环跳出时的状态
-    if i < len_a:
+    if i < len(a):
         res += a[i:]
-    if j < len_b:
+    if j < len(b):
         res += b[j:]
     return res
 
 
 # 递归
 def merge2(a, b):
-    len_a, len_b = len(a), len(b)
-    if len_a == 0:
+    if not a:
         return b
-    if len_b == 0:
+    if not b:
         return a
-    lists = []
+    res = []
     if a[0] < b[0]:
-        lists.append(a[0])
-        lists += merge2(a[1:], b)
+        res.append(a[0])
+        res += merge2(a[1:], b)
     else:
-        lists.append(b[0])
-        lists += merge2(a, b[1:])
-    return lists
+        res.append(b[0])
+        res += merge2(a, b[1:])
+    return res
 
 
 if __name__ == '__main__':

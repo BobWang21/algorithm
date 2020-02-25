@@ -139,6 +139,23 @@ def merge(a, b):
     return res
 
 
+# 二维数组查找 减而直至
+def search_matrix(matrix, tar):
+    if not matrix or not matrix[0]:
+        return False
+    row = 0
+    col = len(matrix[0]) - 1
+    while row < len(matrix) and col >= 0:
+        num = matrix[row][col]
+        if num == tar:
+            return True
+        elif num < tar:
+            row += 1
+        else:
+            col += 1
+    return False
+
+
 if __name__ == '__main__':
     print('快排')
     arr = [4, 7, 5, 7, 9]
@@ -157,3 +174,10 @@ if __name__ == '__main__':
     print('二分查找')
     print(binary_search([1, 3, 5], 0, 2, 2))
     print(binary_search2([1, 3, 5, 9, 10, 16, 17], 3))
+
+    matrix = [
+        [1, 3, 5, 7],
+        [10, 11, 16, 20],
+        [23, 30, 34, 50]
+    ]
+    print(search_matrix(matrix, 13))

@@ -79,13 +79,15 @@ def permutations2(nums):
     res = []
 
     def dfs(nums, path, res):
-        if len(nums) == 0:
+        if not nums:
             res.append(path)
-        for val in set(nums):
+        for i, val in enumerate(nums):
             # 候选集大小-1
-            index = nums.index(val)
-            dfs(nums[:index] + nums[index + 1:], path + [val], res)
+            if i > 0 and nums[i - 1] == val:
+                continue
+            dfs(nums[:i] + nums[i + 1:], path + [val], res)
 
+    nums.sort()
     dfs(nums, [], res)
     return res
 
@@ -145,6 +147,32 @@ def pack(nums, c1, c2):
     return res
 
 
+def combinationSum4(nums, target):
+    """
+    :type nums: List[int]
+    :type target: int
+    :rtype: int
+    """
+    if target < 0:
+        return 0
+
+    res = []
+
+    def helper(nums, tar, path):
+        if tar < 0:
+            return
+        if tar == 0:
+            res.append(path)
+            return
+        for i, v in enumerate(nums):
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            helper(nums, tar - v, path + [v])
+    nums.sort()
+    helper(nums, target, [])
+    return res
+
+
 if __name__ == '__main__':
     print('和为指定数的组合问题')
     print(combination_sum([2, 3, 5], 8))
@@ -160,3 +188,5 @@ if __name__ == '__main__':
     print('背包问题')
     print(knapsack_problem([1, 2, 3, 4], [1, 3, 5, 8], 5))
     print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))
+
+    print(combinationSum4([1, 2, 3], 4))

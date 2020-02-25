@@ -127,7 +127,7 @@ def three_sum_closet(nums, target):
     return closet_sum
 
 
-# 和为s的连续正数序列 至少两个数
+# 和为s的(连续)正数序列 至少两个数 滑动窗口
 def find_continuous_sequence(tar):
     if tar < 3:
         return

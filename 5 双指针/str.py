@@ -75,44 +75,59 @@ def min_window(s, t):
     return s[best_start_index: best_start_index + min_len] if best_start_index is not None else ''
 
 
+# Given two strings s1 and s2,
+# write a function to return true if s2 contains the permutation of s1.
+def check_inclusion(s1, s2):
+    if not s1 or not s2 or len(s1) > len(s2):
+        return False
+    d1 = dict()
+    for c in s1:
+        d1.setdefault(c, 0)
+        d1[c] += 1
+
+    match = 0
+    d2 = dict()
+    for i in range(len(s2)):
+        if i >= len(s1):
+            c = s2[i - len(s1)]
+            if c in d2:
+                d2[c] -= 1
+                if d1[c] - d2[c] == 1:  # 只有以前match 现在不match 才减去1
+                    match -= 1
+        c = s2[i]
+        if c in d1:
+            d2.setdefault(c, 0)
+            d2[c] += 1
+            if d2[c] == d1[c]:
+                match += 1
+        if match == len(d1):
+            return True
+    return False
+
+
+# 最长非重复子串的长度 类似求数组中不重复的数的个数
 def length_of_longest_substring(s):
-    used_char = dict()
-    l = 0
-    left, right = 0, 0
-    while right < len(s):
-        c = s[right]
-        if c not in used_char:
-            used_char.setdefault(c, right)
-        else:
-            first_idx = used_char[c]
-            while left <= first_idx:
-                del used_char[s[left]]
-                left += 1
-            used_char[c] = right
-        l = max(l, len(used_char))
-        right += 1
-    return l
-
-
-def length_of_longest_substring2(s):
-    left = max_length = 0
+    left = 0  # 记录非重复开始
+    max_length = 0
     used_char = {}
-
-    for right in range(len(s)):
-        if s[right] in used_char and left <= used_char[s[right]]:
-            left = used_char[s[right]] + 1
+    for i, c in enumerate(s):
+        if c in used_char and left <= used_char[c]:
+            left = used_char[c] + 1
         else:
-            max_length = max(max_length, right - left + 1)
-
-        used_char[s[right]] = right
+            max_length = max(max_length, i - left + 1)
+        used_char[c] = i
 
     return max_length
 
 
 if __name__ == '__main__':
-
     print('最小覆盖子串')
     print(min_window('aaaaaaaaaaaabbbbbcdd', 'abcdd'))
 
     print('最小非重复子串')
-    print(length_of_longest_substring(" "))
+    print(length_of_longest_substring("abca"))
+
+    print('一个字符串是否包含另外一个字符串的任一全排列')
+    s1 = 'trinitrophenylmethylnitramine'
+    s2 = 'dinitrophenylhydrazinetrinitrophenylmethylnitramine'
+    print(check_inclusion(s1, s2))
