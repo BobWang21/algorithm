@@ -1,192 +1,212 @@
-# Given a set of candidate numbers (candidates) (without duplicates)
-# and a target number (target), find all unique combinations in candidates
-# where the candidate numbers sums to target.
-# The same repeated number may be chosen from candidates unlimited number of times.
+# 使用回溯法解决N sum
+def n_sum(nums, k, target):
+    def helper(nums, idx, k, target, path, res):
+        if k == 0 and target == 0:
+            res.append(path)
+            return
+        if k == 0:
+            return
+        for i in range(idx, len(nums)):
+            if target - nums[i] < 0:
+                break
+            helper(nums, i + 1, k - 1, target - nums[i], path + [nums[i]], res)
 
-
-def combination_sum(nums, tar):
-    nums.sort()
+    if not nums or len(nums) < k or target < 0:
+        return
     res = []
-    if tar == 0:
+    nums.sort()
+    helper(nums, 0, k, target, [], res)
+    return res
+
+
+def combination_sum(candidates, target):
+    """
+    Given a set of candidate numbers (candidates) (without duplicates)
+    and a target number (target), find all unique combinations in candidates
+    where the candidate numbers sums to target.
+    The same repeated number may be chosen from candidates unlimited number of times.
+    Input: candidates = [2,3,6,7], target = 7,
+    A solution set is:
+    [
+      [7],
+      [2,2,3]
+    ]
+    """
+
+    def dfs(candidates, target, idx, path, res):
+        if target == 0:
+            res.append(path)
+        if target < 0:
+            return
+        for i in range(idx, len(candidates)):
+            dfs(candidates, target - candidates[i], i, path + [candidates[i]], res)
+
+    res = []
+    if target == 0:
         return res
-
-    def dfs(nums, tar, index, path, res):
-        if tar == 0:
-            res.append(path)
-        if tar < 0:
-            return
-        for i in range(index, len(nums)):
-            dfs(nums, tar - nums[i], i, path + [nums[i]], res)
-
-    dfs(nums, tar, 0, [], res)
+    candidates.sort()
+    dfs(candidates, target, 0, [], res)
     return res
 
 
-# 输入中有重复数字, 每个数字只能用一次
-# 不建议使用
-def combination_sum_(nums, tar):
-    nums.sort()
-    res = []
+def combination_sum2(candidates, target):
+    """
+    # Input: candidates = [10,1,2,7,6,1,5], target = 8,
+    A solution set is:
+    [
+    [1, 1, 6]
+    [1, 2, 5],
+    [1, 7],
+    [2, 6]
+    ]
+    """
 
-    def dfs(nums, tar, index, path, res):
-        if len(path) > 0 and tar == 0:
-            if path not in res:
-                res.append(path)
-            return
-        for i in range(index, len(nums)):
-            dfs(nums, tar - nums[i], i + 1, path + [nums[i]], res)
-
-    dfs(nums, tar, 0, [], res)
-    return res
-
-
-# 输入中有重复数字, 每个数字只能用一次
-def combination_sum2(nums, tar):
-    nums.sort()
-    res = []
-
-    def dfs(nums, tar, index, path, res):
-        if len(path) > 0 and tar == 0:
+    def dfs(candidates, idx, target, path, res):
+        if target == 0:
             res.append(path)
             return
-        for i in range(index, len(nums)):
-            if i > index and nums[i] == nums[i - 1]:
+        if target < 0:
+            return
+        for i in range(idx, len(candidates)):  # 保证顺序
+            if i > idx and candidates[i] == candidates[i - 1]:  # 排除相同的数字出现在同一层
                 continue
-            dfs(nums, tar - nums[i], i + 1, path + [nums[i]], res)
+            # 当前迭代索引为i 下一个迭代的索引为i+1
+            dfs(candidates, i + 1, target - candidates[i], path + [candidates[i]], res)
 
-    dfs(nums, tar, 0, [], res)
+    res = []
+    if not candidates or target < 0:
+        return
+    candidates.sort()
+    dfs(candidates, 0, target, [], res)
     return res
 
 
 # 全排列 输入数组中不含重复数字
-def permutations(nums):
-    res = []
+def permutations(candidates):
+    """
+    Given a collection of distinct integers, return all possible permutations.
+    Example:
+    Input: [1,2,3]
+    Output:
+    [
+      [1, 2, 3],
+      [1, 3, 2],
+      [2, 1, 3],
+      [2, 3, 1],
+      [3, 1, 2],
+      [3, 2, 1]
+    ]
+    """
 
-    def dfs(nums, path, res):
-        if len(nums) == len(path):
+    def dfs(candidates, path, res):
+        if len(candidates) == len(path):
             res.append(path)
-        candidate = nums - set(path)  # 从未访问过的集合中选取元素
+            return
+        candidate = candidates - set(path)  # 从未访问过的集合中选取元素
         for val in candidate:
-            dfs(nums, path + [val], res)
+            dfs(candidates, path + [val], res)
 
-    dfs(set(nums), [], res)
+    res = []
+    dfs(set(candidates), [], res)
     return res
 
+    # 全排列
+    # 输入数组中含重复数字
 
-# 全排列
-# 输入数组中含重复数字
-def permutations2(nums):
-    res = []
 
-    def dfs(nums, path, res):
-        if not nums:
+def permutations2(candidates):
+    def dfs(candidates, path, res):
+        if not candidates:
             res.append(path)
-        for i, val in enumerate(nums):
-            # 候选集大小-1
-            if i > 0 and nums[i - 1] == val:
+        for i, val in enumerate(candidates):
+            if i > 0 and candidates[i - 1] == val:  # 不可出现在同一层
                 continue
-            dfs(nums[:i] + nums[i + 1:], path + [val], res)
+            # 候选集中去除访问过的元素
+            dfs(candidates[:i] + candidates[i + 1:], path + [val], res)
 
-    nums.sort()
-    dfs(nums, [], res)
+    res = []
+    if not candidates:
+        return res
+    candidates.sort()
+    dfs(candidates, [], res)
     return res
 
 
 # 子集问题
-def subset(nums):
+def subset(candidates):
     res = []
 
-    def dfs(nums, index, path, res, k):
+    def dfs(candidates, index, path, res, k):
         if k >= 0:
             res.append(path)  # 把路径全部记录下来
-        for i in range(index, len(nums)):
-            dfs(nums, i + 1, path + [nums[i]], res, k - 1)
+        for i in range(index, len(candidates)):
+            dfs(candidates, i + 1, path + [candidates[i]], res, k - 1)
 
-    dfs(nums, 0, [], res, len(nums))
+    dfs(candidates, 0, [], res, len(candidates))
     return res
 
 
 # 背包问题
 def knapsack_problem(cost, val, cap):
-    res = []
-
     def dfs(cost, val, cap, index, amount, res):
-        if cap == 0:
-            res.append(amount)
+        if cap == 0 or index == len(cost):
+            res[0] = max(res[0], amount)
             return
         for i in range(index, len(cost)):
-            if cap - cost[i] < 0:
+            if cap - cost[i] < 0:  # sort 不方便 所以就只能continue
                 continue
             dfs(cost, val, cap - cost[i], i + 1, amount + val[i], res)
 
+    res = [-1]
     dfs(cost, val, cap, 0, 0, res)
     return max(res)
 
 
-# W=<90, 80, 40, 30, 20, 12, 10> c1 =152, c2 =130
-# 有n个集装箱，需要装上两艘载重分别为 c1 和 c2 的轮船。
-# wi 为第i个集装箱的重量，且 w1+w2+...+wn ≤ c1+c2。
-# 问是否存在一种合理的装载方 案把这n个集装箱装上船? 如果有，给出一种方案。
-# 算法思想: 令第一艘船的载入量为W1
-# 1. 用回溯法求使得c1 -W1 达到最小的装载方案
-# 2. 若满足 w1+w2+...+wn -W1 ≤ c2
-def pack(nums, c1, c2):
-    nums.sort()
+def pack(candidates, c1, c2):
+    """
+    # W=<90, 80, 40, 30, 20, 12, 10> c1 =152, c2 =130
+    # 有n个集装箱，需要装上两艘载重分别为 c1 和 c2 的轮船。
+    # wi 为第i个集装箱的重量，且 w1+w2+...+wn ≤ c1+c2。
+    # 问是否存在一种合理的装载方 案把这n个集装箱装上船? 如果有，给出一种方案。
+    # 算法思想: 令第一艘船的载入量为W1
+    # 1. 用回溯法求使得c1 -W1 达到最小的装载方案
+    # 2. 若满足 w1+w2+...+wn -W1 ≤ c2
+    """
+    candidates.sort()
     res = []
 
-    def dfs(nums, c1, c2, path, index, res):
-        if c1 < 0 and sum(nums) - sum(path[:-1]) <= c2:
-            res.append(path[:-1])
-            return
-        if c1 < 0:
-            return
-        for i in range(index, len(nums)):
-            dfs(nums, c1 - nums[i], c2, path + [nums[i]], i + 1, res)
-
-    dfs(nums, c1, c2, [], 0, res)
-    return res
-
-
-def combinationSum4(nums, target):
-    """
-    :type nums: List[int]
-    :type target: int
-    :rtype: int
-    """
-    if target < 0:
-        return 0
-
-    res = []
-
-    def helper(nums, tar, path):
-        if tar < 0:
-            return
-        if tar == 0:
+    def dfs(candidates, index, c1, path, res):
+        if sum(candidates) - sum(path) <= c2:  # 加了新的后 开始小于0
             res.append(path)
             return
-        for i, v in enumerate(nums):
-            if i > 0 and nums[i] == nums[i-1]:
-                continue
-            helper(nums, tar - v, path + [v])
-    nums.sort()
-    helper(nums, target, [])
+        for i in range(index, len(candidates)):
+            if c1 - candidates[i] < 0:
+                break
+            dfs(candidates, i + 1, c1 - candidates[i], path + [candidates[i]], res)
+
+    dfs(candidates, 0, c1, [], res)
     return res
 
 
 if __name__ == '__main__':
-    print('和为指定数的组合问题')
-    print(combination_sum([2, 3, 5], 8))
-    print(combination_sum2([1, 1, 2, 3], 4))
+    print('n sum 回溯版')
+    print(n_sum([1, 2, 3, 4], 3, 6))
 
-    print('排列问题')
+    print('数组中不包含重复数字 一个数字可以用无数次')
+    print(combination_sum([2, 3, 5], 8))
+
+    print('\n数组中包含重复数字 一个数字只能用一次')
+    print(combination_sum2([1, 1, 2, 3, 4], 4))
+
+    print('\n排列问题')
     print(permutations([1, 2, 3]))
     print(permutations2([1, 2, 1]))
 
-    print('全集')
+    print('\n全集')
     print(subset([1, 2, 3]))
 
-    print('背包问题')
+    print('\n背包问题')
     print(knapsack_problem([1, 2, 3, 4], [1, 3, 5, 8], 5))
-    print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))
 
-    print(combinationSum4([1, 2, 3], 4))
+    print('\n两个轮船分集装箱')
+    print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))

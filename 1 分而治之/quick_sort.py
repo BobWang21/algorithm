@@ -40,6 +40,7 @@ def sort_array_by_parity(nums):
     return nums
 
 
+# 无序数组的前K个数
 def get_least_num(nums, k):
     def partition(nums, l, r):
         if l >= r:
@@ -61,7 +62,9 @@ def get_least_num(nums, k):
     if n <= k:
         return nums
     p = partition(nums, 0, n - 1)
-    while p + 1 != k:
+    while True:
+        if p + 1 == k:
+            break
         if p + 1 < k:
             p = partition(nums, p + 1, n - 1)
         else:
@@ -78,5 +81,5 @@ if __name__ == '__main__':
     print('奇偶分离')
     print(sort_array_by_parity(nums))
 
-    print('数组中最小的K个数')
+    print('无序数组的前K个数')
     print(get_least_num([10, 9, 8, 9, 1, 2, 0], 3))

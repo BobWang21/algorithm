@@ -33,8 +33,7 @@ def reverse_string(s):
     left = 0
     right = len(s) - 1
     l = list(s)
-    # 重合在一个就没有交换的必要了，因此是 left < right
-    while left < right:
+    while left < right:  # 重合在一个就没有交换的必要了，因此是 left < right
         l[left], l[right] = l[right], l[left]
         left += 1
         right -= 1
@@ -105,7 +104,8 @@ def check_inclusion(s1, s2):
     return False
 
 
-# 最长非重复子串的长度 类似求数组中不重复的数的个数
+# 最长非重复子串的长度
+# 类似求数组中不重复的数的个数
 def length_of_longest_substring(s):
     left = 0  # 记录非重复开始
     max_length = 0

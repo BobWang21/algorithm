@@ -42,16 +42,16 @@ def swap_pairs(head):
     if not head.next:
         return head
     new_head = ListNode(-1)
-    last = new_head
+    tail = new_head
     while head and head.next:
         cur = head.next.next
-        last.next = head.next
-        head.next.next = head
+        tail.next = head.next
+        tail.next.next = head
         head.next = None
-        last = last.next.next
+        tail = tail.next.next
         head = cur
 
-    last.next = head
+    tail.next = head
     return new_head.next
 
 
@@ -225,23 +225,26 @@ def find_duplicate_num(nums):
 
 if __name__ == '__main__':
     head = construct_listnode([1, 3, 5, 7])
-    print_listnode(head)
     print('链表翻转')
     print_listnode(reverse(head))
 
-    print('链表倒数第K个节点')
+    print('\n链表倒数第K个节点')
     print(tail(head, 1))
 
-    print('合并两个排序链表')
+    print('\n链表对翻转')
+    head = construct_listnode([1, 3, 5, 7])
+    print_listnode(swap_pairs(head))
+
+    print('\n合并两个排序链表')
     l1 = construct_listnode([1, 3, 5, 7])
     l2 = construct_listnode([2, 4, 6, 8])
     print_listnode(merge_two_sorted_lists(l1, l2))
 
-    print('删除链表中重复元素')
+    print('\n删除链表中重复元素')
     head = construct_listnode([1, 1, 2, 3, 3])
     print_listnode(remove_duplicates(head))
 
-    print('链表是否存在环')
+    print('\n链表是否存在环')
     a = ListNode(1)
     b = ListNode(2)
     c = ListNode(3)

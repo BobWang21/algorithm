@@ -9,31 +9,6 @@ Created on Thu Jul  6 20:02:41 2017
 from binary_tree import *
 
 
-def level(tree):
-    if not tree:
-        return
-    current_level = [tree]
-    next_level = []
-    while current_level:
-        node = current_level.pop(0)
-        print(node.val, end=' ')
-        left, right = node.left, node.right
-        if left:
-            next_level.append(left)
-        if right:
-            next_level.append(right)
-        if not current_level:
-            current_level = next_level
-            next_level = []
-    print()
-
-
-def level_num(tree):
-    if not tree:
-        return 0
-    return max(level_num(tree.left), level_num(tree.right)) + 1
-
-
 # 最近公共祖先
 def lowest_common_ancestor(tree, p, q):
     if not tree:
@@ -83,7 +58,7 @@ def binary_tree_paths(tree):
     return res
 
 
-# 借鉴递归思想
+# 借鉴回溯思想
 def binary_tree_paths2(tree):
     def helper(tree, path, res):
         if not tree.left and not tree.right:
@@ -99,19 +74,21 @@ def binary_tree_paths2(tree):
     return res
 
 
-# 和为某个数的路径
-def is_has_path_sum(root, num):
-    if not root:
-        return False
-    if root.val == num and not root.left and not root.right:  # 叶节点
+# 是否存在路径和为某个target
+def have_path_sum(tree, target):
+    if not tree and target == 0:  # 递归基
         return True
-    return is_has_path_sum(root.left, num - root.val) or is_has_path_sum(root.right, num - root.val)
+    if not tree and target != 0:  # 递归基
+        return False
+    left = have_path_sum(tree.left, target - tree.val)
+    right = have_path_sum(tree.right, target - tree.val)
+    return left or right
 
 
 # 打印所有路径 从根节点到叶节点和为某个数的路径
-def has_path_sum(tree, target):
+def sum_target_path(tree, target):
     def helper(tree, target, path, res):
-        if not tree.left and not tree.right and target == tree.val:
+        if not tree.left and not tree.right and target == tree.val:  # 叶节点
             res.append(path + [tree.val])
             return
         if not tree.left and not tree.right:
@@ -234,12 +211,12 @@ def sum_numbers(tree):
     return helper(tree, 0)
 
 
-# 最大路径和 有点动态规划的意思
-def max_path_sum(tree):
+# 子树最大路径和 有点动态规划的意思
+def sub_tree_max_sum_path(tree):
     def helper(tree):
         if not tree:
             return 0, 0
-        current_left, max_left = helper(tree.left)
+        current_left, max_left = helper(tree.left)  # 记录包含根节点的数值
         current_right, max_right = helper(tree.right)
         val = tree.val
         current = max(current_left + val, current_right + val, val)
@@ -249,7 +226,6 @@ def max_path_sum(tree):
     return helper(tree)[1]
 
 
-# 根据先序遍历和中序遍历构建二叉树
 def build_tree(preorder, inorder):
     if not preorder or not inorder:
         return None
@@ -287,22 +263,22 @@ def serialize(tree):
 
 
 # 反序列化 递归
-def deserialize(string):
-    vals = [i for i in string]
+def deserialize(s1):
+    vals = [s for s in s1]
 
     def helper():
         val = vals.pop(0)
         if val == '$':
             return
-        left = helper()
-        right = helper()
         root = TreeNode()
         root.val = val
+        left = helper()
+        right = helper()
         root.left = left
         root.right = right
         return root
 
-    if string == '':
+    if s1 == '':
         return None
     return helper()
 
@@ -449,65 +425,73 @@ def inorder_tra_next_node(node):
 
 
 if __name__ == '__main__':
-    tree = create_full_binary_tree([i for i in range(7)])
-    print(level(tree))
-    print(level_num(tree))
-
-    print('根据先序遍历和中序遍历构建数')
+    print('\n根据先序遍历和中序遍历构建数')
     preorder = [3, 9, 20, 15, 7]
     inorder = [9, 3, 15, 20, 7]
     tree2 = build_tree(preorder, inorder)
     print(level(tree2))
 
-    print('最近公共祖先')
+    print('\n最近公共祖先')
+    tree = create_full_binary_tree([i for i in range(7)])
     print(lowest_common_ancestor(tree, 1, 5))
 
-    print('判断树是否平衡')
-    mytree = TreeNode()
-    mytree.left = TreeNode()
-    print(is_balanced(mytree))
+    print('\n判断树是否平衡')
+    unbalanced_tree = TreeNode()
+    unbalanced_tree.val = 3
+    a = TreeNode()
+    a.val = 10
+    b = TreeNode()
+    b.val = 5
+    unbalanced_tree.left = a
+    a.left = b
+    print(is_balanced(unbalanced_tree))
 
-    print('右侧观察树')
+    print('\n右侧观察树')
     print(right_side_view(tree))
 
-    print('锯齿层次遍历')
+    print('\n锯齿层次遍历')
     print(zigzag_level_order(tree))
 
-    print('bst 转换成 greater_tree')
+    print('\nbst 转换成 greater_tree')
     print(convert_bst_2_greater_tree(tree))
 
     tree = create_full_binary_tree([-5, 2, 5])
-    print('子树和出现次数最多的数字')
+    print('\n子树和出现次数最多的数字')
     print(most_frequent_subtree_sum(tree))
 
-    print('打印根节点到叶节点路径')
+    print('\n打印根节点到叶节点路径')
     tree = create_full_binary_tree([2, 1, 3, 2])
     print(binary_tree_paths(tree))
     print(binary_tree_paths2(tree))
 
-    print('打印根节点到叶节和为某个数的路径')
-    print(has_path_sum(tree, 5))
+    print('\n打印根节点到叶节和为某个数的路径')
+    print(sum_target_path(tree, 5))
 
-    print('路径组成数字之和')
+    print('是否存在和为某个数的路径')
+    tree = create_full_binary_tree([i for i in range(7)])
+    print(have_path_sum(tree, 4))
+    print(have_path_sum(tree, 9))
+
+    print('\n路径组成数字之和')
     print(sum_numbers(tree))
 
-    print('最大路径之和')
+    print('\n子树最大路径之和')
     tree = create_full_binary_tree([-10, 9, 20, 0, 0, 15, 7])
-    print(max_path_sum(tree))
+    print(sub_tree_max_sum_path(tree))
 
-    print('二叉树序列化')
+    print('\n二叉树序列化')
     tree = create_full_binary_tree([1, 2, 3])
     string = serialize(tree)
     print(string)
 
-    print('二叉树反序列化')
+    print('\n二叉树反序列化')
     tree = deserialize(string)
     print(level(tree))
 
-    print('二叉搜索树的第k大节点')
+    print('\n二叉搜索树的第k大节点')
     tree = create_full_binary_tree([5, 3, 7, 2, 4, 6, 8])
     print(top_k_binary_search_tree3(tree, 1))
 
-    print('中序遍历的下一个节点')
+    print('\n中序遍历的下一个节点')
     node = construct_parent()[3]
     print(inorder_tra_next_node(node))

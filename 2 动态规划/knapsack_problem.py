@@ -23,22 +23,23 @@ def knapsack1(cost, val, cap):
 
 
 # 完全背包问题
-def knapsack2(cost, val, cap):
+def knapsack2(cost, weight, capacity):
+    if not cost or not weight or len(cost) != len(weight):
+        return
     n = len(cost)
-    matrix = [[0] * (cap + 1) for _ in range(n + 1)]
+    res = [[0] * (capacity + 1) for _ in range(n + 1)]
     for i in range(1, n + 1):
-        cost_i = cost[i - 1]
-        val_i = val[i - 1]
-        for j in range(1, cap + 1):
-            matrix[i][j] = matrix[i - 1][j]
-            max_value = matrix[i][j]
-            k = 1
-            while j - cost_i * k >= 0:  # 尝试多次
-                max_value = max(max_value, matrix[i - 1][j - cost_i * k] + val_i * k)
-                k += 1
-            matrix[i][j] = max_value
-    print(matrix)
-    return matrix[-1][-1]
+        c = cost[i - 1]
+        v = weight[i - 1]
+        for j in range(1, capacity + 1):
+            res[i][j] = res[i - 1][j]
+            if j >= c:
+                k = 1
+                while c * k <= j:
+                    res[i][j] = max(res[i][j], res[i - 1][j - c * k] + v * k)
+                    k += 1
+
+    return res[-1][-1]
 
 
 # Partition problem is to determine whether
@@ -68,8 +69,11 @@ def find_partition(nums):
 
 
 if __name__ == '__main__':
+    print('0 - 1 背包问题')
     print(knapsack1([1, 2, 3, 4], [1, 3, 4, 8], 7))
-    print(knapsack2([1, 2, 3, 4], [1, 3, 5, 8], 5))
 
-    # print('找到子序列和相等的两个分区')
+    print('\n完全背包问题')
+    print(knapsack2([1, 2, 3, 4], [2.5, 3, 4, 8], 8))
+
+    print('\n找到子序列和相等的两个分区')
     print(find_partition([3, 1, 5, 9, 12]))

@@ -6,8 +6,7 @@ def fib(n):
     result = [0, 1]
     if n <= 2:
         return result
-    left = 0
-    right = 1
+    left, right = result
     for i in range(2, n):
         left, right = right, left + right
         result.append(right)
@@ -72,9 +71,8 @@ def not_continuous_sum(nums):
     include = nums[0]
     exclude = 0
     for val in nums[1:]:
-        new_include = max(val, exclude + val)
+        include = max(val, exclude + val)
         exclude = max(exclude, include)
-        include = new_include
     return max(include, exclude)
 
 
@@ -104,17 +102,17 @@ def longest_common_subsequence(str1, str2):
 
 
 # 换硬币
-def coin_change(nums, tar):
-    arr = [0]
-    for i in range(1, tar + 1):
-        count = math.inf
-        for val in nums:
-            if i < val:
-                continue
-            else:
-                count = min(arr[i - val] + 1, count)
-        arr.append(count)
-    return arr[-1]
+# 您会得到不同面额的硬币和总金额。
+# 编写一个函数来计算组成该数量所需的最少数量的硬币。
+# 如果这笔钱不能用硬币的任何组合来弥补，请返回-1。
+def coin_change(coins, amount):
+    dp = [float('inf')] * (amount + 1)
+    dp[0] = 0  # 当coin = amount 时使用
+
+    for coin in coins:
+        for x in range(coin, amount + 1):
+            dp[x] = min(dp[x], dp[x - coin] + 1)
+    return dp[amount] if dp[amount] != float('inf') else -1
 
 
 # 给定一个正整数数组 求和为target的所有组合数
@@ -140,25 +138,32 @@ def combination_sum(nums, target):
 
 
 # 割绳子
-def max_product(m):
+def max_product_after_cutting(m):
     res = [1, 1, 2]
+    if m == 1:
+        return
     if m == 2:
-        return res[m]
-    for i in range(3, m + 1):
-        res.append(-1)
-        for j in range(i - 1, 0, -1):
-            res[i] = max(res[i], j * res[i - j])
-    return res
+        return 1
+    if m == 3:
+        return 2
+    res = [0, 1, 2, 3]
+    for i in range(4, m + 1):
+        max_num = -1
+        for j in range(1, i // 2 + 1):
+            max_num = max(max_num, res[j] * res[i - j])
+        res.append(max_num)
+    return res[-1]
 
 
+# 从格子中选出礼物的最大值
 def max_gift(matrix):
     if not matrix:
         return
-    row, col = len(matrix), len(matrix[0])
-    res = [[0] * (col + 1) for _ in range(row + 1)]
-    for i in range(row):
-        for j in range(col):
-            res[i + 1][j + 1] = max(res[i][j + 1], res[i + 1][j]) + matrix[i][j]
+    row, col = len(matrix) + 1, len(matrix[0]) + 1
+    res = [[0] * col for _ in range(row)]
+    for i in range(1, row):
+        for j in range(1, col):
+            res[i][j] = max(res[i][j - 1], res[i - 1][j]) + matrix[i - 1][j - 1]
     return res[-1][-1]
 
 
@@ -189,7 +194,7 @@ if __name__ == '__main__':
     print(coin_change([1, 2, 5, 10], 11))
 
     print('割绳子')
-    print(max_product(8))
+    print(max_product_after_cutting(8))
 
     print('最大礼物')
     matrix = [[1, 10, 3, 8],

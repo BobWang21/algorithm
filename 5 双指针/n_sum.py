@@ -14,7 +14,7 @@ def two_sum(nums, target):
         return []
     left, right = 0, size - 1
     res = []
-    while 0 <= left < right < size:
+    while left < right:
         s = nums[left] + nums[right]
         if s == target:
             res.append([nums[left], nums[right]])
@@ -90,7 +90,7 @@ def n_sum2(nums, target):
             for sum_paths in two_sum_paths:
                 res.append(path + sum_paths)
         else:
-            for i in range(idx, len(nums) - (k - 1)):
+            for i in range(idx, len(nums)):
                 if i > idx and nums[i] == nums[i - 1]:
                     continue
                 dfs(nums, i + 1, k - 1, target - nums[i], path + [nums[i]], res)
@@ -112,7 +112,7 @@ def three_sum_closet(nums, target):
     nums.sort()
     for i in range(size - 2):
         l, r = i + 1, size - 1
-        while i + 1 <= l < r <= size - 1:
+        while l < r:
             s = nums[i] + nums[l] + nums[r]
             if s == target:
                 return s

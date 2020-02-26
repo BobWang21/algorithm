@@ -95,7 +95,7 @@ def inorder_traversal(tree):
     res = []
     node, stack = tree, []
     while node or stack:
-        while node:
+        while node:  # 一直往左
             stack.append(node)
             node = node.left
 
@@ -110,14 +110,16 @@ def level(tree):
     if not tree:
         return
     queue = [tree]
+    res = []
     while queue:
         node = queue.pop(0)
         left, right = node.left, node.right
-        print(node.val, end=' ')
+        res.append(node.val)
         if left:
             queue.append(left)
         if right:
             queue.append(right)
+    return res
 
 
 # 层次遍历2 使用2个queue
@@ -138,6 +140,12 @@ def level2(root):
                 next_level.append(right)
         curr_level = next_level
     return ret
+
+
+def level_num(tree):
+    if not tree:
+        return 0
+    return max(level_num(tree.left), level_num(tree.right)) + 1
 
 
 if __name__ == '__main__':

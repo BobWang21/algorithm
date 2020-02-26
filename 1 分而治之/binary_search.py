@@ -21,13 +21,13 @@ def binary_search(nums, lo, hi, tar):
 
 
 #  二分查找 非递归
-def binary_search2(arr, tar):
-    lo, hi = 0, len(arr) - 1
+def binary_search2(nums, tar):
+    lo, hi = 0, len(nums) - 1
     while lo <= hi:
         mid = (lo + hi) // 2
-        if tar == arr[mid]:
+        if tar == nums[mid]:
             return mid
-        if tar < arr[mid]:
+        if tar < nums[mid]:
             hi = mid - 1
         else:
             lo = mid + 1
@@ -43,15 +43,18 @@ def find_min(nums):
     if n == 1:
         return nums[0]
     l, r = 0, n - 1
+    if nums[0] < nums[-1]:
+        return nums[0]
     while l <= r:
         mid = (l + r) // 2
-        if nums[l] <= nums[mid] <= nums[r]:  # 因为索引可能重叠 因此这里使用等号
-            return nums[l]
-        if nums[mid] > nums[l]:
+        if nums[mid] < nums[mid - 1]:
+            return nums[mid]
+        if nums[mid + 1] < nums[mid]:
+            return nums[mid + 1]
+        if nums[mid] < nums[0]:
+            r = mid - 1
+        elif nums[mid] > nums[-1]:
             l = mid + 1
-        elif nums[mid] < nums[r]:
-            r = mid
-    return nums[l]
 
 
 # 数字在排序数组中出现的次数
@@ -132,13 +135,12 @@ def find_missed_val(nums):
 
 
 if __name__ == '__main__':
+    print('二分查找')
     data = [1, 3, 5, 9, 10, 16, 17]
     print(binary_search2(data, 3))
 
-    print('二维数组查找')
-
     print('旋转数组中的最小值')
-    print(find_min([3, 4, 5, 1, 2]))
+    print(find_min([5, 1, 2, 4]))
 
     print('数字在升序数字中出现的次数')
     nums = [1, 2, 3, 3, 3, 3, 4, 4]
@@ -146,4 +148,4 @@ if __name__ == '__main__':
     print(get_number_of_k2(nums, 1, 0, len(nums) - 1))
 
     print('找出0 - n之间缺少的一个数字')
-    print(find_missed_val([1, 2, 3]))
+    print(find_missed_val([0, 1, 3]))
