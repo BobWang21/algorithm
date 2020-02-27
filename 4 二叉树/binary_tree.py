@@ -37,11 +37,11 @@ def create_full_binary_tree(nums):
 
 
 # 先序遍历(递归)
-def preorder(tree):
+def preorder_traversal(tree):
     if tree:
         print(tree.val, end=' ')
-        preorder(tree.left)
-        preorder(tree.right)
+        preorder_traversal(tree.left)
+        preorder_traversal(tree.right)
 
 
 # 先序遍历(非递归)
@@ -77,7 +77,7 @@ def traversal_left(tree):
 
 
 # 非递归遍历2
-def preorder2(tree):
+def preorder_traversal2(tree):
     stack = traversal_left(tree)
 
     while len(stack):
@@ -106,7 +106,7 @@ def inorder_traversal(tree):
 
 
 # 层次遍历二叉树 使用一个queue
-def level(tree):
+def level_traversal(tree):
     if not tree:
         return
     queue = [tree]
@@ -123,7 +123,7 @@ def level(tree):
 
 
 # 层次遍历2 使用2个queue
-def level2(root):
+def level_traversal2(root):
     if not root:
         return []
     curr_level = [root]
@@ -152,8 +152,8 @@ if __name__ == '__main__':
     nums = [i for i in range(7)]
     tree = create_full_binary_tree(nums)
     print('\n先序遍历')
-    preorder(tree)
+    preorder_traversal(tree)
     print('\n中序遍历')
     print(inorder_traversal(tree))
     print('\n层次遍历')
-    level(tree)
+    level_traversal(tree)

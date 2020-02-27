@@ -9,7 +9,7 @@ Created on Thu Jul  6 20:02:41 2017
 from binary_tree import *
 
 
-# 最近公共祖先
+# 最近公共祖先 关注一个节点就是根节点
 def lowest_common_ancestor(tree, p, q):
     if not tree:
         return None
@@ -19,15 +19,51 @@ def lowest_common_ancestor(tree, p, q):
     right = lowest_common_ancestor(tree.right, p, q)
     if left is not None and right is not None:
         return tree.val
-    if left is not None:
+    if left is not None and right is None:
         return left
-    if right is not None:
+    if left is None and right is not None:
         return right
+
+
+# 返回是否平衡 已经树的高度
+def is_balanced(tree):
+    def helper(root):
+        if not root:
+            return True, 0
+        l = helper(root.left)
+        r = helper(root.right)
+        if not l[0] or not r[0]:
+            return False, max(l[1], r[1]) + 1
+        h = max(l[1], r[1]) + 1
+        if abs(l[1] - r[1]) > 1:
+            return False, h
+        return False, h
+
+    return helper(tree)[0]
+
+
+# 不平衡就不会退出栈
+def is_balanced1(tree):
+    res = [True]
+
+    def helper(tree):
+        if not tree:
+            return 0
+        if not res[0]:
+            return 0
+        left = helper(tree.left)
+        right = helper(tree.right)
+        if abs(right - left) > 1:
+            res[0] = False
+        return max(left, right) + 1
+
+    helper(tree)
+    return res[0]
 
 
 # 判断树是否平衡
 # 如果平衡返回树的高度, 不平衡返回-1
-def is_balanced(tree):
+def is_balanced2(tree):
     def helper(tree):
         if not tree:
             return 0
@@ -40,6 +76,47 @@ def is_balanced(tree):
         return max(left, right) + 1
 
     return helper(tree) != -1
+
+
+# 二叉树的叶节点之间的最大路径边数
+def diameter_of_binary_tree(root):
+    res = [-1]
+
+    def helper(root):
+        if not root:
+            return 0
+        l, r = helper(root.left), helper(root.right)
+        res[0] = max(res[0], l + r)
+        return max(l, r) + 1
+
+    if not root:
+        return 0
+    helper(root)
+    return res[0]
+
+
+# 二叉树是否对称
+def is_symmetric(tree):
+    '''
+            5
+    3             3
+       4              4
+    '''
+
+    def helper(l, r):
+        if not l or not r:
+            return True
+        if not l and r:
+            return False
+        if l and not r:
+            return False
+        if l.val != r.val:
+            return False
+        return helper(l.left, r.right) and helper(l.right, r.left)
+
+    if not tree:
+        return True
+    return helper(tree.left, tree.right)
 
 
 # 递归!!!
@@ -211,7 +288,7 @@ def sum_numbers(tree):
     return helper(tree, 0)
 
 
-# 子树最大路径和 有点动态规划的意思
+# 子结构最大路径和  可以不经过根节点 有点动态规划的意思
 def sub_tree_max_sum_path(tree):
     def helper(tree):
         if not tree:
@@ -226,6 +303,7 @@ def sub_tree_max_sum_path(tree):
     return helper(tree)[1]
 
 
+# 根据先序遍历 和 中序遍历 构造树
 def build_tree(preorder, inorder):
     if not preorder or not inorder:
         return None
@@ -424,12 +502,50 @@ def inorder_tra_next_node(node):
         return
 
 
+# 子树
+def is_subtree(s, t):
+    def helper(s, t):  # 两棵树是否完全相同
+        if not s and not t:
+            return True
+        if s and t and s.val == t.val:
+            return helper(s.left, t.left) and helper(s.right, t.right)
+        return False
+
+    if not s and not t:
+        return True
+    if s and t:
+        if s.val == t.val and helper(s.left, t.left) and helper(s.right, t.right):
+            return True
+        return is_subtree(s.left, t) or is_subtree(s.right, t)
+    return False
+
+
+# 子树
+def substructure(s, t):
+    def helper(s, t):  # 一颗树是否包另一颗
+        if not t:
+            return True
+        if not s:
+            return False
+        if s and t and s.val == t.val:
+            return helper(s.left, t.left) and helper(s.right, t.right)  # AND关系
+        return False
+
+    if not s and not t:
+        return True
+    if s and t:
+        if s.val == t.val and helper(s, t):
+            return True
+        return is_subtree(s.left, t) or is_subtree(s.right, t)  # 或关系!!!
+    return False
+
+
 if __name__ == '__main__':
     print('\n根据先序遍历和中序遍历构建数')
     preorder = [3, 9, 20, 15, 7]
     inorder = [9, 3, 15, 20, 7]
     tree2 = build_tree(preorder, inorder)
-    print(level(tree2))
+    print(level_traversal(tree2))
 
     print('\n最近公共祖先')
     tree = create_full_binary_tree([i for i in range(7)])
@@ -445,6 +561,7 @@ if __name__ == '__main__':
     unbalanced_tree.left = a
     a.left = b
     print(is_balanced(unbalanced_tree))
+    print(is_balanced2(unbalanced_tree))
 
     print('\n右侧观察树')
     print(right_side_view(tree))
@@ -486,7 +603,7 @@ if __name__ == '__main__':
 
     print('\n二叉树反序列化')
     tree = deserialize(string)
-    print(level(tree))
+    print(level_traversal(tree))
 
     print('\n二叉搜索树的第k大节点')
     tree = create_full_binary_tree([5, 3, 7, 2, 4, 6, 8])

@@ -28,6 +28,8 @@ a.insert(0, -1)  # 队首增加元素
 a.append(3)  # 增加一个数
 c = a + b  # 生成一个新的变量
 
+dic = {1: 3}
+dic[1] = dic.get(2, 0) + 1
 a = float("inf")
 math.isinf(a)
 
