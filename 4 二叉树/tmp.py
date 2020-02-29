@@ -78,11 +78,11 @@ def is_balanced2(tree):
     return helper(tree) != -1
 
 
-# 二叉树的叶节点之间的最大路径边数
+# 二叉树的叶节点之间的最大路径边数 可能不经过根节点
 def diameter_of_binary_tree(root):
     res = [-1]
 
-    def helper(root):
+    def helper(root):  # 根节点到叶节点的边数
         if not root:
             return 0
         l, r = helper(root.left), helper(root.right)
@@ -92,6 +92,25 @@ def diameter_of_binary_tree(root):
     if not root:
         return 0
     helper(root)
+    return res[0]
+
+
+# 最大节点和
+def sub_tree_max_sum_path2(tree):
+    res = [-float('inf')]
+
+    def helper(tree):  # 返回根节点到叶子节点的最大路径和
+        if not tree:
+            return 0
+        left, right = helper(tree.left), helper(tree.right)
+        # 可能为 根节点 根节点+左子树 根节点+右子树 左子树+根节点+右子树
+        res[0] = max(res[0], tree.val, left + tree.val, right + tree.val, left + right + tree.val)
+
+        return max(max(left, right) + tree.val, tree.val)
+
+    if not tree:
+        return 0
+    helper(tree)
     return res[0]
 
 
@@ -293,12 +312,11 @@ def sub_tree_max_sum_path(tree):
     def helper(tree):
         if not tree:
             return 0, 0
-        current_left, max_left = helper(tree.left)  # 记录包含根节点的数值
-        current_right, max_right = helper(tree.right)
+        left, max_left = helper(tree.left)  # 记录包含根节点的数值
+        right, max_right = helper(tree.right)
         val = tree.val
-        current = max(current_left + val, current_right + val, val)
-        max_ = max(max_left, max_right, current, current_left + current_right + val)
-        return current, max_
+        current = max(left + val, right + val, val)  # 根节点及一侧最大
+        return current, max(max_left, max_right, current, left + right + val)
 
     return helper(tree)[1]
 

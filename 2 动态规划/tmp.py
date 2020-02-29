@@ -1,6 +1,3 @@
-import math
-
-
 # bottom up
 def fib(n):
     result = [0, 1]
@@ -33,7 +30,7 @@ def stock(nums):
     if n < 2:
         raise Exception()
     buy = sell = 0
-    balance = -math.inf
+    balance = -float('inf')
     for i in range(1, n):
         if nums[i] - nums[buy] > balance:
             balance = nums[i] - nums[buy]
@@ -57,10 +54,10 @@ def max_continuous_sum(nums):
 def max_continuous_product(nums):
     max_pro = last_max_pro = last_min_pro = nums[0]
     for val in nums[1:]:
-        last_min_pro_ = min(val, val * last_max_pro, val * last_min_pro)
+        new_last_min_pro = min(val, val * last_max_pro, val * last_min_pro)
         last_max_pro = max(val, val * last_max_pro, val * last_min_pro)
         max_pro = max(last_max_pro, max_pro)
-        last_min_pro = last_min_pro_
+        last_min_pro = new_last_min_pro
 
     return max_pro
 

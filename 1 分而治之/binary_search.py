@@ -10,7 +10,7 @@ Created on Sun Jul  9 17:02:31 2017
 #  二分查找 递归
 def binary_search(nums, lo, hi, tar):
     if lo <= hi:
-        mid = (lo + hi) // 2
+        mid = (lo + hi) // 2  # lo + (hi-lo) // 2
         if nums[mid] == tar:
             return mid
         if nums[mid] > tar:

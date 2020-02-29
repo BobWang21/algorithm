@@ -120,6 +120,37 @@ def length_of_longest_substring(s):
     return max_length
 
 
+# 字符串1 包含 k个不同字符的最大长度
+def max_k_char(s, k):
+    if not s or k <= 0:
+        return 0
+    n = len(s)
+    if n < k:
+        return n
+    dic = dict()
+    dic[s[0]] = 1
+    l, r = 0, 1
+    max_len = 0
+    while r < n:
+        c = s[r]
+        if c in dic:
+            dic[c] += 1
+            max_len = max(max_len, r - l + 1)
+            r += 1
+        else:
+            if len(dic) < k:
+                dic[c] = 1
+                r += 1
+            else:
+                while len(dic) >= k:
+                    c = s[l]
+                    dic[c] -= 1
+                    l += 1
+                    if dic[c] == 0:
+                        del dic[c]
+    return max_len
+
+
 if __name__ == '__main__':
     print('最小覆盖子串')
     print(min_window('aaaaaaaaaaaabbbbbcdd', 'abcdd'))
@@ -131,3 +162,5 @@ if __name__ == '__main__':
     s1 = 'trinitrophenylmethylnitramine'
     s2 = 'dinitrophenylhydrazinetrinitrophenylmethylnitramine'
     print(check_inclusion(s1, s2))
+
+    print(max_k_char('eceebaaaa', 2))
