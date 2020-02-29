@@ -5,6 +5,7 @@ Created on Fri Jun 28 13:20:38 2019
 
 @author: wangbao
 """
+import collections
 
 
 # 判断是否为回文
@@ -151,6 +152,42 @@ def max_k_char(s, k):
     return max_len
 
 
+def find_pairs(nums, k):
+    if len(nums) < 2:
+        return 0
+    nums.sort()
+    if nums[-1] - nums[0] < k:
+        return 0
+    n = len(nums)
+    l, r = 0, 1
+    num = 0
+    while r < n and l < n:
+        if l == r:
+            r += 1
+            continue
+        s = nums[r] - nums[l]
+        if s < k:
+            r += 1
+        elif s > k:
+            l += 1
+        else:
+            num += 1
+            while l + 1 < n and nums[l] == nums[l + 1]:
+                l += 1
+            l += 1
+            r = max(l + 1, r + 1)
+    return num
+
+
+def find_pairs2(nums, k):
+    res = 0
+    c = collections.Counter(nums)
+    for i in c:
+        if (k > 0 and i + k in c) or (k == 0 and c[i] > 1):
+            res += 1
+    return res
+
+
 if __name__ == '__main__':
     print('最小覆盖子串')
     print(min_window('aaaaaaaaaaaabbbbbcdd', 'abcdd'))
@@ -164,3 +201,6 @@ if __name__ == '__main__':
     print(check_inclusion(s1, s2))
 
     print(max_k_char('eceebaaaa', 2))
+    print('相差为K的pair数目')
+    print(find_pairs([1, 3, 1, 5, 4], 0))
+    print(find_pairs2([1, 3, 1, 5, 4], 0))

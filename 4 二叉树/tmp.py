@@ -118,8 +118,8 @@ def sub_tree_max_sum_path2(tree):
 def is_symmetric(tree):
     '''
             5
-    3             3
-       4              4
+       3        3
+           4        4
     '''
 
     def helper(l, r):
@@ -136,6 +136,24 @@ def is_symmetric(tree):
     if not tree:
         return True
     return helper(tree.left, tree.right)
+
+
+# 判断二叉树是否为二叉搜索树
+
+def is_valid_bst(tree):
+    if not tree:
+        return True
+
+    def helper(tree, lo, hi):
+        if not tree:
+            return True
+        v = tree.val
+        l, r = tree.left, tree.right
+        if v <= lo or v >= hi:
+            return False
+        return helper(l, lo, v) and helper(r, v, hi)
+
+    return helper(tree, -float('inf'), float('inf'))
 
 
 # 递归!!!
@@ -377,6 +395,25 @@ def deserialize(s1):
     if s1 == '':
         return None
     return helper()
+
+
+# 检查一个遍历是否为二叉搜索树的后续遍历
+def check_poster_order(post):
+    if len(post) <= 1:
+        return True
+
+    root = post[0]
+    if post[0] > root or post[-2] < root:
+        return check_poster_order(post[:-1])
+    l, n = 0, len(post)
+    while l < n - 1 and post[l] < root:
+        l += 1
+    p = l
+    while l < n - 1 and post[l] > root:
+        l += 1
+    if l != n - 1:
+        return False
+    return check_poster_order(post[:p]) and check_poster_order(post[p:-1])
 
 
 # 二叉搜索树 第K大的数
@@ -622,6 +659,9 @@ if __name__ == '__main__':
     print('\n二叉树反序列化')
     tree = deserialize(string)
     print(level_traversal(tree))
+
+    print('检查二叉搜索树后续遍历是否合法')
+    print(check_poster_order([1, 6, 3, 2, 5]))
 
     print('\n二叉搜索树的第k大节点')
     tree = create_full_binary_tree([5, 3, 7, 2, 4, 6, 8])

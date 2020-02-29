@@ -148,6 +148,18 @@ def level_num(tree):
     return max(level_num(tree.left), level_num(tree.right)) + 1
 
 
+# 最小深度 根节点到叶节点
+def min_depth(root):
+    if not root:
+        return 0
+    l, r = root.left, root.right
+    if not l:  # 没有左子树
+        return min_depth(r) + 1
+    if not r:
+        return min_depth(l) + 1
+    return min(min_depth(l), min_depth(r)) + 1
+
+
 if __name__ == '__main__':
     nums = [i for i in range(7)]
     tree = create_full_binary_tree(nums)
