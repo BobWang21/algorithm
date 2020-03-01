@@ -62,14 +62,16 @@ def max_continuous_product(nums):
     return max_pro
 
 
-# 给定一个整数的数组, 相邻的数不能同时选，
+# 给定一个整数的数组, 相邻的数不能同时选
 # 求从该数组选取若干整数, 使得他们的和最大
 def not_continuous_sum(nums):
     include = nums[0]
     exclude = 0
     for val in nums[1:]:
-        include = max(val, exclude + val)
+        new_include = max(val, exclude + val)
         exclude = max(exclude, include)
+        include = new_include
+
     return max(include, exclude)
 
 

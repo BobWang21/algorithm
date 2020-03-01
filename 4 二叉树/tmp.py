@@ -46,7 +46,7 @@ def is_balanced(tree):
 def is_balanced1(tree):
     res = [True]
 
-    def helper(tree):
+    def helper(tree):  # 返回树的高度
         if not tree:
             return 0
         if not res[0]:
@@ -89,8 +89,6 @@ def diameter_of_binary_tree(root):
         res[0] = max(res[0], l + r)
         return max(l, r) + 1
 
-    if not root:
-        return 0
     helper(root)
     return res[0]
 
@@ -123,11 +121,9 @@ def is_symmetric(tree):
     '''
 
     def helper(l, r):
-        if not l or not r:
+        if not l and not r:
             return True
-        if not l and r:
-            return False
-        if l and not r:
+        if not l or not r:
             return False
         if l.val != r.val:
             return False
@@ -139,7 +135,6 @@ def is_symmetric(tree):
 
 
 # 判断二叉树是否为二叉搜索树
-
 def is_valid_bst(tree):
     if not tree:
         return True
@@ -154,6 +149,26 @@ def is_valid_bst(tree):
         return helper(l, lo, v) and helper(r, v, hi)
 
     return helper(tree, -float('inf'), float('inf'))
+
+
+# 检查一个遍历是否为二叉搜索树的后序遍历
+def check_poster_order(post):
+    if len(post) <= 1:
+        return True
+
+    root = post[0]
+    if post[0] > root or post[-2] < root:  # 仅有左子树 或 右子树
+        return check_poster_order(post[:-1])
+    l, n = 0, len(post)
+    # 根据左子树 < 根 < 右子树 切分左右子树
+    while l < n - 1 and post[l] < root:
+        l += 1
+    p = l
+    while l < n - 1 and post[l] > root:
+        l += 1
+    if l != n - 1:
+        return False
+    return check_poster_order(post[:p]) and check_poster_order(post[p:-1])
 
 
 # 递归!!!
@@ -339,7 +354,7 @@ def sub_tree_max_sum_path(tree):
     return helper(tree)[1]
 
 
-# 根据先序遍历 和 中序遍历 构造树
+# 根据先序遍历 和 中序遍历 构造树 找到根节点!!
 def build_tree(preorder, inorder):
     if not preorder or not inorder:
         return None
@@ -395,25 +410,6 @@ def deserialize(s1):
     if s1 == '':
         return None
     return helper()
-
-
-# 检查一个遍历是否为二叉搜索树的后续遍历
-def check_poster_order(post):
-    if len(post) <= 1:
-        return True
-
-    root = post[0]
-    if post[0] > root or post[-2] < root:
-        return check_poster_order(post[:-1])
-    l, n = 0, len(post)
-    while l < n - 1 and post[l] < root:
-        l += 1
-    p = l
-    while l < n - 1 and post[l] > root:
-        l += 1
-    if l != n - 1:
-        return False
-    return check_poster_order(post[:p]) and check_poster_order(post[p:-1])
 
 
 # 二叉搜索树 第K大的数

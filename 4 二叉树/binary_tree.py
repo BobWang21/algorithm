@@ -98,7 +98,6 @@ def inorder_traversal(tree):
         while node:  # 一直往左
             stack.append(node)
             node = node.left
-
         node = stack.pop(-1)
         res.append(node.val)
         node = node.right
@@ -130,10 +129,10 @@ def level_traversal2(root):
     ret = []
     while curr_level:
         next_level = []
-        for tree in curr_level:  # 访问当前层的每个节点, 并将叶节点放入下一层
-            ret.append(tree.val)
-            left = tree.left
-            right = tree.right
+        for node in curr_level:  # 访问当前层的每个节点, 并将叶节点放入下一层
+            ret.append(node.val)
+            left = node.left
+            right = node.right
             if left:
                 next_level.append(left)
             if right:
@@ -148,7 +147,7 @@ def level_num(tree):
     return max(level_num(tree.left), level_num(tree.right)) + 1
 
 
-# 最小深度 根节点到叶节点
+# 最小深度 根节点到叶节点!
 def min_depth(root):
     if not root:
         return 0
@@ -169,3 +168,14 @@ if __name__ == '__main__':
     print(inorder_traversal(tree))
     print('\n层次遍历')
     level_traversal(tree)
+
+    print('\n数的最小深度')
+    root = TreeNode()
+    root.val = 1
+    a = TreeNode()
+    a.val = 2
+    b = TreeNode()
+    b.val = 3
+    root.left = a
+    a.left = b
+    print(min_depth(root))
