@@ -591,6 +591,26 @@ def substructure(s, t):
     return False
 
 
+def rob(root):
+    dic = dict()
+    if not root:
+        return 0
+    if root in dic:
+        return dic[root]
+
+    val = 0
+
+    if root.left:
+        val += rob(root.left.left) + rob(root.left.right)
+
+    if root.right:
+        val += rob(root.right.left) + rob(root.right.right)
+
+    val = max(val + root.val, rob(root.left) + rob(root.right))
+    dic[root] = val
+    return val
+
+
 if __name__ == '__main__':
     print('\n根据先序遍历和中序遍历构建数')
     preorder = [3, 9, 20, 15, 7]

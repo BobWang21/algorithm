@@ -1,4 +1,6 @@
 # bottom up
+
+
 def fib(n):
     result = [0, 1]
     if n <= 2:
@@ -73,6 +75,25 @@ def not_continuous_sum(nums):
         include = new_include
 
     return max(include, exclude)
+
+
+# 第一个 和 最后一个连成环 不能同时选
+def rob2(nums):
+    if not nums:
+        return 0
+    n = len(nums)
+    if n < 3:
+        return max(nums)
+
+    def helper(nums, lo, hi):
+        include, exclude = 0, 0
+        for i in range(lo, hi + 1):
+            new_include = exclude + nums[i]
+            exclude = max(include, exclude)
+            include = new_include
+        return max(include, exclude)
+
+    return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
 
 
 # 最长上升子序列
@@ -182,6 +203,9 @@ if __name__ == '__main__':
 
     print('非连续子序列和最大')
     print(not_continuous_sum([5, 3, -6, -5, 10]))
+
+    print('抢钱')
+    print(rob2([1, 2, 1, 1]))
 
     print('最长上升子序列')
     print(longest_increasing_subsequence([2, 5, 3, 4, 1, 7, 6]))
