@@ -16,24 +16,23 @@ class TreeNode():
 
 # 创建完全二叉树
 def create_full_binary_tree(nums):
-    node = TreeNode()
-    queue = []
-    node.val = nums[0]
-    queue.append(node)
+    tree = TreeNode()
+    tree.val = nums[0]
+    queue = [tree]
     for val in nums[1:]:
         head = queue[0]
         if not head.left:
-            new_tree = TreeNode()
-            new_tree.val = val
-            head.left = new_tree
-            queue.append(new_tree)
+            node = TreeNode()
+            node.val = val
+            head.left = node
+            queue.append(node)
         elif not head.right:
-            new_tree = TreeNode()
-            new_tree.val = val
-            head.right = new_tree
-            queue.append(new_tree)
+            node = TreeNode()
+            node.val = val
+            head.right = node
+            queue.append(node)
             queue.pop(0)  # 出队列
-    return node
+    return tree
 
 
 # 先序遍历(递归)
@@ -61,32 +60,6 @@ def preorder2(tree):
             stack.append(left)
 
 
-def traversal_left(tree):
-    # 一直往左访问
-    if not tree:
-        return
-    stack = []
-    print(tree.val)
-
-    while tree.left is not None:
-        print(tree.left.val)
-        if tree.right is not None:
-            stack.append(tree.right)
-        tree = tree.left
-    return stack
-
-
-# 非递归遍历2
-def preorder_traversal2(tree):
-    stack = traversal_left(tree)
-
-    while len(stack):
-        tail = stack[-1]
-        stack.pop(-1)
-        new_stack = traversal_left(tail)
-        stack += new_stack
-
-
 # 中序遍历 左子树一直向下
 # 访问到头就出栈
 def inorder_traversal(tree):
@@ -112,8 +85,8 @@ def level_traversal(tree):
     res = []
     while queue:
         node = queue.pop(0)
-        left, right = node.left, node.right
         res.append(node.val)
+        left, right = node.left, node.right
         if left:
             queue.append(left)
         if right:
@@ -126,19 +99,18 @@ def level_traversal2(root):
     if not root:
         return []
     curr_level = [root]
-    ret = []
+    res = []
     while curr_level:
         next_level = []
         for node in curr_level:  # 访问当前层的每个节点, 并将叶节点放入下一层
-            ret.append(node.val)
-            left = node.left
-            right = node.right
+            res.append(node.val)
+            left, right = node.left, node.right
             if left:
                 next_level.append(left)
             if right:
                 next_level.append(right)
         curr_level = next_level
-    return ret
+    return res
 
 
 def level_num(tree):

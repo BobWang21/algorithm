@@ -591,24 +591,49 @@ def substructure(s, t):
     return False
 
 
-def rob(root):
+# 抢钱问题 节点之间不能存在父子关系
+def rob(tree):
     dic = dict()
-    if not root:
+    if not tree:
         return 0
-    if root in dic:
-        return dic[root]
+    if tree in dic:
+        return dic[tree]
 
     val = 0
 
-    if root.left:
-        val += rob(root.left.left) + rob(root.left.right)
+    if tree.left:
+        val += rob(tree.left.left) + rob(tree.left.right)
 
-    if root.right:
-        val += rob(root.right.left) + rob(root.right.right)
+    if tree.right:
+        val += rob(tree.right.left) + rob(tree.right.right)
 
-    val = max(val + root.val, rob(root.left) + rob(root.right))
-    dic[root] = val
+    val = max(val + tree.val, rob(tree.left) + rob(tree.right))
+    dic[tree] = val
     return val
+
+
+def flatten(tree):
+    if not tree:
+        return None
+    head = tree
+    l, r = tree.left, tree.right
+    stack = []
+    if r:
+        stack.append(r)
+    if l:
+        stack.append(l)
+    pre = head
+    while stack:
+        node = stack.pop(-1)
+        pre.right = node
+        pre.left = None
+        pre = pre.right
+        l, r = node.left, node.right
+        if r:
+            stack.append(r)
+        if l:
+            stack.append(l)
+    return head
 
 
 if __name__ == '__main__':
@@ -684,5 +709,14 @@ if __name__ == '__main__':
     print(top_k_binary_search_tree3(tree, 1))
 
     print('\n中序遍历的下一个节点')
-    node = construct_parent()[3]
-    print(inorder_tra_next_node(node))
+    tree = construct_parent()[3]
+    print(inorder_tra_next_node(tree))
+
+    print('\n二叉树转链表')
+    tree = create_full_binary_tree([1, 2, 5, 3, 4])
+    head = flatten(tree)
+    res = []
+    while head:
+        res.append(head.val)
+        head = head.right
+    print(res)
