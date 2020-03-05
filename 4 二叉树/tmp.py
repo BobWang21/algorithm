@@ -37,7 +37,7 @@ def is_balanced(tree):
         h = max(l[1], r[1]) + 1
         if abs(l[1] - r[1]) > 1:
             return False, h
-        return False, h
+        return True, h
 
     return helper(tree)[0]
 
@@ -82,7 +82,7 @@ def is_balanced2(tree):
 def diameter_of_binary_tree(root):
     res = [-1]
 
-    def helper(root):  # 根节点到叶节点的边数
+    def helper(root):  # 树的最大深度
         if not root:
             return 0
         l, r = helper(root.left), helper(root.right)
@@ -90,25 +90,6 @@ def diameter_of_binary_tree(root):
         return max(l, r) + 1
 
     helper(root)
-    return res[0]
-
-
-# 最大节点和
-def sub_tree_max_sum_path2(tree):
-    res = [-float('inf')]
-
-    def helper(tree):  # 返回根节点到叶子节点的最大路径和
-        if not tree:
-            return 0
-        left, right = helper(tree.left), helper(tree.right)
-        # 可能为 根节点 根节点+左子树 根节点+右子树 左子树+根节点+右子树
-        res[0] = max(res[0], tree.val, left + tree.val, right + tree.val, left + right + tree.val)
-
-        return max(max(left, right) + tree.val, tree.val)
-
-    if not tree:
-        return 0
-    helper(tree)
     return res[0]
 
 
@@ -179,7 +160,7 @@ def binary_tree_paths(tree):
     left = binary_tree_paths(tree.left)
     right = binary_tree_paths(tree.right)
     paths = left + right
-    if not paths:
+    if not paths:  # 叶节点
         return [str(tree.val)]
     res = []
     for path in paths:
@@ -331,7 +312,7 @@ def sum_numbers(tree):
     def helper(tree, val):
         if not tree:
             return 0
-        if not tree.left and not tree.right:
+        if not tree.left and not tree.right:  # 叶节点!!!
             return val * 10 + tree.val
         return helper(tree.left, val * 10 + tree.val) + helper(tree.right, val * 10 + tree.val)
 
@@ -340,7 +321,7 @@ def sum_numbers(tree):
     return helper(tree, 0)
 
 
-# 子结构最大路径和  可以不经过根节点 有点动态规划的意思
+# 124 子结构最大路径和  可以不经过根节点 有点动态规划的意思
 def sub_tree_max_sum_path(tree):
     def helper(tree):
         if not tree:
@@ -352,6 +333,21 @@ def sub_tree_max_sum_path(tree):
         return current, max(max_left, max_right, current, left + right + val)
 
     return helper(tree)[1]
+
+
+def sub_tree_max_sum_path2(tree):
+    res = [-float('inf')]
+
+    def helper(tree):  # 包含跟节点的最大值
+        if not tree:
+            return 0
+        left, right = helper(tree.left), helper(tree.right)
+        res[0] = max(res[0], left + right + tree.val, left + tree.val, right + tree.val, tree.val)
+
+        return max(max(left, right) + tree.val, tree.val)
+
+    helper(tree)
+    return res[0]
 
 
 # 根据先序遍历 和 中序遍历 构造树 找到根节点!!
@@ -412,7 +408,7 @@ def deserialize(s1):
     return helper()
 
 
-# 二叉搜索树 第K大的数
+# 二叉搜索树 中序遍历 第K大的数
 def top_k_binary_search_tree(tree, k):
     if not tree:
         return
@@ -634,6 +630,25 @@ def flatten(tree):
         if l:
             stack.append(l)
     return head
+
+
+def width_of_tree(tree):
+    if not tree:
+        return 0
+    current_level = [(tree, 0)]
+    res = 1
+    while current_level:
+        next_level = []
+        res = max(res, current_level[-1][1] - current_level[0][1] + 1)
+        for node, idx in current_level:
+            left, right = node.left, node.right
+            if left:
+                next_level.append((left, idx * 2))
+            if right:
+                next_level.append((right, idx * 2 + 1))
+        current_level = next_level
+
+    return res
 
 
 if __name__ == '__main__':
