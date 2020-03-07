@@ -188,6 +188,55 @@ def pack(candidates, c1, c2):
     return res
 
 
+def letter_case_permutation(s):
+    if not s:
+        return
+    l = list(s)
+    res = []
+
+    def helper(l, idx, path):
+        if len(path) == len(l):
+            res.append(''.join(path))
+            return
+        for i in range(idx, len(l)):
+            c = l[i]
+            if c.isalpha():
+                helper(l, i + 1, path + [c.lower()])
+                helper(l, i + 1, path + [c.upper()])
+            else:
+                helper(l, i + 1, path + [c])
+
+    helper(l, 0, [])
+    return res
+
+
+# Input:
+# beginWord = "hit",
+# endWord = "cog",
+# wordList = ["hot","dot","dog","lot","log","cog"]
+def word_ladder(begin_word, end_word, word_list):
+    if not word_list:
+        return 0
+    queue = [(begin_word, 0)]  # 记录层数
+    seen_set = {begin_word}  # 保存已经加入过队列的字符串
+    word_set = set(word_list)
+    while queue:
+        word, l = queue.pop(0)
+        if word == end_word:
+            return l + 1
+        for i in range(len(word)):
+            for j in range(26):  # 访问每个字符串的近邻 如果近邻满足则返回
+                c = chr(ord('a') + j)
+                if word[i] == c:
+                    continue
+                new_word = word[:i] + c + word[i + 1:]
+                if new_word in word_set and new_word not in seen_set:
+                    seen_set.add(new_word)
+                    queue.append((new_word, l + 1))
+
+    return 0
+
+
 if __name__ == '__main__':
     print('n sum 回溯版')
     print(n_sum([1, 2, 3, 4], 3, 6))
@@ -210,3 +259,18 @@ if __name__ == '__main__':
 
     print('\n两个轮船分集装箱')
     print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))
+
+    print('Letter Case Permutation')
+    print(letter_case_permutation("a1b2"))
+
+    print('word_ladder')
+    a = "qa"
+    b = "sq"
+    c = ["si", "go", "se", "cm", "so", "ph", "mt", "db", "mb", "sb", "kr", "ln", "tm", "le", "av", "sm", "ar", "ci",
+         "ca", "br", "ti", "ba", "to", "ra", "fa", "yo", "ow", "sn", "ya", "cr", "po", "fe", "ho", "ma", "re", "or",
+         "rn", "au", "ur", "rh", "sr", "tc", "lt", "lo", "as", "fr", "nb", "yb", "if", "pb", "ge", "th", "pm", "rb",
+         "sh", "co", "ga", "li", "ha", "hz", "no", "bi", "di", "hi", "qa", "pi", "os", "uh", "wm", "an", "me", "mo",
+         "na", "la", "st", "er", "sc", "ne", "mn", "mi", "am", "ex", "pt", "io", "be", "fm", "ta", "tb", "ni", "mr",
+         "pa", "he", "lr", "sq", "ye"]
+    print(word_ladder(a, b, c))
+    print(word_ladder2(a, b, c))

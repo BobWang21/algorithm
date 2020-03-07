@@ -38,3 +38,5 @@ s.isalnum()  # 是否为数字或字母
 s.isalpha()  # 判断是否为字母
 s.isdigit()  # 判断是否为数字
 ''.join(['a', 'b', 'c'])  # 列表转换成字符串
+print(chr(97))  # 数字转字符
+print(ord('a'))  # 字母对应的数字

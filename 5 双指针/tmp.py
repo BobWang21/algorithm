@@ -308,6 +308,24 @@ def length_of_longest_substring2(s):
     return max_length
 
 
+def sorted_squares(nums):
+    if not nums:
+        return []
+    n = len(nums)
+    res = [0] * n
+    j = n - 1
+    l, r = 0, n - 1
+    while l <= r:
+        if abs(nums[l]) <= abs(nums[r]):
+            res[j] = (nums[r]) ** 2
+            r -= 1
+        else:
+            res[j] = (nums[l]) ** 2
+            l += 1
+        j -= 1
+    return res
+
+
 if __name__ == '__main__':
     print('找到数组中重复元素')
     print(find_duplicate_num([1, 2, 3, 4, 2]))
@@ -330,3 +348,6 @@ if __name__ == '__main__':
 
     print('最小非重复子串')
     print(length_of_longest_substring(" "))
+
+    print('平方排序')
+    print(sorted_squares([-7, -3, 2, 3, 11]))

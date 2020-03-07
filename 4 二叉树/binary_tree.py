@@ -43,21 +43,23 @@ def preorder_traversal(tree):
         preorder_traversal(tree.right)
 
 
-# 先序遍历(非递归)
+# 先序遍历(非递归) dfs
 def preorder2(tree):
     if not tree:
         return
     stack = [tree]
+    res = []
     while stack:
-        tail = stack.pop(-1)
-        print(tail.val, end=' ')  # 访问根节点
-        left, right = tail.left, tail.right
+        node = stack.pop(-1)
+        res.append(node.val)
+        left, right = node.left, node.right
         # 右子树先进栈 
         if right:
             stack.append(right)  # 右子树先进栈
         # 左子树进栈
         if left:
             stack.append(left)
+    return res
 
 
 # 中序遍历 左子树一直向下
@@ -77,7 +79,7 @@ def inorder_traversal(tree):
     return res
 
 
-# 层次遍历二叉树 使用一个queue
+# 层次遍历二叉树 使用一个queue bfs
 def level_traversal(tree):
     if not tree:
         return
@@ -119,7 +121,7 @@ def level_num(tree):
     return max(level_num(tree.left), level_num(tree.right)) + 1
 
 
-# 最小深度 根节点到叶节点!
+# 最小深度 根节点到叶节点! 也可以使用bfs
 def min_depth(root):
     if not root:
         return 0
