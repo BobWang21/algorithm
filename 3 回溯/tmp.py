@@ -273,4 +273,3 @@ if __name__ == '__main__':
          "na", "la", "st", "er", "sc", "ne", "mn", "mi", "am", "ex", "pt", "io", "be", "fm", "ta", "tb", "ni", "mr",
          "pa", "he", "lr", "sq", "ye"]
     print(word_ladder(a, b, c))
-    print(word_ladder2(a, b, c))
