@@ -147,19 +147,21 @@ def subset(candidates):
 
 
 # 背包问题
-def knapsack_problem(cost, val, cap):
-    def dfs(cost, val, cap, index, amount, res):
-        if cap == 0 or index == len(cost):
-            res[0] = max(res[0], amount)
-            return
-        for i in range(index, len(cost)):
-            if cap - cost[i] < 0:  # sort 不方便 所以就只能continue
+def knapsack(cost, val, cap):
+    def dfs(cap, idx, amount, res):
+        for i in range(idx, len(cost)):
+            if cap - cost[i] < 0:  # base 1
+                res[0] = max(res[0], amount)
                 continue
-            dfs(cost, val, cap - cost[i], i + 1, amount + val[i], res)
+            elif cap - cost[i] == 0:  # base 2
+                res[0] = max(res[0], amount + val[i])
+                continue
+            else:
+                dfs(cap - cost[i], i + 1, amount + val[i], res)
 
     res = [-1]
-    dfs(cost, val, cap, 0, 0, res)
-    return max(res)
+    dfs(cap, 0, 0, res)
+    return res[0]
 
 
 def pack(candidates, c1, c2):
@@ -255,7 +257,7 @@ if __name__ == '__main__':
     print(subset([1, 2, 3]))
 
     print('\n背包问题')
-    print(knapsack_problem([1, 2, 3, 4], [1, 3, 5, 8], 5))
+    print(knapsack([1, 2, 3, 4], [1, 3, 5, 8], 5))
 
     print('\n两个轮船分集装箱')
     print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))

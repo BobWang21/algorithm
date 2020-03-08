@@ -22,6 +22,24 @@ def knapsack(cost, val, cap):
     return matrix[-1][-1]
 
 
+# 背包问题
+def knapsack_backtrack(cost, val, cap):
+    def dfs(cap, idx, amount, res):
+        for i in range(idx, len(cost)):
+            if cap - cost[i] < 0:  # base 1 不能再装了
+                res[0] = max(res[0], amount)
+                continue
+            elif cap - cost[i] == 0:  # base 2
+                res[0] = max(res[0], amount + val[i])
+                continue
+            else:
+                dfs(cap - cost[i], i + 1, amount + val[i], res)
+
+    res = [-1]
+    dfs(cap, 0, 0, res)
+    return res[0]
+
+
 # 完全背包问题 借鉴0-1背包
 def unbounded_knapsack1(cost, weight, capacity):
     if not cost or not weight or len(cost) != len(weight):
@@ -103,7 +121,6 @@ def find_partition(nums):
 if __name__ == '__main__':
     print('0 - 1 背包问题')
     print(knapsack([1, 2, 3, 4], [1, 3, 4, 8], 7))
-    # print(knapsack11([1, 2, 3, 4], [1, 3, 4, 8], 7))
 
     print('\n完全背包问题')
     print(unbounded_knapsack1([1, 2, 3, 4], [2.5, 3, 4, 8], 8))
