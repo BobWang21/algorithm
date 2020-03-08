@@ -109,16 +109,16 @@ def longest_increasing_subsequence(nums):
 
 
 # 最长公共子序列
-def longest_common_subsequence(str1, str2):
-    l1, l2 = len(str1), len(str2)
-    arr = [[0] * (l2 + 1) for _ in range(l1 + 1)]
+def longest_common_subsequence(s1, s2):
+    l1, l2 = len(s1), len(s2)
+    res = [[0] * (l2 + 1) for _ in range(l1 + 1)]
     for i in range(1, l1 + 1):
         for j in range(1, l2 + 1):
-            if str1[i - 1] == str2[j - 1]:
-                arr[i][j] = arr[i - 1][j - 1] + 1
+            if s1[i - 1] == s2[j - 1]:
+                res[i][j] = res[i - 1][j - 1] + 1
             else:
-                arr[i][j] = max(arr[i - 1][j], arr[i][j - 1])
-    return arr[-1][-1]
+                res[i][j] = max(res[i - 1][j], res[i][j - 1])
+    return res[-1][-1]
 
 
 # 换硬币
@@ -133,6 +133,19 @@ def coin_change(coins, amount):
         for x in range(coin, amount + 1):
             dp[x] = min(dp[x], dp[x - coin] + 1)
     return dp[amount] if dp[amount] != float('inf') else -1
+
+
+# 279. Perfect Squares 12 = 4 + 4 + 4
+def num_squares(n):
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # 当coin = amount 时使用
+    if n <= 0:
+        return 0
+
+    for coin in range(1, int(n ** 0.5) + 1):
+        for x in range(coin * coin, n + 1):
+            dp[x] = min(dp[x], dp[x - coin ** 2] + 1)
+    return dp[n]
 
 
 # 给定一个正整数数组 求和为target的所有组合数
@@ -215,6 +228,9 @@ if __name__ == '__main__':
 
     print('换硬币')
     print(coin_change([1, 2, 5, 10], 11))
+
+    print('数字由平方组合')
+    print(num_squares(13))
 
     print('割绳子')
     print(max_product_after_cutting(8))

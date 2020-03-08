@@ -213,7 +213,7 @@ def letter_case_permutation(s):
 # Input:
 # beginWord = "hit",
 # endWord = "cog",
-# wordList = ["hot","dot","dog","lot","log","cog"]
+# wordList = ["hot","dot","dog","lot","log","cog"] BFS
 def word_ladder(begin_word, end_word, word_list):
     if not word_list:
         return 0

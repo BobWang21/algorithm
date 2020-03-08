@@ -9,7 +9,7 @@ Created on Fri Jul  7 18:32:29 2017
 
 # 0-1 背包问题
 # matrix[i][j] 表示前 i 件物品恰放入一个容量为 j 的背包可以获得的最大价值
-def knapsack1(cost, val, cap):
+def knapsack(cost, val, cap):
     n = len(cost)
     matrix = [[0] * (cap + 1) for _ in range(n + 1)]
     for i in range(1, n + 1):
@@ -17,13 +17,13 @@ def knapsack1(cost, val, cap):
         val_i = val[i - 1]
         for j in range(1, cap + 1):
             matrix[i][j] = matrix[i - 1][j]  # 不装物品i
-            if j - cost_i >= 0:  # 判断是否装物品i
+            if j - cost_i >= 0:  # # res[i - 1][j-cost_i]从 i-1, 从i开始 我们不知道是否之前用到过物品i
                 matrix[i][j] = max(matrix[i - 1][j], matrix[i - 1][j - cost_i] + val_i)
     return matrix[-1][-1]
 
 
-# 完全背包问题
-def knapsack2(cost, weight, capacity):
+# 完全背包问题 借鉴0-1背包
+def unbounded_knapsack1(cost, weight, capacity):
     if not cost or not weight or len(cost) != len(weight):
         return
     n = len(cost)
@@ -40,6 +40,38 @@ def knapsack2(cost, weight, capacity):
                     k += 1
 
     return res[-1][-1]
+
+
+def unbounded_knapsack2(cost, weight, capacity):
+    if not cost or not weight or len(cost) != len(weight):
+        return
+    n = len(cost)
+    res = [[0] * (capacity + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        c = cost[i - 1]
+        v = weight[i - 1]
+        for j in range(1, capacity + 1):
+            res[i][j] = res[i - 1][j]
+            if j >= c:  # res[i][j] 索引从i开始 可以重复使用物品
+                res[i][j] = max(res[i][j], res[i][j - c] + v)
+
+    return res[-1][-1]
+
+
+# 使用1维数组
+def unbounded_knapsack4(cost, weight, capacity):
+    if not cost or not weight or len(cost) != len(weight):
+        return
+    n = len(cost)
+    res = [0] * (capacity + 1)
+    for i in range(1, n + 1):
+        c = cost[i - 1]
+        v = weight[i - 1]
+        for j in range(1, capacity + 1):
+            if j >= c:
+                res[j] = max(res[j], res[j - c] + v)
+
+    return res[-1]
 
 
 # Partition problem is to determine whether
@@ -70,10 +102,12 @@ def find_partition(nums):
 
 if __name__ == '__main__':
     print('0 - 1 背包问题')
-    print(knapsack1([1, 2, 3, 4], [1, 3, 4, 8], 7))
+    print(knapsack([1, 2, 3, 4], [1, 3, 4, 8], 7))
+    # print(knapsack11([1, 2, 3, 4], [1, 3, 4, 8], 7))
 
     print('\n完全背包问题')
-    print(knapsack2([1, 2, 3, 4], [2.5, 3, 4, 8], 8))
+    print(unbounded_knapsack1([1, 2, 3, 4], [2.5, 3, 4, 8], 8))
+    print(unbounded_knapsack4([1, 2, 3, 4], [2.5, 3, 4, 8], 8))
 
     print('\n找到子序列和相等的两个分区')
     print(find_partition([3, 1, 5, 9, 12]))

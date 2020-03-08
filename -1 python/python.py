@@ -32,6 +32,8 @@ dic = {1: 3}
 dic[1] = dic.get(2, 0) + 1
 a = float("inf")
 math.isinf(a)
+for k, v in dic.items():
+    print(k, v)
 
 s = 'abc'
 s.isalnum()  # 是否为数字或字母

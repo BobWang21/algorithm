@@ -72,6 +72,25 @@ def get_least_num(nums, k):
     return nums[:k]
 
 
+# 347 出现次数最多的K个数 类似桶排序
+def top_k_frequent(nums, k1):
+    dic = dict()
+    for v in nums:
+        dic.setdefault(v, 0)
+        dic[v] += 1
+    fre = dict()
+    for k, v in dic.items():  # 将出现次数相同的数字放在一个列表中 类似链表
+        fre.setdefault(v, [])
+        fre[v].append(k)
+    res = []
+    for i in range(len(nums), 0, -1):  # 类似降序排列
+        if i in fre:
+            for v in fre[i]:
+                res.append(v)
+                if len(res) == k1:
+                    return res[:k1]
+
+
 if __name__ == '__main__':
     print('快排')
     nums = [4, 3, 1, 9]
@@ -83,3 +102,6 @@ if __name__ == '__main__':
 
     print('无序数组的前K个数')
     print(get_least_num([10, 9, 8, 9, 1, 2, 0], 3))
+
+    print('出现次数最多的K个数')
+    print(top_k_frequent([1, 1, 1, 2, 2, 3], 2))
