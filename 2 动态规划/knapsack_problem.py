@@ -92,12 +92,14 @@ def unbounded_knapsack4(cost, weight, capacity):
     return res[-1]
 
 
+# 416. Partition Equal Subset Sum
 # Partition problem is to determine whether
 # a given set can be partitioned into two subsets
 # such that the sum of elements in both subsets is same.
 # 化成背包问题, 背包的容量为整体重量的1/2,
-# 物品的重量等于物品的价值
-def find_partition(nums):
+# 物品的重量等于物品的价值 相当于包的重量为mean
+# 然后看可以装的物品的最大值是否等于mean
+def can_partition(nums):
     mean = sum(nums) / 2
     if int(mean) != mean:
         return False
@@ -127,4 +129,4 @@ if __name__ == '__main__':
     print(unbounded_knapsack4([1, 2, 3, 4], [2.5, 3, 4, 8], 8))
 
     print('\n找到子序列和相等的两个分区')
-    print(find_partition([3, 1, 5, 9, 12]))
+    print(can_partition([3, 1, 5, 9, 12]))

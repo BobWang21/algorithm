@@ -56,6 +56,17 @@ def merge2(a, b):
     return res
 
 
+def merge_k_sorted_nums(nums):
+    if not nums:
+        return
+    if len(nums) == 1:
+        return nums[0]
+    mid = len(nums) // 2
+    a = merge_k_sorted_nums(nums[:mid])
+    b = merge_k_sorted_nums(nums[mid:])
+    return merge2(a, b)
+
+
 if __name__ == '__main__':
     print('归并排序')
     print(merge_sort([1, 3, 2, 4]))
@@ -63,3 +74,6 @@ if __name__ == '__main__':
     print('合并两个有序数组')
     print(merge([1, 3], [2, 4]))
     print(merge2([1, 3], [2, 4]))
+
+    print('合并K个有序数组')
+    print(merge_k_sorted_nums([[2, 4, 5], [1, 3, 9], [6, 7, 8]]))

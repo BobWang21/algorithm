@@ -164,6 +164,38 @@ def knapsack(cost, val, cap):
     return res[0]
 
 
+def can_partition_k_subsets(nums, k):
+    if len(nums) < k:
+        return False
+    total = sum(nums)
+    if total % k != 0:
+        return False
+    target = int(total / k)
+    candidates = []
+    for v in nums:
+        if v < target:
+            candidates.append(v)
+        elif v == target:
+            k -= 1
+        else:
+            return False
+    if not k:
+        return True
+
+    def helper(num, k, tar):
+        if k == 1:
+            return True
+        if not tar:
+            return helper(num, k - 1, target)
+        for i, v in enumerate(num):
+            if v <= tar and helper(num[:i] + num[i + 1:], k, tar - v):
+                return True
+        return False
+
+    candidates.sort()
+    return helper(candidates, k, target)
+
+
 def pack(candidates, c1, c2):
     """
     # W=<90, 80, 40, 30, 20, 12, 10> c1 =152, c2 =130
@@ -239,6 +271,74 @@ def word_ladder(begin_word, end_word, word_list):
     return 0
 
 
+def find_cheapest_price(n, flights, src, dst, K):
+    """
+    :type n: int
+    :type flights: List[List[int]]
+    :type src: int
+    :type dst: int
+    :type K: int
+    :rtype: int
+    """
+    dic = dict()  # {s: {d:p}}
+
+    for s, d, p in flights:
+        dic.setdefault(s, dict())
+        dic[s][d] = p
+    print(dic)
+    queue = [(src, -1, 0, {src})]
+    amount = float('inf')
+    while queue:
+        node, stop, price, path = queue.pop(0)
+        if stop > K:
+            break
+        if price >= amount:
+            continue
+        if node == dst and stop <= K:
+            amount = min(amount, price)
+        if node in dic:
+            for new_node, new_price in dic[node].items():
+                if new_node not in path:
+                    new_path = path | {new_node}
+                    queue.append((new_node, stop + 1, price + new_price, new_path))
+
+    return amount if amount < float('inf') else -1
+
+
+def find_cheapest_price2(n, flights, src, dst, K):
+    """
+    :type n: int
+    :type flights: List[List[int]]
+    :type src: int
+    :type dst: int
+    :type K: int
+    :rtype: int
+    """
+    dic = dict()  # {s: {d:p}}
+
+    for s, d, p in flights:
+        dic.setdefault(s, dict())
+        dic[s][d] = p
+
+    res = [float('inf')]
+
+    def helper(node, path, amount):
+        if len(path) > K + 2:
+            return
+        if node in dic:
+            for new_node, price in dic[node].items():
+                if new_node not in path:
+                    if new_node == dst:
+                        res[0] = min(res[0], amount + price)
+                        return
+                    else:
+                        new_path = path | {new_node}
+                        helper(new_node, new_path, amount + price)
+
+    helper(src, set(), 0)
+    return res[0]
+
+
 if __name__ == '__main__':
     print('n sum 回溯版')
     print(n_sum([1, 2, 3, 4], 3, 6))
@@ -275,3 +375,11 @@ if __name__ == '__main__':
          "na", "la", "st", "er", "sc", "ne", "mn", "mi", "am", "ex", "pt", "io", "be", "fm", "ta", "tb", "ni", "mr",
          "pa", "he", "lr", "sq", "ye"]
     print(word_ladder(a, b, c))
+
+    print('find_cheapest_price')
+    print(find_cheapest_price2(3, [[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
+
+    print(
+        can_partition_k_subsets(
+            [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649],
+            4))

@@ -128,7 +128,6 @@ def longest_common_subsequence(s1, s2):
 def coin_change(coins, amount):
     dp = [float('inf')] * (amount + 1)
     dp[0] = 0  # 当coin = amount 时使用
-
     for coin in coins:
         for x in range(coin, amount + 1):
             dp[x] = min(dp[x], dp[x - coin] + 1)
