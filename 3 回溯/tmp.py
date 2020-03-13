@@ -301,6 +301,7 @@ def find_cheapest_price(flights, src, dst, K):
     return amount if amount < float('inf') else -1
 
 
+# dfs
 def find_cheapest_price2(flights, src, dst, K):
     dic = dict()  # {s: {d:p}}
 
