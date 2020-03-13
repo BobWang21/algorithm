@@ -171,29 +171,32 @@ def can_partition_k_subsets(nums, k):
     if total % k != 0:
         return False
     target = int(total / k)
-    candidates = []
     for v in nums:
-        if v < target:
-            candidates.append(v)
+        if v > target:
+            return False
         elif v == target:
             k -= 1
-        else:
-            return False
-    if not k:
-        return True
 
-    def helper(num, k, tar):
-        if k == 1:
+    visited = [False] * len(nums)  # 已经使用过的 不能再次访问
+
+    def helper(idx, k, tar):
+        if k == 0:
             return True
         if not tar:
-            return helper(num, k - 1, target)
-        for i, v in enumerate(num):
-            if v <= tar and helper(num[:i] + num[i + 1:], k, tar - v):
+            return helper(0, k - 1, target)
+        if tar < 0:
+            return False
+        for i in range(idx, len(nums)):
+            if visited[i]:
+                continue
+            visited[i] = True
+            if helper(i + 1, k, tar - nums[i]):
                 return True
+            visited[i] = False
         return False
 
-    candidates.sort()
-    return helper(candidates, k, target)
+    nums.sort()
+    return helper(0, k, target)
 
 
 def pack(candidates, c1, c2):
@@ -271,15 +274,8 @@ def word_ladder(begin_word, end_word, word_list):
     return 0
 
 
-def find_cheapest_price(n, flights, src, dst, K):
-    """
-    :type n: int
-    :type flights: List[List[int]]
-    :type src: int
-    :type dst: int
-    :type K: int
-    :rtype: int
-    """
+# bfs
+def find_cheapest_price(flights, src, dst, K):
     dic = dict()  # {s: {d:p}}
 
     for s, d, p in flights:
@@ -298,22 +294,14 @@ def find_cheapest_price(n, flights, src, dst, K):
             amount = min(amount, price)
         if node in dic:
             for new_node, new_price in dic[node].items():
-                if new_node not in path:
+                if new_node not in path:  # 记录路径
                     new_path = path | {new_node}
                     queue.append((new_node, stop + 1, price + new_price, new_path))
 
     return amount if amount < float('inf') else -1
 
 
-def find_cheapest_price2(n, flights, src, dst, K):
-    """
-    :type n: int
-    :type flights: List[List[int]]
-    :type src: int
-    :type dst: int
-    :type K: int
-    :rtype: int
-    """
+def find_cheapest_price2(flights, src, dst, K):
     dic = dict()  # {s: {d:p}}
 
     for s, d, p in flights:
@@ -332,11 +320,44 @@ def find_cheapest_price2(n, flights, src, dst, K):
                         res[0] = min(res[0], amount + price)
                         return
                     else:
-                        new_path = path | {new_node}
+                        new_path = path | {new_node}  # 并集
                         helper(new_node, new_path, amount + price)
 
     helper(src, set(), 0)
     return res[0]
+
+
+# '010010' 恢复ip
+def restore_ip_addresses(s):
+    if not s:
+        return []
+    res = []
+
+    def valid(s):
+        if not s:
+            return False
+        if len(s) > 1 and s[0] == '0':  # 0xx 不合法
+            return False
+        if eval(s) > 255:  # ip 不能大于255
+            return False
+        return True
+
+    def helper(s, k, path):
+        if k == 1 and valid(s):
+            res.append(path + s)
+        if k == 1:
+            return
+        if len(s) < k:
+            return
+        for i in range(1, 4, 1):  # 前1 2 3个字符
+            if len(s) < i:
+                return
+            new_ip = s[:i]
+            if valid(new_ip):
+                helper(s[i:], k - 1, path + new_ip + '.')
+
+    helper(s, 4, '')
+    return res
 
 
 if __name__ == '__main__':
@@ -377,9 +398,11 @@ if __name__ == '__main__':
     print(word_ladder(a, b, c))
 
     print('find_cheapest_price')
-    print(find_cheapest_price2(3, [[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
+    print(find_cheapest_price([[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
 
-    print(
-        can_partition_k_subsets(
-            [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649],
-            4))
+    print('k个和相等的子数组')
+    nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
+    print(can_partition_k_subsets(nums, 4))
+
+    print("ip恢复")
+    print(restore_ip_addresses("010010"))
