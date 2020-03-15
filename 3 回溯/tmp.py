@@ -1,21 +1,25 @@
-# 使用回溯法解决N sum
+# 使用回溯法解决 n sum 有点减而治之的味道
 def n_sum(nums, k, target):
-    def helper(nums, idx, k, target, path, res):
+    if not nums or len(nums) < k or target < 0:
+        return
+    res = []
+
+    def helper(idx, k, target, path):
         if k == 0 and target == 0:
             res.append(path)
             return
         if k == 0:
             return
         for i in range(idx, len(nums)):
+            if i > idx and nums[i] == nums[i - 1]:
+                continue
             if target - nums[i] < 0:
                 break
-            helper(nums, i + 1, k - 1, target - nums[i], path + [nums[i]], res)
+            helper(i + 1, k - 1, target - nums[i], path + [nums[i]])
+            # helper(i + 1, k - 1, target - nums[i], path+[nums[i]])
 
-    if not nums or len(nums) < k or target < 0:
-        return
-    res = []
     nums.sort()
-    helper(nums, 0, k, target, [], res)
+    helper(0, k, target, [])
     return res
 
 
@@ -25,11 +29,11 @@ def combination_sum(candidates, target):
     and a target number (target), find all unique combinations in candidates
     where the candidate numbers sums to target.
     The same repeated number may be chosen from candidates unlimited number of times.
-    Input: candidates = [2,3,6,7], target = 7,
+    Input: candidates = [2, 3, 6, 7], target = 7,
     A solution set is:
     [
       [7],
-      [2,2,3]
+      [2, 2, 3]
     ]
     """
 
@@ -42,13 +46,14 @@ def combination_sum(candidates, target):
             dfs(candidates, target - candidates[i], i, path + [candidates[i]], res)
 
     res = []
-    if target == 0:
+    if target == 0 or not candidates:
         return res
     candidates.sort()
     dfs(candidates, target, 0, [], res)
     return res
 
 
+# 有重复数字的组合 每个数字只能用一次
 def combination_sum2(candidates, target):
     """
     # Input: candidates = [10,1,2,7,6,1,5], target = 8,
@@ -86,7 +91,7 @@ def permutations(candidates):
     """
     Given a collection of distinct integers, return all possible permutations.
     Example:
-    Input: [1,2,3]
+    Input: [1, 2, 3]
     Output:
     [
       [1, 2, 3],
@@ -189,7 +194,7 @@ def can_partition_k_subsets(nums, k):
         for i in range(idx, len(nums)):
             if visited[i]:
                 continue
-            visited[i] = True
+            visited[i] = True  # 如果没有重复的数字 也可以使用set 保存路径
             if helper(i + 1, k, tar - nums[i]):
                 return True
             visited[i] = False
@@ -255,7 +260,7 @@ def word_ladder(begin_word, end_word, word_list):
     if not word_list:
         return 0
     queue = [(begin_word, 0)]  # 记录层数
-    seen_set = {begin_word}  # 保存已经加入过队列的字符串
+    seen_set = {begin_word}  # 保存已经加入过队列的字符串 没有重复 可以使用集合
     word_set = set(word_list)
     while queue:
         word, l = queue.pop(0)
@@ -295,8 +300,7 @@ def find_cheapest_price(flights, src, dst, K):
         if node in dic:
             for new_node, new_price in dic[node].items():
                 if new_node not in path:  # 记录路径
-                    new_path = path | {new_node}
-                    queue.append((new_node, stop + 1, price + new_price, new_path))
+                    queue.append((new_node, stop + 1, price + new_price, path | {new_node}))
 
     return amount if amount < float('inf') else -1
 
@@ -321,8 +325,7 @@ def find_cheapest_price2(flights, src, dst, K):
                         res[0] = min(res[0], amount + price)
                         return
                     else:
-                        new_path = path | {new_node}  # 并集
-                        helper(new_node, new_path, amount + price)
+                        helper(new_node, path | {new_node}, amount + price)
 
     helper(src, set(), 0)
     return res[0]
@@ -363,7 +366,7 @@ def restore_ip_addresses(s):
 
 if __name__ == '__main__':
     print('n sum 回溯版')
-    print(n_sum([1, 2, 3, 4], 3, 6))
+    print(n_sum([1, 1, 2, 3, 4], 3, 6))
 
     print('数组中不包含重复数字 一个数字可以用无数次')
     print(combination_sum([2, 3, 5], 8))

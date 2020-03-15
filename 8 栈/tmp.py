@@ -8,16 +8,12 @@ Created on Mon Jul 10 20:59:23 2017
 
 
 def ten_2_binary(value):
-    '''
-    stack 
-    '''
     stack = []
     while value != 0:
         remainder = value % 2
         stack.append(remainder)
         value = value >> 1
-    for i in range(len(stack) - 1, -1, -1):
-        print(i)
+    stack.reverse()
     return stack
 
 
@@ -35,6 +31,32 @@ def valid_parentheses(s):
     return True if not stack else False
 
 
+def eval_RPN(tokens):
+    stack = []
+    for c in tokens:
+        if c not in {'+', '-', '*', '/'}:
+            stack.append(int(c))
+        else:
+            c2 = stack.pop(-1)
+            c1 = stack.pop(-1)
+            if c == '+':
+                s = c1 + c2
+            elif c == '-':
+                s = c1 - c2
+            elif c == '*':
+                s = int(c1 * c2)
+            else:
+                s = int(c1 / c2)
+            stack.append(s)
+    return stack[-1]
+
+
 if __name__ == '__main__':
+    print('十进制转二进制')
+    print(ten_2_binary(10))
     print('表达式是否合法')
     print(valid_parentheses(['{', '}', '(', ')']))
+
+    print('波兰表达式')
+    token = ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]
+    print(eval_RPN(token))
