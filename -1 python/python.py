@@ -13,6 +13,7 @@ if __name__ == '__main__':
     print(4 / 2)  # 2.0,  2.0 =  2
     a = float('inf')
     math.isinf(a)
+    print(isinstance([], list))  # 判断类型
 
     print('随机')
     pro = random.random()  # 0-1

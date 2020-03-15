@@ -23,6 +23,41 @@ def n_sum(nums, k, target):
     return res
 
 
+def can_partition_k_subsets(nums, k):
+    if len(nums) < k:
+        return False
+    total = sum(nums)
+    if total % k != 0:
+        return False
+    target = int(total / k)
+    for v in nums:
+        if v > target:
+            return False
+        elif v == target:
+            k -= 1
+
+    visited = [False] * len(nums)  # 已经使用过的 不能再次访问
+
+    def helper(idx, k, tar):
+        if k == 0:
+            return True
+        if not tar:
+            return helper(0, k - 1, target)
+        if tar < 0:
+            return False
+        for i in range(idx, len(nums)):
+            if visited[i]:
+                continue
+            visited[i] = True  # 如果没有重复的数字 也可以使用set 保存路径
+            if helper(i + 1, k, tar - nums[i]):
+                return True
+            visited[i] = False  # 如果不满足回溯
+        return False
+
+    nums.sort()
+    return helper(0, k, target)
+
+
 def combination_sum(candidates, target):
     """
     Given a set of candidate numbers (candidates) (without duplicates)
@@ -169,41 +204,6 @@ def knapsack(cost, val, cap):
     return res[0]
 
 
-def can_partition_k_subsets(nums, k):
-    if len(nums) < k:
-        return False
-    total = sum(nums)
-    if total % k != 0:
-        return False
-    target = int(total / k)
-    for v in nums:
-        if v > target:
-            return False
-        elif v == target:
-            k -= 1
-
-    visited = [False] * len(nums)  # 已经使用过的 不能再次访问
-
-    def helper(idx, k, tar):
-        if k == 0:
-            return True
-        if not tar:
-            return helper(0, k - 1, target)
-        if tar < 0:
-            return False
-        for i in range(idx, len(nums)):
-            if visited[i]:
-                continue
-            visited[i] = True  # 如果没有重复的数字 也可以使用set 保存路径
-            if helper(i + 1, k, tar - nums[i]):
-                return True
-            visited[i] = False
-        return False
-
-    nums.sort()
-    return helper(0, k, target)
-
-
 def pack(candidates, c1, c2):
     """
     # W=<90, 80, 40, 30, 20, 12, 10> c1 =152, c2 =130
@@ -252,6 +252,39 @@ def letter_case_permutation(s):
     return res
 
 
+# '010010' 恢复ip
+def restore_ip_addresses(s):
+    if not s:
+        return []
+    res = []
+
+    def valid(s):
+        if not s:
+            return False
+        if len(s) > 1 and s[0] == '0':  # 0xx 不合法
+            return False
+        if eval(s) > 255:  # ip 不能大于255
+            return False
+        return True
+
+    def helper(s, k, path):
+        if k == 1 and valid(s):
+            res.append(path + s)
+        if k == 1:
+            return
+        if len(s) < k:
+            return
+        for i in range(1, 4, 1):  # 前1 2 3个字符
+            if len(s) < i:
+                return
+            new_ip = s[:i]
+            if valid(new_ip):
+                helper(s[i:], k - 1, path + new_ip + '.')
+
+    helper(s, 4, '')
+    return res
+
+
 # Input:
 # beginWord = "hit",
 # endWord = "cog",
@@ -277,6 +310,41 @@ def word_ladder(begin_word, end_word, word_list):
                     queue.append((new_word, l + 1))
 
     return 0
+
+
+# -1 -墙壁或障碍物。
+# 0 -大门
+# INF -无限意味着一个空房间。我们使用该值  2^31 - 1 = 2147483647 来表示。
+def wall_and_gate(rooms):
+    if not rooms or not rooms[0]:
+        return
+    rows, cols = len(rooms), len(rooms[0])
+
+    def helper(i, j):
+        queue = [(i, j, 0)]
+        seen = set()
+        while queue:
+            i, j, k = queue.pop(0)
+            seen.add((i, j))
+            if rooms[i][j] == 0:
+                return k
+            if rooms[i][j] == -1:
+                continue
+            if i - 1 >= 0 and (i - 1, j) not in seen:
+                queue.append((i - 1, j, k + 1))
+            if i + 1 < rows and (i + 1, j) not in seen:
+                queue.append((i + 1, j, k + 1))
+            if j - 1 >= 0 and (i, j - 1) not in seen:
+                queue.append((i, j - 1, k + 1))
+            if j + 1 < cols and (i, j + 1) not in seen:
+                queue.append((i, j + 1, k + 1))
+        return float('inf')
+
+    for i in range(rows):
+        for j in range(cols):
+            if rooms[i][j] > 0:
+                rooms[i][j] = helper(i, j)
+    return rooms
 
 
 # bfs
@@ -331,37 +399,22 @@ def find_cheapest_price2(flights, src, dst, K):
     return res[0]
 
 
-# '010010' 恢复ip
-def restore_ip_addresses(s):
-    if not s:
-        return []
-    res = []
+def nested_list_weight_sum(nums):
+    if not nums:
+        return 0
+    res = [0]
 
-    def valid(s):
-        if not s:
-            return False
-        if len(s) > 1 and s[0] == '0':  # 0xx 不合法
-            return False
-        if eval(s) > 255:  # ip 不能大于255
-            return False
-        return True
-
-    def helper(s, k, path):
-        if k == 1 and valid(s):
-            res.append(path + s)
-        if k == 1:
+    def helper(nums, k):
+        if not nums:
             return
-        if len(s) < k:
-            return
-        for i in range(1, 4, 1):  # 前1 2 3个字符
-            if len(s) < i:
-                return
-            new_ip = s[:i]
-            if valid(new_ip):
-                helper(s[i:], k - 1, path + new_ip + '.')
+        for v in nums:
+            if type(v) == list:
+                helper(v, k + 1)
+            else:
+                res[0] += v * k
 
-    helper(s, 4, '')
-    return res
+    helper(nums, 1)
+    return res[0]
 
 
 if __name__ == '__main__':
@@ -410,3 +463,13 @@ if __name__ == '__main__':
 
     print("ip恢复")
     print(restore_ip_addresses("010010"))
+
+    print('嵌套链表权重和')
+    print(nested_list_weight_sum([1, [4, [6]]]))
+
+    print('walls and gates')
+    rooms = [[float('inf'), -1, 0, float('inf')],
+             [float('inf'), float('inf'), float('inf'), -1],
+             [float('inf'), -1, float('inf'), -1],
+             [0, -1, float('inf'), float('inf')]]
+    print(wall_and_gate(rooms))
