@@ -6,13 +6,13 @@ import random
 
 if __name__ == '__main__':
     print('数字操作')
-    print(4 / 2)  # 2.0,  2.0 =  2
+    print(4 / 2)  # 2.0,  2.0 =  2 索引必须是整数
     a = float('inf')
     math.isinf(a)
     print(isinstance([], list))  # 判断类型
     print(2 << 1)  # 左移
 
-    print('随机')
+    print('\n随机')
     pro = random.random()  # 0-1
     print(pro)
     randint = random.randint(0, 10)  # 包括端点
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     print(random.shuffle([1, 2, 3]))
     print(random.choice([1, 2, 3]))  # 随机抽取一个点
 
-    print('列表')
+    print('\n列表')
     a = [1, 2, 3, 4, 5]
     a.remove(1)  # 移除第一个值
     tail = a.pop()  # 按位置移除, 默认为尾部, 并返回
@@ -34,13 +34,13 @@ if __name__ == '__main__':
     a.append(3)  # 增加一个数
     c = a + b  # 生成一个新的变量
 
-    print('字典')
+    print('\n字典')
     dic = {1: 3}
     dic[1] = dic.get(2, 0) + 1
     for k, v in dic.items():
         print(k, v)
 
-    print('字符串')
+    print('\n字符串')
     s = 'abc'
     s.isalpha()  # 判断是否为字母
     s.isdigit()  # 判断是否为数字
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     print(ord('a'))  # 字母对应的数字
     print([chr(ord('a') + i) for i in range(26)])
 
-    print('集合')
+    print('\n集合')
     a = ['a', 'b', 'c']
     print(set(a))  # 将元素迭代解析成集合的每个元素
     b = {'abc'}

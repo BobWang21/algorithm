@@ -16,7 +16,6 @@ def n_sum(nums, k, target):
             if target - nums[i] < 0:
                 break
             helper(i + 1, k - 1, target - nums[i], path + [nums[i]])
-            # helper(i + 1, k - 1, target - nums[i], path+[nums[i]])
 
     nums.sort()
     helper(0, k, target, [])
@@ -27,7 +26,7 @@ def can_partition_k_subsets(nums, k):
     if len(nums) < k:
         return False
     total = sum(nums)
-    if total % k != 0:
+    if total % k != 0:  # 不可整除
         return False
     target = int(total / k)
     for v in nums:
@@ -36,19 +35,19 @@ def can_partition_k_subsets(nums, k):
         elif v == target:
             k -= 1
 
-    visited = [False] * len(nums)  # 已经使用过的 不能再次访问
+    visited = [False] * len(nums)  # 已经使用过的数字 不能再次访问 如果没有重复数字可以使用set
 
     def helper(idx, k, tar):
         if k == 0:
             return True
         if not tar:
-            return helper(0, k - 1, target)
+            return helper(0, k - 1, target)  # 多次从0开始
         if tar < 0:
             return False
         for i in range(idx, len(nums)):
             if visited[i]:
                 continue
-            visited[i] = True  # 如果没有重复的数字 也可以使用set 保存路径
+            visited[i] = True
             if helper(i + 1, k, tar - nums[i]):
                 return True
             visited[i] = False  # 如果不满足回溯
@@ -58,6 +57,7 @@ def can_partition_k_subsets(nums, k):
     return helper(0, k, target)
 
 
+# 每个数字可以用无数次
 def combination_sum(candidates, target):
     """
     Given a set of candidate numbers (candidates) (without duplicates)
@@ -78,10 +78,11 @@ def combination_sum(candidates, target):
         if target < 0:
             return
         for i in range(idx, len(candidates)):
+            # 下一次迭代的索引从 i 开始表示可以用多次!!!
             dfs(candidates, target - candidates[i], i, path + [candidates[i]], res)
 
     res = []
-    if target == 0 or not candidates:
+    if not candidates or target == 0:
         return res
     candidates.sort()
     dfs(candidates, target, 0, [], res)
@@ -150,10 +151,9 @@ def permutations(candidates):
     dfs(set(candidates), [], res)
     return res
 
-    # 全排列
-    # 输入数组中含重复数字
 
-
+# 全排列
+# 输入数组中含重复数字
 def permutations2(candidates):
     def dfs(candidates, path, res):
         if not candidates:
@@ -294,13 +294,13 @@ def word_ladder(begin_word, end_word, word_list):
         return 0
     queue = [(begin_word, 0)]  # 记录层数
     seen_set = {begin_word}  # 保存已经加入过队列的字符串 没有重复 可以使用集合
-    word_set = set(word_list)
+    word_set = set(word_list)  # 已经访问过的数字会被重复访问
     while queue:
         word, l = queue.pop(0)
         if word == end_word:
             return l + 1
         for i in range(len(word)):
-            for j in range(26):  # 访问每个字符串的近邻 如果近邻满足则返回
+            for j in range(26):  # 访问每个字符串的近邻
                 c = chr(ord('a') + j)
                 if word[i] == c:
                     continue
@@ -408,7 +408,7 @@ def nested_list_weight_sum(nums):
         if not nums:
             return
         for v in nums:
-            if type(v) == list:
+            if isinstance(v, list):  # 判断是否为列表
                 helper(v, k + 1)
             else:
                 res[0] += v * k
@@ -421,7 +421,7 @@ if __name__ == '__main__':
     print('n sum 回溯版')
     print(n_sum([1, 1, 2, 3, 4], 3, 6))
 
-    print('数组中不包含重复数字 一个数字可以用无数次')
+    print('\n数组中不包含重复数字 一个数字可以用无数次')
     print(combination_sum([2, 3, 5], 8))
 
     print('\n数组中包含重复数字 一个数字只能用一次')
@@ -440,10 +440,10 @@ if __name__ == '__main__':
     print('\n两个轮船分集装箱')
     print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))
 
-    print('Letter Case Permutation')
+    print('\nLetter Case Permutation')
     print(letter_case_permutation("a1b2"))
 
-    print('word_ladder')
+    print('\n Word Ladder')
     a = "qa"
     b = "sq"
     c = ["si", "go", "se", "cm", "so", "ph", "mt", "db", "mb", "sb", "kr", "ln", "tm", "le", "av", "sm", "ar", "ci",
@@ -454,20 +454,20 @@ if __name__ == '__main__':
          "pa", "he", "lr", "sq", "ye"]
     print(word_ladder(a, b, c))
 
-    print('find_cheapest_price')
+    print('\nfind_cheapest_price')
     print(find_cheapest_price([[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
 
-    print('k个和相等的子数组')
+    print('\nk个和相等的子数组')
     nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
     print(can_partition_k_subsets(nums, 4))
 
-    print("ip恢复")
+    print("\nip恢复")
     print(restore_ip_addresses("010010"))
 
-    print('嵌套链表权重和')
+    print('\n嵌套链表权重和')
     print(nested_list_weight_sum([1, [4, [6]]]))
 
-    print('walls and gates')
+    print('\nWalls and Gates')
     rooms = [[float('inf'), -1, 0, float('inf')],
              [float('inf'), float('inf'), float('inf'), -1],
              [float('inf'), -1, float('inf'), -1],
