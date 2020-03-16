@@ -14,6 +14,7 @@ if __name__ == '__main__':
     a = float('inf')
     math.isinf(a)
     print(isinstance([], list))  # 判断类型
+    print(2 << 1)  # 左移
 
     print('随机')
     pro = random.random()  # 0-1

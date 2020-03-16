@@ -314,8 +314,8 @@ def word_ladder(begin_word, end_word, word_list):
 
 # -1 -墙壁或障碍物。
 # 0 -大门
-# INF -无限意味着一个空房间。我们使用该值  2^31 - 1 = 2147483647 来表示。
-def wall_and_gate(rooms):
+# INF -无限意味着一个空房间 2147483647 来表示。
+def walls_and_gates(rooms):
     if not rooms or not rooms[0]:
         return
     rows, cols = len(rooms), len(rooms[0])
@@ -472,4 +472,4 @@ if __name__ == '__main__':
              [float('inf'), float('inf'), float('inf'), -1],
              [float('inf'), -1, float('inf'), -1],
              [0, -1, float('inf'), float('inf')]]
-    print(wall_and_gate(rooms))
+    print(walls_and_gates(rooms))

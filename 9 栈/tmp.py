@@ -17,6 +17,24 @@ def ten_2_binary(value):
     return stack
 
 
+# 数字reverse 123 -> 321
+def reverse(x):
+    if x < 0:
+        return -reverse(-x)
+    stack = []
+    while x > 0:
+        re = x % 10
+        stack.append(re)
+        x = x // 10
+    res = 0
+    i = 0
+    while stack:
+        v = stack.pop(-1)
+        res += v * 10 ** i
+        i += 1
+    return res if res < 2 ** 31 else 0
+
+
 def valid_parentheses(s):
     pair_dic = {']': '[', '}': '{', ')': '('}
     stack = []
