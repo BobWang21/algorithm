@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jun  2 18:33:13 2019
 
-@author: wangbao
-"""
 import math
 import random
 
@@ -32,6 +28,7 @@ if __name__ == '__main__':
     print('list.index', a.index(3))  # 查找数据在列表中的索引, 返回第一个
     max(a)
     a.sort(reverse=True)  # 原地更改
+    a.reverse()
     b = [3, 4]
     a.insert(0, -1)  # 队首增加元素
     a.append(3)  # 增加一个数
@@ -45,16 +42,17 @@ if __name__ == '__main__':
 
     print('字符串')
     s = 'abc'
-    s.isalnum()  # 是否为数字或字母
     s.isalpha()  # 判断是否为字母
     s.isdigit()  # 判断是否为数字
+    s.isalnum()  # 是否为数字或字母
     ''.join(['a', 'b', 'c'])  # 列表转换成字符串
     print(chr(97))  # 数字转字符
     print(ord('a'))  # 字母对应的数字
+    print([chr(ord('a') + i) for i in range(26)])
 
     print('集合')
     a = ['a', 'b', 'c']
-    print(set(a))
+    print(set(a))  # 将元素迭代解析成集合的每个元素
     b = {'abc'}
     A = {1, 2, 3}
     B = {3, 4, 5}
