@@ -7,6 +7,16 @@ Created on Sun Jun  2 18:33:13 2019
 """
 
 
+def ten_2_binary(value):
+    stack = []
+    while value != 0:
+        remainder = value % 2
+        stack.append(remainder)
+        value = value >> 1
+    stack.reverse()
+    return stack
+
+
 def plus_one(digits):
     if digits[-1] < 9:
         digits[-1] += 1
@@ -72,6 +82,59 @@ def divide(dividend, divisor):
             tmp_divisor <<= 1  # 更新除数(将除数扩大两倍)
     res_value = res if sig else -res  # 给结果加上符号
     return max(min(res_value, 2 ** 31 - 1), -2 ** 31)
+
+
+# Input: 19
+# Output: true
+# Explanation:
+# 12 + 92 = 82
+# 82 + 22 = 68
+# 62 + 82 = 100
+# 12 + 02 + 02 = 1
+# 如果不是1 则会出现循环
+def is_happy(n):
+    def helper(n):
+        total = 0
+        while n > 0:
+            reminder = n % 10
+            total += reminder ** 2
+            n = n // 10
+        return int(total)
+
+    if n == 1:
+        return True
+    seen = set()
+    while n != 1:
+        if n in seen:
+            return False
+        seen.add(n)
+        n = helper(n)
+    return True
+
+
+def add_digits(n):
+    def helper(n):
+        total = 0
+        while n > 0:
+            reminder = n % 10
+            total += reminder
+            n = n // 10
+        return int(total)
+
+    if n == 1:
+        return True
+    while n > 10:
+        n = helper(n)
+    return n
+
+
+def is_ugly(num):
+    if num <= 0:
+        return False
+    for x in [2, 3, 5]:
+        while num % x == 0:
+            num = num / x
+    return num == 1
 
 
 if __name__ == '__main__':
