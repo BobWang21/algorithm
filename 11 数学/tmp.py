@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jun  2 18:33:13 2019
-
-@author: wangbao
+01 不合法
+0
+大于10进位
 """
 
 
@@ -15,6 +15,24 @@ def ten_2_binary(value):
         value = value >> 1
     stack.reverse()
     return stack
+
+
+# 123 -> 321
+def reverse(x):
+    if x < 0:
+        return -reverse(-x)
+    stack = []
+    while x > 0:
+        re = x % 10
+        stack.append(re)
+        x = x // 10
+    res = 0
+    i = 0
+    while stack:
+        v = stack.pop(-1)
+        res += v * 10 ** i
+        i += 1
+    return res if res < 2 ** 31 else 0
 
 
 def plus_one(digits):
@@ -137,9 +155,43 @@ def is_ugly(num):
     return num == 1
 
 
+def my_sqrt(n):
+    if n < 2:
+        return n
+    l, r = 1, n
+    while l <= r:
+        m = (l + r) // 2
+        s = m * m
+        if s == n:
+            return m
+        elif s < n:
+            l = m + 1
+        else:
+            r = m - 1
+    return r
+
+
+# 计算素数个数
+def count_primes(n):
+    if n < 2:
+        return 0
+    res = [True] * n
+    res[0] = res[1] = False
+    for i in range(2, int(n ** 0.5) + 1):
+        for j in range(2, (n - 1) // i + 1):
+            res[i * j] = False
+    return sum(res)
+
+
 if __name__ == '__main__':
     print('plus one')
     print(plus_one([9, 9]))
 
     print('字符串转数字')
     print(my_atoi('4193 with words'))
+
+    print('求一个数的平方根')
+    print(my_sqrt(17))
+
+    print('计算素数个数')
+    print(count_primes(10))

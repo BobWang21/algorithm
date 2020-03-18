@@ -49,6 +49,7 @@ def valid_parentheses(s):
     return True if not stack else False
 
 
+# 波兰表达式
 def eval_RPN(tokens):
     stack = []
     for c in tokens:
@@ -69,12 +70,66 @@ def eval_RPN(tokens):
     return stack[-1]
 
 
+class Queue():
+    def __init__(self):
+        self.stack1 = []
+        self.stack2 = []
+
+    def push(self, v):
+        self.stack1.append(v)
+
+    def pop(self):
+        if not self.stack2:
+            if not self.stack1:
+                raise Exception('X')
+            else:
+                while self.stack1:
+                    self.stack2.append(self.stack1.pop(-1))
+        return self.stack2.pop(-1)
+
+
+class MinStack():
+    def __init__(self):
+        self.stack = []
+        self.min = []
+
+    def push(self, v):
+        self.stack.append(v)
+        if self.min:
+            if self.min[-1] <= v:
+                self.min.append(self.min[-1])
+            else:
+                self.min.append(v)
+        else:
+            self.min.append(v)
+
+    def pop(self):
+        if self.stack and self.min:
+            self.stack.pop(-1)
+            self.min.pop(-1)
+
+    def get_min(self):
+        return self.min[-1]
+
+
 if __name__ == '__main__':
-    print('十进制转二进制')
+    print('\n十进制转二进制')
     print(ten_2_binary(10))
-    print('表达式是否合法')
+
+    print('\n表达式是否合法')
     print(valid_parentheses(['{', '}', '(', ')']))
 
-    print('波兰表达式')
+    print('\n波兰表达式')
     token = ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]
     print(eval_RPN(token))
+
+    print('\n两个栈实现队列')
+    queue = Queue()
+    queue.push(3)
+    queue.push(4)
+    queue.push(5)
+
+    queue.pop()
+    queue.push(6)
+    for _ in range(3):
+        print(queue.pop())
