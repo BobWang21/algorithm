@@ -61,11 +61,9 @@ def reservoir_sampling(data, m):
         if i < m:
             res[i] = value
         else:
-            # 第k个数被选中概率为 m/k
-            k = i + 1
-            if rd.randint(1, k) <= m:
-                index = rd.randint(0, m - 1)
-                res[index] = value
+            if rd.randint(1, i + 1) <= m:  # 第i个数被选中概率为 m/(i+1)
+                idx = rd.randint(0, m - 1)
+                res[idx] = value
     return res
 
 
@@ -94,11 +92,19 @@ def exam(n):
 
 
 if __name__ == '__main__':
-    data = [rd.randint(0, 100) for _ in range(30)]
-    print(data)
+    print('\nshuffle')
+    data = [rd.randint(0, 100) for _ in range(10)]
     print(shuffle(data))
+
+    print('\n蓄水池')
     data = np.arange(100)
     print(reservoir_sampling(data, m=10))
+
+    print('\n加权抽样')
+    res = []
+    for i in range(100):
+        res.append(weighted_random(list(range(3)), [2, 2, 4]))
+    print(Counter(res))
+
     print(exam(100))
     data = [rand2to5() for _ in range(100000)]
-    print(Counter(data))
