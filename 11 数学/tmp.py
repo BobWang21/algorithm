@@ -9,7 +9,7 @@
 
 def ten_2_binary(value):
     stack = []
-    while value != 0:
+    while value > 0:
         remainder = value % 2
         stack.append(remainder)
         value = value >> 1
@@ -35,6 +35,7 @@ def reverse(x):
     return res if res < 2 ** 31 else 0
 
 
+# [1, 2, 3] -> [1, 2, 4]
 def plus_one(digits):
     if digits[-1] < 9:
         digits[-1] += 1
@@ -80,7 +81,7 @@ def is_power_of_2(n):
     if n == 0:  # base
         return False
     if n == 1:
-        return 0
+        return True
     if n % 2:
         return False
     return is_power_of_2(n // 2)
@@ -155,6 +156,39 @@ def is_ugly(num):
     return num == 1
 
 
+def is_ugly2(num):
+    if num == 0:
+        return False
+    if num == 1:
+        return True
+    if num % 2 == 0:
+        return is_ugly2(num % 2)
+    elif num % 3 == 0:
+        return is_ugly2(num % 3)
+    elif num % 5 == 0:
+        return is_ugly2(num % 3)
+    else:
+        return False
+
+
+def get_ugly_number(n):
+    res = [1]
+    num = 1
+    min2 = min3 = min5 = 0
+    while num < n:
+        value = min(2 * res[min2], 3 * res[min3], 5 * res[min5])
+        res.append(value)
+        while 2 * res[min2] <= res[-1]:
+            min2 += 1
+        while 3 * res[min3] <= res[-1]:
+            min3 += 1
+        while 5 * res[min5] <= res[-1]:
+            min5 += 1
+        num += 1
+    return res[-1]
+
+
+# 求平方根
 def my_sqrt(n):
     if n < 2:
         return n
@@ -195,3 +229,6 @@ if __name__ == '__main__':
 
     print('计算素数个数')
     print(count_primes(10))
+
+    print('丑数')
+    print(get_ugly_number(10))

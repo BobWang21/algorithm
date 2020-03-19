@@ -88,6 +88,7 @@ class Queue():
         return self.stack2.pop(-1)
 
 
+# 用两个栈实现最小栈
 class MinStack():
     def __init__(self):
         self.stack = []

@@ -12,17 +12,30 @@ from collections import Counter
 import numpy as np
 
 
-def weighted_random(nums, weight):
-    """加权随机
-    先随机生成一个数 再以一定概率接受这个数
+def shuffle(nums):
     """
-    data_len = len(nums)
-    total_weight = np.sum(weight)
+    shuffle 一个数组
+    n个数中抽取1个数放在第一位，从剩下n-1个数中抽取一个放在第二位
+    某个数被放在第二位的概率为 (n-1 / n)*(1 / n-1) = 1/n
+    """
+    n = len(nums)
+    for i in range(n):
+        idx = rd.randint(i, n - 1)  # 包含左右端点
+        nums[i], nums[idx] = nums[idx], nums[i]
+    return nums
 
-    while True:
-        index = rd.randint(0, data_len - 1)
-        if rd.randint(1, total_weight) <= weight[index]:
-            return nums[index]
+
+def weighted_random(nums, weight):
+    weights = []
+    total_weight = 0
+    for w in weight:
+        total_weight += w
+        weights.append(total_weight)
+    rdw = rd.random() * total_weight
+    for i, w in enumerate(weights):
+        if rdw <= w:
+            return nums[i]
+        rdw -= w
 
 
 def rand2to5():
@@ -37,18 +50,6 @@ def rand2to5():
             return data
 
 
-def shuffle(nums):
-    """shuffle 一个数组
-    n个数中抽取1个数放在第一位，从剩下n-1个数中抽取一个放在第二位
-    某个数被放在第二位的概率为 (n-1 / n)*(1 / n-1) = 1/n
-    """
-    n = len(nums)
-    for i in range(n):
-        idx = rd.randint(i, n - 1)  # 包含左右端点
-        nums[i], nums[idx] = nums[idx], nums[i]
-    return nums
-
-
 def reservoir_sampling(data, m):
     """蓄水池问题
     m 个数
@@ -56,7 +57,7 @@ def reservoir_sampling(data, m):
     res = np.zeros(m)
 
     for i, value in enumerate(data):
-        # 保存前n个数，保证至少有n个数 
+        # 保存前n个数，保证至少有n个数
         if i < m:
             res[i] = value
         else:
