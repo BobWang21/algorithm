@@ -32,7 +32,7 @@ def weighted_random(nums, weight):
         total_weight += w
         weights.append(total_weight)
     rdw = rd.random() * total_weight
-    for i, w in enumerate(weights):
+    for i, w in enumerate(weights):  # 也可以使用二分查找
         if rdw <= w:
             return nums[i]
         rdw -= w
@@ -107,4 +107,4 @@ if __name__ == '__main__':
     print(Counter(res))
 
     print(exam(100))
-    data = [rand2to5() for _ in range(100000)]
+    data = [rand2to5() for _ in range(10)]
