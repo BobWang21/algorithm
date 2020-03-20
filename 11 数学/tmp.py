@@ -188,7 +188,7 @@ def get_ugly_number(n):
     return res[-1]
 
 
-# 求平方根
+# 求平方根 也可以使用牛顿法
 def my_sqrt(n):
     if n < 2:
         return n

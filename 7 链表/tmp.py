@@ -133,6 +133,33 @@ def merge_two_sorted_lists2(l1, l2):
     return head.next
 
 
+def merge(a, b):
+    if not a:
+        return b
+    if not b:
+        return a
+    node = ListNode(0)
+    if a.val < b.val:
+        node.val = a.val
+        node.next = merge(a.next, b)
+    else:
+        node.val = b.val
+        node.next = merge(a, b.next)
+    return node
+
+
+def merge_k_sorted_lists2(lists):
+    if not lists:
+        return
+    if len(lists) == 1:
+        return lists[0]
+    m = len(lists) // 2
+    a = merge_k_sorted_lists2(lists[:m])
+    b = merge_k_sorted_lists2(lists[m:])
+
+    return merge(a, b)
+
+
 # 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
 # 例如链表1->2->3->3->4->4->5 处理后为 1->2->5
 def remove_duplicates(head):
@@ -239,6 +266,12 @@ if __name__ == '__main__':
     l1 = construct_listnode([1, 3, 5, 7])
     l2 = construct_listnode([2, 4, 6, 8])
     print_listnode(merge_two_sorted_lists(l1, l2))
+
+    print('\n合并K个排序链表')
+    l1 = construct_listnode([1, 3, 5, 7])
+    l2 = construct_listnode([2, 4, 6, 8])
+    l3 = construct_listnode([10, 11, 12, 13])
+    print_listnode(merge_k_sorted_lists2([l1, l2, l3]))
 
     print('\n删除链表中重复元素')
     head = construct_listnode([1, 1, 2, 3, 3])
