@@ -205,6 +205,20 @@ def my_sqrt(n):
     return r
 
 
+def my_sqrt2(n):
+    def fun(x):
+        return x ** 2 - n  # 开口向上
+
+    x = n // 2
+    f = fun(n)
+    while f > 0:
+        k = 2 * x
+        b = f - k * x
+        x = -b / k
+        f = fun(x)
+    return abs(x)
+
+
 # 计算素数个数
 def count_primes(n):
     if n < 2:
