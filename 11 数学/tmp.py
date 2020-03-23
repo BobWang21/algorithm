@@ -217,6 +217,14 @@ def count_primes(n):
     return sum(res)
 
 
+def common_greatest_divisor(a, b):
+    if a < b:
+        a, b = b, a
+    if not a % b:
+        return b
+    return common_greatest_divisor(b, a % b)
+
+
 if __name__ == '__main__':
     print('plus one')
     print(plus_one([9, 9]))
@@ -232,3 +240,6 @@ if __name__ == '__main__':
 
     print('丑数')
     print(get_ugly_number(10))
+
+    print('最大公约数')
+    print(common_greatest_divisor(12, 38))

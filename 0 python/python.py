@@ -5,7 +5,7 @@ import math
 import random
 
 if __name__ == '__main__':
-    print('数字操作')
+    print('\n数字操作')
     print(4 / 2)  # 2.0,  2.0 = 2 索引必须是整数
     a = float('inf')
     math.isinf(a)

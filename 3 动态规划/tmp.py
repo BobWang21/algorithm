@@ -121,6 +121,32 @@ def longest_common_subsequence(s1, s2):
     return res[-1][-1]
 
 
+# 编辑距离
+def edit_distance(word1, word2):
+    if not word1 and not word2:
+        return 0
+    if not word1:
+        return len(word2)
+    if not word2:
+        return len(word1)
+    rows, cols = len(word1) + 1, len(word2) + 1
+    matrix = [[0] * cols for _ in range(rows)]
+
+    for i in range(rows):  # base
+        matrix[i][0] = i
+
+    for j in range(cols):  # base
+        matrix[0][j] = j
+
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if word1[i - 1] == word2[j - 1]:
+                matrix[i][j] = matrix[i - 1][j - 1]
+            else:  # matrix[i][j - 1], matrix[i - 1][j] delete ;  matrix[i - 1][j - 1]  replace
+                matrix[i][j] = min(matrix[i][j - 1], matrix[i - 1][j], matrix[i - 1][j - 1]) + 1
+    return matrix[-1][-1]
+
+
 # 换硬币
 # 您会得到不同面额的硬币和总金额。
 # 编写一个函数来计算组成该数量所需的最少数量的硬币。
@@ -200,41 +226,44 @@ def max_gift(matrix):
 
 
 if __name__ == '__main__':
-    print('Fibonacci sequence')
+    print('\nFibonacci sequence')
     print(fib(40)[39])
     print(fib2(39))
 
-    print('股票的最佳买卖时机')
+    print('\n股票的最佳买卖时机')
     print(stock([5, 10, 15, 1, 20]))
 
-    print('连续子序列和最大')
+    print('\n连续子序列和最大')
     print(max_continuous_sum([10, -5, 10]))
 
-    print('连续子序列乘积最大')
+    print('\n连续子序列乘积最大')
     print(max_continuous_product([-1, 2, 3, 0.1, -10]))
 
-    print('非连续子序列和最大')
+    print('\n非连续子序列和最大')
     print(not_continuous_sum([5, 3, -6, -5, 10]))
 
-    print('抢钱')
+    print('\n抢钱')
     print(rob2([1, 2, 1, 1]))
 
-    print('最长上升子序列')
+    print('\n最长上升子序列')
     print(longest_increasing_subsequence([2, 5, 3, 4, 1, 7, 6]))
 
-    print('最长公共子序列')
+    print('\n最长公共子序列')
     print(longest_common_subsequence('aabcd', 'ad'))
 
-    print('换硬币')
+    print('\n最短编辑距离')
+    print(edit_distance("intention", "execution"))
+
+    print('\n换硬币')
     print(coin_change([1, 2, 5, 10], 11))
 
-    print('数字由平方组合')
+    print('\n数字由平方组合')
     print(num_squares(13))
 
-    print('割绳子')
+    print('\n割绳子')
     print(max_product_after_cutting(8))
 
-    print('最大礼物')
+    print('\n最大礼物')
     matrix = [[1, 10, 3, 8],
               [12, 2, 9, 6],
               [5, 7, 4, 11],

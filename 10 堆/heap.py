@@ -56,7 +56,6 @@ class Heap():
 
     # 上溢
     def up_flow(self, index):
-
         # 判断是否为根节点，如果存在子节点 那么子节点为2*index
         while index > 0:
             father = self.father(index)
@@ -72,8 +71,7 @@ class Heap():
         self.value[i] = self.value[j]
         self.value[j] = t
 
-        # 父节点
-
+    # 父节点
     def father(self, index):
         if index == 0:
             return -1
@@ -113,5 +111,5 @@ class Heap():
         return self.value[index]
 
 
-if __name__ == '__mian__':
+if __name__ == '__main__':
     data = []
