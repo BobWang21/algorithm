@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 01 不合法
-0
+0 幂
 大于10进位
 """
 
@@ -12,7 +12,7 @@ def ten_2_binary(value):
     while value > 0:
         remainder = value % 2
         stack.append(remainder)
-        value = value >> 1
+        value = value // 2
     stack.reverse()
     return stack
 
@@ -240,20 +240,23 @@ def common_greatest_divisor(a, b):
 
 
 if __name__ == '__main__':
-    print('plus one')
+    print('\nplus one')
     print(plus_one([9, 9]))
 
-    print('字符串转数字')
+    print('\n字符串转数字')
     print(my_atoi('4193 with words'))
 
-    print('求一个数的平方根')
+    print('\n求一个数的平方根')
     print(my_sqrt(17))
 
-    print('计算素数个数')
+    print('\n计算素数个数')
     print(count_primes(10))
 
-    print('丑数')
+    print('\n数字翻转')
+    print(reverse(123))
+
+    print('\n丑数')
     print(get_ugly_number(10))
 
-    print('最大公约数')
+    print('\n最大公约数')
     print(common_greatest_divisor(12, 38))

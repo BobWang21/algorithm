@@ -73,7 +73,7 @@ def get_least_num(nums, k):
 
 
 # 347 出现次数最多的K个数 类似桶排序
-def top_k_frequent(nums, k1):
+def top_k_frequent(nums, k):
     dic = dict()
     for v in nums:
         dic.setdefault(v, 0)
@@ -87,8 +87,8 @@ def top_k_frequent(nums, k1):
         if i in fre:
             for v in fre[i]:
                 res.append(v)
-                if len(res) == k1:
-                    return res[:k1]
+                if len(res) == k:
+                    return res[:k]
 
 
 if __name__ == '__main__':

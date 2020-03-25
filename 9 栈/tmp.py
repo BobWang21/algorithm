@@ -113,6 +113,20 @@ class MinStack():
         return self.min[-1]
 
 
+# 判断一个路径是否为出栈路径
+def validate_stack_sequences(pushed, popped):
+    if len(pushed) != len(popped):
+        return False
+    stack = []
+    while pushed:
+        v = pushed.pop(0)
+        stack.append(v)
+        while stack and stack[-1] == popped[0]:
+            stack.pop(-1)
+            popped.pop(0)
+    return False if stack else True
+
+
 if __name__ == '__main__':
     print('\n十进制转二进制')
     print(ten_2_binary(10))
@@ -134,3 +148,6 @@ if __name__ == '__main__':
     queue.push(6)
     for _ in range(3):
         print(queue.pop())
+
+    print('\n是否为出栈路径')
+    print(validate_stack_sequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]))

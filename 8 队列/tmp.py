@@ -1,4 +1,4 @@
-# 滑动窗口的最大值 最大队列和最小栈类似
+# 可以返回最大值的队列
 class MaxQueue():
     def __init__(self):
         self.queue1 = []
@@ -48,6 +48,130 @@ def max_sliding_window(nums, k):
     return res
 
 
+# 单调栈
+"""
+Input: nums1 = [4,1,2], nums2 = [1,3,4,2].
+Output: [-1,3,-1]
+Explanation:
+    For number 4 in the first array, you cannot find the next greater number for it in the second array, so output -1.
+    For number 1 in the first array, the next greater number for it in the second array is 3.
+    For number 2 in the first array, there is no next greater number for it in the second array, so output -1.
+"""
+
+
+def next_greater_element(nums1, nums2):
+    if not nums1 or not nums2:
+        return
+    dic = dict()
+
+    for i, v in enumerate(nums1):
+        dic[v] = i
+    res = [-1] * len(nums1)
+    stack = []
+    for v in nums2:
+        while stack and stack[-1] < v:
+            tail = stack.pop(-1)
+            if tail in dic:
+                res[dic[tail]] = v
+        stack.append(v)
+    return res
+
+
+# Given a list of daily temperatures T,
+# return a list such that, for each day in the input,
+# tells you how many days you would have to wait until a warmer temperature.
+# If there is no future day for which this is possible, put 0 instead.
+# For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73],
+# your output should be [1, 1, 4, 2, 1, 1, 0, 0].
+def daily_temperatures(t):
+    if not t:
+        return
+    stack = []
+    res = [0] * len(t)
+    for i, v in enumerate(t):
+        while stack and t[stack[-1]] < v:
+            j = stack.pop()
+            res[j] = i - j
+        stack.append(i)
+    return res
+
+
+def largest_rectangle_area(heights):
+    max_rec = 0
+    n = len(heights)
+    res1 = [-1] * n  # 前
+    res2 = [n] * n  # 后
+    stack1 = []
+    stack2 = []
+    for i in range(n - 1, -1, -1):
+        while stack1 and heights[stack1[-1]] > heights[i]:  # 队列前小于当前值的第一个值
+            j = stack1.pop(-1)
+            res1[j] = i
+        stack1.append(i)
+
+    for i, h in enumerate(heights):
+        while stack2 and heights[stack2[-1]] > h:  # 队列后小于当前值的第一个值
+            j = stack2.pop(-1)
+            res2[j] = i
+        stack2.append(i)
+
+    for i, v in enumerate(heights):
+        l = res1[i]
+        r = res2[i]
+        max_rec = max(max_rec, (r - l - 1) * v)
+    return max_rec
+
+
+# 直观思想
+def largest_rectangle_area2(heights):
+    max_rec = 0
+    n = len(heights)
+    for i, h in enumerate(heights):
+        l = r = i
+        while l > 0 and heights[l - 1] >= h:  # 前面第一个小于该数
+            l -= 1
+        while r < n - 1 and heights[r + 1] >= h:  # 后面第一个小于该数
+            r += 1
+        max_rec = max(max_rec, (r - l - 1) * h)
+    return max_rec
+
+
+def largest_rectangle_area3(height):
+    height.append(0)
+    stack = [-1]
+    ans = 0
+    for i in range(len(height)):
+        while height[stack[-1]] > height[i]:
+            h = height[stack.pop()]
+            w = i - stack[-1] - 1
+            ans = max(ans, h * w)
+        stack.append(i)
+    return ans
+
+
+def max_area_min_sum_product(nums):
+    if not nums:
+        return 0
+    nums.append(-1)
+    n = len(nums)
+    stack = []
+    total = [0] * n
+    max_v = 0
+
+    for i, v in enumerate(nums):
+        v = v if v >= 0 else 0
+        total[i] = total[i - 1] + v
+
+        while stack and v < nums[stack[-1]]:
+            j = stack.pop(-1)
+            pre_total = 0
+            if stack:
+                pre_total = total[stack[-1]]
+            max_v = max(max_v, (total[i - 1] - pre_total) * nums[j])
+        stack.append(i)
+    return max_v
+
+
 if __name__ == '__main__':
     print('最大值值队列')
     maxQueue = MaxQueue()
@@ -59,3 +183,15 @@ if __name__ == '__main__':
 
     print('\n滑动窗口的最大值')
     print(max_sliding_window([9, 10, 9, -7, -4, -8, 2, -6], 5))
+
+    print('\n 下一个比其大数值')
+    print(next_greater_element([2, 4], [1, 2, 3, 4]))
+
+    print('\n下一个天气比当前热')
+    print(daily_temperatures([73, 74, 75, 71, 69, 72, 76, 73]))
+
+    print('\n柱状图最大矩形')
+    print((largest_rectangle_area([2, 1, 5, 6, 2, 3])))
+
+    print('\n区间数字和与区间最小值乘积最大')
+    print(max_area_min_sum_product([81, 87, 47, 59, 81, 18, 25, 40, 56, 0]))
