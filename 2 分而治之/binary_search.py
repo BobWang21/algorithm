@@ -34,6 +34,40 @@ def binary_search2(nums, tar):
     return -1
 
 
+# 有重复数字的非降序排序数组 返回第一个等于target
+def search_first_pos(nums, target):
+    """
+    l-1 严格小于target
+    r大于等于target
+    l = r 时为第一个等于target的坐标
+    """
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = (l + r) // 2
+        if nums[mid] < target:
+            l = mid + 1
+        else:
+            r = mid
+    return l if nums[l] == target else -1
+
+
+# 有重复数字的非降序排序数组 返回最后一个等于target
+def search_last_pos(nums, target):
+    """
+    l 小于等于target
+    r+1 大于target
+    l = r 时为最后一个等于target的坐标
+    """
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = (l + r + 1) // 2
+        if nums[mid] <= target:
+            l = mid  # l == mid 需要考虑 3, 4 这种无限循环的情况
+        else:
+            r = mid - 1
+    return l if nums[l] == target else -1
+
+
 # 旋转数组中的最小值
 # [3 4 1 2] 为 [1 2 3 4]的旋转数组
 def find_min(nums):

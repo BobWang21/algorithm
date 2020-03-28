@@ -1,4 +1,5 @@
-# bottom up
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 
 def fib(n):
@@ -44,40 +45,35 @@ def stock(nums):
 
 
 # 连续子序列和 最大
-def max_continuous_sum(nums):
-    max_sum = last_max_sum = nums[0]
+def max_sub_array(nums):
+    res = include_max = nums[0]
     for val in nums[1:]:
-        last_max_sum = max(val, last_max_sum + val)
-        max_sum = max(max_sum, last_max_sum)
-    return max_sum
+        include_max = max(val, include_max + val)
+        res = max(res, include_max)
+    return res
 
 
 # 连续子序列 乘积最大
 def max_continuous_product(nums):
-    max_pro = last_max_pro = last_min_pro = nums[0]
+    res = include_min = include_max = nums[0]
     for val in nums[1:]:
-        new_last_min_pro = min(val, val * last_max_pro, val * last_min_pro)
-        last_max_pro = max(val, val * last_max_pro, val * last_min_pro)
-        max_pro = max(last_max_pro, max_pro)
-        last_min_pro = new_last_min_pro
-
-    return max_pro
+        include_min, include_max = min(val, val * include_max, val * include_min), \
+                                   max(val, val * include_max,
+                                       val * include_min)
+        res = max(include_max, res)
+    return res
 
 
 # 给定一个整数的数组, 相邻的数不能同时选
 # 求从该数组选取若干整数, 使得他们的和最大
 def not_continuous_sum(nums):
-    include = nums[0]
-    exclude = 0
-    for val in nums[1:]:
-        new_include = max(val, exclude + val)
-        exclude = max(exclude, include)
-        include = new_include
-
+    include = exclude = 0
+    for val in nums:
+        include, exclude = max(val, exclude + val), max(exclude, include)
     return max(include, exclude)
 
 
-# 第一个 和 最后一个连成环 不能同时选
+# 第一个和最后一个连成环 不能同时选
 def rob2(nums):
     if not nums:
         return 0
@@ -98,14 +94,40 @@ def rob2(nums):
 
 # 最长上升子序列
 def longest_increasing_subsequence(nums):
-    res = [1] * len(nums)
-    l = -1
+    dp = [1] * len(nums)
+    res = -1
     for i, val in enumerate(nums):
         for j in range(i):
             if nums[j] < val:
-                res[i] = max(res[j] + 1, res[i])
-        l = max(l, res[i])
-    return l
+                dp[i] = max(dp[j] + 1, dp[i])
+        res = max(res, dp[i])
+    return res
+
+
+# res[i] 保存长度为i+1的子串的最小值 nlog(n)
+def longest_increasing_subsequence2(nums):
+    def binary_search(nums, tar):
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] == tar:
+                return mid
+            elif nums[mid] > tar:
+                right -= 1
+            else:
+                left += 1
+        return left
+
+    if not nums:
+        return 0
+    res = [nums[0]]
+    for v in nums[1:]:
+        if v > res[-1]:
+            res.append(v)
+        else:
+            idx = binary_search(res, v)
+            res[idx] = v
+    return len(res)
 
 
 # 最长公共子序列
@@ -130,21 +152,21 @@ def edit_distance(word1, word2):
     if not word2:
         return len(word1)
     rows, cols = len(word1) + 1, len(word2) + 1
-    matrix = [[0] * cols for _ in range(rows)]
+    dp = [[0] * cols for _ in range(rows)]
 
     for i in range(rows):  # base
-        matrix[i][0] = i
+        dp[i][0] = i
 
     for j in range(cols):  # base
-        matrix[0][j] = j
+        dp[0][j] = j
 
     for i in range(1, rows):
         for j in range(1, cols):
             if word1[i - 1] == word2[j - 1]:
-                matrix[i][j] = matrix[i - 1][j - 1]
-            else:  # matrix[i][j - 1], matrix[i - 1][j] delete ;  matrix[i - 1][j - 1]  replace
-                matrix[i][j] = min(matrix[i][j - 1], matrix[i - 1][j], matrix[i - 1][j - 1]) + 1
-    return matrix[-1][-1]
+                dp[i][j] = dp[i - 1][j - 1]
+            else:  # dp[i][j - 1], dp[i - 1][j] delete ;  dp[i - 1][j - 1]  replace
+                dp[i][j] = min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1]) + 1
+    return dp[-1][-1]
 
 
 # 换硬币
@@ -154,9 +176,10 @@ def edit_distance(word1, word2):
 def coin_change(coins, amount):
     dp = [float('inf')] * (amount + 1)
     dp[0] = 0  # 当coin = amount 时使用
-    for coin in coins:
-        for x in range(coin, amount + 1):
-            dp[x] = min(dp[x], dp[x - coin] + 1)
+    for i in range(1, amount + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
     return dp[amount] if dp[amount] != float('inf') else -1
 
 
@@ -164,12 +187,11 @@ def coin_change(coins, amount):
 def num_squares(n):
     dp = [float('inf')] * (n + 1)
     dp[0] = 0  # 当coin = amount 时使用
-    if n <= 0:
-        return 0
-
-    for coin in range(1, int(n ** 0.5) + 1):
-        for x in range(coin * coin, n + 1):
-            dp[x] = min(dp[x], dp[x - coin ** 2] + 1)
+    for i in range(1, n + 1):
+        for coin in range(1, int(n ** 0.5) + 1):
+            square = coin ** 2
+            if i >= square:
+                dp[i] = min(dp[i], dp[i - square] + 1)
     return dp[n]
 
 
@@ -179,10 +201,10 @@ def combination_sum(nums, target):
     NUMS = [1，2，3]
     目标 = 4种的一种可能的组合方式有：
     （1，1，1，1）
-    （1，1,2）
-    （1，2,1）
-    （1,3）
-    （2,1 ，1）
+    （1，1, 2）
+    （1，2, 1）
+    （1, 3）
+    （2, 1，1）
     （2，2）
     （3，1）
     '''
@@ -197,14 +219,13 @@ def combination_sum(nums, target):
 
 # 割绳子
 def max_product_after_cutting(m):
-    res = [1, 1, 2]
     if m == 1:
         return
     if m == 2:
         return 1
     if m == 3:
         return 2
-    res = [0, 1, 2, 3]
+    res = [0, 1, 2, 3]  # 0为了占位
     for i in range(4, m + 1):
         max_num = -1
         for j in range(1, i // 2 + 1):
@@ -234,7 +255,7 @@ if __name__ == '__main__':
     print(stock([5, 10, 15, 1, 20]))
 
     print('\n连续子序列和最大')
-    print(max_continuous_sum([10, -5, 10]))
+    print(max_sub_array([10, -5, 10]))
 
     print('\n连续子序列乘积最大')
     print(max_continuous_product([-1, 2, 3, 0.1, -10]))

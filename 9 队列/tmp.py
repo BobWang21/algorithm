@@ -152,7 +152,7 @@ def largest_rectangle_area3(height):
 def max_area_min_sum_product(nums):
     if not nums:
         return 0
-    nums.append(-1)
+    nums.append(-1)  # 为了是栈中剩余元素出栈
     n = len(nums)
     stack = []
     total = [0] * n

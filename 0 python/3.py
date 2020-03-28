@@ -1,7 +1,7 @@
 def max_product(nums):
     if not nums:
         return 0
-    nums.append(-1)
+    nums.append(-1)  # 为了使剩余的元素出栈
     n = len(nums)
     stack = []
     total = [0] * n

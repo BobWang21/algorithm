@@ -62,8 +62,7 @@ def preorder2(tree):
     return res
 
 
-# 中序遍历 左子树一直向下
-# 访问到头就出栈
+# 中序遍历 左子树一直向下 访问到头就出栈
 def inorder_traversal(tree):
     if not tree:
         return

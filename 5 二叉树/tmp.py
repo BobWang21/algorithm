@@ -42,7 +42,7 @@ def is_balanced(tree):
     return helper(tree)[0]
 
 
-# 不平衡就不会退出栈
+# 不平衡就退出栈
 def is_balanced1(tree):
     res = [True]
 
@@ -95,11 +95,11 @@ def diameter_of_binary_tree(root):
 
 # 二叉树是否对称
 def is_symmetric(tree):
-    '''
-            5
-       3        3
-           4        4
-    '''
+    """
+         5
+    3        3
+       4        4
+    """
 
     def helper(l, r):
         if not l and not r:
@@ -113,6 +113,92 @@ def is_symmetric(tree):
     if not tree:
         return True
     return helper(tree.left, tree.right)
+
+
+# 子树
+def is_subtree(s, t):
+    def helper(s, t):  # 已知两颗树 两棵树是否完全相同
+        if not s and not t:
+            return True
+        if not s or not t:
+            return False
+        if s.val == t.val:
+            return helper(s.left, t.left) and helper(s.right, t.right)
+        return False
+
+    if not s and not t:
+        return True
+    if not s or not t:
+        return False
+
+    if helper(s, t):
+        return True
+    return is_subtree(s.left, t) or is_subtree(s.right, t)
+
+
+# 子结构
+def substructure(s, t):
+    def helper(s, t):  # 已知两颗树 一颗树是否包另一颗
+        if not t:
+            return True
+        if not s:
+            return False
+        if s.val == t.val:
+            return helper(s.left, t.left) and helper(s.right, t.right)
+        return False
+
+    if not s and not t:
+        return True
+    if not s or not t:
+        return False
+
+    if helper(s, t):  # helper返回True时才能结束, False不能返回
+        return True
+    return is_subtree(s.left, t) or is_subtree(s.right, t)
+
+
+# 二叉搜索树 中序遍历 第K大的数
+def top_k_binary_search_tree(tree, k):
+    if not tree:
+        return
+    stack = []
+    node = tree
+    count = 0
+    while node or stack:
+        while node:
+            stack.append(node)
+            node = node.right
+        node = stack.pop(-1)
+        count += 1
+        if count == k:
+            return node.val
+        node = node.left
+
+
+# 递归 无论返回什么 都会继续
+def top_k_binary_search_tree2(tree, k):
+    if not tree:
+        return
+    res = [k]
+
+    def helper(tree):
+        if not tree:
+            return
+        if res[0] <= 0:
+            # print(res[0])
+            return
+        l, r = tree.left, tree.right
+        if r:
+            helper(r)
+        res[0] -= 1
+        if res[0] == 0:
+            res.append(tree.val)
+            return
+        if l:
+            helper(l)
+
+    helper(tree)
+    return res[1]
 
 
 # 判断二叉树是否为二叉搜索树
@@ -130,6 +216,28 @@ def is_valid_bst(tree):
         return helper(l, lo, v) and helper(r, v, hi)
 
     return helper(tree, -float('inf'), float('inf'))
+
+
+# Given a Binary Search Tree (BST), convert it to a Greater Tree such that
+# every key of the original BST is changed to the original key plus sum of
+# all keys greater than the original key in BST.
+# 538. Convert BST to Greater Tree
+def convert_bst_2_greater_tree(tree):
+    node = tree
+    stack = []
+    total = 0
+    res = []
+    while node or stack:
+        while node:
+            stack.append(node)
+            node = node.right
+        if stack:
+            node = stack.pop(-1)
+            node.val = node.val + total
+            res.append(node.val)
+            total = node.val
+            node = node.left
+    return res
 
 
 # 检查一个遍历是否为二叉搜索树的后序遍历
@@ -152,7 +260,6 @@ def check_poster_order(post):
     return check_poster_order(post[:p]) and check_poster_order(post[p:-1])
 
 
-# 递归!!!
 # 打印所有路径
 def binary_tree_paths(tree):
     if not tree:
@@ -182,6 +289,76 @@ def binary_tree_paths2(tree):
     res = []
     helper(tree, [], res)
     return res
+
+
+# 508. Most Frequent Subtree Sum
+def most_frequent_subtree_sum(tree):
+    dic = {}
+
+    def helper(tree):
+        total = 0
+        if not tree:
+            return total
+
+        left_sum = helper(tree.left)
+        right_sum = helper(tree.right)
+        total = tree.val + left_sum + right_sum
+        dic.setdefault(total, 0)
+        dic[total] += 1
+        return total
+
+    helper(tree)
+    max_num = -1
+    max_key = None
+    for key, val in dic.items():
+        if val > max_num:
+            max_num = val
+            max_key = key
+    return max_key
+
+
+# 124 子结构最大路径和  可以不经过根节点 有点动态规划的意思
+def sub_tree_max_sum_path(tree):
+    def helper(tree):
+        if not tree:
+            return 0, 0
+        left, max_left = helper(tree.left)  # 记录包含根节点的数值
+        right, max_right = helper(tree.right)
+        val = tree.val
+        current = max(left + val, right + val, val)  # 根节点及一侧最大
+        return current, max(max_left, max_right, current, left + right + val)
+
+    return helper(tree)[1]
+
+
+def sub_tree_max_sum_path2(tree):
+    res = [-float('inf')]
+
+    def helper(tree):  # 包含跟节点的最大值
+        if not tree:
+            return 0
+        left, right = helper(tree.left), helper(tree.right)
+        res[0] = max(res[0], left + right + tree.val, left + tree.val, right + tree.val, tree.val)
+
+        return max(max(left, right) + tree.val, tree.val)
+
+    helper(tree)
+    return res[0]
+
+
+# 213 21 + 23 = 46
+def sum_numbers(tree):
+    # top_down 记录父节点的值
+    def helper(tree, val):
+        if not tree:
+            return 0
+        if not tree.left and not tree.right:  # 叶节点!!!
+            return val * 10 + tree.val
+        return helper(tree.left, val * 10 + tree.val) + helper(tree.right, val * 10 + tree.val)
+
+    if not tree:
+        return 0
+    return helper(tree, 0)
 
 
 # 是否存在路径和为某个target
@@ -258,98 +435,6 @@ def zigzag_level_order(tree):
     return res
 
 
-# Given a Binary Search Tree (BST), convert it to a Greater Tree such that
-# every key of the original BST is changed to the original key plus sum of
-# all keys greater than the original key in BST.
-# 538. Convert BST to Greater Tree
-def convert_bst_2_greater_tree(tree):
-    node = tree
-    stack = []
-    total = 0
-    res = []
-    while node or stack:
-        while node:
-            stack.append(node)
-            node = node.right
-        if stack:
-            node = stack.pop(-1)
-            node.val = node.val + total
-            res.append(node.val)
-            total = node.val
-            node = node.left
-    return res
-
-
-# 508. Most Frequent Subtree Sum
-def most_frequent_subtree_sum(tree):
-    dic = {}
-
-    def helper(tree):
-        total = 0
-        if not tree:
-            return total
-
-        left_sum = helper(tree.left)
-        right_sum = helper(tree.right)
-        total = tree.val + left_sum + right_sum
-        dic.setdefault(total, 0)
-        dic[total] += 1
-        return total
-
-    helper(tree)
-    max_num = -1
-    max_key = None
-    for key, val in dic.items():
-        if val > max_num:
-            max_num = val
-            max_key = key
-    return max_key
-
-
-# 213 21 + 23 = 46
-def sum_numbers(tree):
-    # top_down 记录父节点的值
-    def helper(tree, val):
-        if not tree:
-            return 0
-        if not tree.left and not tree.right:  # 叶节点!!!
-            return val * 10 + tree.val
-        return helper(tree.left, val * 10 + tree.val) + helper(tree.right, val * 10 + tree.val)
-
-    if not tree:
-        return 0
-    return helper(tree, 0)
-
-
-# 124 子结构最大路径和  可以不经过根节点 有点动态规划的意思
-def sub_tree_max_sum_path(tree):
-    def helper(tree):
-        if not tree:
-            return 0, 0
-        left, max_left = helper(tree.left)  # 记录包含根节点的数值
-        right, max_right = helper(tree.right)
-        val = tree.val
-        current = max(left + val, right + val, val)  # 根节点及一侧最大
-        return current, max(max_left, max_right, current, left + right + val)
-
-    return helper(tree)[1]
-
-
-def sub_tree_max_sum_path2(tree):
-    res = [-float('inf')]
-
-    def helper(tree):  # 包含跟节点的最大值
-        if not tree:
-            return 0
-        left, right = helper(tree.left), helper(tree.right)
-        res[0] = max(res[0], left + right + tree.val, left + tree.val, right + tree.val, tree.val)
-
-        return max(max(left, right) + tree.val, tree.val)
-
-    helper(tree)
-    return res[0]
-
-
 # 根据先序遍历 和 中序遍历 构造树 找到根节点!!
 def build_tree(preorder, inorder):
     if not preorder or not inorder:
@@ -406,75 +491,6 @@ def deserialize(s1):
     if s1 == '':
         return None
     return helper()
-
-
-# 二叉搜索树 中序遍历 第K大的数
-def top_k_binary_search_tree(tree, k):
-    if not tree:
-        return
-    stack = []
-    node = tree
-    count = 0
-    while node or stack:
-        while node:
-            stack.append(node)
-            node = node.right
-        node = stack.pop(-1)
-        count += 1
-        if count == k:
-            return node.val
-        node = node.left
-
-
-# 递归 无论返回什么 都会继续
-def top_k_binary_search_tree2(tree, k):
-    if not tree:
-        return
-    res = [k]
-
-    def helper(tree):
-        if not tree:
-            return
-        if res[0] <= 0:
-            # print(res[0])
-            return
-        l, r = tree.left, tree.right
-        if r:
-            helper(r)
-        res[0] -= 1
-        if res[0] == 0:
-            res.append(tree.val)
-            return
-        if l:
-            helper(l)
-
-    helper(tree)
-    return res[1]
-
-
-def top_k_binary_search_tree3(tree, k):
-    if not tree:
-        return
-    res = [None, k]
-
-    def helper(tree):
-        if not tree:
-            return
-        if res[1] <= 0:
-            # print(res[0])
-            return
-        l, r = tree.left, tree.right
-        if r:
-            helper(r)
-        res[1] -= 1
-        if res[1] == 0:
-            res[0] = tree.val
-            return
-        if l:
-            helper(l)
-
-    helper(tree)
-    return res[0]
 
 
 '''
@@ -547,44 +563,6 @@ def inorder_tra_next_node(node):
                 return node.parent.val
             node = node.parent
         return
-
-
-# 子树
-def is_subtree(s, t):
-    def helper(s, t):  # 两棵树是否完全相同
-        if not s and not t:
-            return True
-        if s and t and s.val == t.val:
-            return helper(s.left, t.left) and helper(s.right, t.right)
-        return False
-
-    if not s and not t:
-        return True
-    if s and t:
-        if s.val == t.val and helper(s.left, t.left) and helper(s.right, t.right):
-            return True
-        return is_subtree(s.left, t) or is_subtree(s.right, t)
-    return False
-
-
-# 子树
-def substructure(s, t):
-    def helper(s, t):  # 一颗树是否包另一颗
-        if not t:
-            return True
-        if not s:
-            return False
-        if s and t and s.val == t.val:
-            return helper(s.left, t.left) and helper(s.right, t.right)  # AND关系
-        return False
-
-    if not s and not t:
-        return True
-    if s and t:
-        if s.val == t.val and helper(s, t):
-            return True
-        return is_subtree(s.left, t) or is_subtree(s.right, t)  # 或关系!!!
-    return False
 
 
 # 抢钱问题 节点之间不能存在父子关系
