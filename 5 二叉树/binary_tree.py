@@ -3,7 +3,6 @@
 """
 Created on Thu Jul  6 20:02:41 2017
 
-@author: wangbao
 """
 
 
@@ -32,6 +31,28 @@ def create_full_binary_tree(nums):
             head.right = node
             queue.append(node)
             queue.pop(0)  # 出队列
+    return tree
+
+
+def create_full_binary_tree2(nums):
+    tree = TreeNode()
+    tree.val = nums.pop(0)
+    queue = [tree]
+    while queue:
+        child = queue.pop(0)
+        l, r = None, None
+        while nums:
+            if l is None:
+                node = TreeNode()
+                l = node.val = nums.pop(0)
+                child.left = node
+                queue.append(node)
+            else:
+                node = TreeNode()
+                r = node.val = nums.pop(0)
+                child.right = node
+                queue.append(node)
+                break
     return tree
 
 
@@ -125,7 +146,7 @@ def min_depth(root):
     if not root:
         return 0
     l, r = root.left, root.right
-    if not l:  # 没有左子树
+    if not l:
         return min_depth(r) + 1
     if not r:
         return min_depth(l) + 1
@@ -137,10 +158,17 @@ if __name__ == '__main__':
     tree = create_full_binary_tree(nums)
     print('\n先序遍历')
     preorder_traversal(tree)
+
+    nums = [i for i in range(7)]
+    tree = create_full_binary_tree2(nums)
+    print('\n先序遍历')
+    preorder_traversal(tree)
+
     print('\n中序遍历')
     print(inorder_traversal(tree))
+
     print('\n层次遍历')
-    level_traversal(tree)
+    print(level_traversal(tree))
 
     print('\n数的最小深度')
     root = TreeNode()
