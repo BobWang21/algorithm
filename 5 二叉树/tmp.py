@@ -347,7 +347,7 @@ def sub_tree_max_sum_path2(tree):
 
 
 # 213 21 + 23 = 46
-def sum_numbers(tree):
+def sum_numbers(tree):  # 先序遍历!!!
     # top_down 记录父节点的值
     def helper(tree, val):
         if not tree:
@@ -374,19 +374,20 @@ def have_path_sum(tree, target):
 
 # 打印所有路径 从根节点到叶节点和为某个数的路径
 def sum_target_path(tree, target):
-    def helper(tree, target, path, res):
-        if not tree.left and not tree.right and target == tree.val:  # 叶节点
+    res = []
+
+    def helper(tree, target, path):
+        if not tree.left and not tree.right and target == tree.val:  # 叶节点等于target
             res.append(path + [tree.val])
             return
-        if not tree.left and not tree.right:
+        if not tree.left and not tree.right:  # 叶节点不等于target
             return
         if tree.left:
-            helper(tree.left, target - tree.val, path + [tree.val], res)
+            helper(tree.left, target - tree.val, path + [tree.val])
         if tree.right:
-            helper(tree.right, target - tree.val, path + [tree.val], res)
+            helper(tree.right, target - tree.val, path + [tree.val])
 
-    res = []
-    helper(tree, target, [], res)
+    helper(tree, target, [])
     return res
 
 
@@ -436,21 +437,19 @@ def zigzag_level_order(tree):
 
 # 根据先序遍历 和 中序遍历 构造树 找到根节点!!
 def build_tree(preorder, inorder):
-    if not preorder or not inorder:
+    if not preorder and not inorder:
         return None
-    root = TreeNode()
+    tree = TreeNode()
     val = preorder[0]
-    root.val = val
+    tree.val = val
     idx = inorder.index(val)
     left_inorder = inorder[:idx]
     right_inorder = inorder[idx + 1:]
-    left_preorder = preorder[1: len(left_inorder) + 1]  # 重点
+    left_preorder = preorder[1: len(left_inorder) + 1]
     right_preorder = preorder[len(left_inorder) + 1:]
-    left = build_tree(left_preorder, left_inorder)
-    right = build_tree(right_preorder, right_inorder)
-    root.left = left
-    root.right = right
-    return root
+    tree.left = build_tree(left_preorder, left_inorder)
+    tree.right = build_tree(right_preorder, right_inorder)
+    return tree
 
 
 # 先序访问序列化
@@ -481,10 +480,8 @@ def deserialize(s1):
             return
         root = TreeNode()
         root.val = val
-        left = helper()
-        right = helper()
-        root.left = left
-        root.right = right
+        root.left = helper()
+        root.right = helper()
         return root
 
     if s1 == '':
