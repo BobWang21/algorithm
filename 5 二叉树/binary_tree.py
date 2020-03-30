@@ -7,27 +7,24 @@ Created on Thu Jul  6 20:02:41 2017
 
 
 class TreeNode():
-    def __init__(self):
-        self.val = None
+    def __init__(self, x):
+        self.val = x
         self.left = None
         self.right = None
 
 
 # 创建完全二叉树
 def create_full_binary_tree(nums):
-    tree = TreeNode()
-    tree.val = nums[0]
+    tree = TreeNode(nums[0])
     queue = [tree]
     for val in nums[1:]:
         head = queue[0]
         if not head.left:
-            node = TreeNode()
-            node.val = val
+            node = TreeNode(val)
             head.left = node
             queue.append(node)
         elif not head.right:
-            node = TreeNode()
-            node.val = val
+            node = TreeNode(val)
             head.right = node
             queue.append(node)
             queue.pop(0)  # 出队列
@@ -35,21 +32,21 @@ def create_full_binary_tree(nums):
 
 
 def create_full_binary_tree2(nums):
-    tree = TreeNode()
-    tree.val = nums.pop(0)
+    v = nums.pop(0)
+    tree = TreeNode(v)
     queue = [tree]
     while queue:
         child = queue.pop(0)
         l, r = None, None
         while nums:
             if l is None:
-                node = TreeNode()
-                l = node.val = nums.pop(0)
+                l = nums.pop(0)
+                node = TreeNode(l)
                 child.left = node
                 queue.append(node)
             else:
-                node = TreeNode()
-                r = node.val = nums.pop(0)
+                r = nums.pop(0)
+                node = TreeNode(r)
                 child.right = node
                 queue.append(node)
                 break
@@ -171,12 +168,9 @@ if __name__ == '__main__':
     print(level_traversal(tree))
 
     print('\n数的最小深度')
-    root = TreeNode()
-    root.val = 1
-    a = TreeNode()
-    a.val = 2
-    b = TreeNode()
-    b.val = 3
+    root = TreeNode(1)
+    a = TreeNode(2)
+    b = TreeNode(3)
     root.left = a
     a.left = b
     print(min_depth(root))

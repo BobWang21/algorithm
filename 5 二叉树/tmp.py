@@ -439,9 +439,8 @@ def zigzag_level_order(tree):
 def build_tree(preorder, inorder):
     if not preorder and not inorder:
         return None
-    tree = TreeNode()
     val = preorder[0]
-    tree.val = val
+    tree = TreeNode(val)
     idx = inorder.index(val)
     left_inorder = inorder[:idx]
     right_inorder = inorder[idx + 1:]
@@ -452,54 +451,36 @@ def build_tree(preorder, inorder):
     return tree
 
 
-# 先序访问序列化
 def serialize(tree):
     if not tree:
-        return
-    res = []
-    stack = [tree]
-    while stack:
-        node = stack.pop(-1)
-        if not node:
-            res.append('$')
-        else:
-            res.append(node.val)
-            l, r = node.left, node.right
-            stack.append(r)
-            stack.append(l)
-    return res
+        return '$ '
+    return str(tree.val) + ' ' + serialize(tree.left) + serialize(tree.right)
 
 
 # 反序列化 递归
 def deserialize(s1):
-    vals = [s for s in s1]
+    if s1 == '':
+        return None
+    vals = s1.split()
 
     def helper():
         val = vals.pop(0)
         if val == '$':
             return
-        root = TreeNode()
-        root.val = val
+        root = TreeNode(val)
         root.left = helper()
         root.right = helper()
         return root
 
-    if s1 == '':
-        return None
     return helper()
 
 
 def construct_parent():
-    a = TreeNode()
-    a.val = 10
-    b = TreeNode()
-    b.val = 5
-    c = TreeNode()
-    c.val = 4
-    d = TreeNode()
-    d.val = 6
-    e = TreeNode()
-    e.val = 11
+    a = TreeNode(10)
+    b = TreeNode(5)
+    c = TreeNode(4)
+    d = TreeNode(6)
+    e = TreeNode(11)
 
     a.left = b
     a.right = e
@@ -560,6 +541,7 @@ def rob(tree):
     return helper(tree)
 
 
+# include 和 exclude
 def rob2(tree):
     def helper(tree):
         if not tree:
@@ -578,7 +560,7 @@ def rob2(tree):
 def flatten(tree):
     if not tree:
         return None
-    head = TreeNode()
+    head = TreeNode(None)
     pre = head
     stack = [tree]
     while stack:
@@ -625,12 +607,9 @@ if __name__ == '__main__':
     print(lowest_common_ancestor(tree, 1, 5))
 
     print('\n判断树是否平衡')
-    unbalanced_tree = TreeNode()
-    unbalanced_tree.val = 3
-    a = TreeNode()
-    a.val = 10
-    b = TreeNode()
-    b.val = 5
+    unbalanced_tree = TreeNode(3)
+    a = TreeNode(10)
+    b = TreeNode(5)
     unbalanced_tree.left = a
     a.left = b
     print(is_balanced(unbalanced_tree))
