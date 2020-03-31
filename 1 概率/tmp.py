@@ -21,16 +21,26 @@ def shuffle(nums):
 
 
 def weighted_random(nums, weight):
-    weights = []
+    def binary_search(nums, target):
+        l, r = 0, len(nums) - 1
+        while l <= r:
+            mid = (l + r) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                l = mid + 1
+            else:
+                r = mid - 1
+        return r
+
     total_weight = 0
+    weights = [0]
     for w in weight:
         total_weight += w
         weights.append(total_weight)
     rdw = rd.random() * total_weight
-    for i, w in enumerate(weights):  # 也可以使用二分查找
-        if rdw <= w:
-            return nums[i]
-        rdw -= w
+    idx = binary_search(weights, rdw)
+    return nums[idx]
 
 
 def rand2to5():
@@ -65,6 +75,6 @@ if __name__ == '__main__':
 
     print('\n加权抽样')
     res = []
-    for i in range(100):
+    for i in range(30000):
         res.append(weighted_random(list(range(3)), [2, 2, 4]))
     print(Counter(res))

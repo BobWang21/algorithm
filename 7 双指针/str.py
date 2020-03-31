@@ -41,38 +41,37 @@ def reverse_string(s):
     return ''.join(l)
 
 
-# 最小覆盖子串 滑动窗口
+# 72 最小覆盖子串 滑动窗口
 def min_window(s, t):
-    str_dic = dict()
+    dic1 = dict()
     for c in t:
-        str_dic.setdefault(c, 0)
-        str_dic[c] += 1
-    window_dic = dict()
-    left, right = 0, 0
-    best_start_index = None
+        dic1.setdefault(c, 0)
+        dic1[c] += 1
+    dic2 = dict()
+    l, r = 0, 0
     match = 0
     min_len = float('inf')
-    while right < len(s):
-        c = s[right]
-        if c in str_dic:
-            window_dic.setdefault(c, 0)
-            window_dic[c] += 1
-            if window_dic[c] == str_dic[c]:
+    res = ''
+    while r < len(s):
+        c = s[r]
+        if c in dic1:
+            dic2.setdefault(c, 0)
+            dic2[c] += 1
+            if dic2[c] == dic1[c]:
                 match += 1  # 字母匹配数
 
-        while match == len(str_dic):
-            current_len = right - left + 1
-            if current_len < min_len:
-                min_len = current_len
-                best_start_index = left
-            c = s[left]
-            if c in str_dic:
-                window_dic[c] -= 1
-                if window_dic[c] < str_dic[c]:
+        while match == len(dic1):
+            if r - l + 1 < min_len:
+                min_len = r - l + 1
+                res = s[l: r + 1]
+            c = s[l]
+            if c in dic1:
+                dic2[c] -= 1
+                if dic2[c] < dic1[c]:
                     match -= 1
-            left += 1
-        right += 1
-    return s[best_start_index: best_start_index + min_len] if best_start_index is not None else ''
+            l += 1
+        r += 1
+    return res
 
 
 # Given two strings s1 and s2,
@@ -91,9 +90,9 @@ def check_inclusion(s1, s2):
         if i >= len(s1):
             c = s2[i - len(s1)]
             if c in d2:
-                d2[c] -= 1
-                if d1[c] - d2[c] == 1:  # 只有以前match 现在不match 才减去1
+                if d1[c] == d2[c]:  # 只有以前match 现在不match 才减去1
                     match -= 1
+                d2[c] -= 1
         c = s2[i]
         if c in d1:
             d2.setdefault(c, 0)
@@ -105,20 +104,19 @@ def check_inclusion(s1, s2):
     return False
 
 
-# 最长非重复子串的长度
-# 类似求数组中不重复的数的个数
+# 最长非重复子串的长度 3
 def length_of_longest_substring(s):
-    left = 0  # 记录非重复开始
-    max_length = 0
-    used_char = {}
-    for i, c in enumerate(s):
-        if c in used_char and left <= used_char[c]:
-            left = used_char[c] + 1
+    l = 0  # 记录非重复开始
+    res = 0
+    dic = {}
+    for r, c in enumerate(s):
+        if c in dic and dic[c] >= l:
+            l = dic[c] + 1
         else:
-            max_length = max(max_length, i - left + 1)
-        used_char[c] = i
+            res = max(res, r - l + 1)
+        dic[c] = r
 
-    return max_length
+    return res
 
 
 # 字符串1 包含 k个不同字符的最大长度
@@ -189,18 +187,20 @@ def find_pairs2(nums, k):
 
 
 if __name__ == '__main__':
-    print('最小覆盖子串')
+    print('\n最小覆盖子串')
     print(min_window('aaaaaaaaaaaabbbbbcdd', 'abcdd'))
 
-    print('最小非重复子串')
+    print('\n最小非重复子串')
     print(length_of_longest_substring("abca"))
 
-    print('一个字符串是否包含另外一个字符串的任一全排列')
+    print('\n一个字符串是否包含另外一个字符串的任一全排列')
     s1 = 'trinitrophenylmethylnitramine'
     s2 = 'dinitrophenylhydrazinetrinitrophenylmethylnitramine'
     print(check_inclusion(s1, s2))
 
+    print('\n长度为K的最长子串')
     print(max_k_char('eceebaaaa', 2))
-    print('相差为K的pair数目')
+
+    print('\n相差为K的pair数目')
     print(find_pairs([1, 3, 1, 5, 4], 0))
     print(find_pairs2([1, 3, 1, 5, 4], 0))

@@ -4,7 +4,7 @@ class ListNode():
         self.next = None
 
 
-def construct_listnode(nums):
+def construct_list_node(nums):
     head = ListNode(nums[0])
     current = head
     for i in range(1, len(nums)):
@@ -13,7 +13,7 @@ def construct_listnode(nums):
     return head
 
 
-def print_listnode(head):
+def print_list_node(head):
     res = []
     node = head
     while node:
@@ -41,24 +41,62 @@ def swap_pairs(head):
         return
     if not head.next:
         return head
-    new_head = ListNode(-1)
-    tail = new_head
+    dummy = pre = ListNode(None)
     while head and head.next:
-        cur = head.next.next
-        tail.next = head.next
-        tail.next.next = head
-        head.next = None
-        tail = tail.next.next
-        head = cur
+        curr = head.next.next  # 每次移动两步
+        pre.next = head.next
+        head.next.next = head
+        pre = pre.next.next
+        # pre.next = None
+        head = curr
+    pre.next = head  # head 可能为空 也可能为最后一个节点 最后被覆盖 所以1可以省略
+    return dummy.next
 
-    tail.next = head
-    return new_head.next
+
+# 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
+# 例如链表1->2->3->3->4->4->5 处理后为 1->2-3->5
+def remove_duplicates(head):
+    if not head:
+        return
+    dummy = pre = ListNode(None)
+    while head:
+        if head.val == pre.val:
+            head = head.next
+        else:
+            pre.next = head
+            head = head.next
+            pre = pre.next
+    pre.next = None  # 防止尾部有重复
+    return dummy.next
+
+
+# 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
+# 例如链表1->2->3->3->4->4->5 处理后为 2->5
+def remove_duplicates2(head):
+    if not head:
+        return
+    if not head.next:
+        return head
+
+    dummy = pre = ListNode(-1)
+
+    while head and head.next:
+        if head.val != head.next.val:
+            pre.next = head
+            pre = pre.next
+            head = head.next
+        else:
+            while head and head.next and head.val == head.next.val:
+                head = head.next  # 每次移动一步
+            head = head.next  # 出口为head.next 为空 或者 head.val!=head.next.val
+    pre.next = head
+    return dummy.next
 
 
 # 链表倒数第N个元素
 def tail(head, k):
     if not head:
-        return ()
+        return
     fast = head
     while k > 0 and fast:
         fast = fast.next
@@ -68,6 +106,18 @@ def tail(head, k):
     slow = head
     while fast:
         fast = fast.next
+        slow = slow.next
+    return slow.val
+
+
+# 链表中间的元素
+def middle_node(head):
+    if not head:
+        return
+    fast = head
+    slow = head
+    while fast and fast.next:
+        fast = fast.next.next
         slow = slow.next
     return slow.val
 
@@ -92,6 +142,43 @@ def remove_nth_from_end(head, n):
     else:
         pre.next = slow.next
         return head
+
+
+# 链表排序 148
+def sort_list(head):
+    def merge(l1, l2):
+        if not l1:
+            return l2
+        if not l2:
+            return l1
+        if l1.val < l2.val:
+            head = l1
+            l1 = l1.next
+        else:
+            head = l2
+            l2 = l2.next
+        head.next = merge(l1, l2)
+        return head
+
+    if not head:
+        return
+    if not head.next:
+        return head
+    fast = slow = head
+    pre_slow = None
+    while fast and fast.next:
+        fast = fast.next.next
+        pre_slow = slow
+        slow = slow.next
+
+    l1 = head
+    l2 = slow
+    pre_slow.next = None
+
+    l1 = sort_list(l1)
+    l2 = sort_list(l2)
+
+    return merge(l1, l2)
 
 
 # 合并连个排序链表 归并
@@ -160,20 +247,6 @@ def merge_k_sorted_lists2(lists):
     return merge(a, b)
 
 
-# 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
-# 例如链表1->2->3->3->4->4->5 处理后为 1->2->5
-def remove_duplicates(head):
-    if not head:
-        return
-    current = head
-    while current and current.next:  # 滑动窗口 窗口的大小为2
-        if current.val == current.next.val:
-            current.next = current.next.next
-        else:
-            current = current.next
-    return head
-
-
 # 最近公共节点
 def get_intersection_node(headA, headB):
     if not headA or not headB:
@@ -224,7 +297,7 @@ def detect_cycle(head):
         slow = slow.next
         if fast == slow:
             break
-    if fast != slow:
+    if fast != slow:  # fast 或 fast.next 为空
         return False
     slow = head
     while slow != fast:
@@ -251,31 +324,43 @@ def find_duplicate_num(nums):
 
 
 if __name__ == '__main__':
-    head = construct_listnode([1, 3, 5, 7])
+    head = construct_list_node([1, 3, 5, 7])
     print('链表翻转')
-    print_listnode(reverse(head))
+    print_list_node(reverse(head))
 
     print('\n链表倒数第K个节点')
     print(tail(head, 1))
 
+    head = construct_list_node([1, 3, 5, 7, 9])
+    print('\n链表中间节点')
+    print(middle_node(head))
+
     print('\n链表对翻转')
-    head = construct_listnode([1, 3, 5, 7])
-    print_listnode(swap_pairs(head))
+    head = construct_list_node([1, 3, 5, 7])
+    print_list_node(swap_pairs(head))
+
+    print('\n链表排序')
+    l1 = construct_list_node([8, 1, 3, 7])
+    print_list_node(sort_list(l1))
 
     print('\n合并两个排序链表')
-    l1 = construct_listnode([1, 3, 5, 7])
-    l2 = construct_listnode([2, 4, 6, 8])
-    print_listnode(merge_two_sorted_lists(l1, l2))
+    l1 = construct_list_node([1, 3, 5, 7])
+    l2 = construct_list_node([2, 4, 6, 8])
+    print_list_node(merge_two_sorted_lists(l1, l2))
 
     print('\n合并K个排序链表')
-    l1 = construct_listnode([1, 3, 5, 7])
-    l2 = construct_listnode([2, 4, 6, 8])
-    l3 = construct_listnode([10, 11, 12, 13])
-    print_listnode(merge_k_sorted_lists2([l1, l2, l3]))
+    l1 = construct_list_node([1, 3, 5, 7])
+    l2 = construct_list_node([2, 4, 6, 8])
+    l3 = construct_list_node([10, 11, 12, 13])
+    print_list_node(merge_k_sorted_lists2([l1, l2, l3]))
 
     print('\n删除链表中重复元素')
-    head = construct_listnode([1, 1, 2, 3, 3])
-    print_listnode(remove_duplicates(head))
+    head = construct_list_node([1, 1, 2, 3, 3])
+    print_list_node(remove_duplicates(head))
+
+    print('\n删除链表中重复元素')
+    head = construct_list_node([1, 1, 2, 3, 3])
+    print_list_node(remove_duplicates2(head))
 
     print('\n链表是否存在环')
     a = ListNode(1)

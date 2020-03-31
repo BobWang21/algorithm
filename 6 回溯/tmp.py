@@ -71,21 +71,21 @@ def combination_sum(candidates, target):
       [2, 2, 3]
     ]
     """
+    res = []
+    if not candidates or target == 0:
+        return res
 
-    def dfs(candidates, target, idx, path, res):
+    def dfs(candidates, target, idx, path):
         if target == 0:
             res.append(path)
         if target < 0:
             return
         for i in range(idx, len(candidates)):
             # 下一次迭代的索引从 i 开始表示可以用多次!!!
-            dfs(candidates, target - candidates[i], i, path + [candidates[i]], res)
+            dfs(candidates, target - candidates[i], i, path + [candidates[i]])
 
-    res = []
-    if not candidates or target == 0:
-        return res
     candidates.sort()
-    dfs(candidates, target, 0, [], res)
+    dfs(candidates, target, 0, [])
     return res
 
 
@@ -101,8 +101,9 @@ def combination_sum2(candidates, target):
     [2, 6]
     ]
     """
+    res = []
 
-    def dfs(candidates, idx, target, path, res):
+    def dfs(candidates, idx, target, path):
         if target == 0:
             res.append(path)
             return
@@ -112,13 +113,12 @@ def combination_sum2(candidates, target):
             if i > idx and candidates[i] == candidates[i - 1]:  # 排除相同的数字出现在同一层
                 continue
             # 当前迭代索引为i 下一个迭代的索引为i+1
-            dfs(candidates, i + 1, target - candidates[i], path + [candidates[i]], res)
+            dfs(candidates, i + 1, target - candidates[i], path + [candidates[i]])
 
-    res = []
     if not candidates or target < 0:
         return
     candidates.sort()
-    dfs(candidates, 0, target, [], res)
+    dfs(candidates, 0, target, [])
     return res
 
 
@@ -187,20 +187,20 @@ def subset(candidates):
 
 
 # 背包问题
-def knapsack(cost, val, cap):
-    def dfs(cap, idx, amount, res):
-        for i in range(idx, len(cost)):
-            if cap - cost[i] < 0:  # base 1
+def knapsack(costs, values, capacity):
+    def dfs(capacity, idx, amount, res):
+        for i in range(idx, len(costs)):
+            cost, val = costs[i], values[i]
+            if capacity - cost < 0:  # base 1
                 res[0] = max(res[0], amount)
                 continue
-            elif cap - cost[i] == 0:  # base 2
-                res[0] = max(res[0], amount + val[i])
-                continue
+            elif capacity == cost:  # base 2
+                res[0] = max(res[0], amount + val)
             else:
-                dfs(cap - cost[i], i + 1, amount + val[i], res)
+                dfs(capacity - cost, i + 1, amount + val, res)
 
     res = [-1]
-    dfs(cap, 0, 0, res)
+    dfs(capacity, 0, 0, res)
     return res[0]
 
 
@@ -259,18 +259,15 @@ def restore_ip_addresses(s):
     res = []
 
     def valid(s):
-        if not s:
-            return False
-        if len(s) > 1 and s[0] == '0':  # 0xx 不合法
-            return False
-        if eval(s) > 255:  # ip 不能大于255
+        if (s[0] == '0' and len(s) > 1) or eval(s) > 255:  # ip 不能大于255
             return False
         return True
 
     def helper(s, k, path):
-        if k == 1 and valid(s):
+        if k == 0 and not s:
             res.append(path + s)
-        if k == 1:
+            return
+        if k == 0:
             return
         if len(s) < k:
             return
@@ -288,7 +285,7 @@ def restore_ip_addresses(s):
 # Input:
 # beginWord = "hit",
 # endWord = "cog",
-# wordList = ["hot","dot","dog","lot","log","cog"] BFS
+# wordList = ["hot","dot","dog","lot","log","cog"]
 def word_ladder(begin_word, end_word, word_list):
     if not word_list:
         return 0

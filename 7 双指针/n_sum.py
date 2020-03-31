@@ -103,15 +103,16 @@ def n_sum2(nums, target):
     return res
 
 
+# 和与target最相近的三个数
 def three_sum_closet(nums, target):
-    size = len(nums)
-    if size < 3:
+    n = len(nums)
+    if n < 3:
         return
     closet_sum = None
     gap = float('inf')
     nums.sort()
-    for i in range(size - 2):
-        l, r = i + 1, size - 1
+    for i in range(n - 2):
+        l, r = i + 1, n - 1
         while l < r:
             s = nums[i] + nums[l] + nums[r]
             if s == target:
