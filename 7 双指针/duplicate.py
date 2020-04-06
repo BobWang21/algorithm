@@ -23,9 +23,20 @@ def most_data(data):
     return value
 
 
-# 数字在 0 - n 之间
-# 可能有多个数字重复 返回任意重复的数字
-# 数字从0开始, 把数字放在对应的位置上
+# 26 原地删除升序数组中的重复数字 并返回非重复数组的长度
+# Given nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
+# Your function should return length = 5
+def remove_duplicates(nums):
+    n = len(nums)
+    i = 0  # 第一个指针
+    for j in range(1, n):  # 第二个指针
+        if nums[j - 1] != nums[j]:
+            nums[i + 1] = nums[j]
+            i += 1
+    return i + 1
+
+
+# 0 - n 之间可能有多个数字重复 返回任意重复的数字
 def find_duplicate_num2(nums):
     for i in range(len(nums)):
         while i != nums[i]:  # 循环后保证i = nums[i]
@@ -57,39 +68,10 @@ def find_duplicate_num(nums):
     return ptr1
 
 
-# 26 升序数组中的重复数字
-# Given nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
-# Your function should return length = 5,
-# with the first five elements of nums being modified to 0, 1, 2, 3, and 4 respectively.
-# It doesn't matter what values are set beyond the returned length.
-def remove_duplicates(nums):
-    n = len(nums)
-    if n < 2:
-        return n
-    l, r = 0, 1
-    while r < n:
-        if nums[l] == nums[r]:
-            r += 1
-        else:
-            l += 1
-            nums[l] = nums[r]
-            r += 1
-    return l + 1
-
-
-def remove_duplicates2(nums):
-    n = len(nums)
-    if n < 2:
-        return n
-    pointer = 0  # 第一个指针
-    for i in range(1, n):  # 第二个指针
-        if nums[i] != nums[pointer]:
-            pointer += 1
-            nums[pointer] = nums[i]
-    return pointer + 1
-
-
 if __name__ == '__main__':
-    print('找到数组中重复元素')
+    print('\n找到数组中重复元素')
     print(find_duplicate_num([1, 2, 3, 4, 2]))
     print(find_duplicate_num2([1, 2, 3, 2, 0]))
+
+    print('\n删除排查数组中的重复数值')
+    print(remove_duplicates([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))

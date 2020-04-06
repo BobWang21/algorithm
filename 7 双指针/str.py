@@ -112,8 +112,7 @@ def length_of_longest_substring(s):
     for r, c in enumerate(s):
         if c in dic and dic[c] >= l:
             l = dic[c] + 1
-        else:
-            res = max(res, r - l + 1)
+        res = max(res, r - l + 1)
         dic[c] = r
 
     return res

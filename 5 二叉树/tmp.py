@@ -576,6 +576,21 @@ def flatten(tree):
     return head.right
 
 
+# trim 二叉搜索树
+def trimBST(tree, L, R):
+    if not tree:
+        return
+    if tree.val < L:
+        return trimBST(tree.right, L, R)
+    if tree.val > R:
+        return trimBST(tree.left, L, R)
+    left = trimBST(tree.left, L, R)
+    right = trimBST(tree.right, L, R)
+    tree.left = left
+    tree.right = right
+    return tree
+
+
 def width_of_tree(tree):
     if not tree:
         return 0
@@ -676,3 +691,7 @@ if __name__ == '__main__':
         res.append(head.val)
         head = head.right
     print(res)
+
+    print('\ntrimBST')
+    tree = create_full_binary_tree([10, 1, 15, 3, 4, 12, 17])
+    print(level_traversal(trimBST(tree, 4, 12)))

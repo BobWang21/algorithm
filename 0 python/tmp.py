@@ -4,6 +4,11 @@
 import math
 import random
 
+
+def change(nums):
+    nums[0] = 100
+
+
 if __name__ == '__main__':
     print('\n数字操作')
     print(4 / 2)  # 2.0,  2.0 = 2 索引必须是整数
@@ -33,6 +38,9 @@ if __name__ == '__main__':
     a.insert(0, -1)  # 队首增加元素
     a.append(3)  # 增加一个数
     c = a + b  # 生成一个新的变量
+    nums = [1, 3, 100]
+    change(nums[1:])  # 生成一个新的列表
+    print(nums)
 
     print('\n字典')
     dic = {1: 3}

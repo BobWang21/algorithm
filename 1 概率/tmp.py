@@ -43,13 +43,6 @@ def weighted_random(nums, weight):
     return nums[idx]
 
 
-def rand2to5():
-    while True:
-        data = rd.randint(0, 1) * 2 ** 2 + rd.randint(0, 1) * 2 + rd.randint(0, 1)
-        if data <= 4:
-            return data
-
-
 def reservoir_sampling(nums, m):
     res = np.zeros(m)
 
@@ -64,6 +57,36 @@ def reservoir_sampling(nums, m):
     return res
 
 
+# 根据生成1, 2随机数的发生器 生成1-5随机发生器
+def rand2to5():
+    while True:
+        value = rd.randint(0, 1) * 2 ** 2 + rd.randint(0, 1) * 2 + rd.randint(0, 1)
+        if value <= 4:
+            return value + 1
+
+
+# 把n个骰子扔在地上，所有骰子朝上一面的点数之和为S
+# 输入n，打印出S的所有可能的值出现的概率
+def probability(n):
+    dic = dict()
+    dic[1] = dict()
+    for i in range(1, 7):
+        dic[1][i] = round(1 / 6, 5)
+
+    def helper(n):
+        if n in dic:
+            return dic[n]
+        dic.setdefault(n, dict())
+        for i in range(1, 7):
+            last_dic = helper(n - 1)
+            for v, p in last_dic.items():
+                dic[n].setdefault(i + v, 0)
+                dic[n][i + v] += round(1 / 6 * p, 5)
+        return dic[n]
+
+    return helper(n)
+
+
 if __name__ == '__main__':
     print('\nshuffle')
     data = [rd.randint(0, 100) for _ in range(10)]
@@ -75,6 +98,15 @@ if __name__ == '__main__':
 
     print('\n加权抽样')
     res = []
-    for i in range(30000):
+    for i in range(30):
         res.append(weighted_random(list(range(3)), [2, 2, 4]))
     print(Counter(res))
+
+    print('\n构造随机发生器')
+    res = []
+    for i in range(500):
+        res.append(rand2to5())
+    print(Counter(res))
+
+    print('\nn个色子的和的概率')
+    print(probability(2))

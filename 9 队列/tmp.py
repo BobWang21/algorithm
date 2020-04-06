@@ -48,17 +48,12 @@ def max_sliding_window(nums, k):
     return res
 
 
-# 单调栈
-"""
-Input: nums1 = [4,1,2], nums2 = [1,3,4,2].
-Output: [-1,3,-1]
-Explanation:
-    For number 4 in the first array, you cannot find the next greater number for it in the second array, so output -1.
-    For number 1 in the first array, the next greater number for it in the second array is 3.
-    For number 2 in the first array, there is no next greater number for it in the second array, so output -1.
-"""
-
-
+# Input: nums1 = [4,1,2], nums2 = [1,3,4,2].
+# Output: [-1,3,-1]
+# Explanation:
+#     For number 4 in the first array, you cannot find the next greater number for it in the second array, so output -1.
+#     For number 1 in the first array, the next greater number for it in the second array is 3.
+#     For number 2 in the first array, there is no next greater number for it in the second array, so output -1.
 def next_greater_element(nums1, nums2):
     if not nums1 or not nums2:
         return
@@ -172,6 +167,22 @@ def max_area_min_sum_product(nums):
     return max_v
 
 
+def trap(height):
+    res = 0
+    stack = []
+    for i in range(len(height)):
+        while stack and height[i] > height[stack[-1]]:
+            j = stack.pop(-1)
+            if not stack:
+                break
+            distance = i - stack[-1] - 1
+            bounded_height = min(height[i], height[stack[-1]]) - height[j]
+            res += distance * bounded_height  # 可以多加的水
+        stack.append(i)
+
+    return res
+
+
 if __name__ == '__main__':
     print('最大值值队列')
     maxQueue = MaxQueue()
@@ -195,3 +206,6 @@ if __name__ == '__main__':
 
     print('\n区间数字和与区间最小值乘积最大')
     print(max_area_min_sum_product([81, 87, 47, 59, 81, 18, 25, 40, 56, 0]))
+
+    print('\n接雨水')
+    print(trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))

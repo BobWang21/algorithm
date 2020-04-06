@@ -22,6 +22,7 @@ def n_sum(nums, k, target):
     return res
 
 
+# 698
 def can_partition_k_subsets(nums, k):
     if len(nums) < k:
         return False
@@ -29,13 +30,16 @@ def can_partition_k_subsets(nums, k):
     if total % k != 0:  # 不可整除
         return False
     target = int(total / k)
+    candidate = []
     for v in nums:
         if v > target:
             return False
         elif v == target:
             k -= 1
-
-    visited = [False] * len(nums)  # 已经使用过的数字 不能再次访问 如果没有重复数字可以使用set
+        else:
+            candidate.append(v)
+    n = len(candidate)
+    visited = [False] * n  # 已经使用过的数字 不能再次访问 如果没有重复数字可以使用set
 
     def helper(idx, k, tar):
         if k == 0:
@@ -44,11 +48,11 @@ def can_partition_k_subsets(nums, k):
             return helper(0, k - 1, target)  # 多次从0开始
         if tar < 0:
             return False
-        for i in range(idx, len(nums)):
+        for i in range(idx, n):
             if visited[i]:
                 continue
             visited[i] = True
-            if helper(i + 1, k, tar - nums[i]):
+            if helper(i + 1, k, tar - candidate[i]):
                 return True
             visited[i] = False  # 如果不满足回溯
         return False
@@ -414,9 +418,130 @@ def nested_list_weight_sum(nums):
     return res[0]
 
 
+# 岛屿数
+def num_islands(grid):
+    if not grid:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+
+    def helper(i, j):
+        queue = [(i, j)]
+        grid[i][j] = '0'
+        while queue:
+            i, j = queue.pop(0)
+            if i - 1 >= 0 and grid[i - 1][j] == '1':
+                grid[i - 1][j] = '0'
+                queue.append((i - 1, j))
+            if i + 1 < rows and grid[i + 1][j] == '1':
+                grid[i + 1][j] = '0'
+                queue.append((i + 1, j))
+            if j - 1 >= 0 and grid[i][j - 1] == '1':
+                grid[i][j - 1] = '0'
+                queue.append((i, j - 1))
+            if j + 1 < cols and grid[i][j + 1] == '1':
+                grid[i][j + 1] = '0'
+                queue.append((i, j + 1))
+        return 1
+
+    num = 0
+    for i in range(rows):
+        for j in range(cols):
+            if grid[i][j] == '1':
+                num += helper(i, j)
+    return num
+
+
+# 岛屿数 dfs
+def num_islands2(grid):
+    if not grid:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+
+    def dfs(i, j):
+        if i < 0 or j < 0 or i == rows or j == cols or grid[i][j] == '0':
+            return
+        grid[i][j] = '0'
+        dfs(i - 1, j)
+        dfs(i + 1, j)
+        dfs(i, j - 1)
+        dfs(i, j + 1)
+        return
+
+    num = 0
+    for i in range(rows):
+        for j in range(cols):
+            if grid[i][j] == '1':
+                dfs(i, j)
+                num += 1
+    return num
+
+
+# 130 将围住的o变成 x 逆向思维
+def surrounded_regions(board):
+    if not board:
+        return
+    rows, cols = len(board), len(board[0])
+
+    def dfs(i, j):
+        if i < 0 or j < 0 or i == rows or j == cols or board[i][j] == 'X':
+            return
+        if board[i][j] == 'A':
+            return
+        board[i][j] = 'A'
+        dfs(i - 1, j)
+        dfs(i + 1, j)
+        dfs(i, j - 1)
+        dfs(i, j + 1)
+
+    for i in range(rows):
+        dfs(i, 0)
+        dfs(i, cols - 1)
+    for j in range(cols):
+        dfs(0, j)
+        dfs(rows - 1, j)
+    dic = {'A': 'O', 'O': 'X', 'X': 'X'}
+    for i in range(rows):
+        for j in range(cols):
+            board[i][j] = dic[board[i][j]]
+    return board
+
+
+# 130 回溯思想
+def surrounded_regions2(board):
+    if not board:
+        return
+    rows, cols = len(board), len(board[0])
+
+    def back(path):
+        for i, j in path:
+            board[i][j] = 'O'
+
+    def dfs(i, j, path):
+        if i < 0 or j < 0 or i == rows or j == cols:
+            return False
+        if board[i][j] == 'X':
+            return True
+        board[i][j] = 'X'
+        path.add((i, j))  # !!!
+        if dfs(i - 1, j, path) and dfs(i + 1, j, path) and dfs(i, j - 1, path) and dfs(i, j + 1, path):
+            return True
+        back(path)
+        return False
+
+    for i in range(rows):
+        for j in range(cols):
+            if board[i][j] == 'O':
+                dfs(i, j, set())
+    return board
+
+
 if __name__ == '__main__':
     print('n sum 回溯版')
     print(n_sum([1, 1, 2, 3, 4], 3, 6))
+
+    print('\nk个和相等的子数组')
+    nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
+    print(can_partition_k_subsets(nums, 4))
 
     print('\n数组中不包含重复数字 一个数字可以用无数次')
     print(combination_sum([2, 3, 5], 8))
@@ -454,10 +579,6 @@ if __name__ == '__main__':
     print('\nfind_cheapest_price')
     print(find_cheapest_price([[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
 
-    print('\nk个和相等的子数组')
-    nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
-    print(can_partition_k_subsets(nums, 4))
-
     print("\nip恢复")
     print(restore_ip_addresses("010010"))
 
@@ -470,3 +591,15 @@ if __name__ == '__main__':
              [float('inf'), -1, float('inf'), -1],
              [0, -1, float('inf'), float('inf')]]
     print(walls_and_gates(rooms))
+
+    print('\n岛屿数')
+    grid = [['1', '1', '0', '0', '0'],
+            ['1', '1', '0', '0', '0'],
+            ['0', '0', '1', '0', '0'],
+            ['0', '0', '0', '1', '1']]
+    print(num_islands(grid))
+    grid = [['1', '1', '0', '0', '0'],
+            ['1', '1', '0', '0', '0'],
+            ['0', '0', '1', '0', '0'],
+            ['0', '0', '0', '1', '1']]
+    print(num_islands2(grid))

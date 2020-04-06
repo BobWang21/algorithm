@@ -124,24 +124,45 @@ def middle_node(head):
 
 def remove_nth_from_end(head, n):
     if not head:
-        return head
+        return
     fast = head
-    while fast and n > 0:
+    while n > 0:
         fast = fast.next
         n -= 1
-    if n > 0:
-        return
-    pre = None
     slow = head
+    pre = None
     while fast:
         fast = fast.next
         pre = slow
         slow = slow.next
-    if not pre:  # 恰好为头节点
+    if not pre:
         return head.next
-    else:
-        pre.next = slow.next
-        return head
+    pre.next = slow.next  # 赋值前需要判断
+    return head
+
+
+def partition(head, x):
+    if not head:
+        return
+    s_pre = small = ListNode(-1)
+    b_pre = big = ListNode(-1)
+    while head:
+        if head.val < x:
+            s_pre.next = head
+            s_pre = s_pre.next
+            head = head.next
+            s_pre.next = None
+        else:
+            b_pre.next = head
+            b_pre = b_pre.next
+            head = head.next
+            b_pre.next = None
+    if not small.next:
+        return big.next
+    if not big.next:
+        return small.next
+    s_pre.next = big.next
+    return small.next
 
 
 # 链表排序 148
@@ -285,8 +306,9 @@ def get_intersection_node2(headA, headB):
     return s1
 
 
-# 判断链表存在环
-def detect_cycle(head):
+# 判断链表存在环以及环的入口
+# 也可以使用set保存已经访问过的节点
+def detect_cycle2(head):
     if not head:
         return
     if not head.next:
@@ -339,6 +361,10 @@ if __name__ == '__main__':
     head = construct_list_node([1, 3, 5, 7])
     print_list_node(swap_pairs(head))
 
+    print('\npartition')
+    head = construct_list_node([1, 4, 3, 2, 5, 2])
+    print_list_node(partition(head, 3))
+
     print('\n链表排序')
     l1 = construct_list_node([8, 1, 3, 7])
     print_list_node(sort_list(l1))
@@ -370,4 +396,4 @@ if __name__ == '__main__':
     b.next = c
     c.next = b
     head = a
-    print(detect_cycle(head))
+    print(detect_cycle2(head))

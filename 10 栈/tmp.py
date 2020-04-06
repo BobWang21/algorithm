@@ -119,7 +119,7 @@ def validate_stack_sequences(pushed, popped):
         return False
     stack = []
     while pushed:
-        v = pushed.pop(0)
+        v = pushed.pop(0)  # 先进栈
         stack.append(v)
         while stack and stack[-1] == popped[0]:
             stack.pop(-1)

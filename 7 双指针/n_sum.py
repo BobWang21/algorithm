@@ -12,22 +12,22 @@ def two_sum(nums, target):
     size = len(nums)
     if size < 2:
         return []
-    left, right = 0, size - 1
+    l, r = 0, size - 1
     res = []
-    while left < right:
-        s = nums[left] + nums[right]
-        if s == target:
-            res.append([nums[left], nums[right]])
-            while left < right and nums[left] == nums[left + 1]:
-                left += 1
-            while left < right and nums[right] == nums[right - 1]:
-                right -= 1
-            left += 1
-            right -= 1
-        elif s < target:
-            left += 1
+    while l < r:
+        s = nums[l] + nums[r]
+        if s < target:
+            l += 1
+        elif s > target:
+            r -= 1
         else:
-            right -= 1
+            res.append([nums[l], nums[r]])
+            while l < r and nums[l] == nums[l + 1]:  # 左边跳出相等部分即可
+                l += 1
+            l += 1
+            # while l < r and nums[r] == nums[r - 1]:
+            #     r -= 1
+            # r -= 1
     return res
 
 
@@ -38,24 +38,22 @@ def three_sum(nums, target):
         return
     nums.sort()
     res = []
-    for i in range(len(nums) - 2):
-        if i > 0 and nums[i] == nums[i - 1]:  # 防止重复
+    n = len(nums)
+    for i in range(n - 2):
+        if i > 0 and nums[i] == nums[i - 1]:  # 防止重复!!!
             continue
-        left, right = i + 1, len(nums) - 1
-        while left < right:
-            s = nums[i] + nums[left] + nums[right]
+        l, r = i + 1, n - 1
+        while l < r:
+            s = nums[i] + nums[l] + nums[r]
             if s < target:
-                left += 1
+                l += 1
             elif s > target:
-                right -= 1
+                r -= 1
             else:
-                res.append([nums[i], nums[left], nums[right]])
-                while left < right and nums[left] == nums[left + 1]:  # 跳出时left为最后一个相同的数
-                    left += 1
-                while left < right and nums[right] == nums[right - 1]:
-                    right -= 1
-                left += 1
-                right -= 1
+                res.append([nums[i], nums[l], nums[r]])
+                while l < r and nums[l] == nums[l + 1]:  # 跳出时left为最后一个相同的数
+                    l += 1
+                l += 1
     return res
 
 

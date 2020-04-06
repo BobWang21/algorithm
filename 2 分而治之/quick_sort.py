@@ -9,7 +9,7 @@ def quick_sort(nums, lo, hi):
         quick_sort(nums, mid + 1, hi)
 
 
-def partition(nums, lo, hi):
+def partition(nums, lo, hi):  # 原地修改
     pivot = nums[lo]
     while lo < hi:
         while lo < hi and pivot <= nums[hi]:
@@ -56,19 +56,14 @@ def get_least_num(nums, k):
         nums[l] = pivot
         return l
 
-    n = len(nums)
-    if k == 0:
-        return
-    if n <= k:
-        return nums
-    p = partition(nums, 0, n - 1)
-    while True:
-        if p + 1 == k:
-            break
+    l, r = 0, len(nums) - 1
+    p = partition(nums, l, r)
+    while p != k-1:
         if p + 1 < k:
-            p = partition(nums, p + 1, n - 1)
+            l = p + 1
         else:
-            p = partition(nums, 0, p - 1)
+            r = p - 1
+        p = partition(nums, l, r)
     return nums[:k]
 
 

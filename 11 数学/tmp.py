@@ -231,6 +231,7 @@ def count_primes(n):
     return sum(res)
 
 
+# 最大公约数
 def common_greatest_divisor(a, b):
     if a < b:
         a, b = b, a
