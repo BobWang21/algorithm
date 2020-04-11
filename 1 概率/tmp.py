@@ -45,15 +45,26 @@ def weighted_random(nums, weight):
 
 def reservoir_sampling(nums, m):
     res = np.zeros(m)
-
     for i, value in enumerate(nums):
         # 保存前n个数，保证至少有n个数
         if i < m:
             res[i] = value
         else:
-            if rd.randint(1, i + 1) <= m:  # 第i个数被选中概率为 m/(i+1)
+            if rd.randint(1, i + 1) <= m:  # 第i个数被选中概率为 m/i i start from 1!!!
                 idx = rd.randint(0, m - 1)
                 res[idx] = value
+    return res
+
+
+# 随机返回数组中等于target的索引
+def pick(nums, target):
+    n = 1
+    res = None
+    for i, v in enumerate(nums):
+        if v == target:
+            if rd.randint(1, n) == 1:  # 第i元素被选中的概率为 1/i  m = 1的特殊场景
+                res = i
+            n += 1
     return res
 
 
@@ -61,7 +72,7 @@ def reservoir_sampling(nums, m):
 def rand2to5():
     while True:
         value = rd.randint(0, 1) * 2 ** 2 + rd.randint(0, 1) * 2 + rd.randint(0, 1)
-        if value <= 4:
+        if value < 5:
             return value + 1
 
 

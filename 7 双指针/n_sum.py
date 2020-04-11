@@ -147,6 +147,43 @@ def find_continuous_sequence(tar):
     return res
 
 
+def find_target_sum_ways(nums, S):
+    res = [0]
+    n = len(nums)
+
+    def helper(idx, total):
+        if idx == n and total == S:
+            res[0] = res[0] + 1
+            return
+        if idx == n:
+            return
+
+        helper(idx + 1, total + nums[idx])
+        helper(idx + 1, total - nums[idx])
+
+    helper(0, 0)
+    return res[0]
+
+
+def find_target_sum_ways2(nums, S):
+    if not nums:
+        return 0
+    dic = {}
+    if nums[0] == 0:
+        dic[0] = 2
+    else:
+        dic[nums[0]] = 1
+        dic[-nums[0]] = 1
+
+    for num in nums[1:]:
+        new_dic = {}
+        for v in dic:
+            new_dic[v + num] = new_dic.get(v + num, 0) + dic[v]
+            new_dic[v - num] = new_dic.get(v - num, 0) + dic[v]
+        dic = new_dic
+    return dic.get(S, 0)
+
+
 if __name__ == '__main__':
     print('2 sum')
     print(two_sum([1, 2, 7, 8, 11, 15], 9))

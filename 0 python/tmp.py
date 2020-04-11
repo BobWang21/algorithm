@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import heapq as hq
 import math
 import random
 
@@ -80,3 +81,9 @@ if __name__ == '__main__':
             b.add(v)
     a = a - b
     print(a)
+
+    heap = []
+    for i in [3, 4, 1, 2]:
+        hq.heappush(heap, i)
+    while heap:
+        print(hq.heappop(heap))

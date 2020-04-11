@@ -47,6 +47,46 @@ def search_matrix(matrix, tar):
     return False
 
 
+# 选择排序
+def select_sort(nums):
+    if not nums:
+        return
+    n = len(nums)
+    for i in range(n):
+        idx = i
+        for j in range(i + 1, n):
+            if nums[j] < nums[idx]:
+                idx = j
+        nums[idx], nums[i] = nums[i], nums[idx]
+    return nums
+
+
+# 最长连续数字 最小值的连续个数
+def longest_consecutive(nums):
+    def helper(s):
+        i = 0
+        v = min(s)
+        while True:
+            if i + v in s:
+                s.remove(i + v)
+                i += 1
+            else:
+                return i
+
+    if not nums:
+        return 0
+    s = set(nums)
+    res = 0
+    while s:
+        res = max(helper(s), res)
+        if res >= (len(nums)) // 2:
+            return res
+    return res
+
+
 if __name__ == '__main__':
     print('下一个排列')
     print(next_permutation([1, 1, 3]))
+
+    print('选择排序')
+    print(select_sort([3, 1, 4, 4, 10, -1]))

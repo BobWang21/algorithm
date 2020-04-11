@@ -68,27 +68,68 @@ def search_last_pos(nums, target):
     return l if nums[l] == target else -1
 
 
+def search_first_large(nums, target):
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = (l + r) // 2
+        if nums[mid] <= target:
+            l = mid + 1
+        else:
+            r = mid
+    return r if nums[r] > target else -1
+
+
 # 旋转数组中的最小值
 # [3 4 1 2] 为 [1 2 3 4]的旋转数组
 def find_min(nums):
-    n = len(nums)
-    if n < 1:
-        return
-    if n == 1:
-        return nums[0]
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if not nums:
+        return -1
     if nums[0] < nums[-1]:
         return nums[0]
-    l, r = 0, n - 1
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = (l + r) // 2
+        if nums[mid] >= nums[0]:
+            l = mid + 1
+        else:
+            r = mid
+    return nums[l]
+
+
+# 递归
+def find_min2(nums):
+    if len(nums) <= 2:
+        return min(nums)
+    l, r = 0, len(nums) - 1
+    if nums[0] < nums[r]:
+        return nums[0]
+    mid = (l + r) // 2
+    return min(find_min2(nums[:mid]), find_min2(nums[mid:]))
+
+
+def search(nums, target):
+    if not nums:
+        return -1
+    l, r = 0, len(nums) - 1
     while l <= r:
         mid = (l + r) // 2
-        if nums[mid] < nums[mid - 1]:
-            return nums[mid]
-        if nums[mid + 1] < nums[mid]:
-            return nums[mid + 1]
-        if nums[mid] < nums[0]:
-            r = mid - 1
-        elif nums[mid] > nums[-1]:
-            l = mid + 1
+        if nums[mid] == target:
+            return mid
+        if nums[mid] >= nums[l]:
+            if nums[mid] > target >= nums[l]:
+                r = mid - 1
+            else:
+                l = mid + 1
+        if nums[mid] <= nums[r]:
+            if nums[mid] < target <= nums[r]:
+                l = mid + 1
+            else:
+                r = mid - 1
+    return -1
 
 
 # 数字在排序数组中出现的次数
@@ -169,17 +210,29 @@ def find_missed_val(nums):
 
 
 if __name__ == '__main__':
-    print('二分查找')
+    print('\n二分查找')
     data = [1, 3, 5, 9, 10, 16, 17]
     print(binary_search2(data, 3))
 
-    print('旋转数组中的最小值')
-    print(find_min([5, 1, 2, 4]))
+    print('\n数值等于target的最小索引')
+    print(search_first_pos([1, 2, 3, 3, 9], 3))
 
-    print('数字在升序数字中出现的次数')
+    print('\n数值等于target的最大索引')
+    print(search_last_pos([1, 2, 3, 3, 9], 3))
+
+    print('\n第一个大于target的数值索引')
+    print(search_first_large([1, 2, 3, 3, 9], 6))
+
+    print('\n旋转数组中的最小值')
+    print(find_min([5, 1]))
+
+    print('\n旋转数组查找')
+    print(search([4, 5, 6, 7, 0, 1, 2], 3))
+
+    print('\n数字在升序数字中出现的次数')
     nums = [1, 2, 3, 3, 3, 3, 4, 4]
     print(get_number_of_k(nums, 3))
     print(get_number_of_k2(nums, 1, 0, len(nums) - 1))
 
-    print('找出0 - n之间缺少的一个数字')
+    print('\n找出0 - n之间缺少的一个数字')
     print(find_missed_val([0, 1, 3]))
