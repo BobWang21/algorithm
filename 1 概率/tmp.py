@@ -77,13 +77,13 @@ def rand2to5():
 
 # 均匀分布生成正态分布 中心极限定理
 def uniform_2_normal():
-    m = 100
-    s = 0
-    for j in range(m):
-        s += rd.uniform(0, 1)
-    u = m * 0.5
-    d = m / 12.0
-    return (s - u) / (d ** 0.5)
+    n = 100
+    total = 0
+    for j in range(n):
+        total += rd.uniform(0, 1)
+    mean = n * 0.5
+    mse = n * (1 / 12)
+    return (total - mean) / (mse ** 0.5)
 
 
 # 把n个骰子扔在地上，所有骰子朝上一面的点数之和为S
@@ -131,7 +131,7 @@ if __name__ == '__main__':
 
     print('\n均匀分布生成正太分布')
     res = []
-    n = 1000
+    n = 10000
     for i in range(n):
         res.append(uniform_2_normal())
     v = sum(res) / n
