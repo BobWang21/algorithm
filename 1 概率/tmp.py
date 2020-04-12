@@ -5,7 +5,6 @@ Created on Thu Jun 29 15:50:36 2017
 
 @author: wangbao
 """
-
 import random as rd
 from collections import Counter
 
@@ -76,6 +75,17 @@ def rand2to5():
             return value + 1
 
 
+# 均匀分布生成正态分布 中心极限定理
+def uniform_2_normal():
+    m = 100
+    s = 0
+    for j in range(m):
+        s += rd.uniform(0, 1)
+    u = m * 0.5
+    d = m / 12.0
+    return (s - u) / (d ** 0.5)
+
+
 # 把n个骰子扔在地上，所有骰子朝上一面的点数之和为S
 # 输入n，打印出S的所有可能的值出现的概率
 def probability(n):
@@ -113,11 +123,20 @@ if __name__ == '__main__':
         res.append(weighted_random(list(range(3)), [2, 2, 4]))
     print(Counter(res))
 
-    print('\n构造随机发生器')
+    print('\nrand2构造rand5')
     res = []
     for i in range(500):
         res.append(rand2to5())
     print(Counter(res))
+
+    print('\n均匀分布生成正太分布')
+    res = []
+    n = 1000
+    for i in range(n):
+        res.append(uniform_2_normal())
+    v = sum(res) / n
+    s = sum([(v - i) ** 2 for i in res]) / n
+    print(v, s)
 
     print('\nn个色子的和的概率')
     print(probability(2))
