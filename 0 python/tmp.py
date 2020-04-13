@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import collections
 import heapq as hq
 import math
 import random
@@ -48,6 +49,7 @@ if __name__ == '__main__':
     dic[1] = dic.get(2, 0) + 1
     for k, v in dic.items():
         print(k, v)
+    print(type({}))  # {}表示字段
 
     print('\n字符串')
     s = 'abc'
@@ -58,11 +60,13 @@ if __name__ == '__main__':
     print(chr(97))  # 数字转字符
     print(ord('a'))  # 字母对应的数字
     print([chr(ord('a') + i) for i in range(26)])
+    lists = [c for c in s]  # split 是针对分隔符分割 默认空格
+    print(lists)
 
     print('\n集合')
     a = ['a', 'b', 'c']
     print(set(a))  # 将元素迭代解析成集合的每个元素
-    b = {'abc'}
+    b = {'abc'}  # set()的输入元素需要可迭代
     c = {(1, 2)}  # set((1, 2)) 输出 {1, 2}
     A = {1, 2, 3}
     B = {3, 4, 5}
@@ -75,7 +79,6 @@ if __name__ == '__main__':
     print(E, F, G)
     # 删除集合中的元素
     a = {1, 2, 3}
-    b = set()
     for v in a:  # 不可在遍历集合时删除其中元素
         if v == 2:
             b.add(v)
@@ -87,3 +90,7 @@ if __name__ == '__main__':
         hq.heappush(heap, i)
     while heap:
         print(hq.heappop(heap))
+
+    graph = collections.defaultdict(set)
+    graph[1].add(2)
+    print(graph)

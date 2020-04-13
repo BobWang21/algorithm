@@ -188,10 +188,10 @@ def get_ugly_number(n):
     return res[-1]
 
 
-# 求平方根 也可以使用牛顿法
+# 求平方根
 def my_sqrt(n):
-    if n < 2:
-        return n
+    if n == 1:
+        return 1
     l, r = 1, n
     while l <= r:
         m = (l + r) // 2
@@ -209,9 +209,11 @@ def my_sqrt2(n):
     def fun(x):
         return x ** 2 - n  # 开口向上
 
+    if n == 1:
+        return 1
     x = n // 2
     f = fun(n)
-    while f > 0:
+    while abs(f - n) < 0.1:
         k = 2 * x
         b = f - k * x
         x = -b / k
