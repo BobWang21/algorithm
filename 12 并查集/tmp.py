@@ -17,12 +17,12 @@ def find_circle_num(M):
         root_y = find(y)
         if root_x == root_y:
             return True  # 在同一个集合中 再加一条边 说明存在环
-        # 减少计算
+        # 减少计算 合并时rank小的树合并到rank大的树上 合并后的rank不变
         if rank[root_x] < rank[root_y]:
             par[root_x] = root_y
         elif rank[root_x] > rank[root_y]:
             par[root_y] = root_x
-        else:
+        else:  # 相等时 合并后的rank+1
             par[root_y] = root_x
             rank[root_x] += 1
         res[0] -= 1
@@ -41,17 +41,17 @@ def find_circle_num2(M):
     seen = set()
 
     def dfs(node):
-        for nei, adj in enumerate(M[node]):
-            if adj and nei not in seen:
-                seen.add(nei)
-                dfs(nei)
+        for i, v in enumerate(M[node]):
+            if v and i not in seen:
+                seen.add(i)
+                dfs(i)
 
-    ans = 0
+    res = 0
     for i in range(n):
         if i not in seen:
             dfs(i)
-            ans += 1
-    return ans
+            res += 1
+    return res
 
 
 def check_circle(M):
