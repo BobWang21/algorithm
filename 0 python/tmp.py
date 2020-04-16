@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import collections
 import heapq as hq
 import math
 import random
+from collections import defaultdict
 
 
 def change(nums):
@@ -91,6 +91,6 @@ if __name__ == '__main__':
     while heap:
         print(hq.heappop(heap))
 
-    graph = collections.defaultdict(set)
+    graph = defaultdict(set)
     graph[1].add(2)
     print(graph)

@@ -53,6 +53,70 @@ def swap_pairs(head):
     return dummy.next
 
 
+def reverse_k_group(head, k):
+    def reverse(head):
+        if not head:
+            return
+        pre = None
+        tail = head
+        while head:
+            nxt = head.next
+            head.next = pre
+            pre = head
+            head = nxt
+        return pre, tail
+
+    if not head.next:
+        return head
+
+    fast = slow = head
+    dummy = pre = ListNode(None)
+    i = k
+    while fast:
+        pre_fast = fast
+        fast = fast.next
+        i -= 1
+        if i == 0:
+            pre_fast.next = None
+            new_head, tail = reverse(slow)
+            pre.next = new_head
+            pre = tail
+            slow = fast
+            i = k
+        if not fast:
+            pre.next = slow
+            return dummy.next
+
+
+# 递归
+def reverse_k_group2(head, k):
+    def reverse(head):
+        if not head:
+            return
+        pre = None
+        tail = head
+        while head:
+            nxt = head.next
+            head.next = pre
+            pre = head
+            head = nxt
+        return pre, tail
+
+    i = k
+    fast = head
+    while fast and i > 1:  # i = 1 包含k个节点
+        fast = fast.next
+        i -= 1
+    if not fast:
+        return head
+
+    nxt = fast.next
+    fast.next = None
+    new_head, tail = reverse(head)
+    tail.next = reverse_k_group2(nxt, k)
+    return new_head
+
+
 # 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
 # 例如链表1->2->3->3->4->4->5 处理后为 1->2-3->5
 def remove_duplicates(head):
@@ -351,6 +415,7 @@ if __name__ == '__main__':
     print_list_node(reverse(head))
 
     print('\n链表倒数第K个节点')
+    head = construct_list_node([1, 3, 5, 7])
     print(tail(head, 1))
 
     head = construct_list_node([1, 3, 5, 7, 9])
@@ -361,9 +426,17 @@ if __name__ == '__main__':
     head = construct_list_node([1, 3, 5, 7])
     print_list_node(swap_pairs(head))
 
+    print('\nreverse k group')
+    head = construct_list_node(list(range(10)))
+    print_list_node(reverse_k_group(head, 5))
+
+    print('\nreverse k group')
+    head = construct_list_node(list(range(10)))
+    print_list_node(reverse_k_group2(head, 5))
+
     print('\npartition')
     head = construct_list_node([1, 4, 3, 2, 5, 2])
-    print_list_node(partition(head, 3))
+    print_list_node(partition(head, 4))
 
     print('\n链表排序')
     l1 = construct_list_node([8, 1, 3, 7])

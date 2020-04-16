@@ -1,4 +1,5 @@
 import heapq as hq
+from collections import defaultdict
 
 
 def merge_sort(nums):
@@ -43,22 +44,20 @@ def kth_smallest(matrix, k):
     return -heap[0]
 
 
-# 求最小 就用大顶堆
+# 373. Find K Pairs with Smallest Sums
 def k_smallest_pairs(nums1, nums2, k):
     heap = []
-    dic = dict()
+    dic = defaultdict(list)
     for i, v1 in enumerate(nums1):
         for j, v2 in enumerate(nums2):
             new_value = v1 + v2
             if len(heap) < k:
                 hq.heappush(heap, -new_value)
-                dic.setdefault(-new_value, [])
                 dic[-new_value].append([v1, v2])
             elif new_value < -heap[0]:
                 v = hq.heappop(heap)
-                dic[v].pop(0)
+                dic[v].pop(0)  # 可能有重复值
                 hq.heappush(heap, -new_value)
-                dic.setdefault(-new_value, [])
                 dic[-new_value].append([v1, v2])
     res = []
     for k, v in dic.items():
@@ -116,48 +115,16 @@ class MedianFinder(object):
             return (-self.large[0] + self.small[0]) / 2.0
 
 
-# 373. Find K Pairs with Smallest Sums
-def k_smallest_pairs(nums1, nums2, k):
-    heap = []
-    dic = dict()
-    for i, v1 in enumerate(nums1):
-        for j, v2 in enumerate(nums2):
-            new_value = v1 + v2
-            if len(heap) < k:
-                hq.heappush(heap, -new_value)
-                dic.setdefault(-new_value, [])
-                dic[-new_value].append([v1, v2])
-            elif new_value < -heap[0]:
-                v = hq.heappop(heap)
-                dic[v].pop(0)
-                hq.heappush(heap, -new_value)
-                dic.setdefault(-new_value, [])
-                dic[-new_value].append([v1, v2])
-    res = []
-    for k, v in dic.items():
-        res.extend(v)
-    return res
-
-
 if __name__ == '__main__':
     print('\n合并K个有序数组')
     print(merge_sort([[1, 1, 1, 1], [2, 2, 2, 2], [3, 4, 5, 6]]))
     heap = []
 
-    print('\n字母排序')
-    hq.heappush(heap, 'abc')
-    hq.heappush(heap, 'a')
-    while heap:
-        print(hq.heappop(heap))
+    print('\n最小的k个pair')
+    print(k_smallest_pairs([1, 7, 11], [2, 4, 6], 3))
 
     print('\n数据流中位数')
     obj = MedianFinder()
     obj.addNum(1)
     obj.addNum(2)
     print(obj.findMedian())
-
-    print('\n最小的k个pair')
-    nums1 = [1, 7, 11]
-    nums2 = [2, 4, 6]
-    k = 3
-    print(k_smallest_pairs(nums1, nums2, k))

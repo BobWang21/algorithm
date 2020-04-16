@@ -8,7 +8,7 @@ def find_circle_num(M):
 
     def find(x):
         while par[x] != x:
-            par[x] = par[par[x]]  # 路径减半
+            par[x] = par[par[x]]  # 路径压缩 变为一半
             x = par[x]
         return x
 
