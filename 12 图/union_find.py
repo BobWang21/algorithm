@@ -16,7 +16,7 @@ def find_circle_num(M):
         root_x = find(x)
         root_y = find(y)
         if root_x == root_y:
-            return True  # 在同一个集合中 再加一条边 说明存在环
+            return True  # 已经在同一个集合中 再加一条边 说明存在环
         # 减少计算 合并时rank小的树合并到rank大的树上 合并后的rank不变
         if rank[root_x] < rank[root_y]:
             par[root_x] = root_y

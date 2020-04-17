@@ -66,11 +66,28 @@ def max_continuous_product(nums):
 
 # 给定一个整数的数组, 相邻的数不能同时选
 # 求从该数组选取若干整数, 使得他们的和最大
-def not_continuous_sum(nums):
+# 可能包含负数
+def rob(nums):
     include = exclude = 0
     for val in nums:
         include, exclude = max(val, exclude + val), max(exclude, include)
     return max(include, exclude)
+
+
+# dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+# 全为正数
+def rob_(nums):
+    if not nums:
+        return 0
+    n = len(nums)
+    if n < 3:
+        return max(nums)
+    res = [0] * n
+    res[0] = nums[0]
+    res[1] = max(nums[:2])
+    for i in range(2, n):
+        res[i] = max(res[i - 2] + nums[i], res[i - 1])
+    return res[-1]
 
 
 # 第一个和最后一个连成环 不能同时选
@@ -128,6 +145,30 @@ def longest_increasing_subsequence2(nums):
             idx = binary_search(res, v)
             res[idx] = v
     return len(res)
+
+
+# 最长回文
+def longest_palindrome_subseq(s):
+    if not s:
+        return 0
+    n = len(s)
+    dic = dict()
+
+    def helper(l, r):
+        if l == r:
+            dic[(l, r)] = 1
+            return 1
+        if r < l:
+            return 0
+        if (l, r) in dic:
+            return dic[(l, r)]
+        if s[l] == s[r]:
+            dic[(l, r)] = helper(l + 1, r - 1) + 2
+            return dic[(l, r)]
+        dic[(l, r)] = max(helper(l + 1, r), helper(l, r - 1))
+        return dic[(l, r)]
+
+    return helper(0, n - 1)
 
 
 # 最长公共子序列
@@ -260,14 +301,18 @@ if __name__ == '__main__':
     print('\n连续子序列乘积最大')
     print(max_continuous_product([-1, 2, 3, 0.1, -10]))
 
-    print('\n非连续子序列和最大')
-    print(not_continuous_sum([5, 3, -6, -5, 10]))
+    print('\n抢钱1')
+    print(rob([5, 3, -6, -5, 10]))
+    print(rob_([5, 3, -6, -5, 10]))
 
-    print('\n抢钱')
+    print('\n抢钱2')
     print(rob2([1, 2, 1, 1]))
 
     print('\n最长上升子序列')
     print(longest_increasing_subsequence([2, 5, 3, 4, 1, 7, 6]))
+
+    print('\n最长回文子序列')
+    print(longest_palindrome_subseq('aabcd'))
 
     print('\n最长公共子序列')
     print(longest_common_subsequence('aabcd', 'ad'))

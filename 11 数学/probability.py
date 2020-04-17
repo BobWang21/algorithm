@@ -79,8 +79,8 @@ def uniform_2_normal():
     for j in range(n):
         total += rd.uniform(0, 1)
     mean = n * 0.5
-    mse = n * (1 / 12)
-    return (total - mean) / (mse ** 0.5)
+    rmse = (n * (1 / 12)) ** 0.5
+    return (total - mean) / rmse
 
 
 # 把n个骰子扔在地上，所有骰子朝上一面的点数之和为S
@@ -131,9 +131,9 @@ if __name__ == '__main__':
     n = 10000
     for i in range(n):
         res.append(uniform_2_normal())
-    v = sum(res) / n
-    s = sum([(v - i) ** 2 for i in res]) / n
-    print(v, s)
+    mean = sum(res) / n
+    mse = sum([(mean - i) ** 2 for i in res]) / n
+    print('mean:%f, mse:%f' % (mean, mse))
 
     print('\nn个色子的和的概率')
     print(probability(2))

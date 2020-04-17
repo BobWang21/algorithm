@@ -2,28 +2,27 @@ import heapq as hq
 from collections import defaultdict
 
 
-def merge_sort(nums):
+def merge(nums):
     if not nums or not nums[0]:
         return
     n = len(nums)
     if n == 1:
         return nums[0]
     heap = []
+    dic = defaultdict(list)
     for i in range(n):
-        hq.heappush(heap, nums[i].pop(0))
-
-    res = [hq.heappop(heap)]
+        v = nums[i].pop(0)
+        dic[v].append(i)
+        hq.heappush(heap, v)
+    res = []
     while heap:
-        for i in range(n):
-            while nums[i]:
-                v = nums[i].pop(0)
-                if v <= heap[0]:  # 处理相等值
-                    res.append(v)
-                else:
-                    hq.heappush(heap, v)
-                    break
         v = hq.heappop(heap)
         res.append(v)
+        i = dic[v].pop(-1)
+        if nums[i]:
+            v = nums[i].pop(0)
+            dic[v].append(i)
+            hq.heappush(heap, v)
     return res
 
 
@@ -117,7 +116,7 @@ class MedianFinder(object):
 
 if __name__ == '__main__':
     print('\n合并K个有序数组')
-    print(merge_sort([[1, 1, 1, 1], [2, 2, 2, 2], [3, 4, 5, 6]]))
+    print(merge([[1, 1, 1, 1], [2, 2, 2, 2], [3, 4, 5, 6]]))
     heap = []
 
     print('\n最小的k个pair')

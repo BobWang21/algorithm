@@ -2,10 +2,71 @@
 # -*- coding: utf-8 -*-
 
 
-# 286 -1 -墙壁或障碍物 0 -大门  INF -无限意味着一个空房间 2147483647 来表示。
+# 是否连通 1表示墙壁 0表示空地
+def maze_can_reach(maze, start, destination):
+    if not maze or not maze[0]:
+        return False
+    m, n = len(maze), len(maze[0])
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    wall, empty = 1, 0
+
+    def dfs(i, j):
+        if i < 0 or j < 0 or i == m or j == n:
+            return False
+
+        if maze[i][j] == wall:  # 访问过 或是 墙 不需要回溯!!!
+            return False
+
+        # 到达目的地
+        if [i, j] == destination[1]:
+            return True
+
+        # 标记已经访问的点
+        maze[i][j] = wall
+
+        for d in directions:
+            if dfs(i + d[0], j + d[1]):  # 多路问题
+                return True
+        return False
+
+    return dfs(start[0], start[1])
+
+
+# 1表示墙壁 0表示空地
+def maze_short_path(maze, start, destination):
+    if not maze or not maze[0]:
+        return False
+    rows, cols = len(maze), len(maze[0])
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    wall, empty = 1, 0
+
+    def safe(i, j):
+        if i < 0 or j < 0 or i == rows or j == cols:
+            return False
+        return True
+
+    def bfs():
+        queue = [(start[0], start[1], 0)]
+        while queue:
+            i, j, layer = queue.pop(0)
+            for d in directions:
+                x, y = i + d[0], j + d[1]
+                if safe(x, y) and maze[x][y] == empty:
+                    maze[x][y] = wall
+                    if [x, y] == destination:
+                        return layer + 1
+                    else:
+                        queue.append((x, y, layer + 1))
+        return -1
+
+    return bfs()
+
+
+# 286 -1: 墙 0:大门 INF:空房间 2147483647来表示。
 def walls_and_gates(rooms):
     if not rooms or not rooms[0]:
         return
+
     inf = 2147483647
     m, n = len(rooms), len(rooms[0])
     queue = []
@@ -22,10 +83,9 @@ def walls_and_gates(rooms):
         for direction in directions:
             r = row + direction[0]
             c = col + direction[1]
-            if r < 0 or c < 0 or r >= m or c >= n or rooms[r][c] != inf:  # 已经标记过 或者是墙
-                continue
-            rooms[r][c] = rooms[row][col] + 1
-            queue.append((r, c))
+            if 0 <= r < m and 0 <= c < n and rooms[r][c] == inf:  # 已经标记过 或者是墙
+                rooms[r][c] = rooms[row][col] + 1
+                queue.append((r, c))
 
 
 # bfs
@@ -120,7 +180,9 @@ def num_islands2(grid):
     rows, cols = len(grid), len(grid[0])
 
     def dfs(i, j):
-        if i < 0 or j < 0 or i == rows or j == cols or grid[i][j] == '0':
+        if i < 0 or j < 0 or i == rows or j == cols:
+            return
+        if grid[i][j] == '0':
             return
         grid[i][j] = '0'
         dfs(i - 1, j)
@@ -168,7 +230,7 @@ def surrounded_regions(board):
     return board
 
 
-# 130 回溯思想
+# 回溯思想
 def surrounded_regions2(board):
     if not board:
         return
@@ -184,9 +246,8 @@ def surrounded_regions2(board):
             return False
         if board[i][j] == 'X':
             return True
-
         board[i][j] = 'X'
-        path.add((i, j))  # !!!
+        path.add((i, j))  # 不建议这么写
         for d in directions:
             if dfs(i + d[0], j + d[1], path):
                 return True
@@ -200,30 +261,21 @@ def surrounded_regions2(board):
     return board
 
 
-# 是否连通 1表示墙壁 0表示空地
-def has_path(maze, start, destination):
-    if not maze or not maze[0]:
-        return False
-    m, n = len(maze), len(maze[0])
-    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-
-    def dfs(i, j):
-        if i < 0 or j < 0 or i == m or j == n or maze[i][j] == 1:
-            return False
-
-        if i == destination[0] and j == destination[1]:
-            return True
-        maze[i][j] = 1
-
-        for d in directions:
-            if dfs(i + d[0], j + d[1]):
-                return True
-        return False
-
-    return dfs(start[0], start[1])
-
-
 if __name__ == '__main__':
+    print('\n迷宫最短路径')
+    maze = [[0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+            [0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+            [1, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+            [0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+            [0, 1, 0, 0, 0, 0, 1, 0, 1, 1],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 1, 1, 1, 1, 0, 1, 1, 0]]
+    start = [0, 0]
+    end = [3, 4]
+    print(maze_short_path(maze, start, end) == 11)
+
     print('\nfind_cheapest_price')
     print(find_cheapest_price([[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
 
