@@ -137,7 +137,7 @@ def longest_increasing_subsequence2(nums):
 
     if not nums:
         return 0
-    res = [nums[0]]
+    res = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
     for v in nums[1:]:
         if v > res[-1]:
             res.append(v)
