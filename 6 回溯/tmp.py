@@ -331,6 +331,67 @@ def nested_list_weight_sum(nums):
     return res[0]
 
 
+def generate_parenthesis(n):
+    if n < 0:
+        return []
+    res = []
+
+    def helper(i, j, path, stack):
+        if not i and not j and not stack:
+            res.append(path)
+            return
+        if i < 0 or j < 0:
+            return
+        for c in ['(', ')']:
+            if not stack:
+                helper(i - 1, j, path + '(', ['('])
+                break
+            if c == ')' and stack[-1] == '(':
+                stack.pop(-1)
+                helper(i, j - 1, path + ')', stack)
+                continue
+            if c == '(':
+                helper(i - 1, j, path + '(', stack + ['('])
+
+    helper(n, n, '', [])
+    return res
+
+
+def max_profit(prices):
+    if not prices and len(prices) == 1:
+        return 0
+    n = len(prices)
+
+    cold, buy, sell = [0, 1, 2]
+    res = [0]
+
+    def helper(idx, buy_price, status, profit):
+        if idx == n:
+            res[0] = max(res[0], profit)
+            return
+
+        if status == cold:
+            if not buy_price:
+                helper(idx + 1, prices[idx], buy, profit)
+            helper(idx + 1, buy_price, cold, profit)
+            if buy_price:
+                helper(idx + 1, None, sell, profit + prices[idx] - buy_price)
+            return
+        if status == sell:
+            helper(idx + 1, None, cold, profit)
+            return
+
+        if status == buy:
+            v = prices[idx] - buy_price
+            if v > 0:
+                helper(idx + 1, None, sell, profit + v)
+            helper(idx + 1, buy_price, cold, profit)
+            return
+
+    helper(0, None, cold, 0)
+    return res[0]
+
+
 if __name__ == '__main__':
     print('\nn sum 回溯版')
     print(n_sum([1, 1, 2, 3, 4], 3, 6))
@@ -376,3 +437,9 @@ if __name__ == '__main__':
 
     print('\n嵌套链表权重和')
     print(nested_list_weight_sum([1, [4, [6]]]))
+
+    print('\n生成括号')
+    print(generate_parenthesis(2))
+
+    print('\n股票买卖')
+    print(max_profit([1, 2, 4]))

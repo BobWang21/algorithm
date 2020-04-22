@@ -1,26 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-"""
-
-
-# 超过一半的数
-def most_data(data):
-    size = len(data)
-    if size == 0:
-        raise Exception('')
-    value = data[0]
-    count = 1
-    for i in range(1, size):
-        if count == 0:
-            value = data[i]
-            count = 1
-            continue
-        if data[i] == value:
-            count += 1
-        else:
-            count -= 1
-    return value
 
 
 # 26 原地删除升序数组中的重复数字 并返回非重复数组的长度

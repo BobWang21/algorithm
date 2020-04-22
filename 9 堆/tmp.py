@@ -9,20 +9,16 @@ def merge(nums):
     if n == 1:
         return nums[0]
     heap = []
-    dic = defaultdict(list)
     for i in range(n):
         v = nums[i].pop(0)
-        dic[v].append(i)
-        hq.heappush(heap, v)
+        hq.heappush(heap, (v, i))
     res = []
     while heap:
-        v = hq.heappop(heap)
+        v, i = hq.heappop(heap)
         res.append(v)
-        i = dic[v].pop(-1)
         if nums[i]:
             v = nums[i].pop(0)
-            dic[v].append(i)
-            hq.heappush(heap, v)
+            hq.heappush(heap, (v, i))
     return res
 
 

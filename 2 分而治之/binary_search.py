@@ -1,33 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jul  9 17:02:31 2017
-
-@author: wangbao
+二分查找
 """
 
 
 #  二分查找 递归
-def binary_search(nums, lo, hi, tar):
+def binary_search(nums, lo, hi, target):
     if lo <= hi:
         mid = (lo + hi) // 2  # lo + (hi-lo) // 2
-        if nums[mid] == tar:
+        if nums[mid] == target:
             return mid
-        if nums[mid] > tar:
-            return binary_search(nums, lo, mid - 1, tar)
+        if nums[mid] > target:
+            return binary_search(nums, lo, mid - 1, target)
         else:
-            return binary_search(nums, mid + 1, hi, tar)
+            return binary_search(nums, mid + 1, hi, target)
     return -1
 
 
 #  二分查找 非递归
-def binary_search2(nums, tar):
+def binary_search2(nums, target):
     lo, hi = 0, len(nums) - 1
     while lo <= hi:
         mid = (lo + hi) // 2
-        if tar == nums[mid]:
+        if target == nums[mid]:
             return mid
-        if tar < nums[mid]:
+        if target < nums[mid]:
             hi = mid - 1
         else:
             lo = mid + 1
@@ -133,7 +131,7 @@ def search(nums, target):
 
 
 # 数字在排序数组中出现的次数
-def get_number_of_k(nums, tar):
+def get_number_of_k(nums, target):
     def binary_search(nums, tar, lo, hi):
         if lo <= hi:
             mid = (lo + hi) // 2
@@ -146,21 +144,21 @@ def get_number_of_k(nums, tar):
         return None
 
     n = len(nums) - 1
-    idx = binary_search(nums, tar, 0, n)
+    idx = binary_search(nums, target, 0, n)
     if idx is None:
         return
     # 左侧端点
-    left_idx = binary_search(nums, tar, 0, idx - 1)
+    left_idx = binary_search(nums, target, 0, idx - 1)
     min_left_idx = None
     while left_idx is not None:
         min_left_idx = left_idx
-        left_idx = binary_search(nums, tar, 0, left_idx - 1)
+        left_idx = binary_search(nums, target, 0, left_idx - 1)
     # 右侧端点
-    right_idx = binary_search(nums, tar, idx + 1, n)
+    right_idx = binary_search(nums, target, idx + 1, n)
     max_right_idx = None
     while right_idx is not None:
         max_right_idx = right_idx
-        right_idx = binary_search(nums, tar, right_idx + 1, n)
+        right_idx = binary_search(nums, target, right_idx + 1, n)
 
     if min_left_idx is not None and max_right_idx is not None:
         return max_right_idx - min_left_idx + 1
@@ -174,7 +172,7 @@ def get_number_of_k(nums, tar):
     return 1
 
 
-def get_number_of_k2(nums, tar, lo, hi):
+def get_number_of_k2(nums, target, lo, hi):
     def binary_search(nums, tar, lo, hi):
         if lo <= hi:
             mid = (lo + hi) // 2
@@ -186,12 +184,12 @@ def get_number_of_k2(nums, tar, lo, hi):
                 return binary_search(nums, tar, lo, mid - 1)
         return None
 
-    if nums[lo] == nums[hi] == tar:  # 简化计算
+    if nums[lo] == nums[hi] == target:  # 简化计算
         return hi - lo + 1
-    idx = binary_search(nums, tar, lo, hi)
+    idx = binary_search(nums, target, lo, hi)
     if idx is None:
         return 0
-    return get_number_of_k2(nums, tar, lo, idx - 1) + 1 + get_number_of_k2(nums, tar, idx + 1, hi)
+    return get_number_of_k2(nums, target, lo, idx - 1) + 1 + get_number_of_k2(nums, target, idx + 1, hi)
 
 
 # 0 - n-1 n 个数中 缺少一个数
@@ -207,6 +205,31 @@ def find_missed_val(nums):
         else:
             r = mid - 1
     return l
+
+
+def find_median_sorted_arrays(nums1, nums2):
+    m, n = len(nums1), len(nums2)
+    if m > n:
+        return find_median_sorted_arrays(nums2, nums1)  # 选择数组小的进行二分
+    k = (m + n + 1) // 2  # 左中点
+    l, r = 0, m
+    while l < r:
+        m1 = (l + r) // 2
+        m2 = k - m1
+        if nums1[m1] < nums2[m2 - 1]:  # nums1[l/r] >= nums2[m2-1] !!!
+            l = m1 + 1
+        else:
+            r = m1
+    m1 = l
+    m2 = k - l
+    c1 = max(nums1[m1 - 1] if m1 > 0 else -float('inf'), nums2[m2 - 1] if m2 > 0 else -float('inf'))
+
+    if (m + n) % 2:
+        return c1
+
+    c2 = min(nums1[m1] if m1 < m else float('inf'), nums2[m2] if m2 < n else float('inf'))
+
+    return (c1 + c2) / 2.0
 
 
 if __name__ == '__main__':
@@ -236,3 +259,6 @@ if __name__ == '__main__':
 
     print('\n找出0 - n之间缺少的一个数字')
     print(find_missed_val([0, 1, 3]))
+
+    print('\n中位数')
+    print(find_median_sorted_arrays([1, 2], [3, 4]))

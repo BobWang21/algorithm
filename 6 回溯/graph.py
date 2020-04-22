@@ -51,7 +51,7 @@ def maze_short_path(maze, start, destination):
             i, j, layer = queue.pop(0)
             for d in directions:
                 x, y = i + d[0], j + d[1]
-                if safe(x, y) and maze[x][y] == empty:
+                if safe(x, y) and maze[x][y] == empty:  # 先判断是否安全
                     maze[x][y] = wall
                     if [x, y] == destination:
                         return layer + 1

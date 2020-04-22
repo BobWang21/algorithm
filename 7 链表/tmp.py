@@ -1,3 +1,6 @@
+import heapq as hq
+
+
 class ListNode():
     def __init__(self, val):
         self.val = val
@@ -267,7 +270,28 @@ def sort_list(head):
 
 
 # 合并连个排序链表 归并
-def merge_two_sorted_lists(l1, l2):
+def merge_two_sorted_lists1(l1, l2):
+    if not l1:
+        return l2
+    if not l2:
+        return l1
+    dummy = curr = ListNode(-1)
+    while l1 and l2:
+        if l1.val < l2.val:
+            curr.next = l1
+            l1 = l1.next
+        else:
+            curr.next = l2
+            l2 = l2.next
+        curr = curr.next
+    if not l1:
+        curr.next = l2
+    if not l2:
+        curr.next = l1
+    return dummy.next
+
+
+def merge_two_sorted_lists2(l1, l2):
     if not l1:
         return l2
     if not l2:
@@ -278,46 +302,111 @@ def merge_two_sorted_lists(l1, l2):
     else:
         head = l2
         l2 = l2.next
-    head.next = merge_two_sorted_lists(l1, l2)
+    head.next = merge_two_sorted_lists2(l1, l2)
     return head
 
 
-# 合并连个排序链表 归并
-def merge_two_sorted_lists2(l1, l2):
+def merge_two_sorted_lists3(l1, l2):
+    dummy = curr = ListNode(None)
+    while l1 or l2:
+        a = l1.val if l1 else float('inf')
+        b = l2.val if l2 else float('inf')
+        if a < b:
+            curr.next = ListNode(a)
+            l1 = l1.next
+        else:
+            curr.next = ListNode(b)
+            l2 = l2.next
+        curr = curr.next
+    return dummy.next
+
+
+def add_two_numbers1(l1, l2):
     if not l1:
         return l2
     if not l2:
         return l1
-    head = ListNode(-1)
-    cur = head
+    add_one = False
+    head = l1
+    pre = None
     while l1 and l2:
-        if l1.val < l2.val:
-            cur.next = l1
+        if add_one:
+            l1.val += l2.val + 1
+        else:
+            l1.val += l2.val
+        if l1.val >= 10:
+            add_one = True
+            l1.val -= 10
+        else:
+            add_one = False
+        pre = l1
+        l1 = l1.next
+        l2 = l2.next
+
+    if not l1:
+        pre.next = l2
+
+    if not add_one:
+        return head
+
+    if add_one and not pre.next:
+        node = ListNode(1)
+        pre.next = node
+        return head
+
+    l1 = pre.next
+    pre = None
+    while add_one and l1:
+        l1.val += 1
+        if l1.val >= 10:
+            add_one = True
+            l1.val -= 10
+            pre = l1
             l1 = l1.next
         else:
-            cur.next = l2
-            l2 = l2.next
-        cur = cur.next
+            add_one = False
+
+    if not add_one:
+        return head
+
     if not l1:
-        cur.next = l2
+        node = ListNode(1)
+        pre.next = node
+        return head
+
+
+def add_two_nums2(l1, l2):
+    if not l1:
+        return l2
     if not l2:
-        cur.next = l1
-    return head.next
+        return l1
+    dummy = curr = ListNode(-1)
+    carry = 0
+    while l1 or l2 or carry:
+        if l1:
+            carry += l1.val
+            l1 = l1.next
+        if l2:
+            carry += l2.val
+            l2 = l2.next
+        curr.next = ListNode(carry % 10)
+        curr = curr.next
+        carry = carry // 10
+
+    return dummy.next
 
 
-def merge(a, b):
-    if not a:
-        return b
-    if not b:
-        return a
-    node = ListNode(0)
-    if a.val < b.val:
-        node.val = a.val
-        node.next = merge(a.next, b)
-    else:
-        node.val = b.val
-        node.next = merge(a, b.next)
-    return node
+# 合并连个排序链表 归并
+def merge_k_sorted_lists1(lists):
+    if not lists:
+        return
+    if len(lists) == 1:
+        return lists[0]
+    m = len(lists) // 2
+    a = merge_k_sorted_lists1(lists[:m])
+    b = merge_k_sorted_lists1(lists[m:])
+
+    return merge_two_sorted_lists1(a, b)
 
 
 def merge_k_sorted_lists2(lists):
@@ -325,14 +414,23 @@ def merge_k_sorted_lists2(lists):
         return
     if len(lists) == 1:
         return lists[0]
-    m = len(lists) // 2
-    a = merge_k_sorted_lists2(lists[:m])
-    b = merge_k_sorted_lists2(lists[m:])
+    heap = []
+    for l in lists:
+        if l:
+            hq.heappush(heap, (l.val, l))
 
-    return merge(a, b)
+    dummy = curr = ListNode(-1)
+    while heap:
+        v, node = hq.heappop(heap)
+        curr.next = node
+        curr = curr.next
+        node = node.next
+        curr.next = None
+        if node:
+            hq.heappush(heap, (node.val, node))
+    return dummy.next
 
 
-# 最近公共节点
 def get_intersection_node(headA, headB):
     if not headA or not headB:
         return
@@ -445,9 +543,18 @@ if __name__ == '__main__':
     print('\n合并两个排序链表')
     l1 = construct_list_node([1, 3, 5, 7])
     l2 = construct_list_node([2, 4, 6, 8])
-    print_list_node(merge_two_sorted_lists(l1, l2))
+    print_list_node(merge_two_sorted_lists2(l1, l2))
+
+    l1 = construct_list_node([1, 3, 5, 7])
+    l2 = construct_list_node([2, 4, 6, 8])
+    print_list_node(merge_two_sorted_lists3(l1, l2))
 
     print('\n合并K个排序链表')
+    l1 = construct_list_node([1, 3, 5, 7])
+    l2 = construct_list_node([2, 4, 6, 8])
+    l3 = construct_list_node([10, 11, 12, 13])
+    print_list_node(merge_k_sorted_lists1([l1, l2, l3]))
+
     l1 = construct_list_node([1, 3, 5, 7])
     l2 = construct_list_node([2, 4, 6, 8])
     l3 = construct_list_node([10, 11, 12, 13])
@@ -470,3 +577,7 @@ if __name__ == '__main__':
     c.next = b
     head = a
     print(detect_cycle2(head))
+
+    l1 = construct_list_node([2, 4])
+    l2 = construct_list_node([5, 6, 9, 9])
+    print_list_node(add_two_numbers1(l1, l2))

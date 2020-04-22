@@ -5,6 +5,7 @@ Created on Sat Jul 29 12:59:56 2017
 
 @author: wangbao
 """
+import heapq as hq
 
 
 def merge_sort(nums):
@@ -14,11 +15,11 @@ def merge_sort(nums):
     mid = n // 2
     left = merge_sort(nums[:mid])
     right = merge_sort(nums[mid:])
-    return merge(left, right)
+    return merge1(left, right)
 
 
 # 合并两个有序数组
-def merge(a, b):
+def merge1(a, b):
     if not a:
         return b
     if not b:
@@ -56,15 +57,55 @@ def merge2(a, b):
     return res
 
 
-def merge_k_sorted_nums(nums):
+def merge3(a, b):
+    if not a:
+        return b
+    if not b:
+        return a
+    i, j = 0, 0
+    res = []
+    while i < len(a) or j < len(b):
+        v1 = a[i] if i < len(a) else float('inf')
+        v2 = b[j] if j < len(b) else float('inf')
+        if v1 < v2:
+            res.append(v1)
+            i += 1
+        else:
+            res.append(v2)
+            j += 1
+
+    return res
+
+
+def merge_k_sorted_nums1(nums):
     if not nums:
         return
     if len(nums) == 1:
         return nums[0]
     mid = len(nums) // 2
-    a = merge_k_sorted_nums(nums[:mid])
-    b = merge_k_sorted_nums(nums[mid:])
+    a = merge_k_sorted_nums1(nums[:mid])
+    b = merge_k_sorted_nums1(nums[mid:])
     return merge2(a, b)
+
+
+def merge_k_sorted_nums2(nums):
+    if not nums or not nums[0]:
+        return
+    n = len(nums)
+    if n == 1:
+        return nums[0]
+    heap = []
+    for i in range(n):
+        v = nums[i].pop(0)
+        hq.heappush(heap, (v, i))
+    res = []
+    while heap:
+        v, i = hq.heappop(heap)
+        res.append(v)
+        if nums[i]:
+            v = nums[i].pop(0)
+            hq.heappush(heap, (v, i))
+    return res
 
 
 if __name__ == '__main__':
@@ -72,8 +113,10 @@ if __name__ == '__main__':
     print(merge_sort([1, 3, 2, 4]))
 
     print('\n合并两个有序数组')
-    print(merge([1, 3], [2, 4]))
+    print(merge1([1, 3], [2, 4]))
     print(merge2([1, 3], [2, 4]))
+    print(merge3([1, 3], [2, 4]))
 
     print('\n合并K个有序数组')
-    print(merge_k_sorted_nums([[2, 4, 5], [1, 3, 9], [6, 7, 8]]))
+    print(merge_k_sorted_nums1([[2, 4, 5], [1, 1, 9], [6, 7, 8]]))
+    print(merge_k_sorted_nums2([[2, 4, 5], [1, 1, 9], [6, 7, 8]]))
