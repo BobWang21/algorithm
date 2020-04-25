@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jul  6 20:02:41 2017
-
-"""
 
 
 class TreeNode():
@@ -151,11 +147,6 @@ def min_depth(root):
 
 
 def serialize(tree):
-    """Encodes a tree to a single string.
-
-    :type root: TreeNode
-    :rtype: str
-    """
     if not tree:
         return
     queue = [tree]
@@ -172,11 +163,6 @@ def serialize(tree):
 
 
 def deserialize(data):
-    """Decodes your encoded data to tree.
-
-    :type data: str
-    :rtype: TreeNode
-    """
     if not data:
         return
     lists = data.split()

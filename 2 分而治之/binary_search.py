@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-二分查找
-"""
 
 
 #  二分查找 递归
@@ -20,15 +17,15 @@ def binary_search(nums, lo, hi, target):
 
 #  二分查找 非递归
 def binary_search2(nums, target):
-    lo, hi = 0, len(nums) - 1
-    while lo <= hi:
-        mid = (lo + hi) // 2
+    l, r = 0, len(nums) - 1
+    while l <= r:
+        mid = (l + r) // 2
         if target == nums[mid]:
             return mid
         if target < nums[mid]:
-            hi = mid - 1
+            r = mid - 1
         else:
-            lo = mid + 1
+            l = mid + 1
     return -1
 
 
@@ -80,10 +77,6 @@ def search_first_large(nums, target):
 # 旋转数组中的最小值
 # [3 4 1 2] 为 [1 2 3 4]的旋转数组
 def find_min(nums):
-    """
-    :type nums: List[int]
-    :rtype: int
-    """
     if not nums:
         return -1
     if nums[0] < nums[-1]:
@@ -91,7 +84,7 @@ def find_min(nums):
     l, r = 0, len(nums) - 1
     while l < r:
         mid = (l + r) // 2
-        if nums[mid] >= nums[0]:
+        if nums[mid] >= nums[0]:  # nums[l-1]递增 nums[r] < nums[0] l = r nums[l]即为最小值
             l = mid + 1
         else:
             r = mid
@@ -109,6 +102,7 @@ def find_min2(nums):
     return min(find_min2(nums[:mid]), find_min2(nums[mid:]))
 
 
+# 旋转数组查找
 def search(nums, target):
     if not nums:
         return -1
@@ -128,6 +122,32 @@ def search(nums, target):
             else:
                 r = mid - 1
     return -1
+
+
+# 递归
+def search2(nums, target):
+    def helper(l, r):
+        if l > r:
+            return -1
+        if l == r:
+            return l if nums[l] == target else -1
+        mid = (l + r) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[mid] > nums[0]:  # 前半部分递增
+            if nums[0] > target:
+                return helper(mid + 1, r)
+            if nums[mid] < target:
+                return helper(mid + 1, r)
+            return helper(l, mid - 1)
+        else:
+            if nums[-1] < target:
+                return helper(l, mid - 1)
+            if nums[mid] > target:
+                return helper(l, mid - 1)
+            return helper(mid + 1, r)
+
+    return helper(0, len(nums) - 1)
 
 
 # 数字在排序数组中出现的次数
@@ -193,7 +213,7 @@ def get_number_of_k2(nums, target, lo, hi):
 
 
 # 0 - n-1 n 个数中 缺少一个数
-def find_missed_val(nums):
+def find_missed_value(nums):
     n = len(nums)
     if n == 1:
         return 1 - nums[0]
@@ -207,6 +227,7 @@ def find_missed_val(nums):
     return l
 
 
+# 对于无序 可以考虑partition
 def find_median_sorted_arrays(nums1, nums2):
     m, n = len(nums1), len(nums2)
     if m > n:
@@ -247,10 +268,13 @@ if __name__ == '__main__':
     print(search_first_large([1, 2, 3, 3, 9], 6))
 
     print('\n旋转数组中的最小值')
-    print(find_min([5, 1]))
+    print(find_min([4, 5, 1, 3]))
+    print(find_min2([4, 5, 1, 3]))
 
     print('\n旋转数组查找')
-    print(search([4, 5, 6, 7, 0, 1, 2], 3))
+    print(search([4, 5, 6, 7, 0, 1, 2], 0))
+
+    print(search2([4, 5, 6, 7, 0, 1, 2], 0))
 
     print('\n数字在升序数字中出现的次数')
     nums = [1, 2, 3, 3, 3, 3, 4, 4]
@@ -258,7 +282,7 @@ if __name__ == '__main__':
     print(get_number_of_k2(nums, 1, 0, len(nums) - 1))
 
     print('\n找出0 - n之间缺少的一个数字')
-    print(find_missed_val([0, 1, 3]))
+    print(find_missed_value([0, 1, 3]))
 
     print('\n中位数')
     print(find_median_sorted_arrays([1, 2], [3, 4]))

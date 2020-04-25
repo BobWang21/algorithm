@@ -52,11 +52,11 @@ def maze_short_path(maze, start, destination):
             for d in directions:
                 x, y = i + d[0], j + d[1]
                 if safe(x, y) and maze[x][y] == empty:  # 先判断是否安全
-                    maze[x][y] = wall
                     if [x, y] == destination:
                         return layer + 1
-                    else:
-                        queue.append((x, y, layer + 1))
+
+                    maze[x][y] = wall  # 标记已经访问过的点
+                    queue.append((x, y, layer + 1))
         return -1
 
     return bfs()

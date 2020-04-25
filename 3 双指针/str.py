@@ -1,44 +1,38 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 28 13:20:38 2019
 
-@author: wangbao
-"""
 import collections
 
 
 # 判断是否为回文
 def is_palindrome(s):
-    left = 0
-    right = len(s) - 1
-    while left < right:
-        if not s[left].isalnum():  # isalnum() 数字或字符串
-            left += 1
+    l, r = 0, len(s) - 1
+    while l < r:
+        if not s[l].isalnum():  # isalnum() 数字或字符串
+            l += 1
             continue
-        if not s[right].isalnum():
-            right -= 1
+        if not s[r].isalnum():
+            r -= 1
             continue
 
-        if s[left].lower() != s[right].lower():  # 转换成小写!!
+        if s[l].lower() != s[r].lower():  # 转换成小写!!
             return False
-
-        left += 1
-        right -= 1
+        else:
+            l += 1
+            r -= 1
     return True
 
 
 def reverse_string(s):
     if len(s) < 2:
         return s
-    left = 0
-    right = len(s) - 1
-    l = list(s)
-    while left < right:  # 重合在一个就没有交换的必要了，因此是 left < right
-        l[left], l[right] = l[right], l[left]
-        left += 1
-        right -= 1
-    return ''.join(l)
+    l, r = 0, len(s) - 1
+    lists = list(s)
+    while l < r:  # 重合在一个就没有交换的必要了，因此是 left < right
+        lists[l], lists[r] = lists[r], lists[l]
+        l += 1
+        r -= 1
+    return ''.join(lists)
 
 
 # 72 最小覆盖子串 滑动窗口

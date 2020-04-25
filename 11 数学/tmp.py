@@ -188,6 +188,19 @@ def get_ugly_number(n):
     return res[-1]
 
 
+# 阶层后0的个数 因式分解 2^(m) * 3^(k) * 5^(n)... min(m, n) 含有5的个数
+def zero_nums(n):
+    res = 0
+    while n:
+        res += n // 5
+        n = n // 5
+    return res
+
+
+def hamming_distance(x, y):
+    return bin(x ^ y).count('1')
+
+
 # 求平方根
 def my_sqrt(n):
     if n == 1:
@@ -243,6 +256,9 @@ def common_greatest_divisor(a, b):
 
 
 if __name__ == '__main__':
+    print('\n十进制转2进制')
+    print(ten_2_binary(24))
+
     print('\nplus one')
     print(plus_one([9, 9]))
 
@@ -260,6 +276,9 @@ if __name__ == '__main__':
 
     print('\n丑数')
     print(get_ugly_number(10))
+
+    print('\n阶层后0的个数')
+    print(zero_nums(20))
 
     print('\n最大公约数')
     print(common_greatest_divisor(12, 38))

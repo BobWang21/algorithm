@@ -57,6 +57,7 @@ def merge2(a, b):
     return res
 
 
+# 时间复杂度高 但写法简单
 def merge3(a, b):
     if not a:
         return b
@@ -97,7 +98,7 @@ def merge_k_sorted_nums2(nums):
     heap = []
     for i in range(n):
         v = nums[i].pop(0)
-        hq.heappush(heap, (v, i))
+        hq.heappush(heap, (v, i))  # 记录二维数据
     res = []
     while heap:
         v, i = hq.heappop(heap)

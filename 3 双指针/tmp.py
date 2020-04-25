@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 28 13:20:38 2019
-
-@author: wangbao
-"""
 
 
 def sorted_squares(nums):
@@ -25,6 +20,25 @@ def sorted_squares(nums):
     return res
 
 
+# 不改变顺序
+def move_zeros(nums):
+    if not nums:
+        return
+    j = 0
+    for i in range(len(nums)):
+        if not nums[i]:
+            continue
+        nums[j] = nums[i]
+        j += 1
+    for i in range(j, len(nums)):
+        nums[i] = 0
+
+    return nums
+
+
 if __name__ == '__main__':
-    print('平方排序')
+    print('\n平方排序')
     print(sorted_squares([-7, -3, 2, 3, 11]))
+
+    print('\n移动0')
+    print(move_zeros([0, -7, 0, 2, 3, 11]))

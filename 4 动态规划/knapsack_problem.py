@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jul  7 18:32:29 2017
-
-@author: wangbao
-"""
 
 
 # 0-1 背包问题 回溯法
@@ -26,13 +21,13 @@ def knapsack_backtrack(cost, val, cap):
 
 
 # 动态规划 matrix[i][j] 表示前 i 件物品恰放入一个容量为 j 的背包可以获得的最大价值
-def knapsack(cost, val, cap):
+def knapsack(cost, val, capacity):
     n = len(cost)
-    matrix = [[0] * (cap + 1) for _ in range(n + 1)]
+    matrix = [[0] * (capacity + 1) for _ in range(n + 1)]
     for i in range(1, n + 1):
         c = cost[i - 1]
         v = val[i - 1]
-        for j in range(1, cap + 1):
+        for j in range(1, capacity + 1):
             matrix[i][j] = matrix[i - 1][j]  # 不装物品i
             if j - c >= 0:  # # res[i - 1][j-cost_i]从 i-1, 如果从i开始 我们不知道是否之前用到过物品i
                 matrix[i][j] = max(matrix[i - 1][j], matrix[i - 1][j - c] + v)
@@ -74,7 +69,7 @@ def unbounded_knapsack2(cost, val, capacity):
     return res[-1][-1]
 
 
-# 使用1维数组 换硬币
+# 使用1维数组表示
 def unbounded_knapsack3(cost, val, capacity):
     if not cost or not val or len(cost) != len(val):
         return

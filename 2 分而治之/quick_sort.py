@@ -10,7 +10,7 @@ def quick_sort(nums, lo, hi):
 
 
 def partition(nums, lo, hi):  # 原地修改
-    pivot = nums[lo]
+    pivot = nums[lo]  # 可以随机选择pivot
     while lo < hi:
         while lo < hi and pivot <= nums[hi]:
             hi -= 1
@@ -30,17 +30,17 @@ def sort_array_by_parity(nums):
     l, r = 0, n - 1
     pivot = nums[0]
     while l < r:
-        while l < r and nums[r] % 2 == 1:
+        while l < r and not nums[r] % 2:
             r -= 1
         nums[l] = nums[r]
-        while l < r and nums[l] % 2 == 0:
+        while l < r and nums[l] % 2:
             l += 1
         nums[r] = nums[l]
     nums[l] = pivot
     return nums
 
 
-# 无序数组的前K个数
+# 无序数组的前K个数T(n) = n + T(n/2) ->O(n)
 def get_least_num(nums, k):
     def partition(nums, l, r):
         if l >= r:

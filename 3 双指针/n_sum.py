@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 28 13:20:38 2019
-
-@author: wangbao
-"""
 
 
-# 有唯一解 O(N)
+# 解不唯一 O(N)
 def two_sum(nums, target):
-    size = len(nums)
-    if size < 2:
+    n = len(nums)
+    if n < 2:
         return []
-    l, r = 0, size - 1
+    l, r = 0, n - 1
     res = []
     while l < r:
         s = nums[l] + nums[r]
@@ -127,18 +122,18 @@ def three_sum_closet(nums, target):
 
 
 # 和为s的(连续)正数序列 至少两个数 滑动窗口
-def find_continuous_sequence(tar):
-    if tar < 3:
+def find_continuous_sequence(target):
+    if target < 3:
         return
     l, r = 1, 2
     s = l + r
     res = []
-    while r <= (1 + tar) / 2:  # 缩减计算
-        if s == tar:
+    while r <= (1 + target) / 2:  # 缩减计算
+        if s == target:
             res.append(list(range(l, r + 1)))
             r += 1
             s += r
-        elif s < tar:
+        elif s < target:
             r += 1
             s += r
         else:
@@ -185,17 +180,17 @@ def find_target_sum_ways2(nums, S):
 
 
 if __name__ == '__main__':
-    print('2 sum')
+    print('\n2 sum')
     print(two_sum([1, 2, 7, 8, 11, 15], 9))
 
-    print('3 sum')
+    print('\n3 sum')
     print(three_sum([2, 7, 7, 11, 15, 15, 20, 24, 24], 33))
 
-    print('4 sum')
+    print('\n4 sum')
     print(n_sum2([1, 0, -1, 0, -2, 2], 0))
 
-    print('3 sum closet')
+    print('\n3 sum closet')
     print(three_sum_closet([-1, 2, 1, -4], 1))
 
-    print('和为S的连续子序列')
+    print('\n和为S的连续子序列')
     print(find_continuous_sequence(15))

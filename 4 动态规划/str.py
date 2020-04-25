@@ -56,23 +56,6 @@ def longest_palindrome(s):
     return max_str
 
 
-def lp(s):
-    if len(s) < 2 or s == s[::-1]:
-        return s
-
-    start, max_length = 0, 1
-    for i in range(1, len(s)):
-        odd = s[i - max_length - 1:i + 1]  # 检查l+2
-        even = s[i - max_length:i + 1]  # 检查l+1
-        if i - max_length - 1 >= 0 and odd == odd[::-1]:
-            start = i - max_length - 1
-            max_length += 2
-        elif i - max_length >= 0 and even == even[::-1]:
-            start = i - max_length
-            max_length += 1
-    return s[start:start + max_length]
-
-
 # 最长公共子序列
 def longest_common_subsequence(s1, s2):
     l1, l2 = len(s1), len(s2)

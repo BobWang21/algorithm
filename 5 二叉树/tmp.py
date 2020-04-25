@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jul  6 20:02:41 2017
 1 层次遍历
 2 路径
 3 二叉搜索树

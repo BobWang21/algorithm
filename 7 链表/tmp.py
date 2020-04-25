@@ -69,42 +69,6 @@ def reverse_k_group(head, k):
             head = nxt
         return pre, tail
 
-    if not head.next:
-        return head
-
-    fast = slow = head
-    dummy = pre = ListNode(None)
-    i = k
-    while fast:
-        pre_fast = fast
-        fast = fast.next
-        i -= 1
-        if i == 0:
-            pre_fast.next = None
-            new_head, tail = reverse(slow)
-            pre.next = new_head
-            pre = tail
-            slow = fast
-            i = k
-        if not fast:
-            pre.next = slow
-            return dummy.next
-
-
-# 递归
-def reverse_k_group2(head, k):
-    def reverse(head):
-        if not head:
-            return
-        pre = None
-        tail = head
-        while head:
-            nxt = head.next
-            head.next = pre
-            pre = head
-            head = nxt
-        return pre, tail
-
     i = k
     fast = head
     while fast and i > 1:  # i = 1 包含k个节点
@@ -116,7 +80,7 @@ def reverse_k_group2(head, k):
     nxt = fast.next
     fast.next = None
     new_head, tail = reverse(head)
-    tail.next = reverse_k_group2(nxt, k)
+    tail.next = reverse_k_group(nxt, k)
     return new_head
 
 
@@ -507,6 +471,50 @@ def find_duplicate_num(nums):
     return ptr1
 
 
+def is_palindrome(head):
+    if not head:
+        return True
+    if not head.next:
+        return True
+    pre = None
+    node = head
+    while node:
+        node.pre = pre
+        pre = node
+        node = node.next
+    while head != pre:
+        if head.val != pre.val:
+            return False
+        head = head.next
+        pre = pre.pre
+    return True
+
+
+def is_palindrome2(head):
+    if not head:
+        return True
+    if not head.next:
+        return True
+
+    fast = slow = head
+    pre_slow = None
+    while fast and fast.next:
+        fast = fast.next.next
+        pre_slow = slow
+        slow = slow.next
+    pre_slow.next = None
+    if fast:
+        slow = slow.next
+
+    slow = reverse(slow)
+    while head and slow:
+        if slow.val != head.val:
+            return False
+        slow = slow.next
+        head = head.next
+    return True
+
+
 if __name__ == '__main__':
     head = construct_list_node([1, 3, 5, 7])
     print('链表翻转')
@@ -527,10 +535,6 @@ if __name__ == '__main__':
     print('\nreverse k group')
     head = construct_list_node(list(range(10)))
     print_list_node(reverse_k_group(head, 5))
-
-    print('\nreverse k group')
-    head = construct_list_node(list(range(10)))
-    print_list_node(reverse_k_group2(head, 5))
 
     print('\npartition')
     head = construct_list_node([1, 4, 3, 2, 5, 2])
@@ -581,3 +585,7 @@ if __name__ == '__main__':
     l1 = construct_list_node([2, 4])
     l2 = construct_list_node([5, 6, 9, 9])
     print_list_node(add_two_numbers1(l1, l2))
+
+    print('\n判断是否为回文')
+    l = construct_list_node([1, 2])
+    print(is_palindrome2(l))

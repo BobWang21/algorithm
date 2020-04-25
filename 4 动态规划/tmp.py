@@ -63,7 +63,7 @@ def max_profit3(prices):
     k = 2
     dp = [[[0, 0] for _ in range(k + 1)] for _ in range(n + 1)]
 
-    # idx 0 相当于 idx -1
+    # 处理base: -1 及 不可能状态的赋值
     for i in range(n + 1):  # 每天交易次数为0时
         dp[i][0][1] = -float('inf')
         dp[i][0][0] = 0
@@ -78,19 +78,6 @@ def max_profit3(prices):
             dp[i][j][1] = max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i - 1])  # j-1
 
     return dp[-1][-1][0]
-
-
-def max_profit4(prices, k):
-    if not prices or len(prices) < 2:
-        return 0
-    n = len(prices)
-    dp = [[0, -float('inf')] for _ in range(k + 1)]
-
-    for i in range(1, n + 1):
-        for j in range(1, k + 1):
-            dp[j][0], dp[j][1] = max(dp[j][0], dp[j][1] + prices[i - 1]), max(dp[j][1], dp[j - 1][0] - prices[i - 1])
-
-    return dp[-1][0]
 
 
 # 连续子序列 和最大
@@ -201,27 +188,39 @@ def longest_increasing_subsequence2(nums):
 def coin_change(coins, amount):
     dp = [float('inf')] * (amount + 1)
     dp[0] = 0  # 当coin = amount 时使用
-    for i in range(1, amount + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = min(dp[i], dp[i - coin] + 1)
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            dp[i] = min(dp[i], dp[i - coin] + 1)
     return dp[amount] if dp[amount] != float('inf') else -1
 
 
-# 279. Perfect Squares 12 = 4 + 4 + 4
-def num_squares(n):
-    dp = [float('inf')] * (n + 1)
-    dp[0] = 0  # 当coin = amount 时使用
-    for i in range(1, n + 1):
-        for coin in range(1, int(n ** 0.5) + 1):
-            square = coin ** 2
-            if i >= square:
-                dp[i] = min(dp[i], dp[i - square] + 1)
-    return dp[n]
+def coin_change2(coins, amount):
+    if amount < 0:
+        return 0
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+
+    for coin in coins:  # 保证之前没有重复的coin组合
+        for amount in range(coin, amount + 1):
+            dp[amount] += dp[amount - coin]
+    return dp[-1]
+
+
+# def coin_change3(coins, amount):
+#     if amount < 0:
+#         return 0
+#     dp = [0] * (amount + 1)
+#     dp[0] = 1
+#
+#     for v in range(amount + 1):
+#         for coin in coins:
+#             if v >= coin:
+#                 dp[v] += dp[v - coin]
+#     return dp[-1]
 
 
 # 给定一个正整数数组 求和为target的所有组合数
-def combination_sum(nums, target):
+def combination_sum(coins, target):
     '''
     NUMS = [1，2，3]
     目标 = 4种的一种可能的组合方式有：
@@ -235,11 +234,23 @@ def combination_sum(nums, target):
     '''
     res = [0] * (target + 1)
     res[0] = 1
-    for i in range(target + 1):
-        for v in nums:
+    for i in range(target + 1):  # 包含重复组合
+        for v in coins:
             if i >= v:
                 res[i] += res[i - v]
     return res[-1]
+
+
+# 279. Perfect Squares 12 = 4 + 4 + 4
+def num_squares(n):
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # 当coin = amount 时使用
+    for i in range(1, n + 1):
+        for coin in range(1, int(n ** 0.5) + 1):
+            square = coin ** 2
+            if i >= square:
+                dp[i] = min(dp[i], dp[i - square] + 1)
+    return dp[n]
 
 
 # 割绳子
@@ -304,6 +315,8 @@ if __name__ == '__main__':
 
     print('\n换硬币')
     print(coin_change([1, 2, 5, 10], 11))
+    print(coin_change2([1, 2, 5], 5))
+    print(combination_sum([1, 2, 5], 5))
 
     print('\n数字由平方组合')
     print(num_squares(13))

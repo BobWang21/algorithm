@@ -60,6 +60,7 @@ def k_smallest_pairs(nums1, nums2, k):
     return res
 
 
+# 也可以使用 partition
 class MedianFinder(object):
 
     def __init__(self):

@@ -91,7 +91,21 @@ def daily_temperatures(t):
     return res
 
 
-def largest_rectangle_area(heights):
+# 直观思想
+def largest_rectangle_area1(heights):
+    max_rec = 0
+    n = len(heights)
+    for i, h in enumerate(heights):
+        l = r = i
+        while l > 0 and heights[l - 1] >= h:  # 前面第一个小于该数
+            l -= 1
+        while r < n - 1 and heights[r + 1] >= h:  # 后面第一个小于该数
+            r += 1
+        max_rec = max(max_rec, (r - l - 1) * h)
+    return max_rec
+
+
+def largest_rectangle_area2(heights):
     max_rec = 0
     n = len(heights)
     res1 = [-1] * n  # 前
@@ -117,20 +131,6 @@ def largest_rectangle_area(heights):
     return max_rec
 
 
-# 直观思想
-def largest_rectangle_area2(heights):
-    max_rec = 0
-    n = len(heights)
-    for i, h in enumerate(heights):
-        l = r = i
-        while l > 0 and heights[l - 1] >= h:  # 前面第一个小于该数
-            l -= 1
-        while r < n - 1 and heights[r + 1] >= h:  # 后面第一个小于该数
-            r += 1
-        max_rec = max(max_rec, (r - l - 1) * h)
-    return max_rec
-
-
 def largest_rectangle_area3(height):
     height.append(0)
     stack = [-1]
@@ -147,7 +147,7 @@ def largest_rectangle_area3(height):
 def max_area_min_sum_product(nums):
     if not nums:
         return 0
-    nums.append(-1)  # 为了是栈中剩余元素出栈
+    nums.append(-1)  # 为了使栈中剩余元素出栈
     n = len(nums)
     stack = []
     total = [0] * n
@@ -202,7 +202,7 @@ if __name__ == '__main__':
     print(daily_temperatures([73, 74, 75, 71, 69, 72, 76, 73]))
 
     print('\n柱状图最大矩形')
-    print((largest_rectangle_area([2, 1, 5, 6, 2, 3])))
+    print((largest_rectangle_area2([2, 1, 5, 6, 2, 3])))
 
     print('\n区间数字和与区间最小值乘积最大')
     print(max_area_min_sum_product([81, 87, 47, 59, 81, 18, 25, 40, 56, 0]))

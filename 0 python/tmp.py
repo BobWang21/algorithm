@@ -28,8 +28,8 @@ if __name__ == '__main__':
     print(random.choice([1, 2, 3]))  # 随机抽取一个点
 
     print('\n列表')
-    a = [1, 2, 3, 4, 5]
-    a.remove(1)  # 移除第一个值
+    a = [2, 3, 4, 5]
+    a.remove(2)  # 移除数值
     tail = a.pop()  # 按位置移除, 默认为尾部, 并返回
     print('list pop: ', tail)
     print('list.index', a.index(3))  # 查找数据在列表中的索引, 返回第一个
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     a.append(3)  # 增加一个数
     c = a + b  # 生成一个新的变量
     nums = [1, 3, 100]
-    change(nums[1:])  # 生成一个新的列表
+    change(nums[1:])  # 生成一个新的列表 b = a[:] 复制一份
     print(nums)
 
     print('\n字典')
@@ -65,8 +65,7 @@ if __name__ == '__main__':
 
     print('\n集合')
     a = ['a', 'b', 'c']
-    print(set(a))  # 将元素迭代解析成集合的每个元素
-    b = {'abc'}  # set()的输入元素需要可迭代
+    print(set(a))  # set(v) v 需要可迭代
     c = {(1, 2)}  # set((1, 2)) 输出 {1, 2}
     A = {1, 2, 3}
     B = {3, 4, 5}
@@ -77,20 +76,23 @@ if __name__ == '__main__':
     F = B - A  # A在B的补集 {4, 5}
     G = A ^ B  # A与B的差集 {1, 2, 4, 5}
     print(E, F, G)
-    # 删除集合中的元素
+
     a = {1, 2, 3}
-    for v in a:  # 不可在遍历集合时删除其中元素
-        if v == 2:
-            b.add(v)
-    a = a - b
+    a.remove(2)
     print(a)
 
-    heap = []
-    for i in [3, 4, 1, 2]:
-        hq.heappush(heap, i)
+    print('\nheapq')
+    heap = [3, 4, 1, 2]
+    hq.heapify(heap)  # 改成堆
+    print(heap)
     while heap:
         print(hq.heappop(heap))
 
+    print('\ndefaultdict')
     graph = defaultdict(set)
     graph[1].add(2)
+    print(graph)
+
+    graph = defaultdict(int)
+    graph[1] += 5
     print(graph)
