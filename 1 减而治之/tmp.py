@@ -138,6 +138,27 @@ def next_permutation(nums):
     return nums
 
 
+def findDisappearedNumbers(nums):
+    """
+    :type nums: List[int]
+    :rtype: List[int]
+    """
+    n = len(nums)
+    for i in range(n):
+        if nums[i] == i - 1:
+            continue
+        while nums[i] != i - 1:
+            j = nums[i]
+            if nums[j - 1] == j:
+                break
+            nums[i], nums[j - 1] = nums[j - 1], nums[i]
+    res = []
+    for i in range(n):
+        if i != nums[i] - 1:
+            res.append(i + 1)
+    return res
+
+
 if __name__ == '__main__':
     print('\n选择排序')
     print(select_sort([3, 1, 4, 4, 10, -1]))
@@ -164,3 +185,7 @@ if __name__ == '__main__':
 
     print('\n下一个排列')
     print(next_permutation([1, 1, 3]))
+
+    print('\n缺失的数据')
+    nums = [4, 3, 2, 7, 8, 2, 3, 1]
+    print(findDisappearedNumbers(nums))

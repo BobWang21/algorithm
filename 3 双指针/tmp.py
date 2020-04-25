@@ -20,7 +20,7 @@ def sorted_squares(nums):
     return res
 
 
-# 不改变顺序
+# 不改变顺序 把0移到数组尾部
 def move_zeros(nums):
     if not nums:
         return
