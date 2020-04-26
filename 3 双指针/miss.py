@@ -114,6 +114,42 @@ def move_zeros(nums):
     return nums
 
 
+def first_missing_positive(nums):
+    if not nums:
+        return 1
+    min_p = float('inf')
+    max_p = -float('inf')
+    num = 0
+    for v in nums:
+        if v > 0:
+            num += 1
+            if v < min_p:
+                min_p = v
+            if v > max_p:
+                max_p = v
+    if not num or min_p > 1:
+        return 1
+    print(min_p, max_p, num)
+
+    n = len(nums)
+    for i in range(n):
+        if nums[i] > n or nums[i] <= 0:
+            nums[i] = -1
+
+    for i in range(n):
+        if nums[i] == i + 1:
+            continue
+        while nums[i] > 0:
+            j = nums[i] - 1
+            if nums[j] == j + 1:
+                break
+            nums[i], nums[j] = nums[j], nums[i]
+
+    for i in range(n):
+        if nums[i] != i + 1:
+            return i + 1
+
+
 if __name__ == '__main__':
     print('\n找到数组中重复元素')
     print(find_duplicate_num1([1, 2, 3, 4, 2]))
@@ -124,3 +160,6 @@ if __name__ == '__main__':
 
     print('\n移动0')
     print(move_zeros([0, -7, 0, 2, 3, 11]))
+
+    print('\n缺失的最小正数')
+    print(first_missing_positive([1, 3, 3]))
