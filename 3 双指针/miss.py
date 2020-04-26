@@ -3,8 +3,9 @@
 # 交换 访问标记正负 双指针
 
 
-# 0-n 之间可能有多个数字重复 返回任意重复的数字
-# 交换
+# 0-n-1之间的n个数
+# 可能有多个数字重复
+# 返回任意重复的数字
 def find_duplicate_num1(nums):
     n = len(nums)
     for i in range(n):
