@@ -9,7 +9,7 @@
 def find_duplicate_num1(nums):
     n = len(nums)
     for i in range(n):
-        while i != nums[i]:  # 循环后保证i = nums[i]
+        while i != nums[i]:  # 循环后保证i = nums[i] 如果不存在i == nums[i] 一定有一个数字是重复
             if nums[i] == nums[nums[i]]:
                 return nums[i]
             else:
@@ -54,6 +54,37 @@ def find_duplicate_num3(nums):
         ptr1 = nums[ptr1]
         ptr2 = nums[ptr2]
     return ptr1
+
+
+# 给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。
+def first_missing_positive(nums):
+    if not nums:
+        return 1
+    n = len(nums)
+    min_p = n + 1
+    for i in range(n):
+        if nums[i] > 0:
+            if nums[i] < min_p:
+                min_p = nums[i]
+            if nums[i] > n:
+                nums[i] = -1
+
+    if min_p > 1:
+        return 1
+
+    for i in range(n):
+        if nums[i] == i + 1:
+            continue
+        while nums[i] > 0:
+            j = nums[i] - 1
+            if nums[j] == j + 1:
+                break
+            nums[i], nums[j] = nums[j], nums[i]
+
+    for i in range(n):
+        if nums[i] != i + 1:
+            return i + 1
+    return n + 1
 
 
 # 相当于使用idx做key的hash table
@@ -119,6 +150,9 @@ if __name__ == '__main__':
     print('\n找到数组中重复元素')
     print(find_duplicate_num1([1, 2, 3, 4, 2]))
     print(find_duplicate_num2([1, 2, 3, 2, 0]))
+
+    print('\n 找到缺失的最小正数')
+    print(first_missing_positive([3, 4, -1, 1]))
 
     print('\n删除排查数组中的重复数值')
     print(remove_duplicates([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
