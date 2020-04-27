@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
 # 连续数组和为K 前缀和
 def subarray_sum(nums, k):
     dic = dict()
