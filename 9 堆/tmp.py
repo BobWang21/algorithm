@@ -8,10 +8,9 @@ def merge(nums):
     n = len(nums)
     if n == 1:
         return nums[0]
-    heap = []
-    for i in range(n):
-        v = nums[i].pop(0)
-        hq.heappush(heap, (v, i))
+    heap = [(nums[i].pop(0), i) for i in range(n)]
+    hq.heapify(heap)
+
     res = []
     while heap:
         v, i = hq.heappop(heap)

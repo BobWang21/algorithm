@@ -282,6 +282,44 @@ def max_gift(matrix):
     return res[-1][-1]
 
 
+# 最小路径和
+def min_path_sum(matrix):
+    if not matrix or not matrix[0]:
+        return 0
+
+    rows, cols = len(matrix) + 1, len(matrix[0]) + 1
+    dp = [[0] * cols for _ in range(rows)]
+
+    # 设置base 边界为无穷 只能直上直下
+    for i in range(rows):
+        dp[i][0] = float('inf')
+
+    for j in range(cols):
+        dp[0][j] = float('inf')
+    dp[0][1] = 0  # 入口
+    for i in range(1, rows):
+        for j in range(1, cols):
+            dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + matrix[i - 1][j - 1]
+    return dp[-1][-1]
+
+
+# 最大正方形面积
+def maximal_square(matrix):
+    if not matrix or not matrix[0]:
+        return 0
+    rows, cols = len(matrix), len(matrix[0])
+
+    dp = [[0] * (cols + 1) for _ in range(rows + 1)]
+
+    res = 0
+    for i in range(1, rows + 1):
+        for j in range(1, cols + 1):
+            if matrix[i - 1][j - 1] == '1':
+                dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1
+                res = max(dp[i][j], res)
+    return res * res
+
+
 if __name__ == '__main__':
     print('\nFibonacci sequence')
     print(fib(40)[39])
@@ -330,3 +368,18 @@ if __name__ == '__main__':
               [5, 7, 4, 11],
               [3, 7, 16, 5]]
     print(max_gift(matrix))
+
+    print('\n最小路径和')
+    matrix = [
+        [1, 3, 1],
+        [1, 5, 1],
+        [4, 2, 1]
+    ]
+    print(min_path_sum(matrix))
+
+    print('\n最大正方形面积')
+    matrix = [["1", "0", "1", "0", "0"],
+              ["1", "0", "1", "1", "1"],
+              ["1", "1", "1", "1", "1"],
+              ["1", "0", "0", "1", "0"]]
+    print(maximal_square(matrix))

@@ -261,6 +261,8 @@ def surrounded_regions2(board):
     return board
 
 
+
+
 if __name__ == '__main__':
     print('\n迷宫最短路径')
     maze = [[0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
