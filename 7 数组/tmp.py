@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+def find_unsorted_subarray(nums):
+    if not nums or len(nums) == 1:
+        return 0
+    nums1 = nums[:]
+    nums1.sort()
+    n = len(nums)
+    l1 = 0
+    for i in range(n):
+        if nums[i] == nums1[i]:
+            l1 += 1
+            continue
+        else:
+            break
+    if l1 == n:
+        return 0
+
+    l2 = 0
+    for i in range(n - 1, -1, -1):
+        if nums[i] == nums1[i]:
+            l2 += 1
+            continue
+        else:
+            break
+    return n - (l1 + l2)
+
+
+def find_unsorted_subarray2(nums):
+    if not nums or len(nums) == 1:
+        return 0
+    stack = []
+    n = len(nums)
+    for i in range(n):
+        while stack and nums[stack[-1]] > nums[i]:
+            stack.pop(-1)
+        stack.append(i)
+    l1 = 0
+    for i, v in enumerate(stack):
+        if i == v:
+            l1 += 1
+        else:
+            break
+    if l1 == n:
+        return 0
+
+    stack = []
+    for i in range(n - 1, -1, -1):
+        while stack and nums[stack[-1]] < nums[i]:
+            stack.pop(-1)
+        stack.append(i)
+
+    l2 = 0
+    for i, v in enumerate(stack):
+        if nums[v] == nums[n - i - 1]:
+            l2 += 1
+        else:
+            break
+    return n - (l1 + l2)
+
+
+# 连续数组和为K 前缀和
+def subarray_sum(nums, k):
+    dic = dict()
+    res = 0
+    total = 0
+    dic[0] = 1  # 初始化
+    for v in nums:
+        total += v
+        if total - k in dic:
+            res += dic[total - k]
+        dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
+    return res
+
+
+# 加油站 加油 有点前缀和的意思
+def can_complete_circuit(gas, cost):
+    n = len(gas)
+    if sum(gas) - sum(cost) < 0:
+        return -1
+    current = 0
+    start = 0
+    for i in range(n):
+        if current + gas[i] - cost[i] >= 0:
+            current += gas[i] - cost[i]
+        else:
+            current = 0
+            start = i + 1
+    if start == n:
+        return -1
+    return start
+
+
+if __name__ == '__main__':
+    print('\n找到未排序的部分')
+    print(find_unsorted_subarray2([2, 6, 4, 8, 10, 9, 15]))
+
+    print('\n连续数组和为K')
+    print(subarray_sum([1, 1, -1], 1))
+
+    print('\n加油站问题')
+    print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
