@@ -261,6 +261,35 @@ def surrounded_regions2(board):
     return board
 
 
+def closed_island(grid):
+    if not grid or not grid[0]:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+    directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+
+    def dfs(i, j):
+        if i < 0 or j < 0 or i == rows or j == cols or grid[i][j]:
+            return
+        grid[i][j] = 1
+        for direction in directions:
+            r, c = i + direction[0], j + direction[1]
+            dfs(r, c)
+
+    for row in range(rows):
+        dfs(row, 0)
+        dfs(row, cols - 1)
+
+    for col in range(cols):
+        dfs(0, col)
+        dfs(rows - 1, col)
+
+    num = 0
+    for i in range(rows):
+        for j in range(cols):
+            if not grid[i][j]:
+                num += 1
+                dfs(i, j)
+    return num
 
 
 if __name__ == '__main__':
@@ -301,3 +330,14 @@ if __name__ == '__main__':
             ['0', '0', '1', '0', '0'],
             ['0', '0', '0', '1', '1']]
     print(num_islands2(grid))
+
+    print('\n封闭岛屿数')
+    grid = [[1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1]]
+
+    print(closed_island(grid))

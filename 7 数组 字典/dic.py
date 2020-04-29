@@ -12,7 +12,7 @@ def subarray_sum(nums, k):
         total += v
         if total - k in dic:
             res += dic[total - k]
-        dic[total] = dic.get(total, 0) + 1
+        dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
     return res
 
 

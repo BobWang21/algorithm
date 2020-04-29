@@ -609,6 +609,77 @@ def width_of_tree(tree):
     return res
 
 
+# 双重递归
+def path_sum(root, sum):
+    res = [0]
+
+    def from_root(tree, total):  # 包含根节点
+        if not tree:
+            return
+        if tree.val + total == sum:
+            res[0] += 1
+        from_root(tree.left, tree.val + total)
+        from_root(tree.right, tree.val + total)
+
+    def helper(tree):
+        if not tree:
+            return
+        from_root(tree, 0)
+        helper(tree.left)
+        helper(tree.right)
+
+    helper(root)
+    return res[0]
+
+
+# 前缀和
+def path_sum2(root, sum):
+    res = [0]
+
+    def from_root(tree, total):  # 包含根节点
+        if not tree:
+            return
+        if tree.val + total == sum:
+            res[0] += 1
+        from_root(tree.left, tree.val + total)
+        from_root(tree.right, tree.val + total)
+
+    def helper(tree):
+        if not tree:
+            return
+        from_root(tree, 0)
+        helper(tree.left)
+        helper(tree.right)
+
+    helper(root)
+    return res[0]
+
+
+def delete_node(root, key):
+    def find_max(node):
+        while node.left:
+            node = node.left
+        return node
+
+    if not root:
+        return
+
+    if key < root.val:
+        root.left = delete_node(root.left, key)
+    elif key > root.val:
+        root.right = delete_node(root.right, key)
+    else:
+        if not root.left:
+            return root.right
+        if not root.right:
+            return root.left
+        max_node = find_max(root.right)
+        root.val = max_node.val
+        root.left = delete_node(root.left, root.val)
+
+    return root
+
+
 if __name__ == '__main__':
     print('\n根据先序遍历和中序遍历构建数')
     preorder = [3, 9, 20, 15, 7]

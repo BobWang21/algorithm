@@ -18,7 +18,7 @@ def find_duplicate_num1(nums):
                 nums[tmp] = tmp
 
 
-# 0-n 之间可能有多个数字重复 返回任意重复的数字
+# 使用负数标记已经访问的数
 def find_duplicate_num2(nums):
     n = len(nums)
     i = 0

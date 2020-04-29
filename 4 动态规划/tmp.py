@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from collections import defaultdict
 
 
 def fib(n):
@@ -296,7 +297,9 @@ def min_path_sum(matrix):
 
     for j in range(cols):
         dp[0][j] = float('inf')
+
     dp[0][1] = 0  # 入口
+
     for i in range(1, rows):
         for j in range(1, cols):
             dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + matrix[i - 1][j - 1]
@@ -318,6 +321,55 @@ def maximal_square(matrix):
                 dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1
                 res = max(dp[i][j], res)
     return res * res
+
+
+def longest_arith_seq_length(nums):
+    gap = max(nums) - min(nums)
+    n = len(nums)
+    if not gap:
+        return n
+
+    dp = [[1] * (2 * gap + 1) for _ in range(n)]  # 可能有部分数组用不到
+    res = 1
+    for i in range(n):
+        for j in range(i):
+            d = nums[i] - nums[j] + gap  # 可能出现负数 需要设计等差
+            dp[i][d] = dp[j][d] + 1
+            res = max(res, dp[i][d])
+    return res
+
+
+def longest_arith_seq_length2(nums):
+    gap = max(nums) - min(nums)
+    n = len(nums)
+    if not gap:
+        return n
+
+    dp = defaultdict(int)  # 默认值为0
+    res = 1
+    for i in range(n):
+        for j in range(i):
+            d = nums[i] - nums[j] + gap  # 可能出现负数 需要设计
+            dp[(i, d)] = (dp[(j, d)] if dp[(j, d)] else 1) + 1
+            res = max(res, dp[(i, d)])
+    return res
+
+
+# 二维矩阵中 0为空地 1为障碍物 是否可以从左上角到达右下角
+# 求到达的路径数
+def unique_paths_with_obstacles(grid):
+    if not grid or not grid[0]:
+        return 0
+
+    rows, cols = len(grid) + 1, len(grid[0]) + 1
+    dp = [[0] * cols for _ in range(rows)]
+    dp[0][1] = 1  # 入口
+
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if not grid[i - 1][j - 1]:
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]  # dp[1][1] = dp[0][1] + dp[1][0] 因此把 dp[0][1]设为1
+    return dp[-1][-1]
 
 
 if __name__ == '__main__':
