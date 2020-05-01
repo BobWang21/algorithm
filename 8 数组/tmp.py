@@ -80,13 +80,13 @@ def can_complete_circuit(gas, cost):
     n = len(gas)
     if sum(gas) - sum(cost) < 0:
         return -1
-    current = 0
+    total = 0
     start = 0
     for i in range(n):
-        if current + gas[i] - cost[i] >= 0:
-            current += gas[i] - cost[i]
+        if total + gas[i] - cost[i] >= 0:
+            total += gas[i] - cost[i]
         else:
-            current = 0
+            total = 0
             start = i + 1
     if start == n:
         return -1
