@@ -41,21 +41,17 @@ def kth_smallest(matrix, k):
 # 373. Find K Pairs with Smallest Sums
 def k_smallest_pairs(nums1, nums2, k):
     heap = []
-    dic = defaultdict(list)
-    for i, v1 in enumerate(nums1):
-        for j, v2 in enumerate(nums2):
-            new_value = v1 + v2
+    for v1 in nums1:
+        for v2 in nums2:
+            v = v1 + v2
             if len(heap) < k:
-                hq.heappush(heap, -new_value)
-                dic[-new_value].append([v1, v2])
-            elif new_value < -heap[0]:
-                v = hq.heappop(heap)
-                dic[v].pop(0)  # 可能有重复值
-                hq.heappush(heap, -new_value)
-                dic[-new_value].append([v1, v2])
-    res = []
-    for k, v in dic.items():
-        res.extend(v)
+                hq.heappush(heap, (-v, (v1, v2)))
+            elif -heap[0][0] > v:
+                hq.heappop(heap)
+                hq.heappush(heap, (-v, (v1, v2)))
+            else:  # 如果v1 + v2 大于栈顶元素 则断开
+                break
+    res = [pair[1] for pair in heap]
     return res
 
 

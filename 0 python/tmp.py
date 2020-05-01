@@ -43,6 +43,9 @@ if __name__ == '__main__':
     nums = [1, 3, 100]
     change(nums[1:])  # 生成一个新的列表 b = a[:] 复制一份
     print(nums)
+    nums = [[1, 3], [2, 2], [3, 6]]
+    nums.sort(key=lambda x: x[1] - x[0])  # 排序
+    print(nums)
 
     print('\n字典')
     dic = {1: 3}
