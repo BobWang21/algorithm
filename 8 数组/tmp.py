@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import heapq as hq
 
 
 def find_unsorted_subarray(nums):
@@ -91,6 +92,69 @@ def can_complete_circuit(gas, cost):
     if start == n:
         return -1
     return start
+
+
+# Find K-th Smallest Pair Distance
+# 1 桶排序
+def smallest_distance_pair_1(nums, k):
+    nums.sort()
+
+    v = max(nums) - min(nums)
+    dp = [0] * (v + 1)
+    n = len(nums)
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            d = nums[j] - nums[i]
+            dp[d] += 1
+    total = 0
+    for i in range(v + 1):
+        total += dp[i]
+        if total >= k:
+            return i
+
+
+# 2 堆
+def smallest_distance_pair_2(nums, k):
+    heap = []
+    n = len(nums)
+    nums.sort()
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            v = nums[j] - nums[i]
+            if len(heap) < k:
+                hq.heappush(heap, -v)
+            elif v < -heap[0]:
+                hq.heappop(heap)
+                hq.heappush(heap, -v)
+            else:
+                break
+    return -heap[0]
+
+
+# 双指针 + 二分查找 差值小于等于某个数的pair数 为递增函数!!!
+def smallest_distance_pair_3(nums, k):
+    nums.sort()
+    n = len(nums)
+
+    def get_no_more(target):
+        j = 1
+        count = 0
+        for i in range(n - 1):
+            while j < n and nums[j] - nums[i] <= target:
+                j += 1
+            count += j - i - 1
+        return count
+
+    l, r = 0, nums[-1] - nums[0]
+    while l < r:
+        mid = (l + r) // 2
+        count = get_no_more(mid)
+        print(mid, count)
+        if count >= k:
+            r = mid
+        else:
+            l = mid + 1
+    return l
 
 
 if __name__ == '__main__':

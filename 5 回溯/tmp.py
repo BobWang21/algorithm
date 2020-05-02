@@ -194,6 +194,25 @@ def subset(candidates):
     return res
 
 
+# 递增子序列
+def find_sub_sequences(nums):
+    if not nums:
+        return []
+    res = set()  # 使用集合去重
+    n = len(nums)
+
+    def helper(idx, path):
+        if len(path) >= 2:
+            res.add(tuple(path))  # 使用tuple hash list
+
+        for i in range(idx, n):
+            if not path or path[-1] <= nums[i]:
+                helper(i + 1, path + [nums[i]])
+
+    helper(0, [])
+    return res
+
+
 # 背包问题
 def knapsack(costs, values, capacity):
     def dfs(capacity, idx, amount, res):

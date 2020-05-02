@@ -179,6 +179,18 @@ def find_target_sum_ways2(nums, S):
     return dic.get(S, 0)
 
 
+# 排序数组中距离不大于target的pair数 O(N)
+def no_more_than(nums, target):
+    n = len(nums)
+    j = 1
+    count = 0
+    for i in range(n - 1):
+        while j < n and nums[j] - nums[i] <= target:
+            j += 1
+        count += j - i - 1
+    return count
+
+
 if __name__ == '__main__':
     print('\n2 sum')
     print(two_sum([1, 2, 7, 8, 11, 15], 9))
@@ -194,3 +206,7 @@ if __name__ == '__main__':
 
     print('\n和为S的连续子序列')
     print(find_continuous_sequence(15))
+
+    print('\n差值小于等于target的对数')
+    nums = [1, 3, 5, 7]
+    print(no_more_than(nums, 1))
