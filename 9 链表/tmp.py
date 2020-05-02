@@ -69,11 +69,11 @@ def reverse_k_group(head, k):
             head = nxt
         return pre, tail
 
-    i = k
+    i = 1
     fast = head
-    while fast and i > 1:  # i = 1 包含k个节点
+    while fast and i < k:  # i = 1 包含k个节点
         fast = fast.next
-        i -= 1
+        i += 1
     if not fast:
         return head
 
@@ -516,8 +516,8 @@ def is_palindrome2(head):
 
 
 if __name__ == '__main__':
+    print('\n链表翻转')
     head = construct_list_node([1, 3, 5, 7])
-    print('链表翻转')
     print_list_node(reverse(head))
 
     print('\n链表倒数第K个节点')

@@ -8,7 +8,7 @@ def merge(nums):
     n = len(nums)
     if n == 1:
         return nums[0]
-    heap = [(nums[i].pop(0), i) for i in range(n)]
+    heap = [(nums[i].pop(0), i) for i in range(n)]  # 小顶堆
     hq.heapify(heap)
 
     res = []
@@ -45,7 +45,7 @@ def k_smallest_pairs(nums1, nums2, k):
         for v2 in nums2:
             v = v1 + v2
             if len(heap) < k:
-                hq.heappush(heap, (-v, (v1, v2)))
+                hq.heappush(heap, (-v, (v1, v2)))  # 大顶堆
             elif -heap[0][0] > v:
                 hq.heappop(heap)
                 hq.heappush(heap, (-v, (v1, v2)))

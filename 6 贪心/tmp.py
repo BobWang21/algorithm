@@ -4,16 +4,35 @@
 import heapq as hq
 
 
+# 发饼干 求最大满足的小孩的数目
+def find_content_children(g, s):
+    g.sort()  # 常排序
+    s.sort()
+    num = 0
+    m, n = len(g), len(s)
+    i = j = 0
+    while i < m and j < n:
+        if g[i] > s[j]:
+            j += 1
+        else:
+            num += 1
+            i += 1
+            j += 1
+    return num
+
+
 def two_city_sched_cost(costs):
-    costs.sort(key=lambda x: x[0] - x[1])  # 排序
+    costs.sort(key=lambda x: x[0] - x[1])  # 根据两个城市的费用差值排序 相当于2-OPT
 
     total = 0
     n = len(costs) // 2
-    for i in range(n):  # 前n个去A 后面去B 相当于2-OPT 交换时 -cost[i][0] + cost[i][1]
+    for i in range(n):  # 交换时 -cost[i][0] + cost[i][1]
         total += costs[i][0] + costs[i + n][1]
     return total
 
 
+# 木头连接 费用为两根木头的长度和
+# 哈夫曼数
 def connect_sticks(sticks):
     hq.heapify(sticks)
     total = 0
