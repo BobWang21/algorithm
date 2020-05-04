@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import heapq as hq
+from collections import defaultdict
 
 
 # 发饼干 求最大满足的小孩的数目
@@ -71,6 +72,80 @@ def wiggle_max_length(nums):
     return num
 
 
+# 判断是否为子序列 可以使用双指针
+# 当有多个S的时候 可以使用2分查找
+def is_subsequence(s, t):
+    dic = defaultdict(list)
+    for i, c in enumerate(t):
+        dic[c].append(i)
+
+    # print(dic)
+    def binary_search(nums, target):
+        l, r = 0, len(nums) - 1
+        while l < r:
+            mid = (l + r) // 2
+            if nums[mid] <= target:
+                l = mid + 1
+            else:
+                r = mid
+        return nums[l] if nums[l] > target else -1
+
+    t = -1
+    for c in s:
+        if c in dic:
+            idx = binary_search(dic[c], t)
+            # print(dic[c], c, idx)
+            if idx == -1:
+                return False
+            t = idx
+        else:
+            return False
+    return True
+
+
+# 是否可以跳到最后
+# 如果某一个作为 起跳点 的格子可以跳跃的距离是 3，那么表示后面 3 个格子都可以作为 起跳点。
+# 可以对每一个能作为 起跳点 的格子都尝试跳一次，把 能跳到最远的距离 不断更新
+# 如果可以一直跳到最后，就成功了
+def can_jump(nums):
+    n = len(nums)
+    total = 0
+    for i in range(n - 1):
+        if total >= i and i + nums[i] > total:
+            total = i + nums[i]
+    return total >= n - 1
+
+
+def can_jump2(nums):
+    n = len(nums)
+    if len(nums) == 1:
+        return 0
+    l = r = 0
+    num = 0
+    while r < n:
+        max_r = 0
+        for j in range(l, r + 1):
+            max_r = max(max_r, nums[j] + j)
+        l, r = r + 1, max_r
+        num += 1
+    return num
+
+
+def min_meeting_rooms(intervals):
+    if not intervals:
+        return 0
+    intervals.sort()  # 按开始时间排序
+    heap = [intervals.pop(0)[1]]  # 保存最早结束时间
+    while intervals:
+        s, e = intervals.pop(0)
+        if s >= heap[0]:  # 所有房间的最早的结束时间
+            hq.heappop(heap)
+            hq.heappush(heap, e)
+        else:
+            hq.heappush(heap, e)
+    return len(heap)
+
+
 if __name__ == '__main__':
     print('\n两城调度')
     costs = [[10, 20], [30, 200], [400, 50], [30, 20]]
@@ -79,3 +154,6 @@ if __name__ == '__main__':
     print('\n棍子连接')
     sticks = [2, 4, 3]
     print(connect_sticks(sticks))
+
+    print('\n所需要最少会议室')
+    print(min_meeting_rooms([[0, 30], [5, 10], [15, 20]]))

@@ -3,6 +3,8 @@
 
 
 # 使用回溯法解决 n sum 有点减而治之的味道
+
+
 def n_sum(nums, k, target):
     if not nums or len(nums) < k or target < 0:
         return

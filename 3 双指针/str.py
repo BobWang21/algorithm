@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import collections
+from collections import defaultdict, Counter
 
 
 # 判断是否为回文
@@ -143,40 +143,93 @@ def max_k_char(s, k):
     return max_len
 
 
-def find_pairs(nums, k):
-    if len(nums) < 2:
-        return 0
-    nums.sort()
-    if nums[-1] - nums[0] < k:
-        return 0
-    n = len(nums)
-    l, r = 0, 1
+# 判断是否为子序列
+def is_subsequence(s, t):
+    if not s:
+        return True
+    i = j = 0
+    m, n = len(s), len(t)
     num = 0
-    while r < n and l < n:
-        if l == r:
-            r += 1
-            continue
-        s = nums[r] - nums[l]
-        if s < k:
-            r += 1
-        elif s > k:
-            l += 1
-        else:
+    while i < m and j < n:
+        if s[i] == t[j]:
+            i += 1
+            j += 1
             num += 1
-            while l + 1 < n and nums[l] == nums[l + 1]:
-                l += 1
+            if num == m:
+                return True
+        else:
+            j += 1
+    return False
+
+
+def is_subsequence2(s, t):
+    dic = defaultdict(list)
+    for i, c in enumerate(t):
+        dic[c].append(i)
+
+    # print(dic)
+    def binary_search(nums, target):
+        l, r = 0, len(nums) - 1
+        while l < r:
+            mid = (l + r) // 2
+            if nums[mid] <= target:
+                l = mid + 1
+            else:
+                r = mid
+        return nums[l] if nums[l] > target else -1
+
+    t = -1
+    for c in s:
+        if c in dic:
+            idx = binary_search(dic[c], t)
+            # print(dic[c], c, idx)
+            if idx == -1:
+                return False
+            t = idx
+        else:
+            return False
+    return True
+
+
+# 最长前缀后缀
+def get_lps(s):
+    n = len(s)
+    lps = [0] * n
+    l, i = 0, 1
+    while i < n:
+        if s[l] == s[i]:
             l += 1
-            r = max(l + 1, r + 1)
-    return num
+            lps[i] = l
+            i += 1
+        elif l > 0:
+            l = lps[l - 1]  # 尝试第二长的前缀和后缀，看是否能继续延续
+        else:
+            i += 1  # 没有匹配的元素 'abcd'
+    return lps
 
 
-def find_pairs2(nums, k):
-    res = 0
-    c = collections.Counter(nums)
-    for i in c:
-        if (k > 0 and i + k in c) or (k == 0 and c[i] > 1):
-            res += 1
-    return res
+# 判断是否为子串
+# 在 s 字符串中找出 t 字符串出现的第一个位置 如果不存在返回-1
+def kmp(s, t):
+    m = len(s)
+    n = len(t)
+
+    if not n:
+        return 0
+    lps = get_lps(t)
+
+    i = j = 0
+    while i < m:
+        if s[i] == t[j]:
+            i += 1
+            j += 1
+            if j == n:
+                return i - n
+        elif j > 0:
+            j = lps[j - 1]  # 只移动j坐标
+        else:
+            i += 1  # 没有匹配
+    return -1
 
 
 if __name__ == '__main__':
@@ -191,9 +244,11 @@ if __name__ == '__main__':
     s2 = 'dinitrophenylhydrazinetrinitrophenylmethylnitramine'
     print(check_inclusion(s1, s2))
 
-    print('\n长度为K的最长子串')
+    print('\n长度为K的最长不重复子串')
     print(max_k_char('eceebaaaa', 2))
 
-    print('\n相差为K的pair数目')
-    print(find_pairs([1, 3, 1, 5, 4], 0))
-    print(find_pairs2([1, 3, 1, 5, 4], 0))
+    print('\n最长前缀后缀长度')
+    print(get_lps('ababa'))
+
+    print('\nKMP')
+    print(kmp('hello', 'll'))

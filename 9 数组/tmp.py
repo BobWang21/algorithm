@@ -2,6 +2,14 @@
 # -*- coding: utf-8 -*-
 import heapq as hq
 
+'''
+kth 问题的几种解法
+1 桶排序 
+2 堆排序
+3 二分查找 需要构造递增序列
+4 对于未排序的 使用partition
+'''
+
 
 def find_unsorted_subarray(nums):
     if not nums or len(nums) == 1:

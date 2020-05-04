@@ -39,6 +39,7 @@ def kth_smallest(matrix, k):
 
 
 # 373. Find K Pairs with Smallest Sums
+# 也可以使用二分
 def k_smallest_pairs(nums1, nums2, k):
     heap = []
     for v1 in nums1:

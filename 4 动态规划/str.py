@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-# 最长回文子序列 可以不连续 回文问题考虑奇数和偶数
-def longest_palindrome_subseq(s):
+# 最长回文子序列 可以不连续
+def longest_palindrome_subsequence(s):
     if not s:
         return s
     n = len(s)
@@ -12,7 +12,7 @@ def longest_palindrome_subseq(s):
     def helper(l, r):
         if (l, r) in dic:
             return dic[(l, r)]
-        if l == r:  # 奇数
+        if l == r:  # 回文问题考虑奇数和偶数 奇数
             dic[(l, r)] = 1
             return 1
         if r - l == 1:  # 偶数
@@ -28,6 +28,18 @@ def longest_palindrome_subseq(s):
         return dic[(l, r)]
 
     return helper(0, n - 1)
+
+
+def word_break(s, word_dict):
+    n = len(s)
+    dp = [False] * (n + 1)
+    dp[0] = True  # base
+    word_dict = set(word_dict)
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            if dp[i] and s[i:j] in word_dict:
+                dp[j] = True
+    return dp[-1]
 
 
 # 最长回文子串 连续
@@ -97,7 +109,10 @@ def edit_distance(word1, word2):
 
 if __name__ == '__main__':
     print('\n最长回文子序列')
-    print(longest_palindrome_subseq('babadada'))
+    print(longest_palindrome_subsequence('babadada'))
+
+    print('\n单词拆分')
+    print(word_break('leetcode', ['leet', 'code']))
 
     print('\n最长回文子串')
     print(longest_palindrome('babadada'))

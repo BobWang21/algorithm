@@ -52,7 +52,21 @@ def select_sort(nums):
     return nums
 
 
-# 计数排序
+# 计数排序 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，
+# 原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列
+# 使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+def sort_colors(nums):
+    if not nums:
+        return []
+    count = [0] * 3
+    for color in nums:
+        count[color] += 1
+    start = 0
+    for i in range(3):
+        for j in range(count[i]):
+            nums[start] = i
+            start += 1
+    return nums
 
 
 # 347 出现次数最多的K个数 类似计数排序
@@ -174,6 +188,8 @@ if __name__ == '__main__':
     ]
     print(search_matrix(matrix, 16))
 
+    print('\n计数排序')
+    print(sort_colors([2, 0, 2, 1, 1, 0]))
     print('\n出现次数最多的K个数')
     print(top_k_frequent([1, 1, 1, 2, 2, 3], 2))
 

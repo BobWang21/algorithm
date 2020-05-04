@@ -91,7 +91,7 @@ def daily_temperatures(t):
     return res
 
 
-# 直观思想
+# 暴力法O(n^2)
 def largest_rectangle_area1(heights):
     max_rec = 0
     n = len(heights)
@@ -105,40 +105,15 @@ def largest_rectangle_area1(heights):
     return max_rec
 
 
-def largest_rectangle_area2(heights):
-    max_rec = 0
-    n = len(heights)
-    res1 = [-1] * n  # 前
-    res2 = [n] * n  # 后
-    stack1 = []
-    stack2 = []
-    for i in range(n - 1, -1, -1):
-        while stack1 and heights[stack1[-1]] > heights[i]:  # 队列前小于当前值的第一个值
-            j = stack1.pop(-1)
-            res1[j] = i
-        stack1.append(i)
-
-    for i, h in enumerate(heights):
-        while stack2 and heights[stack2[-1]] > h:  # 队列后小于当前值的第一个值
-            j = stack2.pop(-1)
-            res2[j] = i
-        stack2.append(i)
-
-    for i, v in enumerate(heights):
-        l = res1[i]
-        r = res2[i]
-        max_rec = max(max_rec, (r - l - 1) * v)
-    return max_rec
-
-
-def largest_rectangle_area3(height):
-    height.append(0)
-    stack = [-1]
+def largest_rectangle_area2(height):
+    height.append(0)  # 为了让剩余元素出栈
+    stack = []
     ans = 0
-    for i in range(len(height)):
-        while height[stack[-1]] > height[i]:
+    n = len(height)
+    for i in range(n):
+        while stack and height[stack[-1]] > height[i]:
             h = height[stack.pop()]
-            w = i - stack[-1] - 1
+            w = i - stack[-1] - 1 if stack else i
             ans = max(ans, h * w)
         stack.append(i)
     return ans
