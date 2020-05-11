@@ -82,7 +82,7 @@ def is_balanced2(tree):
 def diameter_of_binary_tree(root):
     res = [-1]
 
-    def helper(root):  # 树的最大深度
+    def helper(root):  # 包含根节点树的最大深度
         if not root:
             return 0
         l, r = helper(root.left), helper(root.right)
@@ -146,20 +146,21 @@ def is_subtree(s, t):
     def helper(s, t):  # 已知两颗树 两棵树是否完全相同
         if not s and not t:
             return True
-        if not s or not t:
+        if not s or not t:  # 不能少 也不能多
             return False
         if s.val == t.val:
             return helper(s.left, t.left) and helper(s.right, t.right)
         return False
 
+    # 也需要判断 因为语句2
     if not s and not t:
         return True
     if not s or not t:
         return False
 
-    if helper(s, t):  # 只有true的时候返回
+    if helper(s, t):  # 只有True的时候返回 1
         return True
-    return is_subtree(s.left, t) or is_subtree(s.right, t)
+    return is_subtree(s.left, t) or is_subtree(s.right, t)  # 2
 
 
 # 子结构
@@ -315,31 +316,31 @@ def binary_tree_paths2(tree):
     return res
 
 
-# 124 子结构最大路径和
-# 可以不经过根节点 有点动态规划的意思
-def sub_tree_max_sum_path(tree):
+# 124 可以不经过根节点
+def max_sum_path(tree):
     def helper(tree):
         if not tree:
-            return 0, 0
-        l_include_root, max_l = helper(tree.left)  # 记录包含根节点的数值
-        r_include_root, max_r = helper(tree.right)
-        val = tree.val
-        include = max(l_include_root + val, r_include_root + val, val)  # 根节点及一侧最大
-        return include, max(max_l, max_r, include, l_include_root + r_include_root + val)
+            return -float('inf'), -float('inf')  # 包含当前节点 及 最大值
+        left = helper(tree.left)
+        right = helper(tree.right)
+        include = max(left[0] + tree.val, right[0] + tree.val, tree.val)
+        max_v = max(max(left[1]), max(right[1]), include, left[1] + right[1] + root.val)
+
+        return include, max_v
 
     return helper(tree)[1]
 
 
-def sub_tree_max_sum_path2(tree):
-    res = [-float('inf')]
+def max_sum_path2(tree):
+    res = [-float('inf')]  # 可能存在负数
 
     def helper(tree):  # 包含根节点的最大值
         if not tree:
             return 0
         left, right = helper(tree.left), helper(tree.right)
-        res[0] = max(res[0], left + right + tree.val, left + tree.val, right + tree.val, tree.val)
+        res[0] = max(res[0], tree.val, left + tree.val, right + tree.val, left + right + tree.val)
 
-        return max(left + tree.val, right + tree.val, tree.val)
+        return max(tree.val, left + tree.val, right + tree.val)
 
     helper(tree)
     return res[0]
@@ -732,7 +733,7 @@ if __name__ == '__main__':
 
     print('\n子树最大路径之和')
     tree = create_full_binary_tree([-10, 9, 20, 0, 0, 15, 7])
-    print(sub_tree_max_sum_path(tree))
+    print(max_sum_path(tree))
 
     print('\n二叉树序列化')
     tree = create_full_binary_tree([1, 2, 3])

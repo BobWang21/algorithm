@@ -165,6 +165,39 @@ def smallest_distance_pair_3(nums, k):
     return l
 
 
+# 要求o(n) 左右扫描两次也是O(n)
+def product_except_self(nums):
+    n = len(nums)
+    left = [1] * n
+    for i in range(1, n):
+        left[i] = left[i - 1] * nums[i - 1]
+
+    right = [1] * n
+    for i in range(n - 2, -1, -1):
+        right[i] = right[i + 1] * nums[i + 1]
+
+    for i in range(n):
+        right[i] = right[i] * left[i]
+    return right
+
+
+# o(1)空间 不算返回的空间
+def product_except_self2(nums):
+    n = len(nums)
+    res = [1] * n
+    k = nums[0]
+    for i in range(1, n):
+        res[i] *= k
+        k *= nums[i]
+
+    k = nums[-1]
+    for i in range(n - 2, -1, -1):
+        res[i] *= k
+        k *= nums[i]
+
+    return res
+
+
 if __name__ == '__main__':
     print('\n找到未排序的部分')
     print(find_unsorted_subarray2([2, 6, 4, 8, 10, 9, 15]))
@@ -174,3 +207,6 @@ if __name__ == '__main__':
 
     print('\n加油站问题')
     print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
+
+    print('\n除自身以外数组的乘积')
+    print(product_except_self2([1, 2, 3, 4]))
