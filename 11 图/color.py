@@ -12,15 +12,13 @@ def possible_bipartition(n, dislikes):
 
     colors = [0] * n
 
-    def dfs(node, color):
-        if not colors[node]:  # 未染色
-            colors[node] = color
-            for child in dic[node]:
-                if not dfs(child, -color):  # 邻接点染成相反色
-                    return False
-            return True
-        if colors[node] != color:  # 已经染色 染色冲突
-            return False
+    def dfs(i, color):
+        colors[i] = color
+        for j in dic[i]:
+            if not colors[j]:
+                dfs(j, -color)
+            elif colors[j] == color:  # 冲突一定是已经涂色的顶点
+                return False
         return True
 
     for i in range(n):

@@ -50,6 +50,30 @@ def clockwise_traverse(data):
     return res
 
 
+def generate_matrix(n):
+    l, r, t, b = 0, n - 1, 0, n - 1
+    matrix = [[0] * n for _ in range(n)]
+    num, tar = 1, n * n
+    while num <= tar:
+        for i in range(l, r + 1):  # left to right
+            matrix[t][i] = num
+            num += 1
+        t += 1
+        for i in range(t, b + 1):  # top to bottom
+            matrix[i][r] = num
+            num += 1
+        r -= 1
+        for i in range(r, l - 1, -1):  # right to left
+            matrix[b][i] = num
+            num += 1
+        b -= 1
+        for i in range(b, t - 1, -1):  # bottom to top
+            matrix[i][l] = num
+            num += 1
+        l += 1
+    return matrix
+
+
 # 顺时针旋转90度
 def rotate(matrix):
     def reverse(l, h):
@@ -79,6 +103,9 @@ if __name__ == '__main__':
 
     print('\n顺时针访问')
     print(clockwise_traverse(matrix))
+
+    print('\n 顺时针生成数组')
+    print(generate_matrix(3))
 
     print('\n顺时针旋转90度')
     matrix = [[1, 2, 3, 4],

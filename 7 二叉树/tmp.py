@@ -655,6 +655,7 @@ def path_sum2(root, sum):
     return res[0]
 
 
+# 删除二叉搜索树中的节点
 def delete_node(root, key):
     def find_max(node):
         while node.left:

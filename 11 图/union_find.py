@@ -1,31 +1,36 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+# 547 朋友圈总数 也可以使用dfs
 def find_circle_num(M):
     if not M or not M[0]:
         return 0
     n = len(M)
-    par = list(range(n))
+    parent = list(range(n))
     rank = [0] * n
     res = [n]
 
     def find(x):
-        while par[x] != x:
-            par[x] = par[par[x]]  # 路径压缩 变为一半
-            x = par[x]
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]  # 路径压缩 变为一半
+            x = parent[x]
         return x
 
     def union(x, y):
-        root_x = find(x)
-        root_y = find(y)
-        if root_x == root_y:
+        x = find(x)
+        y = find(y)
+        if x == y:
             return True  # 已经在同一个集合中 再加一条边 说明存在环
         # 减少计算 合并时rank小的树合并到rank大的树上 合并后的rank不变
-        if rank[root_x] < rank[root_y]:
-            par[root_x] = root_y
-        elif rank[root_x] > rank[root_y]:
-            par[root_y] = root_x
+        if rank[x] < rank[y]:
+            parent[x] = y
+        elif rank[x] > rank[y]:
+            parent[y] = x
         else:  # 相等时 合并后的rank+1
-            par[root_y] = root_x
-            rank[root_x] += 1
-        res[0] -= 1
+            parent[y] = x
+            rank[x] += 1
+        res[0] -= 1  # 边数 + 连通图数 = 顶点数
         return False
 
     for i in range(n):
@@ -58,28 +63,28 @@ def check_circle(M):
     if not M or not M[0]:
         return 0
     n = len(M)
-    par = list(range(n))
+    parent = list(range(n))
     rank = [0] * n
 
     def find(x):
-        while par[x] != x:
-            par[x] = par[par[x]]  # 路径减半
-            x = par[x]
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]  # 路径减半
+            x = parent[x]
         return x
 
     def union(x, y):
-        root_x = find(x)
-        root_y = find(y)
-        if root_x == root_y:
+        x = find(x)
+        y = find(y)
+        if x == y:
             return True  # 在同一个集合中 再加一条边 说明存在环
         # 减少计算
-        if rank[root_x] < rank[root_y]:
-            par[root_x] = root_y
-        elif rank[root_x] > rank[root_y]:
-            par[root_y] = root_x
+        if rank[x] < rank[y]:
+            parent[x] = y
+        elif rank[x] > rank[y]:
+            parent[y] = x
         else:
-            par[root_y] = root_x
-            rank[root_x] += 1
+            parent[y] = x
+            rank[x] += 1
         return False
 
     for i in range(n):
@@ -106,26 +111,26 @@ def are_sentences_similar_two(words1, words2, pairs):
         i += 1
 
     rank = [0] * n
-    par = list(range(n))
+    parent = list(range(n))
 
     def find(x):
-        while par[x] != x:
-            par[x] = par[par[x]]
-            x = par[x]
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
         return x
 
     def union(x, y):
-        root_x = find(x)
-        root_y = find(y)
-        if root_x == root_y:
+        x = find(x)
+        y = find(y)
+        if x == y:
             return
-        if rank[root_x] < rank[root_y]:
-            par[root_x] = root_y
-        elif rank[root_x] > rank[root_y]:
-            par[root_y] = root_x
+        if rank[x] < rank[y]:
+            parent[x] = y
+        elif rank[x] > rank[y]:
+            parent[y] = x
         else:
-            par[root_y] = root_x
-            rank[root_x] += 1
+            parent[y] = x
+            rank[x] += 1
         return
 
     for u, v in pairs:
@@ -163,21 +168,68 @@ def find_redundant_connection(edges):
         return x
 
     def union(x, y):
-        root_x, root_y = find(x), find(y)
-        if root_x == root_y:
+        x, y = find(x), find(y)
+        if x == y:
             return True
-        if rank[root_x] > rank[root_y]:
-            par[root_y] = root_x
-        elif rank[root_x] < rank[root_y]:
-            par[root_x] = root_y
+        if rank[x] > rank[y]:
+            par[y] = x
+        elif rank[x] < rank[y]:
+            par[x] = y
         else:
-            par[root_y] = root_x
-            rank[root_x] += 1
+            par[y] = x
+            rank[x] += 1
         return False
 
     for u, v in edges:
         if union(u, v):
             return u, v
+
+
+# 128. 最长连续序列
+def longest_consecutive(nums):
+    if not nums:
+        return 0
+
+    parent = {}  # 可能存在连续数字
+    rank = {}
+    for num in nums:
+        parent[num] = num
+        rank[num] = 1  # 连通图最大顶点数
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    def merge(x, y):
+        x = find(x)
+        y = find(y)
+        if x == y:
+            return rank[x]
+        parent[x] = y
+        rank[y] += rank[x]
+        return rank[y]
+
+    res = 1  # 如果为[2]
+    for num in nums:
+        if num + 1 in parent:
+            res = max(res, merge(num, num + 1))
+    return res
+
+
+def longest_consecutive2(nums):
+    nums = set(nums)
+    res = 0
+    for num in nums:
+        if num - 1 in nums:
+            continue
+        count = 1
+        while num + 1 in nums:
+            num = num + 1
+            count += 1
+        res = max(count, res)
+    return res
 
 
 if __name__ == '__main__':
@@ -203,3 +255,6 @@ if __name__ == '__main__':
 
     print('\n重复的边')
     print(find_redundant_connection([[1, 2], [1, 3], [2, 3]]))
+
+    print('\n最长连续序列')
+    print(longest_consecutive2([100, 4, 200, 1, 3, 2]))

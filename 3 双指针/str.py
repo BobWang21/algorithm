@@ -192,7 +192,7 @@ def is_subsequence2(s, t):
 
 
 # 最长前缀后缀
-def get_lps(s):
+def get_nxt(s):
     n = len(s)
     lps = [0] * n
     l, i = 0, 1
@@ -210,26 +210,91 @@ def get_lps(s):
 
 # 判断是否为子串
 # 在 s 字符串中找出 t 字符串出现的第一个位置 如果不存在返回-1
+# 时间复杂度为O(M+N)
 def kmp(s, t):
     m = len(s)
     n = len(t)
 
     if not n:
         return 0
-    lps = get_lps(t)
+    nxt = get_nxt(t)
 
     i = j = 0
     while i < m:
         if s[i] == t[j]:
             i += 1
-            j += 1
+            j += 1  # j 最多增加M次 时间复杂度为O(M)
             if j == n:
                 return i - n
         elif j > 0:
-            j = lps[j - 1]  # 只移动j坐标
+            j = nxt[j - 1]  # 只移动j坐标 减少也最多O(M)次
         else:
             i += 1  # 没有匹配
     return -1
+
+
+# num1 = "123", num2 = "456" 输出: "56088"
+def add(num1, num2):
+    m, n = len(num1), len(num2)
+    i, j = m - 1, n - 1
+    carry = 0
+    s = ''
+    while i >= 0 or j >= 0:
+        v1 = int(num1[i]) if i >= 0 else 0
+        v2 = int(num2[j]) if j >= 0 else 0
+        v = v1 + v2 + carry
+        s = str(v % 10) + s
+        carry = v // 10
+        i -= 1
+        j -= 1
+    if carry:
+        s = str(carry) + s
+    return s
+
+
+def multiply(num1, num2):
+    if not num1 or not num2:
+        return
+    m, n = len(num1), len(num2)
+
+    res = '0'
+
+    for i in range(m - 1, -1, -1):
+        s = ''
+        v1 = int(num1[i])
+        carry = 0
+        for j in range(n - 1, -1, -1):
+            v2 = int(num2[j])
+            v = v1 * v2 + carry
+            s = str(v % 10) + s
+            carry = v // 10
+        if carry:
+            s = str(carry) + s
+        s += '0' * (m - 1 - i)  # 补0
+        res = add(s, res)
+    return res
+
+
+def multiply2(num1, num2):
+    if num1 == '0' or num2 == '0':
+        return '0'
+
+    m, n = len(num1), len(num2)
+    res = [0] * (m + n)
+    for i in range(m - 1, -1, -1):
+        v1 = int(num1[i])
+        for j in range(n - 1, -1, -1):
+            v2 = int(num2[j])
+            v = res[i + j + 1] + v1 * v2
+            res[i + j + 1] = v % 10
+            res[i + j] += v // 10
+
+    s = ''
+    for i in range(m + n):
+        if i == 0 and res[i] == 0:
+            continue
+        s += str(res[i])
+    return s
 
 
 if __name__ == '__main__':
@@ -248,7 +313,12 @@ if __name__ == '__main__':
     print(max_k_char('eceebaaaa', 2))
 
     print('\n最长前缀后缀长度')
-    print(get_lps('ababa'))
+    print(get_nxt('ababa'))
 
     print('\nKMP')
     print(kmp('hello', 'll'))
+
+    print('字符串相乘')
+    print(add('123', '999'))
+
+    print(multiply2('123', '456'))

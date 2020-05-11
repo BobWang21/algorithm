@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+# 也可以计数排序
 def sort_colors(nums):
     def swap(i, j):
         nums[i], nums[j] = nums[j], nums[i]
@@ -44,25 +45,26 @@ def partition(nums, lo, hi):  # 原地修改
 
 
 # 三个指针 partition
-def triple_partition(nums, target):
+def triple_partition(nums, l, r):
     def swap(i, j):
         nums[i], nums[j] = nums[j], nums[i]
 
     if not nums:
         return []
-    lt, gt = 0, len(nums) - 1
-    i = 0
+    lt, gt = l, r
+    i = l
+    pivot = nums[l]
     while i <= gt:
-        if nums[i] < target:
+        if nums[i] < pivot:
             swap(i, lt)
             i += 1
             lt += 1
-        elif nums[i] == target:  # 保证i前为0或1
+        elif nums[i] == pivot:  # 保证i前为0或1
             i += 1
         else:
             swap(gt, i)
             gt -= 1  # 后边换过来的数 并不知道其数值 因此不移动i
-    return lt, gt, nums
+    return lt, gt
 
 
 # 奇数在左边 偶数在右边
@@ -115,7 +117,9 @@ if __name__ == '__main__':
     print(sort_colors([2, 0, 2, 1, 1, 0]))
 
     print('\n三路partition')
-    print(triple_partition([-1, 2, 0, 5, 5, 4, 3, 2, 10], 5))
+    nums = [5, -1, 2, 0, 5, 5, 4, 3, 2, 9, 10]
+    triple_partition(nums, 0, len(nums) - 1)
+    print(nums)
 
     print('\n快排')
     nums = [4, 3, 1, 9]

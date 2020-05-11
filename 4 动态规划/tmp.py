@@ -329,7 +329,7 @@ def longest_arith_seq_length(nums):
     if not gap:
         return n
 
-    dp = [[1] * (2 * gap + 1) for _ in range(n)]  # 可能有部分数组用不到
+    dp = [[1] * (2 * gap + 1) for _ in range(n)]  # 有部分数组用不到
     res = 1
     for i in range(n):
         for j in range(i):
@@ -344,12 +344,11 @@ def longest_arith_seq_length2(nums):
     n = len(nums)
     if not gap:
         return n
-
     dp = defaultdict(int)  # 默认值为0
     res = 1
     for i in range(n):
         for j in range(i):
-            d = nums[i] - nums[j] + gap  # 可能出现负数 需要设计
+            d = nums[i] - nums[j]  # 可能出现负数 需要设计
             dp[(i, d)] = (dp[(j, d)] if dp[(j, d)] else 1) + 1
             res = max(res, dp[(i, d)])
     return res

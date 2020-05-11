@@ -99,3 +99,6 @@ if __name__ == '__main__':
     graph = defaultdict(int)
     graph[1] += 5
     print(graph)
+
+    # 进制转换
+    print(bin(8)[2:])  # bin(8) = '0b1000'

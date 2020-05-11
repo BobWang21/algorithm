@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from collections import defaultdict
 
 
@@ -23,9 +26,6 @@ def can_finish(num_courses, prerequisites):
         del dic[u]
     return False if dic else True
 
-
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 def find_order(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u

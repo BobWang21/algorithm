@@ -2,6 +2,78 @@
 # -*- coding: utf-8 -*-
 
 
+def max_gift(board):
+    if not board or not board[0]:
+        return 0
+
+    rows, cols = len(board), len(board[0])
+
+    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]  # ← → ↑ ↓
+    res = [-float('inf')]
+
+    def helper(i, j, total):
+        if i < 0 or j < 0 or i == rows or j == cols:
+            res[0] = max(res[0], total)
+            return
+
+        if board[i][j] == 'x':  # 访问过
+            res[0] = max(res[0], total)
+            return
+
+        if isinstance(board[i][j], int):
+            total = total + board[i][j]
+
+        c = board[i][j]
+
+        board[i][j] = 'x'
+        print('+', board[0])
+        for direction in directions:
+            helper(i + direction[0], j + direction[1], total)  # 1
+
+        board[i][j] = c  # 因为1没有返回动作 因此可以回溯
+        print('-', board[0])
+
+    print('s', board[0])
+    helper(0, 2, 0)
+    return res[0]
+
+
+def surround(board):
+    if not board or not board[0]:
+        return []
+
+    rows, cols = len(board), len(board[0])
+
+    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]  # ← → ↑ ↓
+
+    def back(s):
+        for i, j in s:
+            board[i][j] = 'o'
+
+    def helper(i, j, update_set):
+        if i < 0 or j < 0 or i == rows or j == cols:
+            return False
+
+        if board[i][j] == 'x':  # 访问过
+            return True
+
+        c = board[i][j]
+        if c == '👷':
+            return True
+
+        board[i][j] = '👷'
+        update_set.add((i, j))
+
+        for direction in directions:
+            if not helper(i + direction[0], j + direction[1], update_set):
+                back(update_set)  # 1 需要回溯所有的尝试
+                return False
+
+        return True  # 如果某一方向满足条件则不会回溯 因此1处需要回溯所有路径!!!
+
+    return helper(1, 1, set())
+
+
 # 是否连通 1表示墙壁 0表示空地
 def maze_can_reach(maze, start, destination):
     if not maze or not maze[0]:
@@ -14,7 +86,7 @@ def maze_can_reach(maze, start, destination):
         if i < 0 or j < 0 or i == m or j == n:
             return False
 
-        if maze[i][j] == wall:  # 访问过 或是 墙 不需要回溯!!!
+        if maze[i][j] == wall:  # 访问过 或是 墙
             return False
 
         # 到达目的地
@@ -25,11 +97,11 @@ def maze_can_reach(maze, start, destination):
         maze[i][j] = wall
 
         for d in directions:
-            if dfs(i + d[0], j + d[1]):  # 多路问题
+            if dfs(i + d[0], j + d[1]):
                 return True
         return False
 
-    return dfs(start[0], start[1])
+    return dfs(start[0], start[1])  # 从某一个位置出发可以不用回溯
 
 
 # 1表示墙壁 0表示空地
@@ -40,18 +112,13 @@ def maze_short_path(maze, start, destination):
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     wall, empty = 1, 0
 
-    def safe(i, j):
-        if i < 0 or j < 0 or i == rows or j == cols:
-            return False
-        return True
-
     def bfs():
         queue = [(start[0], start[1], 0)]
         while queue:
             i, j, layer = queue.pop(0)
             for d in directions:
                 x, y = i + d[0], j + d[1]
-                if safe(x, y) and maze[x][y] == empty:  # 先判断是否安全
+                if 0 <= x < rows and 0 <= y < cols and maze[x][y] == empty:  # 先判断是否安全
                     if [x, y] == destination:
                         return layer + 1
 
@@ -62,119 +129,65 @@ def maze_short_path(maze, start, destination):
     return bfs()
 
 
-# 286 -1: 墙 0:大门 INF:空房间 2147483647来表示。
+# 286 -1: 墙 0:大门 INF:空房间 2147483647来表示
+# 直接法 会超时
+def walls_and_gates2(rooms):
+    INF = 2147483647
+    if not rooms or not rooms[0]:
+        return
+    rows, cols = len(rooms), len(rooms[0])
+
+    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+    def bfs(i, j, visited):
+        queue = [(i, j, 0)]
+        visited[i][j] = True
+        while queue:
+            r, c, layer = queue.pop(0)
+            for direction in directions:
+                i, j = r + direction[0], c + direction[1]
+                if 0 <= i < rows and 0 <= j < cols:
+                    if rooms[i][j] == -1:
+                        continue
+                    if rooms[i][j] == 0:
+                        return layer + 1
+                    if not visited[i][j]:
+                        queue.append((i, j, layer + 1))
+                        visited[i][j] = True
+        return INF
+
+    for i in range(rows):
+        for j in range(cols):
+            if rooms[i][j] == INF:
+                visited = [[False] * cols for _ in range(rows)]
+                rooms[i][j] = bfs(i, j, visited)
+
+
+# 多向BFS
 def walls_and_gates(rooms):
     if not rooms or not rooms[0]:
         return
-
-    inf = 2147483647
-    m, n = len(rooms), len(rooms[0])
+    INF = 2147483647
+    rows, cols = len(rooms), len(rooms[0])
     queue = []
-    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-    for row in range(m):
-        for col in range(n):
-            if not rooms[row][col] == 0:
-                queue.append((row, col))
-
-    while queue:
-        point = queue.pop(0)
-        row = point[0]
-        col = point[1]
-        for direction in directions:
-            r = row + direction[0]
-            c = col + direction[1]
-            if 0 <= r < m and 0 <= c < n and rooms[r][c] == inf:  # 已经标记过 或者是墙
-                rooms[r][c] = rooms[row][col] + 1
-                queue.append((r, c))
-
-
-# bfs
-def find_cheapest_price(flights, src, dst, K):
-    dic = dict()  # {s: {d:p}}
-
-    for s, d, p in flights:
-        dic.setdefault(s, dict())
-        dic[s][d] = p
-    print(dic)
-    queue = [(src, -1, 0, {src})]
-    amount = float('inf')
-    while queue:
-        node, stop, price, path = queue.pop(0)
-        if stop > K:
-            break
-        if price >= amount:
-            continue
-        if node == dst and stop <= K:
-            amount = min(amount, price)
-        if node in dic:
-            for new_node, new_price in dic[node].items():
-                if new_node not in path:  # 记录路径
-                    queue.append((new_node, stop + 1, price + new_price, path | {new_node}))
-
-    return amount if amount < float('inf') else -1
-
-
-# dfs
-def find_cheapest_price2(flights, src, dst, K):
-    dic = dict()  # {s: {d:p}}
-
-    for s, d, p in flights:
-        dic.setdefault(s, dict())
-        dic[s][d] = p
-
-    res = [float('inf')]
-
-    def helper(node, path, amount):
-        if len(path) > K + 2:
-            return
-        if node in dic:
-            for new_node, price in dic[node].items():
-                if new_node not in path:
-                    if new_node == dst:
-                        res[0] = min(res[0], amount + price)
-                        return
-                    else:
-                        helper(new_node, path | {new_node}, amount + price)
-
-    helper(src, set(), 0)
-    return res[0]
-
-
-# 岛屿数
-def num_islands(grid):
-    if not grid:
-        return 0
-    rows, cols = len(grid), len(grid[0])
-
-    def helper(i, j):
-        queue = [(i, j)]
-        grid[i][j] = '0'
-        while queue:
-            i, j = queue.pop(0)
-            if i - 1 >= 0 and grid[i - 1][j] == '1':
-                grid[i - 1][j] = '0'
-                queue.append((i - 1, j))
-            if i + 1 < rows and grid[i + 1][j] == '1':
-                grid[i + 1][j] = '0'
-                queue.append((i + 1, j))
-            if j - 1 >= 0 and grid[i][j - 1] == '1':
-                grid[i][j - 1] = '0'
-                queue.append((i, j - 1))
-            if j + 1 < cols and grid[i][j + 1] == '1':
-                grid[i][j + 1] = '0'
-                queue.append((i, j + 1))
-        return 1
-
-    num = 0
     for i in range(rows):
         for j in range(cols):
-            if grid[i][j] == '1':
-                num += helper(i, j)
-    return num
+            if not rooms[i][j]:
+                queue.append((i, j, 0))
+
+    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+    while queue:
+        row, col, layer = queue.pop(0)
+        for direction in directions:
+            i, j = row + direction[0], col + direction[1]
+            if 0 <= i < rows and 0 <= j < cols:
+                if rooms[i][j] == INF:
+                    rooms[i][j] = layer + 1
+                    queue.append((i, j, layer + 1))
 
 
-# 岛屿数 dfs
-def num_islands2(grid):
+# 200. 岛屿数量
+def num_islands(grid):
     if not grid:
         return 0
     rows, cols = len(grid), len(grid[0])
@@ -200,7 +213,7 @@ def num_islands2(grid):
     return num
 
 
-# 130 将围住的o变成x 逆向思维
+# 130 将围住的'O'变成'X' 任何边界上的'O'都不会被填充为'X' 逆向思维
 def surrounded_regions(board):
     if not board:
         return
@@ -220,9 +233,11 @@ def surrounded_regions(board):
     for i in range(rows):
         dfs(i, 0)
         dfs(i, cols - 1)
+
     for j in range(cols):
         dfs(0, j)
         dfs(rows - 1, j)
+
     dic = {'A': 'O', 'O': 'X', 'X': 'X'}
     for i in range(rows):
         for j in range(cols):
@@ -235,23 +250,26 @@ def surrounded_regions2(board):
     if not board:
         return
     rows, cols = len(board), len(board[0])
-    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
     def back(path):
         for i, j in path:
             board[i][j] = 'O'
 
     def dfs(i, j, path):
-        if i < 0 or j < 0 or i == rows or j == cols:  # 先判断是否有效
+        if i < 0 or j < 0 or i == rows or j == cols:
             return False
         if board[i][j] == 'X':
             return True
+
         board[i][j] = 'X'
-        path.add((i, j))  # 不建议这么写
-        for d in directions:
-            if dfs(i + d[0], j + d[1], path):
-                return True
-        back(path)
+
+        path.add((i, j))
+
+        if dfs(i - 1, j, path) and dfs(i + 1, j, path) and dfs(i, j - 1, path) and dfs(i, j + 1, path):
+            return True
+
+        back(path)  # 四个方向为并列关系 如果前3个方向正确 后1个错误回溯时 只能回溯最后1个方向
+
         return False
 
     for i in range(rows):
@@ -261,6 +279,7 @@ def surrounded_regions2(board):
     return board
 
 
+# 1254 封闭岛屿的数量
 def closed_island(grid):
     if not grid or not grid[0]:
         return 0
@@ -272,7 +291,7 @@ def closed_island(grid):
             return
         grid[i][j] = 1
         for direction in directions:
-            r, c = i + direction[0], j + direction[1]
+            r, c = i + direction[0], j + direction[1]  # 联通!!!
             dfs(r, c)
 
     for row in range(rows):
@@ -293,6 +312,23 @@ def closed_island(grid):
 
 
 if __name__ == '__main__':
+    print('\n路径中捡到的最多钱')
+    board = [[100, 'o', 'o', 'o', 80]]
+    print(max_gift(board))
+
+    print('\n包围')
+    board = [['o', '👷', '👷', 'o'],
+             ['👷', 'o', 'o', '👷'],
+             ['👷', 'o', '👷', 'o'],
+             ['o', 'o', 'o', 'o']]
+
+    for line in board:
+        print(line)
+    surround(board)
+    print()
+    for line in board:
+        print(line)
+
     print('\n迷宫最短路径')
     maze = [[0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
             [0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
@@ -324,13 +360,6 @@ if __name__ == '__main__':
             ['0', '0', '0', '1', '1']]
     print(num_islands(grid))
 
-    print('\n岛屿数2')
-    grid = [['1', '1', '0', '0', '0'],
-            ['1', '1', '0', '0', '0'],
-            ['0', '0', '1', '0', '0'],
-            ['0', '0', '0', '1', '1']]
-    print(num_islands2(grid))
-
     print('\n封闭岛屿数')
     grid = [[1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 0, 0, 0, 1],
@@ -339,5 +368,4 @@ if __name__ == '__main__':
             [1, 0, 1, 1, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 1],
             [1, 1, 1, 1, 1, 1, 1]]
-
     print(closed_island(grid))
