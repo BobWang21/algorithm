@@ -19,10 +19,12 @@ def lowest_common_ancestor(tree, p, q):
     right = lowest_common_ancestor(tree.right, p, q)
     if left is not None and right is not None:
         return tree.val
-    if left is not None and right is None:
-        return left
-    if left is None and right is not None:
+
+    if left is None:
         return right
+
+    if right is None:
+        return left
 
 
 # 返回是否平衡 已经树的高度
@@ -62,7 +64,6 @@ def is_balanced1(tree):
 
 
 # 判断树是否平衡
-# 如果平衡返回树的高度, 不平衡返回-1
 def is_balanced2(tree):
     def helper(tree):
         if not tree:
@@ -316,36 +317,6 @@ def binary_tree_paths2(tree):
     return res
 
 
-# 124 可以不经过根节点
-def max_sum_path(tree):
-    def helper(tree):
-        if not tree:
-            return -float('inf'), -float('inf')  # 包含当前节点 及 最大值
-        left = helper(tree.left)
-        right = helper(tree.right)
-        include = max(left[0] + tree.val, right[0] + tree.val, tree.val)
-        max_v = max(max(left[1]), max(right[1]), include, left[1] + right[1] + root.val)
-
-        return include, max_v
-
-    return helper(tree)[1]
-
-
-def max_sum_path2(tree):
-    res = [-float('inf')]  # 可能存在负数
-
-    def helper(tree):  # 包含根节点的最大值
-        if not tree:
-            return 0
-        left, right = helper(tree.left), helper(tree.right)
-        res[0] = max(res[0], tree.val, left + tree.val, right + tree.val, left + right + tree.val)
-
-        return max(tree.val, left + tree.val, right + tree.val)
-
-    helper(tree)
-    return res[0]
-
-
 # 213 21 + 23 = 46
 def sum_numbers(tree):  # 先序遍历!!!
     # top_down 记录父节点的值
@@ -518,27 +489,28 @@ def inorder_tra_next_node(node):
 
 # 抢钱问题 节点之间不能存在父子关系
 def rob(tree):
-    dic = dict()
+    dic = {}
 
-    def helper(tree):
-        if not tree:
-            return 0
-        if tree in dic:
-            return dic[tree]
-        total = tree.val
-        l, r = tree.left, tree.right
-        if l:
-            total += helper(l.left) + helper(l.right)
+    def helper(root):
+        if not root:
+            return 0, 0  # inc, max
+        if root in dic:
+            return dic[root]
+        left = helper(root.left)
+        right = helper(root.right)
+        include = root.val
+        if root.left:
+            include += helper(root.left.left)[1]
+            include += helper(root.left.right)[1]
+        if root.right:
+            include += helper(root.right.left)[1]
+            include += helper(root.right.right)[1]
+        exclude = left[1] + right[1]
+        max_v = max(include, exclude)
+        dic.setdefault(root, (include, max_v))
+        return include, max_v
 
-        if r:
-            total += helper(r.left) + helper(r.right)
-
-        total = max(total, helper(l) + helper(r))
-        dic[tree] = total
-
-        return total
-
-    return helper(tree)
+    return helper(root)[1]
 
 
 # include 和 exclude
@@ -554,6 +526,40 @@ def rob2(tree):
         return exclude, include
 
     return max(helper(tree))
+
+
+# 124 可以不经过根节点 不含有负数 参考动态规划
+# 包含根节点的最大值 和 不包含根节点的最大值
+def max_sum_path(tree):
+    res = [-float('inf')]
+
+    def helper(tree):
+        if not tree:
+            return -float('inf'), -float('inf')  # 包含当前节点路径!! 及 最大值 因为含有负数 这里不能用0
+        left = helper(tree.left)
+        right = helper(tree.right)
+        inc = max(tree.val, left[0] + tree.val, right[0] + tree.val)  # 路径
+        exc = max(max(left[1]), max(right[1]))
+        res[0] = max(res[0], inc, exc, left[1] + right[1] + root.val)
+        return inc, exc
+
+    helper(tree)
+    return res[0]
+
+
+def max_sum_path2(tree):
+    res = [-float('inf')]  # 可能存在负数
+
+    def helper(tree):  # 包含根节点的最大值
+        if not tree:
+            return 0
+        left, right = helper(tree.left), helper(tree.right)
+        res[0] = max(res[0], tree.val, left + tree.val, right + tree.val, left + right + tree.val)
+
+        return max(tree.val, left + tree.val, right + tree.val)
+
+    helper(tree)
+    return res[0]
 
 
 # 二叉树原地改为链表

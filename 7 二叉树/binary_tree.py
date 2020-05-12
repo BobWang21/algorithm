@@ -11,9 +11,12 @@ class TreeNode():
 
 # 创建完全二叉树
 def create_full_binary_tree(nums):
-    tree = TreeNode(nums[0])
+    if not nums:
+        return
+    tree = TreeNode(nums.pop(0))
     queue = [tree]
-    for val in nums[1:]:
+    while nums:
+        val = nums.pop(0)
         head = queue[0]
         if not head.left:
             node = TreeNode(val)
@@ -24,28 +27,6 @@ def create_full_binary_tree(nums):
             head.right = node
             queue.append(node)
             queue.pop(0)  # 出队列
-    return tree
-
-
-def create_full_binary_tree2(nums):
-    v = nums.pop(0)
-    tree = TreeNode(v)
-    queue = [tree]
-    while queue:
-        child = queue.pop(0)
-        l, r = None, None
-        while nums:
-            if l is None:
-                l = nums.pop(0)
-                node = TreeNode(l)
-                child.left = node
-                queue.append(node)
-            else:
-                r = nums.pop(0)
-                node = TreeNode(r)
-                child.right = node
-                queue.append(node)
-                break
     return tree
 
 
@@ -146,6 +127,7 @@ def min_depth(root):
     return min(min_depth(l), min_depth(r)) + 1
 
 
+# 层次遍历
 def serialize(tree):
     if not tree:
         return
@@ -162,43 +144,39 @@ def serialize(tree):
     return ' '.join(res)
 
 
-def deserialize(data):
-    if not data:
+def deserialize(s):
+    if not s:
         return
-    lists = data.split()
-    head = TreeNode(lists.pop(0))
-    curr_level = [head]
-    while curr_level:
-        next_level = []
-        for node in curr_level:
-            l, r = lists.pop(0), lists.pop(0)
-            if l == '#':
-                node.left = None
+    nums = s.split()
+    root = TreeNode(eval(nums.pop(0)))
+    queue = [root]
+    flag = 0
+    while nums:
+        node = queue[0]
+        val = nums.pop(0)
+        if val == '#':
+            if not flag:
+                flag += 1
             else:
-                left = TreeNode(l)
-                node.left = left
-                next_level.append(left)
-            if r == '#':
-                node.right = None
+                queue.pop(0)
+                flag = 0
+        else:
+            child = TreeNode(eval(val))
+            queue.append(child)
+            if not flag:
+                node.left = child
+                flag += 1
             else:
-                right = TreeNode(r)
-                node.right = right
-                next_level.append(right)
-
-        curr_level = next_level
-    return head
+                node.right = child
+                queue.pop(0)
+                flag = 0
+    return root
 
 
 if __name__ == '__main__':
-    nums = [i for i in range(7)]
-    tree = create_full_binary_tree(nums)
     print('\n先序遍历')
-    preorder_traversal(tree)
-
-    nums = [i for i in range(7)]
-    tree = create_full_binary_tree2(nums)
-    print('\n先序遍历')
-    preorder_traversal(tree)
+    tree = create_full_binary_tree([i for i in range(7)])
+    print(level_traversal(tree))
 
     print('\n中序遍历')
     print(inorder_traversal(tree))
@@ -213,3 +191,9 @@ if __name__ == '__main__':
     root.left = a
     a.left = b
     print(min_depth(root))
+
+    print('\n序列化反序列化')
+    tree = create_full_binary_tree([i for i in range(7)])
+    s = serialize(tree)
+    tree = deserialize(s)
+    print(level_traversal(tree))
