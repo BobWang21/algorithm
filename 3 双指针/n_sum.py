@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from collections import defaultdict
 
 
 # 解不唯一 O(N)
@@ -189,6 +190,24 @@ def no_more_than(nums, target):
             j += 1
         count += j - i - 1
     return count
+
+
+# 四个数组相加和为0
+def four_sum_count(A, B, C, D):
+    dic = defaultdict(int)
+    n = len(A)
+    for i in range(n):
+        for j in range(n):
+            s = A[i] + B[j]
+            dic[s] += 1
+
+    res = 0
+    for i in range(n):
+        for j in range(n):
+            s = C[i] + D[j]
+            if -s in dic:
+                res += dic[-s]
+    return res
 
 
 if __name__ == '__main__':

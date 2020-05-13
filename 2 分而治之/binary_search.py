@@ -2,30 +2,31 @@
 # -*- coding: utf-8 -*-
 
 
-#  二分查找 递归
-def binary_search(nums, lo, hi, target):
-    if lo <= hi:
-        mid = (lo + hi) // 2  # lo + (hi-lo) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[mid] > target:
-            return binary_search(nums, lo, mid - 1, target)
-        else:
-            return binary_search(nums, mid + 1, hi, target)
-    return -1
-
-
-#  二分查找 非递归
-def binary_search2(nums, target):
+# 非递归
+def binary_search1(nums, target):
     l, r = 0, len(nums) - 1
     while l <= r:
-        mid = (l + r) // 2
+        mid = l + (r - l) // 2
         if target == nums[mid]:
             return mid
         if target < nums[mid]:
-            r = mid - 1
+            r = mid - 1  # nums[r + 1] > target
         else:
-            l = mid + 1
+            l = mid + 1  # nums[l - 1] < target
+    # 跳出循环时l-r=1 nums[l]>target, nums[r]<target
+    return -1
+
+
+# 递归
+def binary_search2(nums, l, r, target):
+    if l <= r:
+        mid = l + (r - l) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[mid] > target:
+            return binary_search2(nums, l, mid - 1, target)
+        else:
+            return binary_search2(nums, mid + 1, r, target)
     return -1
 
 
@@ -38,12 +39,12 @@ def search_first_pos(nums, target):
     """
     l, r = 0, len(nums) - 1
     while l < r:
-        mid = (l + r) // 2
+        mid = l + (r - l) // 2
         if nums[mid] < target:
             l = mid + 1
         else:
             r = mid
-    return l if nums[l] == target else -1
+    return l if nums[l] == target else -1  # 配合l < r 使用
 
 
 # 有重复数字的非降序排序数组 返回最后一个等于target
@@ -57,7 +58,7 @@ def search_last_pos(nums, target):
     while l < r:
         mid = (l + r + 1) // 2
         if nums[mid] <= target:
-            l = mid  # l == mid 需要考虑 3, 4 这种无限循环的情况
+            l = mid  # l == mid 需要考虑3, 4这种无限循环的情况
         else:
             r = mid - 1
     return l if nums[l] == target else -1
@@ -66,40 +67,55 @@ def search_last_pos(nums, target):
 def search_first_large(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:
-        mid = (l + r) // 2
+        mid = l + (r - l) // 2
         if nums[mid] <= target:
             l = mid + 1
         else:
             r = mid
-    return r if nums[r] > target else -1
+    return l if nums[l] > target else -1
+
+
+# 数字在排序数组中出现的次数
+def get_number_of_k(nums, target):
+    if not nums:
+        return 0
+    n = len(nums)
+
+    # 第一个出现的位置
+    l, r = 0, n - 1
+    while l < r:
+        mid = l + (r - l) // 2
+        if nums[mid] < target:
+            l = mid + 1
+        else:
+            r = mid
+    if nums[l] != target:
+        return 0
+    left = l
+
+    # 最后一个出现的位置
+    l, r = 0, n - 1
+    while l < r:
+        mid = l + (r - l + 1) // 2
+        if nums[mid] <= target:
+            l = mid
+        else:
+            r = mid - 1
+    right = l
+
+    return right - left + 1
 
 
 # 旋转数组中的最小值
 # [3 4 1 2] 为 [1 2 3 4]的旋转数组
 def find_min(nums):
-    if not nums:
-        return -1
-    if nums[0] < nums[-1]:
-        return nums[0]
-    l, r = 0, len(nums) - 1
-    while l < r:
-        mid = (l + r) // 2
-        if nums[mid] >= nums[0]:  # nums[l-1]递增 nums[r] < nums[0] l = r nums[l]即为最小值
-            l = mid + 1
-        else:
-            r = mid
-    return nums[l]
-
-
-# 递归
-def find_min2(nums):
     if len(nums) <= 2:
         return min(nums)
     l, r = 0, len(nums) - 1
-    if nums[0] < nums[r]:
+    if nums[0] < nums[r]:  # 递增
         return nums[0]
-    mid = (l + r) // 2
-    return min(find_min2(nums[:mid]), find_min2(nums[mid:]))
+    mid = l + (r - l) // 2
+    return min(find_min(nums[:mid]), find_min(nums[mid:]))
 
 
 # 旋转数组查找
@@ -108,19 +124,21 @@ def search(nums, target):
         return -1
     l, r = 0, len(nums) - 1
     while l <= r:
-        mid = (l + r) // 2
+        mid = l + (r - l) // 2
         if nums[mid] == target:
             return mid
-        if nums[mid] >= nums[l]:
-            if nums[mid] > target >= nums[l]:
-                r = mid - 1
-            else:
-                l = mid + 1
-        if nums[mid] <= nums[r]:
-            if nums[mid] < target <= nums[r]:
+        if nums[mid] > nums[0]:  # 前部分递增
+            if nums[0] > target or nums[mid] < target:  # 不在递增部分
                 l = mid + 1
             else:
                 r = mid - 1
+        elif nums[mid] < nums[0]:  # 后面递增
+            if nums[-1] < target or nums[mid] > target:
+                r = mid - 1
+            else:
+                l = mid + 1
+        else:  # nums[0] == nums[mid] 并不能判断是否单调
+            l += 1
     return -1
 
 
@@ -131,7 +149,7 @@ def search2(nums, target):
             return -1
         if l == r:
             return l if nums[l] == target else -1
-        mid = (l + r) // 2
+        mid = l + (r - l) // 2
         if nums[mid] == target:
             return mid
         if nums[mid] > nums[0]:  # 前半部分递增
@@ -150,68 +168,6 @@ def search2(nums, target):
     return helper(0, len(nums) - 1)
 
 
-# 数字在排序数组中出现的次数
-def get_number_of_k(nums, target):
-    def binary_search(nums, tar, lo, hi):
-        if lo <= hi:
-            mid = (lo + hi) // 2
-            if nums[mid] == tar:
-                return mid
-            elif nums[mid] < tar:
-                return binary_search(nums, tar, mid + 1, hi)
-            else:
-                return binary_search(nums, tar, lo, mid - 1)
-        return None
-
-    n = len(nums) - 1
-    idx = binary_search(nums, target, 0, n)
-    if idx is None:
-        return
-    # 左侧端点
-    left_idx = binary_search(nums, target, 0, idx - 1)
-    min_left_idx = None
-    while left_idx is not None:
-        min_left_idx = left_idx
-        left_idx = binary_search(nums, target, 0, left_idx - 1)
-    # 右侧端点
-    right_idx = binary_search(nums, target, idx + 1, n)
-    max_right_idx = None
-    while right_idx is not None:
-        max_right_idx = right_idx
-        right_idx = binary_search(nums, target, right_idx + 1, n)
-
-    if min_left_idx is not None and max_right_idx is not None:
-        return max_right_idx - min_left_idx + 1
-
-    if min_left_idx is not None:
-        return idx - min_left_idx + 1
-
-    if max_right_idx is not None:
-        return max_right_idx - idx + 1
-
-    return 1
-
-
-def get_number_of_k2(nums, target, lo, hi):
-    def binary_search(nums, tar, lo, hi):
-        if lo <= hi:
-            mid = (lo + hi) // 2
-            if nums[mid] == tar:
-                return mid
-            elif nums[mid] < tar:
-                return binary_search(nums, tar, mid + 1, hi)
-            else:
-                return binary_search(nums, tar, lo, mid - 1)
-        return None
-
-    if nums[lo] == nums[hi] == target:  # 简化计算
-        return hi - lo + 1
-    idx = binary_search(nums, target, lo, hi)
-    if idx is None:
-        return 0
-    return get_number_of_k2(nums, target, lo, idx - 1) + 1 + get_number_of_k2(nums, target, idx + 1, hi)
-
-
 # 0 - n-1 n 个数中 缺少一个数
 def find_missed_value(nums):
     n = len(nums)
@@ -219,7 +175,7 @@ def find_missed_value(nums):
         return 1 - nums[0]
     l, r = 0, n
     while l <= r:
-        mid = (l + r) // 2
+        mid = l + (r - l) // 2
         if nums[mid] == mid:
             l = mid + 1
         else:
@@ -227,7 +183,6 @@ def find_missed_value(nums):
     return l
 
 
-# 对于无序 可以考虑partition
 def find_median_sorted_arrays(nums1, nums2):
     m, n = len(nums1), len(nums2)
     if m > n:
@@ -235,8 +190,11 @@ def find_median_sorted_arrays(nums1, nums2):
     k = (m + n + 1) // 2  # 左中点
     l, r = 0, m
     while l < r:
-        m1 = (l + r) // 2
-        m2 = k - m1
+        m1 = l + (r - l) // 2  # l = r = m 才会越界
+        m2 = k - m1  # (m + n + 1 - l - r) // 2 > 0
+        # l + r <= 2m
+        # n >= m
+        # m + n + 1 - 2m >= 1
         if nums1[m1] < nums2[m2 - 1]:  # nums1[l/r] >= nums2[m2-1] !!!
             l = m1 + 1
         else:
@@ -253,35 +211,111 @@ def find_median_sorted_arrays(nums1, nums2):
     return (c1 + c2) / 2.0
 
 
+def find_peak_element(nums):
+    if len(nums) == 1:
+        return 0
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = l + (r - l) // 2
+        if nums[mid] < nums[mid + 1]:  # 只有l=r=len(nums)-1, mid+1 才可能越界
+            l = mid + 1  # nums[l-1] < nums[l]
+        else:
+            r = mid  # nums[r] > nums[r+1]
+    # l=r 时  nums[l-1] < nums[l] = nums[r] > nums[r+1]
+    return l
+
+
+# 441 排列硬币 潜在递增函数
+def arrange_coins(n):
+    def total_coins(n):
+        return (1 + n) * n // 2
+
+    l, r = 1, n // 2 + 1
+    while l <= r:
+        mid = l + (r - l) // 2
+        total = total_coins(mid)
+        if total == n:
+            return mid  # 相等返回当前
+        if total < n:
+            l = mid + 1
+        else:
+            r = mid - 1
+    return r  # 小于target
+
+
+# 乘法口诀表 第 k 大的数
+# 也可以用堆 堆得时间复杂度 o(klog(k))
+def find_kth_number(m, n, k):
+    def no_more_than(val):  # 小于等于某个数的个数
+        res = 0
+        for i in range(1, min(m, val) + 1):
+            res += min(val // i, n)
+        return res
+
+    l, r = 1, m * n
+    while l < r:
+        mid = l + (r - l) // 2
+        if no_more_than(mid) < k:  # nmt(l-1) < k nmt(r) >= k
+            l = mid + 1
+        else:
+            r = mid
+    return l
+
+
+# Find Kth Smallest Pair Distance
+# 双指针 + 二分查找 差值小于等于某个数的pair数 为递增函数!!!
+def smallest_distance_pair_3(nums, k):
+    nums.sort()
+    n = len(nums)
+
+    def no_more_than(target):
+        j = 1
+        res = 0
+        for i in range(n - 1):
+            while j < n and nums[j] - nums[i] <= target:
+                j += 1
+            res += j - i - 1
+        return res
+
+    l, r = 0, nums[-1] - nums[0]
+    while l < r:
+        mid = (l + r) // 2
+        count = no_more_than(mid)
+        print(mid, count)
+        if count >= k:
+            r = mid
+        else:
+            l = mid + 1
+    return l
+
+
 if __name__ == '__main__':
     print('\n二分查找')
-    data = [1, 3, 5, 9, 10, 16, 17]
-    print(binary_search2(data, 3))
+    nums = [1, 3, 5, 9, 10, 16, 17]
+    print(binary_search1(nums, 3))
 
-    print('\n数值等于target的最小索引')
-    print(search_first_pos([1, 2, 3, 3, 9], 3))
+    print('\n最小索引')
+    print(search_first_pos([1, 2, 3, 3, 9], 5))
 
-    print('\n数值等于target的最大索引')
+    print('\n最大索引')
     print(search_last_pos([1, 2, 3, 3, 9], 3))
 
     print('\n第一个大于target的数值索引')
     print(search_first_large([1, 2, 3, 3, 9], 6))
 
+    print('\n数字在升序数字中出现的次数')
+    nums = [1, 2, 3, 3, 3, 3, 4, 4]
+    print(get_number_of_k(nums, -1))
+
     print('\n旋转数组中的最小值')
-    print(find_min([4, 5, 1, 3]))
-    print(find_min2([4, 5, 1, 3]))
+    print(find_min([5, 4, 3]))
 
     print('\n旋转数组查找')
     print(search([4, 5, 6, 7, 0, 1, 2], 0))
 
     print(search2([4, 5, 6, 7, 0, 1, 2], 0))
 
-    print('\n数字在升序数字中出现的次数')
-    nums = [1, 2, 3, 3, 3, 3, 4, 4]
-    print(get_number_of_k(nums, 3))
-    print(get_number_of_k2(nums, 1, 0, len(nums) - 1))
-
-    print('\n找出0 - n之间缺少的一个数字')
+    print('\n找出0-n之间缺少的一个数字')
     print(find_missed_value([0, 1, 3]))
 
     print('\n中位数')

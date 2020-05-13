@@ -22,7 +22,7 @@ if __name__ == '__main__':
     print('\n随机')
     pro = random.random()  # 0-1
     print(pro)
-    randint = random.randint(0, 10)  # 包括端点
+    randint = random.randint(0, 10)  # [0, 10]
     print(randint)
     print(random.shuffle([1, 2, 3]))
     print(random.choice([1, 2, 3]))  # 随机抽取一个点
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     dic[1] = dic.get(2, 0) + 1
     for k, v in dic.items():
         print(k, v)
-    print(type({}))  # {}表示字段
+    print(type({}))  # {}表示字典
 
     print('\n字符串')
     s = 'abc'
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     print(E, F, G)
 
     a = {1, 2, 3}
-    a.remove(2)
+    a.remove(2)  # 移除元素
     print(a)
 
     print('\nheapq')
@@ -102,3 +102,6 @@ if __name__ == '__main__':
 
     # 进制转换
     print(bin(8)[2:])  # bin(8) = '0b1000'
+    i = '5'
+    print(eval(i))  # 字符转数字
+    # print(eval('01')) 无法转换

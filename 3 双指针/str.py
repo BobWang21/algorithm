@@ -123,7 +123,7 @@ def max_k_char(s, k):
     dic[s[0]] = 1
     l, r = 0, 1
     max_len = 0
-    while r < n:
+    while r < n:  # r最大移动 n
         c = s[r]
         if c in dic:
             dic[c] += 1

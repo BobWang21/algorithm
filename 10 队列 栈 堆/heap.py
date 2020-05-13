@@ -8,34 +8,30 @@ def merge(nums):
     n = len(nums)
     if n == 1:
         return nums[0]
-    heap = [(nums[i].pop(0), i) for i in range(n)]  # 小顶堆
+    heap = [(nums[i][0], i, 0) for i in range(n)]  # 小顶堆
     hq.heapify(heap)
 
     res = []
     while heap:
-        v, i = hq.heappop(heap)
+        v, row, col = hq.heappop(heap)
         res.append(v)
-        if nums[i]:
-            v = nums[i].pop(0)
-            hq.heappush(heap, (v, i))
+        if col + 1 < n:
+            hq.heappush(heap, (nums[row][col + 1], row, col + 1))
     return res
 
 
+# 二维数组中找到第K大的数 O(Klog(k))
 def kth_smallest(matrix, k):
-    if not matrix:
+    if not matrix or not matrix[0]:
         return
-    heap = []
     n = len(matrix)
-    for i in range(n):
-        for j in range(n):
-            if len(heap) < k:
-                hq.heappush(heap, -matrix[i][j])
-            else:
-                if matrix[i][j] < -heap[0]:  # 比最大的要小的话
-                    hq.heappop(heap)
-                    hq.heappush(heap, -matrix[i][j])
-
-    return -heap[0]
+    heap = [(matrix[i][0], i, 0) for i in range(n)]  # value row, col
+    hq.heapify(heap)
+    for i in range(k):
+        v, row, col = hq.heappop(heap)
+        if col + 1 < n:
+            hq.heappush(heap, (matrix[row][col + 1], row, col + 1))
+    return v
 
 
 # 373. Find K Pairs with Smallest Sums

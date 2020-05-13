@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pprint import pprint
 
 
 # 最长回文子序列 可以不连续
@@ -68,17 +69,31 @@ def longest_palindrome(s):
     return max_str
 
 
-# 最长公共子序列
-def longest_common_subsequence(s1, s2):
+# 最长公共子序列 可以不连续
+def LCS(s1, s2):
     l1, l2 = len(s1), len(s2)
-    res = [[0] * (l2 + 1) for _ in range(l1 + 1)]
+    dp = [[0] * (l2 + 1) for _ in range(l1 + 1)]
     for i in range(1, l1 + 1):
         for j in range(1, l2 + 1):
             if s1[i - 1] == s2[j - 1]:
-                res[i][j] = res[i - 1][j - 1] + 1
+                dp[i][j] = dp[i - 1][j - 1] + 1
             else:
-                res[i][j] = max(res[i - 1][j], res[i][j - 1])
-    return res[-1][-1]
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+    pprint(dp)
+    return dp[-1][-1]
+
+
+# 子串
+def longest_common_str(s1, s2):
+    l1, l2 = len(s1), len(s2)
+    dp = [[0] * (l2 + 1) for _ in range(l1 + 1)]
+    for i in range(1, l1 + 1):
+        for j in range(1, l2 + 1):
+            if s1[i - 1] == s2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+
+    pprint(dp)
+    return dp[-1][-1]
 
 
 # 编辑距离
@@ -118,7 +133,10 @@ if __name__ == '__main__':
     print(longest_palindrome('babadada'))
 
     print('\n最长公共子序列')
-    print(longest_common_subsequence('aabcd', 'ad'))
+    print(LCS('abcbdab', 'bdcaba'))
+
+    print('\n最长公共子串')
+    print(longest_common_str([0, 1, 1, 1, 1], [1, 0, 1, 0, 1]))
 
     print('\n最短编辑距离')
     print(edit_distance("intention", "execution"))
