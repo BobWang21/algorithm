@@ -126,7 +126,7 @@ def rob2(nums):
 
 
 # 第一个和最后一个连成环 不能同时选
-def rob3(nums):
+def rob_with_cycle(nums):
     if not nums:
         return 0
     n = len(nums)
@@ -159,16 +159,16 @@ def longest_increasing_subsequence(nums):
 # res[i] 保存长度为i+1的子串的最小值 nlog(n)
 def longest_increasing_subsequence2(nums):
     def binary_search(nums, tar):
-        left, right = 0, len(nums) - 1
-        while left <= right:
-            mid = (left + right) // 2
+        l, r = 0, len(nums) - 1
+        while l <= r:
+            mid = l + (r - l) // 2
             if nums[mid] == tar:
                 return mid
             elif nums[mid] > tar:
-                right -= 1
+                r -= 1
             else:
-                left += 1
-        return left
+                l += 1
+        return l
 
     if not nums:
         return 0
@@ -195,6 +195,7 @@ def coin_change(coins, amount):
     return dp[amount] if dp[amount] != float('inf') else -1
 
 
+# 最少硬币数
 def coin_change2(coins, amount):
     if amount < 0:
         return 0
@@ -275,10 +276,10 @@ def max_product_after_cutting(m):
 def max_gift(matrix):
     if not matrix:
         return
-    row, col = len(matrix) + 1, len(matrix[0]) + 1
-    res = [[0] * col for _ in range(row)]
-    for i in range(1, row):
-        for j in range(1, col):
+    rows, cols = len(matrix) + 1, len(matrix[0]) + 1
+    res = [[0] * cols for _ in range(rows)]
+    for i in range(1, rows):
+        for j in range(1, cols):
             res[i][j] = max(res[i][j - 1], res[i - 1][j]) + matrix[i - 1][j - 1]
     return res[-1][-1]
 
@@ -323,6 +324,7 @@ def maximal_square(matrix):
     return res * res
 
 
+# 最长等差数列
 def longest_arith_seq_length(nums):
     gap = max(nums) - min(nums)
     n = len(nums)
@@ -397,7 +399,7 @@ if __name__ == '__main__':
     print(rob1([5, 3, -6, -5, 10]))
 
     print('\n抢钱2')
-    print(rob3([1, 2, 1, 1]))
+    print(rob_with_cycle([1, 2, 1, 1]))
 
     print('\n最长上升子序列')
     print(longest_increasing_subsequence([2, 5, 3, 4, 1, 7, 6]))

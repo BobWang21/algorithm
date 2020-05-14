@@ -2,6 +2,105 @@
 # -*- coding: utf-8 -*-
 
 
+def partition1(nums, lo, hi):  # 原地修改
+    pivot = nums[lo]  # 可以随机选择pivot
+    while lo < hi:
+        while lo < hi and pivot <= nums[hi]:
+            hi -= 1
+        nums[lo] = nums[hi]  # 替换已保存的数据
+        while lo < hi and nums[lo] <= pivot:
+            lo += 1
+        nums[hi] = nums[lo]  # 替换已保存的数据
+    nums[lo] = pivot
+    return lo
+
+
+# 三个指针 partition
+def partition2(nums, l, r):
+    def swap(i, j):
+        nums[i], nums[j] = nums[j], nums[i]
+
+    if not nums:
+        return []
+    lt, gt = l, r
+    i = l
+    pivot = nums[l]
+    while i <= gt:
+        if nums[i] < pivot:
+            swap(i, lt)
+            i += 1
+            lt += 1
+        elif nums[i] == pivot:  # nums[i-1] <= pivot!
+            i += 1
+        else:
+            swap(gt, i)
+            gt -= 1  # 后边换过来的数 并不知道其数值 因此不移动i
+    return lt, gt
+
+
+def quick_sort1(nums, lo, hi):
+    if lo < hi:  # 长度为1不用排序
+        mid = partition1(nums, lo, hi)
+        quick_sort1(nums, lo, mid - 1)
+        quick_sort1(nums, mid + 1, hi)
+
+
+def quick_sort2(nums, lo, hi):
+    if lo < hi:  # 长度为1不用排序
+        lt, mt = partition1(nums, lo, hi)
+        quick_sort2(nums, lo, lt - 1)
+        quick_sort2(nums, mt + 1, hi)
+
+
+# 奇数在左边 偶数在右边
+def sort_array_by_parity(nums):
+    n = len(nums)
+    if n < 2:
+        return nums
+    l, r = 0, n - 1
+    pivot = nums[0]
+    while l < r:
+        while l < r and not nums[r] % 2:
+            r -= 1
+        nums[l] = nums[r]
+        while l < r and nums[l] % 2:
+            l += 1
+        nums[r] = nums[l]
+    nums[l] = pivot
+    return nums
+
+
+# 无序数组的前K个数T(n) = n + T(n/2) ->O(n)
+def get_top_k(nums, k):
+    if not nums or len(nums) < k:
+        return nums
+
+    def partition(l, r):
+        pivot = nums[l]
+        while l < r:
+            while l < r and nums[r] >= pivot:
+                r -= 1
+            nums[l] = nums[r]
+
+            while l < r and nums[l] <= pivot:
+                l += 1
+
+            nums[r] = nums[l]
+        nums[l] = pivot
+        return l
+
+    l, r = 0, len(nums) - 1
+
+    while True:
+        p = partition(l, r)
+        if p + 1 == k:
+            return nums[:k]
+        if p + 1 < k:
+            l = p + 1
+        else:
+            r = p - 1
+
+
 # 也可以计数排序
 def sort_colors(nums):
     def swap(i, j):
@@ -24,110 +123,22 @@ def sort_colors(nums):
     return nums
 
 
-def quick_sort(nums, lo, hi):
-    if lo < hi:  # 长度为1不用排序
-        mid = partition(nums, lo, hi)
-        quick_sort(nums, lo, mid - 1)
-        quick_sort(nums, mid + 1, hi)
-
-
-def partition(nums, lo, hi):  # 原地修改
-    pivot = nums[lo]  # 可以随机选择pivot
-    while lo < hi:
-        while lo < hi and pivot <= nums[hi]:
-            hi -= 1
-        nums[lo] = nums[hi]  # 替换已保存的数据
-        while lo < hi and nums[lo] <= pivot:
-            lo += 1
-        nums[hi] = nums[lo]  # 替换已保存的数据
-    nums[lo] = pivot
-    return lo
-
-
-# 三个指针 partition
-def triple_partition(nums, l, r):
-    def swap(i, j):
-        nums[i], nums[j] = nums[j], nums[i]
-
-    if not nums:
-        return []
-    lt, gt = l, r
-    i = l
-    pivot = nums[l]
-    while i <= gt:
-        if nums[i] < pivot:
-            swap(i, lt)
-            i += 1
-            lt += 1
-        elif nums[i] == pivot:  # 保证i前为0或1
-            i += 1
-        else:
-            swap(gt, i)
-            gt -= 1  # 后边换过来的数 并不知道其数值 因此不移动i
-    return lt, gt
-
-
-# 奇数在左边 偶数在右边
-def sort_array_by_parity(nums):
-    n = len(nums)
-    if n < 2:
-        return nums
-    l, r = 0, n - 1
-    pivot = nums[0]
-    while l < r:
-        while l < r and not nums[r] % 2:
-            r -= 1
-        nums[l] = nums[r]
-        while l < r and nums[l] % 2:
-            l += 1
-        nums[r] = nums[l]
-    nums[l] = pivot
-    return nums
-
-
-# 无序数组的前K个数T(n) = n + T(n/2) ->O(n)
-def get_least_num(nums, k):
-    def partition(nums, l, r):
-        if l >= r:
-            return
-        pivot = nums[l]
-        while l < r:
-            while l < r and nums[r] >= pivot:
-                r -= 1
-            nums[l] = nums[r]
-            while l < r and nums[l] <= pivot:
-                l += 1
-            nums[r] = nums[l]
-        nums[l] = pivot
-        return l
-
-    l, r = 0, len(nums) - 1
-    p = partition(nums, l, r)
-    while p != k - 1:
-        if p + 1 < k:
-            l = p + 1
-        else:
-            r = p - 1
-        p = partition(nums, l, r)
-    return nums[:k]
-
-
 if __name__ == '__main__':
-    print('\n颜色排序')
-    print(sort_colors([2, 0, 2, 1, 1, 0]))
-
-    print('\n三路partition')
-    nums = [5, -1, 2, 0, 5, 5, 4, 3, 2, 9, 10]
-    triple_partition(nums, 0, len(nums) - 1)
+    print('\n快排')
+    nums = [4, 3, 1, 3, 9]
+    quick_sort1(nums, 0, 4)
     print(nums)
 
-    print('\n快排')
-    nums = [4, 3, 1, 9]
-    quick_sort(nums, 0, 3)
+    print('\n三路partition')
+    nums = [4, 3, 1, 3, 9]
+    quick_sort1(nums, 0, 4)
     print(nums)
 
     print('\n奇偶分离')
     print(sort_array_by_parity(nums))
 
     print('\n无序数组的前K个数')
-    print(get_least_num([10, 9, 8, 9, 1, 2, 0], 3))
+    print(get_top_k([10, 9, 8, 9, 1, 2, 0], 5))
+
+    print('\n颜色排序')
+    print(sort_colors([2, 0, 2, 1, 1, 0]))

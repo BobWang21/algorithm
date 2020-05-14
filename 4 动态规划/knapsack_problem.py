@@ -1,85 +1,83 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+# 动态规划 matrix[i][j] 表示前 i 件物品恰放入一个容量为 j 的背包可以获得的最大价值
 
 # 0-1 背包问题 回溯法
 def knapsack_backtrack(cost, val, cap):
-    def dfs(cap, idx, amount, res):
+    res = [-1]
+
+    def dfs(cap, idx, amount):
         for i in range(idx, len(cost)):
             if cap - cost[i] < 0:  # base 1 不能再装了
                 res[0] = max(res[0], amount)
-                continue
             elif cap - cost[i] == 0:  # base 2
                 res[0] = max(res[0], amount + val[i])
-                continue
             else:
-                dfs(cap - cost[i], i + 1, amount + val[i], res)
+                dfs(cap - cost[i], i + 1, amount + val[i])
 
-    res = [-1]
-    dfs(cap, 0, 0, res)
+    dfs(cap, 0, 0)
     return res[0]
 
 
-# 动态规划 matrix[i][j] 表示前 i 件物品恰放入一个容量为 j 的背包可以获得的最大价值
-def knapsack(cost, val, capacity):
-    n = len(cost)
-    matrix = [[0] * (capacity + 1) for _ in range(n + 1)]
-    for i in range(1, n + 1):
-        c = cost[i - 1]
-        v = val[i - 1]
-        for j in range(1, capacity + 1):
-            matrix[i][j] = matrix[i - 1][j]  # 不装物品i
-            if j - c >= 0:  # # res[i - 1][j-cost_i]从 i-1, 如果从i开始 我们不知道是否之前用到过物品i
-                matrix[i][j] = max(matrix[i - 1][j], matrix[i - 1][j - c] + v)
-    return matrix[-1][-1]
+# 0-1背包
+def knapsack(costs, values, capacity):
+    rows, cols = len(costs) + 1, capacity + 1
+    dp = [[0] * cols for _ in range(rows)]
+    for i in range(1, rows):
+        cost = costs[i - 1]
+        value = values[i - 1]
+        for j in range(1, cols):
+            dp[i][j] = dp[i - 1][j]  # 不装物品i
+            if j - cost >= 0:  # # res[i - 1][j-cost_i]从 i-1, 如果从i开始 我们不知道是否之前用到过物品i
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - cost] + value)
+    return dp[-1][-1]
 
 
 # 完全背包问题 借鉴0-1背包 这种方式可以解决有件数约束的背包问题
-def unbounded_knapsack1(cost, val, capacity):
-    if not cost or not val or len(cost) != len(val):
+def unbounded_knapsack1(costs, val, capacity):
+    if not costs or not val or len(costs) != len(val):
         return
-    n = len(cost)
-    res = [[0] * (capacity + 1) for _ in range(n + 1)]
-    for i in range(1, n + 1):
-        c = cost[i - 1]
-        v = val[i - 1]
-        for j in range(1, capacity + 1):
+    rows, cols = len(costs) + 1, capacity + 1
+    res = [[0] * cols for _ in range(rows)]
+    for i in range(1, rows):
+        cost = costs[i - 1]
+        value = val[i - 1]
+        for j in range(1, cols):
             res[i][j] = res[i - 1][j]
-            if j >= c:
-                k = 1
-                while c * k <= j:
-                    res[i][j] = max(res[i][j], res[i - 1][j - c * k] + v * k)
-                    k += 1
+            k = 1
+            while cost * k <= j:
+                res[i][j] = max(res[i][j], res[i - 1][j - cost * k] + value * k)
+                k += 1
 
     return res[-1][-1]
 
 
-def unbounded_knapsack2(cost, val, capacity):
-    if not cost or not val or len(cost) != len(val):
+def unbounded_knapsack2(costs, values, capacity):
+    if not costs or not values or len(costs) != len(values):
         return
-    n = len(cost)
+    n = len(costs)
     res = [[0] * (capacity + 1) for _ in range(n + 1)]
     for i in range(1, n + 1):
-        c = cost[i - 1]
-        v = val[i - 1]
+        cost = costs[i - 1]
+        value = values[i - 1]
         for j in range(1, capacity + 1):
             res[i][j] = res[i - 1][j]
-            if j >= c:  # res[i][j] 索引从i开始 可以重复使用物品
-                res[i][j] = max(res[i][j], res[i][j - c] + v)
+            if j >= cost:  # res[i][j] 索引从i开始 可以重复使用物品
+                res[i][j] = max(res[i][j], res[i][j - cost] + value)
     return res[-1][-1]
 
 
 # 使用1维数组表示
-def unbounded_knapsack3(cost, val, capacity):
-    if not cost or not val or len(cost) != len(val):
+def unbounded_knapsack3(costs, values, capacity):
+    if not costs or not values or len(costs) != len(values):
         return
-    n = len(cost)
+    n = len(costs)
     res = [0] * (capacity + 1)
     for i in range(1, capacity + 1):  # bottom up
         for j in range(n):
-            c, v = cost[j], val[j]
-            if i >= c:
-                res[i] = max(res[i], res[i - c] + v)
+            cost, value = costs[j], values[j]
+            if i >= cost:
+                res[i] = max(res[i], res[i - cost] + value)
 
     return res[-1]
 
@@ -92,24 +90,27 @@ def unbounded_knapsack3(cost, val, capacity):
 # 物品的重量等于物品的价值 包的重量为mean
 # 然后看可以装的物品的最大值是否等于mean
 def can_partition(nums):
-    mean = sum(nums) / 2
-    if mean % 2:
+    if sum(nums) % 2:
         return False
-    mean = int(mean)
-    vals = []
+    capacity = sum(nums) // 2
+
+    coins = []
     for val in nums:
-        if val < mean:
-            vals.append(val)
-        if val == mean:
+        if val < capacity:
+            coins.append(val)
+        elif val == capacity:
             return True
-    res = [[0] * (mean + 1) for _ in range(len(vals) + 1)]
-    for i in range(1, len(vals) + 1):
-        v = vals[i - 1]
-        for j in range(1, mean + 1):
+        else:
+            return False
+
+    res = [[0] * (capacity + 1) for _ in range(len(coins) + 1)]
+    for i in range(1, len(coins) + 1):
+        v = coins[i - 1]
+        for j in range(1, capacity + 1):
             res[i][j] = res[i - 1][j]
             if j >= v:
                 res[i][j] = max(res[i][j], res[i - 1][j - v] + v)
-    return res[-1][-1] == mean
+    return res[-1][-1] == capacity
 
 
 if __name__ == '__main__':

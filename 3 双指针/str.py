@@ -27,8 +27,8 @@ def reverse_string(s):
     if len(s) < 2:
         return s
     l, r = 0, len(s) - 1
-    lists = list(s)
-    while l < r:  # 重合在一个就没有交换的必要了，因此是 left < right
+    lists = list(s)  # 字符串不可原处更改
+    while l < r:  # 重合在一个就没有交换的必要了，因此是 l < r
         lists[l], lists[r] = lists[r], lists[l]
         l += 1
         r -= 1
@@ -112,44 +112,43 @@ def length_of_longest_substring(s):
     return res
 
 
-# 字符串1 包含 k个不同字符的最大长度
+# 包含k个不同字符的最大长度
 def max_k_char(s, k):
     if not s or k <= 0:
-        return 0
+        return ''
+
     n = len(s)
-    if n < k:
-        return n
-    dic = dict()
-    dic[s[0]] = 1
-    l, r = 0, 1
-    max_len = 0
-    while r < n:  # r最大移动 n
+    if n <= k:
+        return s
+
+    dic = {}
+    l = r = max_len = 0
+    while r < n:
         c = s[r]
         if c in dic:
             dic[c] += 1
-            max_len = max(max_len, r - l + 1)
-            r += 1
+            if r - l + 1 > max_len:
+                max_len = r - l + 1
+                res = s[l:r + 1]
         else:
-            if len(dic) < k:
-                dic[c] = 1
-                r += 1
-            else:
-                while len(dic) >= k:
-                    c = s[l]
-                    dic[c] -= 1
-                    l += 1
-                    if dic[c] == 0:
-                        del dic[c]
-    return max_len
+            dic[c] = 1
+            while len(dic) > k:
+                c = s[l]
+                dic[c] -= 1
+                if not dic[c]:
+                    del dic[c]
+                l += 1
+        r += 1
+    return res
 
 
 # 判断是否为子序列
 def is_subsequence(s, t):
     if not s:
         return True
-    i = j = 0
+
     m, n = len(s), len(t)
-    num = 0
+    i = j = num = 0
     while i < m and j < n:
         if s[i] == t[j]:
             i += 1
@@ -157,7 +156,7 @@ def is_subsequence(s, t):
             num += 1
             if num == m:
                 return True
-        else:
+        else:  # 看一个字符
             j += 1
     return False
 
@@ -195,16 +194,17 @@ def is_subsequence2(s, t):
 def get_nxt(s):
     n = len(s)
     lps = [0] * n
-    l, i = 0, 1
-    while i < n:
-        if s[l] == s[i]:
+
+    l, r = 0, 1
+    while r < n:
+        if s[l] == s[r]:
             l += 1
-            lps[i] = l
-            i += 1
+            lps[r] = l
+            r += 1
         elif l > 0:
             l = lps[l - 1]  # 尝试第二长的前缀和后缀，看是否能继续延续
         else:
-            i += 1  # 没有匹配的元素 'abcd'
+            r += 1  # 没有匹配的元素 'abcd'
     return lps
 
 

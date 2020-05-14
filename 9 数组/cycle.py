@@ -3,40 +3,36 @@
 # 循环交换 访问标记正负 双指针
 
 
-# 0-n-1之间的n个数
-# 可能有多个数字重复
-# 返回任意重复的数字
+# 0 ~ n-1之间的n个数 可能有多个数字重复 返回任意重复的数字
 def find_duplicate_num1(nums):
     n = len(nums)
     for i in range(n):
-        while i != nums[i]:  # 循环后保证i = nums[i] 如果不存在i == nums[i] 一定有一个数字是重复
-            if nums[i] == nums[nums[i]]:
-                return nums[i]
+        while i != nums[i]:
+            j = nums[i]
+            if j == nums[j]:  # 如果存在j == nums[j] 说明数字j重复了
+                return j
             else:
-                tmp = nums[i]
-                nums[i] = nums[tmp]
-                nums[tmp] = tmp
+                nums[i], nums[j] = nums[j], nums[i]
 
 
 # 使用负数标记已经访问的数
 def find_duplicate_num2(nums):
     n = len(nums)
     i = 0
-    for v in nums:
+    for v in nums:  # 判断是否0位重复数字
         if not v:
             i += 1
             if i > 1:
                 return 0
 
     for i in range(n):
-        v = abs(nums[i])
-        if nums[v] > 0:
-            nums[v] = -nums[v]
-        elif nums[v] < 0:
-            return v
+        j = abs(nums[i])
+        if nums[j] > 0:
+            nums[j] = -nums[j]
+        elif nums[j] < 0:
+            return j
 
 
-# 数组中的重复数字
 # 1 - n 的 n + 1 个数中 只有一个数重复一次或多次
 # 要求 O(1)空间复杂度!!!
 def find_duplicate_num3(nums):
@@ -61,7 +57,7 @@ def first_missing_positive(nums):
     if not nums:
         return 1
     n = len(nums)
-    min_p = n + 1
+    min_p = n + 1  # 最大的数为n
     for i in range(n):
         if nums[i] > 0:
             if nums[i] < min_p:
@@ -77,7 +73,7 @@ def first_missing_positive(nums):
             continue
         while nums[i] > 0:
             j = nums[i] - 1
-            if nums[j] == j + 1:
+            if nums[j] == j + 1:  # 防止循环 [1, -1, 1, 2]
                 break
             nums[i], nums[j] = nums[j], nums[i]
 
@@ -88,11 +84,6 @@ def first_missing_positive(nums):
 
 
 # 相当于使用idx做key的hash table
-# Given an array of integers where 1 ≤ a[i] ≤ n (n = size of array),
-# some elements appear twice and others appear once.
-# Find all the elements of [1, n] inclusive that do not appear in this array.
-# Could you do it without extra space and in O(n) runtime?
-# You may assume the returned list does not count as extra space.
 def find_disappeared_numbers(nums):
     for i in range(len(nums)):
         v = abs(nums[i]) - 1
@@ -118,31 +109,30 @@ def find_duplicates(nums):
 
 
 # 26 原地删除升序数组中的重复数字 并返回非重复数组的长度
-# Given nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
-# Your function should return length = 5
+# nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
 def remove_duplicates(nums):
+    if not nums:
+        return 0
     n = len(nums)
-    i = 0  # 第一个指针
+    i = 1  # 第一个指针 下一个不重复数字放置的位置 类似 三指针的lt
     for j in range(1, n):  # 第二个指针
         if nums[j - 1] != nums[j]:
-            nums[i + 1] = nums[j]
+            nums[i] = nums[j]
             i += 1
-    return i + 1
+    return i
 
 
 # 不改变顺序 把0移到数组尾部
 def move_zeros(nums):
     if not nums:
         return
-    j = 0
-    for i in range(len(nums)):
-        if not nums[i]:
-            continue
-        nums[j] = nums[i]
-        j += 1
-    for i in range(j, len(nums)):
+    k, n = 0, len(nums)
+    for i in range(n):
+        if nums[i]:
+            nums[k] = nums[i]
+            k += 1
+    for i in range(k, n):
         nums[i] = 0
-
     return nums
 
 
@@ -154,11 +144,11 @@ if __name__ == '__main__':
     print('\n 找到缺失的最小正数')
     print(first_missing_positive([3, 4, -1, 1]))
 
+    print('\n缺失的最小正数')
+    print(first_missing_positive([1, 3, 3]))
+
     print('\n删除排查数组中的重复数值')
     print(remove_duplicates([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
 
-    print('\n移动0')
+    print('\n移动 0至数组尾部')
     print(move_zeros([0, -7, 0, 2, 3, 11]))
-
-    print('\n缺失的最小正数')
-    print(first_missing_positive([1, 3, 3]))

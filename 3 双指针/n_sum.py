@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 
-# 解不唯一 O(N)
+# 解不唯一 O(N) 排序数组
 def two_sum(nums, target):
     n = len(nums)
     if n < 2:
@@ -184,15 +184,15 @@ def find_target_sum_ways2(nums, S):
 def no_more_than(nums, target):
     n = len(nums)
     j = 1
-    count = 0
+    res = 0
     for i in range(n - 1):
         while j < n and nums[j] - nums[i] <= target:
             j += 1
-        count += j - i - 1
-    return count
+        res += j - i - 1
+    return res
 
 
-# 四个数组相加和为0
+# 四个数组 每个数组中选一个数字 要求四个数和为0 返回和为0的数组个数
 def four_sum_count(A, B, C, D):
     dic = defaultdict(int)
     n = len(A)

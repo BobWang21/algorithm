@@ -14,8 +14,7 @@ def most_data(nums):
         if count == 0:
             value = nums[i]
             count = 1
-            continue
-        if nums[i] == value:
+        elif nums[i] == value:
             count += 1
         else:
             count -= 1
@@ -88,7 +87,7 @@ def top_k_frequent(nums, k):
                     return res[:k]
 
 
-# 最长连续数字 最小值的连续个数
+# 无序数组 最长连续区间 也可以使用并查集
 def longest_consecutive(nums):
     if not nums:
         return 0
@@ -138,9 +137,9 @@ def next_permutation(nums):
         nums.reverse()
         return nums
     k = r - 1
-    while r < n and nums[r] > nums[k]:  # 可以二分
+    while r < n and nums[r] > nums[k]:  # 找到第一个小于等于该数的位置
         r += 1
-    r -= 1
+    r -= 1  # 大于该数的最小值
     nums[k], nums[r] = nums[r], nums[k]
 
     # reverse
@@ -150,27 +149,6 @@ def next_permutation(nums):
         l += 1
         r -= 1
     return nums
-
-
-def findDisappearedNumbers(nums):
-    """
-    :type nums: List[int]
-    :rtype: List[int]
-    """
-    n = len(nums)
-    for i in range(n):
-        if nums[i] == i - 1:
-            continue
-        while nums[i] != i - 1:
-            j = nums[i]
-            if nums[j - 1] == j:
-                break
-            nums[i], nums[j - 1] = nums[j - 1], nums[i]
-    res = []
-    for i in range(n):
-        if i != nums[i] - 1:
-            res.append(i + 1)
-    return res
 
 
 if __name__ == '__main__':
@@ -202,7 +180,3 @@ if __name__ == '__main__':
 
     print('\n下一个排列')
     print(next_permutation([1, 1, 3]))
-
-    print('\n缺失的数据')
-    nums = [4, 3, 2, 7, 8, 2, 3, 1]
-    print(findDisappearedNumbers(nums))

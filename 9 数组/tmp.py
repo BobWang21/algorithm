@@ -75,7 +75,7 @@ def subarray_sum(nums, k):
     dic = dict()
     res = 0
     total = 0
-    dic[0] = 1  # 初始化 可能total == k
+    dic[0] = 1  # 初始化 可能total = k
     for v in nums:
         total += v
         if total - k in dic:
@@ -84,7 +84,7 @@ def subarray_sum(nums, k):
     return res
 
 
-# 加油站 加油 有点前缀和的意思
+# 加油站 有点前缀和的意思
 def can_complete_circuit(gas, cost):
     n = len(gas)
     if sum(gas) - sum(cost) < 0:
@@ -103,7 +103,7 @@ def can_complete_circuit(gas, cost):
 
 
 # 要求o(n) 左右扫描两次也是O(n)
-def product_except_self(nums):
+def product_except_self1(nums):
     n = len(nums)
     left = [1] * n
     for i in range(1, n):
@@ -146,4 +146,5 @@ if __name__ == '__main__':
     print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
 
     print('\n除自身以外数组的乘积')
+    print(product_except_self1([1, 2, 3, 4]))
     print(product_except_self2([1, 2, 3, 4]))
