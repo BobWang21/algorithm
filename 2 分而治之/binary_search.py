@@ -10,9 +10,9 @@ def binary_search1(nums, target):
         if target == nums[mid]:
             return mid
         if target < nums[mid]:
-            r = mid - 1  # nums[r + 1] > target
+            r = mid - 1  # nums[r+1] > target
         else:
-            l = mid + 1  # nums[l - 1] < target
+            l = mid + 1  # nums[l-1] < target
     # 跳出循环时l-r=1 nums[l]>target, nums[r]<target
     return -1
 
@@ -118,6 +118,17 @@ def find_min(nums):
     return min(find_min(nums[:mid]), find_min(nums[mid:]))
 
 
+def find_min2(nums):
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = l + (r - l) // 2
+        if nums[mid] >= nums[0]:  # 左半部分递增
+            l = mid + 1
+        else:
+            r = mid
+    return nums[l]
+
+
 # 旋转数组查找
 def search(nums, target):
     if not nums:
@@ -195,7 +206,7 @@ def find_median_sorted_arrays(nums1, nums2):
         # l + r <= 2m
         # n >= m
         # m + n + 1 - 2m >= 1
-        if nums1[m1] < nums2[m2 - 1]:  # nums1[l/r] >= nums2[m2-1] !!!
+        if nums1[m1] <= nums2[m2 - 1]:  # nums1[l/r] >= nums2[m2-1] !!!
             l = m1 + 1
         else:
             r = m1
@@ -211,6 +222,7 @@ def find_median_sorted_arrays(nums1, nums2):
     return (c1 + c2) / 2.0
 
 
+# 比左、右两边数都大的数
 def find_peak_element(nums):
     if len(nums) == 1:
         return 0
