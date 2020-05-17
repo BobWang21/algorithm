@@ -488,6 +488,7 @@ def inorder_tra_next_node(node):
 
 
 # 抢钱问题 节点之间不能存在父子关系
+# DFS + Memoization Solution
 def rob(tree):
     dic = {}
 
@@ -510,14 +511,14 @@ def rob(tree):
         dic.setdefault(root, (include, max_v))
         return include, max_v
 
-    return helper(root)[1]
+    return helper(tree)[1]
 
 
 # include 和 exclude
 def rob2(tree):
     def helper(tree):
         if not tree:
-            return 0, 0
+            return 0, 0  # exc, inc
 
         l = helper(tree.left)
         r = helper(tree.right)

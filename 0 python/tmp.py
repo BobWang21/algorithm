@@ -7,8 +7,12 @@ import random
 from collections import defaultdict
 
 
-def change(nums):
+def change1(nums):
     nums[0] = 100
+
+
+def change2(nums):  # 按地址传递 只可以修改, 不可以更改
+    nums = [1, 2]
 
 
 if __name__ == '__main__':
@@ -41,7 +45,7 @@ if __name__ == '__main__':
     a.append(3)  # 增加一个数
     c = a + b  # 生成一个新的变量
     nums = [1, 3, 100]
-    change(nums[1:])  # 生成一个新的列表 b = a[:] 复制一份
+    change1(nums[1:])  # 生成一个新的列表 b = a[:] 复制一份
     print(nums)
     nums = [[1, 3], [2, 2], [3, 6]]
     nums.sort(key=lambda x: x[1] - x[0])  # 排序

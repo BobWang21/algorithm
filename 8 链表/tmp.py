@@ -56,10 +56,9 @@ def swap_pairs(head):
     return dummy.next
 
 
+# 25
 def reverse_k_group(head, k):
     def reverse(head):
-        if not head:
-            return
         pre = None
         tail = head
         while head:
@@ -74,17 +73,17 @@ def reverse_k_group(head, k):
     while fast and i < k:  # i = 1 包含k个节点
         fast = fast.next
         i += 1
+
     if not fast:
         return head
 
     nxt = fast.next
-    fast.next = None
+    fast.next = None  # 切断
     new_head, tail = reverse(head)
     tail.next = reverse_k_group(nxt, k)
     return new_head
 
 
-# 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
 # 例如链表1->2->3->3->4->4->5 处理后为 1->2-3->5
 def remove_duplicates(head):
     if not head:
@@ -97,12 +96,11 @@ def remove_duplicates(head):
             pre.next = head
             head = head.next
             pre = pre.next
-    pre.next = None  # 防止尾部有重复
+            pre.next = None  # 防止尾部有重复
     return dummy.next
 
 
-# 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。
-# 例如链表1->2->3->3->4->4->5 处理后为 2->5
+# 82 例如链表1->2->3->3->4->4->5 处理后为 2->5
 def remove_duplicates2(head):
     if not head:
         return
@@ -118,9 +116,9 @@ def remove_duplicates2(head):
             head = head.next
         else:
             while head and head.next and head.val == head.next.val:
-                head = head.next  # 每次移动一步
-            head = head.next  # 出口为head.next 为空 或者 head.val!=head.next.val
-    pre.next = head
+                head = head.next
+            head = head.next  # 每次移动一步 出口为head.next为空 或者 head.val != head.next.val
+    pre.next = head  # head 可能为空 也可能为尾结点
     return dummy.next
 
 
@@ -170,30 +168,6 @@ def remove_nth_from_end(head, n):
         return head.next
     pre.next = slow.next  # 赋值前需要判断
     return head
-
-
-def partition(head, x):
-    if not head:
-        return
-    s_pre = small = ListNode(-1)
-    b_pre = big = ListNode(-1)
-    while head:
-        if head.val < x:
-            s_pre.next = head
-            s_pre = s_pre.next
-            head = head.next
-            s_pre.next = None
-        else:
-            b_pre.next = head
-            b_pre = b_pre.next
-            head = head.next
-            b_pre.next = None
-    if not small.next:
-        return big.next
-    if not big.next:
-        return small.next
-    s_pre.next = big.next
-    return small.next
 
 
 # 链表排序 148
@@ -285,79 +259,45 @@ def merge_two_sorted_lists3(l1, l2):
     return dummy.next
 
 
-def add_two_numbers1(l1, l2):
-    if not l1:
-        return l2
-    if not l2:
-        return l1
-    add_one = False
-    head = l1
-    pre = None
-    while l1 and l2:
-        if add_one:
-            l1.val += l2.val + 1
-        else:
-            l1.val += l2.val
-        if l1.val >= 10:
-            add_one = True
-            l1.val -= 10
-        else:
-            add_one = False
-        pre = l1
-        l1 = l1.next
-        l2 = l2.next
-
-    if not l1:
-        pre.next = l2
-
-    if not add_one:
-        return head
-
-    if add_one and not pre.next:
-        node = ListNode(1)
-        pre.next = node
-        return head
-
-    l1 = pre.next
-    pre = None
-    while add_one and l1:
-        l1.val += 1
-        if l1.val >= 10:
-            add_one = True
-            l1.val -= 10
-            pre = l1
-            l1 = l1.next
-        else:
-            add_one = False
-
-    if not add_one:
-        return head
-
-    if not l1:
-        node = ListNode(1)
-        pre.next = node
-        return head
-
-
-def add_two_nums2(l1, l2):
-    if not l1:
-        return l2
-    if not l2:
-        return l1
-    dummy = curr = ListNode(-1)
+# O(max(m, n)) 最高位位于链表尾
+def add_two_nums(l1, l2):
+    dummy = pre = ListNode(-1)
     carry = 0
     while l1 or l2 or carry:
-        if l1:
-            carry += l1.val
-            l1 = l1.next
-        if l2:
-            carry += l2.val
-            l2 = l2.next
-        curr.next = ListNode(carry % 10)
-        curr = curr.next
-        carry = carry // 10
-
+        v1 = l1.val if l1 else 0
+        v2 = l2.val if l2 else 0
+        v = v1 + v2 + carry
+        carry = v // 10
+        node = ListNode(v % 10)
+        pre.next = node
+        pre = pre.next
+        l1 = l1.next if l1 else None
+        l2 = l2.next if l2 else None
     return dummy.next
+
+
+# 最高位位于链表头
+def add_two_nums2(l1, l2):
+    def to_stack(l):
+        stack = []
+        while l:
+            stack.append(l)
+            l = l.next
+        return stack
+
+    stack1 = to_stack(l1)
+    stack2 = to_stack(l2)
+    nxt = None
+    carry = 0
+    while stack1 or stack2 or carry:
+        v1 = stack1.pop(-1).val if stack1 else 0
+        v2 = stack2.pop(-1).val if stack2 else 0
+        v = v1 + v2 + carry
+        carry = v // 10
+        node = ListNode(v % 10)
+        node.next = nxt
+        nxt = node
+    return nxt
 
 
 # 合并连个排序链表 归并
@@ -432,8 +372,7 @@ def get_intersection_node2(headA, headB):
     return s1
 
 
-# 判断链表存在环以及环的入口
-# 也可以使用set保存已经访问过的节点
+# 判断链表存在环以及环的入口 也可以使用set保存已经访问过的节点
 def detect_cycle2(head):
     if not head:
         return
@@ -443,7 +382,7 @@ def detect_cycle2(head):
     while fast and fast.next:
         fast = fast.next.next
         slow = slow.next
-        if fast == slow:
+        if fast == slow:  # 存在循环
             break
     if fast != slow:  # fast 或 fast.next 为空
         return False
@@ -515,6 +454,89 @@ def is_palindrome2(head):
     return True
 
 
+def partition(head, x):
+    if not head:
+        return
+    head1 = pre1 = ListNode(-1)
+    head2 = pre2 = ListNode(-1)
+    while head:
+        if head.val < x:
+            pre1.next = head
+            pre1 = pre1.next
+            head = head.next
+            pre1.next = None  # 可以省略
+        else:
+            pre2.next = head
+            pre2 = pre2.next
+            head = head.next
+            pre2.next = None  # 不可以省略
+    pre1.next = head2.next
+    return head1.next
+
+
+# 链表奇偶分离
+def odd_even_list(head):
+    if not head:
+        return head
+
+    odd = head
+    even = even_head = head.next
+    while even and even.next:
+        odd.next = even.next
+        odd = odd.next
+        even.next = odd.next
+        even = even.next
+    odd.next = even_head
+    return head
+
+
+# 更加通用
+def odd_even_list2(head):
+    if not head or not head.next:
+        return head
+
+    head1 = odd = ListNode(None)
+    head2 = even = ListNode(None)
+
+    i = 1
+    while head:
+        curr = head.next
+        head.next = None
+        if i % 2:
+            odd.next = head
+            odd = odd.next
+        else:
+            even.next = head
+            even = even.next
+        head = curr
+        i += 1
+    odd.next = head2.next
+    return head1.next
+
+
+# 重复删除链表中连续和为0的节点 head = [1,2,3,-3,-2] -> [1]
+def remove_zero_sum_sublists(head):
+    dummy = ListNode(0)
+    dummy.next = head
+    dic = {}
+    total = 0
+    node = dummy
+    while node:
+        total += node.val
+        dic[total] = node  # 记录前缀和的最后一个节点
+        node = node.next
+    # [1 2 3 -3]
+    # [1:0, 6:2, 3:3]
+    node = dummy
+    total = 0
+    while node:
+        total += node.val
+        node.next = dic[total].next
+        node = node.next
+
+    return dummy.next
+
+
 if __name__ == '__main__':
     print('\n链表翻转')
     head = construct_list_node([1, 3, 5, 7])
@@ -584,8 +606,12 @@ if __name__ == '__main__':
 
     l1 = construct_list_node([2, 4])
     l2 = construct_list_node([5, 6, 9, 9])
-    print_list_node(add_two_numbers1(l1, l2))
+    print_list_node(add_two_nums(l1, l2))
 
     print('\n判断是否为回文')
     l = construct_list_node([1, 2])
     print(is_palindrome2(l))
+
+    print('\n链表奇偶分离')
+    l = construct_list_node([5, 6, 7, 8])
+    print_list_node(odd_even_list(l))

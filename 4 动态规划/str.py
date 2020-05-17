@@ -28,7 +28,7 @@ def longest_palindrome_subsequence(s):
     return helper(0, n - 1)
 
 
-# 最长回文子串 连续
+# 最长回文子串
 def longest_palindrome(s):
     if not s:
         return s
@@ -37,7 +37,7 @@ def longest_palindrome(s):
     # 初始化字符串两个位置之间是否为回文的二维数组
     dp = [[False] * n for _ in range(n)]
 
-    for l in range(1, n + 1):  # bottom up
+    for l in range(1, n + 1):  # bottom up 长度
         for i in range(n):
             j = l + i - 1
             if j >= n:
@@ -48,13 +48,13 @@ def longest_palindrome(s):
             elif l == 2 and s[i] == s[j]:
                 dp[i][j] = True
                 max_str = s[i:j + 1]
-            elif dp[i + 1][j - 1] and s[i] == s[j]:
+            elif dp[i + 1][j - 1] and s[i] == s[j]:  # dp[i, j] = dp[i+1, j-1] and s[i] == s[j]
                 dp[i][j] = True
                 max_str = s[i:j + 1]
     return max_str
 
 
-# 最长公共子序列 可以不连续
+# 最长公共子序列
 def LCS(s1, s2):
     l1, l2 = len(s1), len(s2)
     dp = [[0] * (l2 + 1) for _ in range(l1 + 1)]
@@ -68,7 +68,7 @@ def LCS(s1, s2):
     return dp[-1][-1]
 
 
-# 子串
+# 最长公共子串
 def longest_common_str(s1, s2):
     l1, l2 = len(s1), len(s2)
     dp = [[0] * (l2 + 1) for _ in range(l1 + 1)]

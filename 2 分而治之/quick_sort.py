@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import random
 
 
 def partition1(nums, lo, hi):  # 原地修改
     pivot = nums[lo]  # 可以随机选择pivot
     while lo < hi:
-        while lo < hi and pivot <= nums[hi]:
+        while lo < hi and pivot <= nums[hi]:  # 右
             hi -= 1
         nums[lo] = nums[hi]  # 替换已保存的数据
-        while lo < hi and nums[lo] <= pivot:
+        while lo < hi and nums[lo] <= pivot:  # 左 左右必须有一个包含等于号
             lo += 1
         nums[hi] = nums[lo]  # 替换已保存的数据
     nums[lo] = pivot
@@ -47,7 +48,7 @@ def quick_sort1(nums, lo, hi):
 
 def quick_sort2(nums, lo, hi):
     if lo < hi:  # 长度为1不用排序
-        lt, mt = partition1(nums, lo, hi)
+        lt, mt = partition2(nums, lo, hi)
         quick_sort2(nums, lo, lt - 1)
         quick_sort2(nums, mt + 1, hi)
 
@@ -123,15 +124,49 @@ def sort_colors(nums):
     return nums
 
 
+# 179 输入: [3,30,34,5,9] 输出: 9534330
+def largest_number(nums):
+    if not nums:
+        return ''
+    nums = [str(num) for num in nums]
+
+    def bigger(s1, s2):
+        return s1 + s2 > s2 + s1
+
+    def partition(l, r):
+        pivot = nums[l]
+        while l < r:
+            while l < r and bigger(pivot, nums[r]):  # >
+                r -= 1
+            nums[l] = nums[r]
+
+            while l < r and not bigger(pivot, nums[l]):  # <
+                l += 1
+            nums[l], nums[r] = nums[r], nums[l]
+        nums[l] = pivot
+        return l
+
+    def quick_sort(l, r):
+        if l < r:
+            pivot = partition(l, r)
+            quick_sort(l, pivot - 1)
+            quick_sort(pivot + 1, r)
+
+    quick_sort(0, len(nums) - 1)
+    s = ''.join(nums)
+    return '0' if s[0] == '0' else s
+
+
 if __name__ == '__main__':
     print('\n快排')
     nums = [4, 3, 1, 3, 9]
+    # nums = [1, 1, 1, 1, 1]
     quick_sort1(nums, 0, 4)
     print(nums)
 
     print('\n三路partition')
     nums = [4, 3, 1, 3, 9]
-    quick_sort1(nums, 0, 4)
+    quick_sort2(nums, 0, 4)
     print(nums)
 
     print('\n奇偶分离')

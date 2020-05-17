@@ -301,6 +301,31 @@ def smallest_distance_pair_3(nums, k):
     return l
 
 
+# 二分查找
+def find_kth_number(n, k):
+    def prefix_num(prefix, n):
+        cnt = 0
+        a = prefix
+        b = prefix + 1
+        while a <= n:
+            cnt += min(n + 1, b) - a
+            a *= 10
+            b *= 10
+        return cnt
+
+    k -= 1
+    prefix = 1
+    while k:
+        c = prefix_num(prefix, n)
+        if c > k:
+            k -= 1
+            prefix *= 10
+        else:
+            k -= c
+            prefix += 1
+    return prefix
+
+
 if __name__ == '__main__':
     print('\n二分查找')
     nums = [1, 3, 5, 9, 10, 16, 17]

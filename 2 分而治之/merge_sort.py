@@ -115,8 +115,8 @@ if __name__ == '__main__':
 
     print('\n合并两个有序数组')
     print(merge1([1, 3], [2, 4]))
-    print(merge3([1, 3], [2, 4]))
     print(merge2([1, 3], [2, 4]))
+    print(merge3([1, 3], [2, 4]))
 
     print('\n合并K个有序数组')
     print(merge_k_sorted_nums1([[2, 4, 5], [1, 1, 9], [6, 7, 8]]))

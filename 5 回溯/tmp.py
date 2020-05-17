@@ -281,33 +281,36 @@ def letter_case_permutation(s):
     return res
 
 
-# '010010' 恢复ip
+# 93. 复原IP地址 '010010' 恢复ip
 def restore_ip_addresses(s):
     if not s:
         return []
-    res = []
 
     def valid(s):
-        if (s[0] == '0' and len(s) > 1) or eval(s) > 255:  # ip 不能大于255
+        if len(s) > 1 and s[0] == '0':
+            return False
+        if int(s) > 255:
             return False
         return True
 
-    def helper(s, k, path):
-        if k == 0 and not s:
-            res.append(path + s)
-            return
-        if k == 0:
-            return
-        if len(s) < k:
-            return
-        for i in range(1, 4, 1):  # 前1 2 3个字符
-            if len(s) < i:
-                return
-            new_ip = s[:i]
-            if valid(new_ip):
-                helper(s[i:], k - 1, path + new_ip + '.')
+    res, n = [], len(s)
 
-    helper(s, 4, '')
+    def helper(idx, path, k):
+        if k == 4 and idx == n:
+            res.append(path)
+            return
+        if k == 4 or idx == n:
+            return
+        for i in range(1, 4):
+            if idx + i <= n:
+                string = s[idx: idx + i]
+                if valid(string):
+                    if not k:  # '.'的位置
+                        helper(idx + i, string, 1)
+                    else:
+                        helper(idx + i, path + '.' + string, k + 1)
+
+    helper(0, '', 0)
     return res
 
 
@@ -415,6 +418,70 @@ def max_profit(prices):
 
     helper(0, None, cold, 0)
     return res[0]
+
+
+# dfs + 记忆
+def longest_increasing_path(matrix):
+    '''
+    329 最长递增路径为 nums =
+    [
+      [9,9,4],
+      [6,6,8],
+      [2,1,1]
+    ]
+    输出: 4  [1, 2, 6, 9]
+    '''
+    if not matrix or not matrix[0]:
+        return 0
+
+    rows, cols = len(matrix), len(matrix[0])
+    dirs = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+    dic = {}
+
+    def helper(row, col):
+        if (row, col) in dic:
+            return dic[(row, col)]
+        res = 1
+        for d in dirs:
+            i, j = row + d[0], col + d[1]
+            if 0 <= i < rows and 0 <= j < cols and matrix[i][j] > matrix[i][j]:
+                res = max(res, helper(i, j) + 1)
+        dic[(row, col)] = res
+        return res
+
+    ans = 0
+    for i in range(rows):
+        for j in range(cols):
+            ans = max(ans, helper(i, j))
+
+    return ans
+
+
+# 抢钱问题 记忆化深度搜索
+def rob(tree):
+    dic = {}
+
+    def helper(root):
+        if not root:
+            return 0, 0  # inc, max
+        if root in dic:
+            return dic[root]
+        left = helper(root.left)
+        right = helper(root.right)
+        include = root.val
+        if root.left:
+            include += helper(root.left.left)[1]  # 涉及到重复计算
+            include += helper(root.left.right)[1]
+        if root.right:
+            include += helper(root.right.left)[1]
+            include += helper(root.right.right)[1]
+        exclude = left[1] + right[1]
+        max_v = max(include, exclude)
+        dic.setdefault(root, (include, max_v))
+        return include, max_v
+
+    return helper(tree)[1]
 
 
 if __name__ == '__main__':

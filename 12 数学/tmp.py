@@ -202,23 +202,23 @@ def hamming_distance(x, y):
 
 
 # 求平方根
-def my_sqrt(n):
+def sqrt(n):
     if n == 1:
         return 1
     l, r = 1, n
     while l <= r:
-        m = (l + r) // 2
+        m = (l + r) / 2.0
         s = m * m
         if s == n:
             return m
         elif s < n:
-            l = m + 1
+            l = m + 0.1
         else:
-            r = m - 1
+            r = m - 0.1
     return r
 
 
-def my_sqrt2(n):
+def sqrt2(n):
     def fun(x):
         return x ** 2 - n  # 开口向上
 
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     print(my_atoi('4193 with words'))
 
     print('\n求一个数的平方根')
-    print(my_sqrt(17))
+    print(sqrt(17))
 
     print('\n计算素数个数')
     print(count_primes(10))

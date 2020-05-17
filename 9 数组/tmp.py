@@ -78,7 +78,7 @@ def subarray_sum(nums, k):
     dic[0] = 1  # 初始化 可能total = k
     for v in nums:
         total += v
-        if total - k in dic:
+        if total - k in dic:  # total - pre_total = k -> total - k in dic
             res += dic[total - k]
         dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
     return res
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     print(find_unsorted_subarray2([2, 6, 4, 8, 10, 9, 15]))
 
     print('\n连续数组和为K')
-    print(subarray_sum([1, 1, -1], 1))
+    print(subarray_sum([1, 2, 3, -3, 4], 0))
 
     print('\n加油站问题')
     print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))

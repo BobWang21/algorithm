@@ -1,28 +1,34 @@
-def partition2(nums, l, r):
-    pivot = nums[l]
-    lt, mt = l, r
-    i = l
-    while i <= mt:
-        if nums[i] < pivot:
-            nums[lt], nums[i] = nums[i], nums[lt]
-            i += 1
-            lt += 1
-        elif nums[i] == pivot:
-            i += 1
-        else:
-            nums[mt], nums[i] = nums[i], nums[mt]
-            mt -= 1
-    return lt, mt
+def sort(nums):
+    if not nums:
+        return
+    n = len(nums)
+    odd_num = 0
+    for i in range(n):
+        if nums[i] % 2:
+            odd_num += 1
+    if not odd_num or odd_num == n:
+        nums.sort()
+        return nums
+    
+    l, r = 0, n - 1
+    pivot = nums[0]
+    while l < r:
+        while l < r and not nums[r] % 2:
+            r -= 1
+        nums[l] = nums[r]
 
+        while l < r and nums[l] % 2:
+            l += 1
+        nums[r] = nums[l]
+    nums[l] = pivot
 
-def quick_sort(nums, l, r):
-    if l < r:
-        lt, mt = partition2(nums, l, r)
-        quick_sort(nums, l, lt - 1)
-        quick_sort(nums, mt + 1, r)
+    a = nums[:odd_num]
+    a.sort()
+    b = nums[odd_num:]
+    b.sort()
+    return a + b
 
 
 if __name__ == '__main__':
-    nums = [5, 1, 2, 4, -1, 5, 9, 10]
-    print(quick_sort(nums, 0, len(nums) - 1))
-    print(nums)
+    nums = [4, 5, 1, 3, 7, 6]
+    print(sort(nums))
