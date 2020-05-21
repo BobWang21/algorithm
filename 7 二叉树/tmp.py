@@ -344,7 +344,7 @@ def have_path_sum(tree, target):
 
 
 # 打印所有路径 从根节点到叶节点和为某个数的路径
-def sum_target_path(tree, target):
+def sum_target_path1(tree, target):
     if not tree:
         return []
 
@@ -373,7 +373,7 @@ def sum_target_path2(tree, target):
 
     def helper(tree, target, path):
         if not tree.left and not tree.right and target == tree.val:  # 叶节点等于target
-            res.append(path + [tree.val])
+            res.append(path + [tree.val])  # 生成一个新的变量
             return
         if not tree.left and not tree.right:  # 叶节点不等于target
             return
@@ -754,7 +754,8 @@ if __name__ == '__main__':
     print(binary_tree_paths2(tree))
 
     print('\n打印根节点到叶节和为某个数的路径')
-    print(sum_target_path(tree, 5))
+    print(sum_target_path1(tree, 5))
+    print(sum_target_path2(tree, 5))
 
     print('是否存在和为某个数的路径')
     tree = create_full_binary_tree([i for i in range(7)])

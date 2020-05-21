@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-def n_sum(nums, k, target):
+def n_sum1(nums, k, target):
     if not nums or len(nums) < k or target < 0:
         return []
     res = []
@@ -16,11 +16,37 @@ def n_sum(nums, k, target):
             return
         if k > n - idx:  # 后面的数不够K个
             return
-        for i in range(idx, len(nums)):
+        for i in range(idx, n):
             if i > idx and nums[i] == nums[i - 1]:  # 去重
                 continue
             # path + [nums[i]] 生成一个新的列表 因此不需要回溯
             helper(i + 1, k - 1, target - nums[i], path + [nums[i]])
+
+    nums.sort()
+    helper(0, k, target, [])
+    return res
+
+
+def n_sum2(nums, k, target):
+    if not nums or len(nums) < k or target < 0:
+        return []
+    res = []
+    n = len(nums)
+
+    def helper(idx, k, target, path):
+        if not k and not target:  # 满足条件 k个数的和为target
+            res.append(path[:])  # 复制新的结果 !!!
+            return
+        if not k:  # 不满足条件
+            return
+        if k > n - idx:  # 后面的数不够K个
+            return
+        for i in range(idx, n):
+            if i > idx and nums[i] == nums[i - 1]:  # 去重
+                continue
+            path.append(nums[i])
+            helper(i + 1, k - 1, target - nums[i], path)
+            path.pop(-1)
 
     nums.sort()
     helper(0, k, target, [])
@@ -422,7 +448,8 @@ def max_profit(prices):
 
 if __name__ == '__main__':
     print('\nn sum 回溯版')
-    print(n_sum([1, 1, 2, 3, 4], 3, 6))
+    print(n_sum1([1, 1, 2, 3, 4], 3, 6))
+    print(n_sum2([1, 1, 2, 3, 4], 3, 6))
 
     print('\nk个和相等的子数组')
     nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
