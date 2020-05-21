@@ -3,20 +3,21 @@
 from collections import defaultdict
 
 
-def fib(n):
-    result = [0, 1]
-    if n <= 2:
-        return result
-    left, right = result
-    for i in range(2, n):
+# bottom up
+def fib1(n):
+    if n == 1:
+        return 1
+    if n == 2:
+        return 2
+    left, right = 1, 2
+    for i in range(3, n + 1):
         left, right = right, left + right
-        result.append(right)
-    return result
+    return right
 
 
 # top down
 def fib2(n):
-    dic = {0: 0, 1: 1}
+    dic = {1: 1, 2: 2}
 
     def helper(n):
         if n in dic:
@@ -28,57 +29,47 @@ def fib2(n):
     return helper(n)
 
 
-# 股票买卖 最佳时机
-def max_profit1(nums):
+# dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+# 全为正数
+def rob1(nums):
+    if not nums:
+        return 0
     n = len(nums)
-    if n < 2:
-        raise Exception()
-    buy = 0
-    balance = 0
-    for i in range(1, n):
-        if nums[i] - nums[buy] > balance:
-            balance = nums[i] - nums[buy]
-            continue
-        if nums[i] < nums[buy]:
-            buy = i
-    return balance
+    if n <= 2:
+        return max(nums)
+    res = [0] * n
+    res[0] = nums[0]
+    res[1] = max(nums[:2])
+    for i in range(2, n):
+        res[i] = max(res[i - 2] + nums[i], res[i - 1])
+    return res[-1]
 
 
-# 股票买卖 含冷冻期
-def max_profit2(prices):
-    n = len(prices)
-    if n < 2:
+# 滚动数组
+def rob2(nums):
+    include = exclude = 0
+    for num in nums:
+        include, exclude = max(num, exclude + num), max(exclude, include)
+    return max(include, exclude)
+
+
+# 第一个和最后一个连成环 不能同时选
+def rob_with_cycle(nums):
+    if not nums:
         return 0
-    hold, sold, rest = -float('inf'), 0, 0  # 因为不能出现hold 所以收益为负无穷
-    for price in prices:
-        hold, sold, rest = max(rest - price, hold), hold + price, max(rest, sold)
+    n = len(nums)
+    if n <= 2:
+        return max(nums)
 
-    return max(sold, rest)
+    def helper(nums, lo, hi):
+        include, exclude = 0, 0
+        for i in range(lo, hi + 1):
+            new_include = exclude + nums[i]
+            exclude = max(include, exclude)
+            include = new_include
+        return max(include, exclude)
 
-
-# 最多交易两次
-def max_profit3(prices):
-    if not prices or len(prices) < 2:
-        return 0
-    n = len(prices)
-    k = 2
-    dp = [[[0, 0] for _ in range(k + 1)] for _ in range(n + 1)]
-
-    # 处理base: -1 及 不可能状态的赋值
-    for i in range(n + 1):  # 每天交易次数为0时
-        dp[i][0][1] = -float('inf')
-        dp[i][0][0] = 0
-
-    for j in range(k + 1):  # 第0天
-        dp[0][j][0] = 0
-        dp[0][j][1] = -float('inf')
-
-    for i in range(1, n + 1):
-        for j in range(k, 0, -1):  # 倒序更新
-            dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i - 1])
-            dp[i][j][1] = max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i - 1])  # j-1
-
-    return dp[-1][-1][0]
+    return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
 
 
 # 连续子序列 和最大
@@ -101,53 +92,10 @@ def max_continuous_product(nums):
     return res
 
 
-# dp[i] = max(dp[i-1], dp[i-2] + nums[i])
-# 全为正数
-def rob1(nums):
-    if not nums:
-        return 0
-    n = len(nums)
-    if n < 3:
-        return max(nums)
-    res = [0] * n
-    res[0] = nums[0]
-    res[1] = max(nums[:2])
-    for i in range(2, n):
-        res[i] = max(res[i - 2] + nums[i], res[i - 1])
-    return res[-1]
-
-
-# 滚动数组
-def rob2(nums):
-    include = exclude = 0
-    for val in nums:
-        include, exclude = max(val, exclude + val), max(exclude, include)
-    return max(include, exclude)
-
-
-# 第一个和最后一个连成环 不能同时选
-def rob_with_cycle(nums):
-    if not nums:
-        return 0
-    n = len(nums)
-    if n < 3:
-        return max(nums)
-
-    def helper(nums, lo, hi):
-        include, exclude = 0, 0
-        for i in range(lo, hi + 1):
-            new_include = exclude + nums[i]
-            exclude = max(include, exclude)
-            include = new_include
-        return max(include, exclude)
-
-    return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
-
-
 # 最长上升子序列
 def longest_increasing_subsequence(nums):
     dp = [1] * len(nums)
-    res = -1
+    res = 1
     for i, val in enumerate(nums):
         for j in range(i):
             if nums[j] < val:
@@ -158,13 +106,13 @@ def longest_increasing_subsequence(nums):
 
 # res[i] 保存长度为i+1的子串的最小值 nlog(n)
 def longest_increasing_subsequence2(nums):
-    def binary_search(nums, tar):
+    def binary_search(nums, target):
         l, r = 0, len(nums) - 1
         while l <= r:
             mid = l + (r - l) // 2
-            if nums[mid] == tar:
+            if nums[mid] == target:
                 return mid
-            elif nums[mid] > tar:
+            elif nums[mid] > target:
                 r -= 1
             else:
                 l += 1
@@ -173,12 +121,12 @@ def longest_increasing_subsequence2(nums):
     if not nums:
         return 0
     res = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
-    for v in nums[1:]:
-        if v > res[-1]:
-            res.append(v)
+    for num in nums[1:]:
+        if num > res[-1]:
+            res.append(num)
         else:
-            idx = binary_search(res, v)
-            res[idx] = v
+            idx = binary_search(res, num)  # 第一个大于该数的位置
+            res[idx] = num
     return len(res)
 
 
@@ -221,6 +169,18 @@ def coin_change2(coins, amount):
 #     return dp[-1]
 
 
+# 279. Perfect Squares 12 = 4 + 4 + 4
+def num_squares(n):
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # 当coin = amount 时使用
+    for i in range(1, n + 1):
+        for coin in range(1, int(n ** 0.5) + 1):
+            square = coin ** 2
+            if i >= square:
+                dp[i] = min(dp[i], dp[i - square] + 1)
+    return dp[n]
+
+
 # 给定一个正整数数组 求和为target的所有组合数
 def combination_sum(coins, target):
     '''
@@ -241,18 +201,6 @@ def combination_sum(coins, target):
             if i >= v:
                 res[i] += res[i - v]
     return res[-1]
-
-
-# 279. Perfect Squares 12 = 4 + 4 + 4
-def num_squares(n):
-    dp = [float('inf')] * (n + 1)
-    dp[0] = 0  # 当coin = amount 时使用
-    for i in range(1, n + 1):
-        for coin in range(1, int(n ** 0.5) + 1):
-            square = coin ** 2
-            if i >= square:
-                dp[i] = min(dp[i], dp[i - square] + 1)
-    return dp[n]
 
 
 # 割绳子
@@ -373,26 +321,63 @@ def unique_paths_with_obstacles(grid):
     return dp[-1][-1]
 
 
+# 股票买卖 最佳时机
+def max_profit1(nums):
+    n = len(nums)
+    if n < 2:
+        return 0
+    i = 0
+    balance = 0
+    for j in range(1, n):
+        if nums[j] - nums[i] > balance:
+            balance = nums[j] - nums[i]
+            continue
+        if nums[j] < nums[i]:
+            i = j
+    return balance
+
+
+# 股票买卖 含冷冻期
+def max_profit2(prices):
+    n = len(prices)
+    if n < 2:
+        return 0
+    hold, sold, rest = -float('inf'), 0, 0  # 因为不能出现hold 所以收益为负无穷
+    for price in prices:
+        hold, sold, rest = max(rest - price, hold), hold + price, max(rest, sold)
+
+    return max(sold, rest)
+
+
+# 最多交易两次
+def max_profit3(prices):
+    if not prices or len(prices) < 2:
+        return 0
+    n = len(prices)
+    k = 2
+    dp = [[[0, 0] for _ in range(k + 1)] for _ in range(n + 1)]
+
+    # 处理base: -1 及 不可能状态的赋值
+    for i in range(n + 1):  # 每天交易次数为0时
+        dp[i][0][1] = -float('inf')
+        dp[i][0][0] = 0
+
+    for j in range(k + 1):  # 第0天
+        dp[0][j][0] = 0
+        dp[0][j][1] = -float('inf')
+
+    for i in range(1, n + 1):
+        for j in range(k, 0, -1):  # 倒序更新
+            dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i - 1])
+            dp[i][j][1] = max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i - 1])  # j-1
+
+    return dp[-1][-1][0]
+
+
 if __name__ == '__main__':
     print('\nFibonacci sequence')
-    print(fib(40)[39])
+    print(fib1(39))
     print(fib2(39))
-
-    print('\n股票买卖 ')
-    print('最佳盈利')
-    print(max_profit1([5, 10, 15, 1, 20]))
-
-    print('包含冷冻期')
-    print(max_profit2([1, 2, 3, 0, 2]))
-
-    print('有交易次数限制')
-    print(max_profit3([3, 3, 5, 0, 0, 3, 1, 4]))
-
-    print('\n连续子序列和最大')
-    print(max_sub_array([10, -5, 10]))
-
-    print('\n连续子序列乘积最大')
-    print(max_continuous_product([-1, 2, 3, 0.1, -10]))
 
     print('\n抢钱1')
     print(rob2([5, 3, -6, -5, 10]))
@@ -400,6 +385,12 @@ if __name__ == '__main__':
 
     print('\n抢钱2')
     print(rob_with_cycle([1, 2, 1, 1]))
+
+    print('\n连续子序列和最大')
+    print(max_sub_array([10, -5, 10]))
+
+    print('\n连续子序列乘积最大')
+    print(max_continuous_product([-1, 2, 3, 0.1, -10]))
 
     print('\n最长上升子序列')
     print(longest_increasing_subsequence([2, 5, 3, 4, 1, 7, 6]))
@@ -436,3 +427,13 @@ if __name__ == '__main__':
               ["1", "1", "1", "1", "1"],
               ["1", "0", "0", "1", "0"]]
     print(maximal_square(matrix))
+
+    print('\n股票买卖 ')
+    print('最佳盈利')
+    print(max_profit1([5, 10, 15, 1, 20]))
+
+    print('包含冷冻期')
+    print(max_profit2([1, 2, 3, 0, 2]))
+
+    print('有交易次数限制')
+    print(max_profit3([3, 3, 5, 0, 0, 3, 1, 4]))

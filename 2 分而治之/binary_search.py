@@ -56,7 +56,7 @@ def search_last_pos(nums, target):
     """
     l, r = 0, len(nums) - 1
     while l < r:
-        mid = (l + r + 1) // 2
+        mid = l + (r - l + 1) // 2
         if nums[mid] <= target:
             l = mid  # l == mid 需要考虑3, 4这种无限循环的情况
         else:
@@ -143,7 +143,7 @@ def search(nums, target):
                 l = mid + 1
             else:
                 r = mid - 1
-        elif nums[mid] < nums[0]:  # 后面递增
+        elif nums[mid] < nums[0]:  # 后部分递增
             if nums[-1] < target or nums[mid] > target:
                 r = mid - 1
             else:
@@ -301,7 +301,7 @@ def smallest_distance_pair_3(nums, k):
     return l
 
 
-# 二分查找
+# 字典序 第k个数字 二分查找
 def find_kth_number(n, k):
     def prefix_num(prefix, n):
         cnt = 0

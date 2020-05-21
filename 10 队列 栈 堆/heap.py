@@ -1,14 +1,15 @@
 import heapq as hq
-from collections import defaultdict
+from collections import Counter
 
 
+# 合并K个有序数组[[1, 1], [2, 3]]
 def merge(nums):
     if not nums or not nums[0]:
         return
     n = len(nums)
     if n == 1:
         return nums[0]
-    heap = [(nums[i][0], i, 0) for i in range(n)]  # 小顶堆
+    heap = [(nums[i][0], i, 0) for i in range(n)]  # 小顶堆 v, row, col
     hq.heapify(heap)
 
     res = []
@@ -42,14 +43,23 @@ def k_smallest_pairs(nums1, nums2, k):
         for v2 in nums2:
             v = v1 + v2
             if len(heap) < k:
-                hq.heappush(heap, (-v, (v1, v2)))  # 大顶堆
-            elif -heap[0][0] > v:
+                hq.heappush(heap, (-v, (v1, v2)))  # 大的数先出堆 因此使用大顶堆
+            elif v < -heap[0][0]:
                 hq.heappop(heap)
                 hq.heappush(heap, (-v, (v1, v2)))
             else:  # 如果v1 + v2 大于栈顶元素 则断开
                 break
     res = [pair[1] for pair in heap]
     return res
+
+
+# 692 给一非空的单词列表，返回前 k 个出现次数最多的单词。
+# 返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率，按字母顺序排序。
+def top_k_frequent(words, k):
+    count = Counter(words)
+    heap = [(-freq, word) for word, freq in count.items()]  # 如果第一个元素相同 会根据第二个元素排序
+    hq.heapify(heap)
+    return [hq.heappop(heap)[1] for _ in range(k)]
 
 
 # 也可以使用 partition
@@ -62,11 +72,7 @@ class MedianFinder(object):
         self.large = []
         self.small = []
 
-    def addNum(self, target):
-        """
-        :type num: int
-        :rtype: None
-        """
+    def add_num(self, target):
         if not self.large:
             hq.heappush(self.large, -target)
             return
@@ -84,10 +90,7 @@ class MedianFinder(object):
             v = hq.heappop(self.small)
             hq.heappush(self.large, -v)
 
-    def findMedian(self):
-        """
-        :rtype: float
-        """
+    def find_median(self):
         m = len(self.large)
         n = len(self.small)
         if m + n == 1:
@@ -103,6 +106,31 @@ class MedianFinder(object):
             return (-self.large[0] + self.small[0]) / 2.0
 
 
+def check():
+    nums = [-10, 10, 1, 5, 2]
+    hq.heapify(nums)
+    res = []
+    while nums:
+        res.append(hq.heappop(nums))
+    print(res)
+
+    nums = [-10, 10, 1, 5, 2]
+    n = len(nums)
+    k = 3
+    heap = [-nums[i] for i in range(k)]
+    hq.heapify(heap)
+
+    for i in range(k, n):
+        if nums[i] < -heap[0]:  # 最大的数出堆
+            hq.heappop(heap)
+            hq.heappush(heap, -nums[i])
+
+    res = []
+    while heap:
+        res.append(-hq.heappop(heap))
+    print(res)  # 返回顺序为[2, 1, -10] 不是 [-10, 1, 2]
+
+
 if __name__ == '__main__':
     print('\n合并K个有序数组')
     print(merge([[1, 1, 1, 1], [2, 2, 2, 2], [3, 4, 5, 6]]))
@@ -111,8 +139,13 @@ if __name__ == '__main__':
     print('\n最小的k个pair')
     print(k_smallest_pairs([1, 7, 11], [2, 4, 6], 3))
 
+    print('\n单词频率topK')
+    print(top_k_frequent(["i", "love", "leetcode", "i", "love", "coding"], 2))
+
     print('\n数据流中位数')
     obj = MedianFinder()
-    obj.addNum(1)
-    obj.addNum(2)
-    print(obj.findMedian())
+    obj.add_num(1)
+    obj.add_num(2)
+    print(obj.find_median())
+
+    check()

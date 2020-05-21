@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jul 10 20:59:23 2017
-
-@author: wangbao
-"""
 
 
 def ten_2_binary(value):
@@ -27,25 +22,25 @@ def reverse(x):
         stack.append(re)
         x = x // 10
     res = 0
-    i = 0
+    k = 1
     while stack:
         v = stack.pop(-1)
-        res += v * 10 ** i
-        i += 1
+        res += v * k
+        k *= 10
     return res if res < 2 ** 31 else 0
 
 
 def valid_parentheses(s):
     pair_dic = {']': '[', '}': '{', ')': '('}
     stack = []
-    for val in s:
-        if val in pair_dic:
-            if stack and stack.pop(-1) == pair_dic[val]:
+    for c in s:
+        if c in pair_dic:
+            if stack and stack.pop(-1) == pair_dic[c]:
                 continue
             else:
                 return False
         else:
-            stack.append(val)
+            stack.append(c)
     return True if not stack else False
 
 

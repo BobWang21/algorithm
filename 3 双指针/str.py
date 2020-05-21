@@ -113,32 +113,27 @@ def length_of_longest_substring(s):
 
 
 # 包含k个不同字符的最大长度
-def max_k_char(s, k):
-    if not s or k <= 0:
-        return ''
-
-    n = len(s)
-    if n <= k:
-        return s
+def length_of_longest_substring_k_distinct(s, k):
+    if not s or len(s) <= k:
+        return len(s)
 
     dic = {}
-    l = r = max_len = 0
+    res, n = 0, len(s)
+    l, r = 0, 0
     while r < n:
-        c = s[r]
-        if c in dic:
-            dic[c] += 1
-            if r - l + 1 > max_len:
-                max_len = r - l + 1
-                res = s[l:r + 1]
-        else:
-            dic[c] = 1
+        if s[r] not in dic:
+            dic[s[r]] = 1
             while len(dic) > k:
                 c = s[l]
                 dic[c] -= 1
                 if not dic[c]:
                     del dic[c]
                 l += 1
+        else:
+            dic[s[r]] += 1
+        res = max(res, r - l + 1)
         r += 1
+
     return res
 
 
@@ -310,7 +305,7 @@ if __name__ == '__main__':
     print(check_inclusion(s1, s2))
 
     print('\n长度为K的最长不重复子串')
-    print(max_k_char('eceebaaaa', 2))
+    print(length_of_longest_substring_k_distinct('eceebaaaa', 2))
 
     print('\n最长前缀后缀长度')
     print(get_nxt('ababa'))

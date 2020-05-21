@@ -3,7 +3,7 @@
 from pprint import pprint
 
 
-# 最长回文子序列 可以不连续
+# 最长回文子序列
 def longest_palindrome_subsequence(s):
     if not s:
         return s

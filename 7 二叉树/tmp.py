@@ -345,6 +345,9 @@ def have_path_sum(tree, target):
 
 # 打印所有路径 从根节点到叶节点和为某个数的路径
 def sum_target_path(tree, target):
+    if not tree:
+        return []
+
     res = []
 
     def helper(tree, target, path):
@@ -357,6 +360,29 @@ def sum_target_path(tree, target):
             helper(tree.left, target - tree.val, path + [tree.val])
         if tree.right:
             helper(tree.right, target - tree.val, path + [tree.val])
+
+    helper(tree, target, [])
+    return res
+
+
+def sum_target_path2(tree, target):
+    if not tree:
+        return []
+
+    res = []
+
+    def helper(tree, target, path):
+        if not tree.left and not tree.right and target == tree.val:  # 叶节点等于target
+            res.append(path + [tree.val])
+            return
+        if not tree.left and not tree.right:  # 叶节点不等于target
+            return
+        path.append(tree.val)
+        if tree.left:
+            helper(tree.left, target - tree.val, path)
+        if tree.right:
+            helper(tree.right, target - tree.val, path)
+        path.pop(-1)  # 无论如何 都可返回
 
     helper(tree, target, [])
     return res
@@ -540,8 +566,8 @@ def max_sum_path(tree):
         left = helper(tree.left)
         right = helper(tree.right)
         inc = max(tree.val, left[0] + tree.val, right[0] + tree.val)  # 路径
-        exc = max(max(left[1]), max(right[1]))
-        res[0] = max(res[0], inc, exc, left[1] + right[1] + root.val)
+        exc = max(max(left), max(right))
+        res[0] = max(res[0], inc, exc, left[1] + right[1] + tree.val)
         return inc, exc
 
     helper(tree)
@@ -563,24 +589,24 @@ def max_sum_path2(tree):
     return res[0]
 
 
-# 二叉树原地改为链表
+# 二叉树原地改为链表 先序遍历
 def flatten(tree):
     if not tree:
-        return None
-    head = TreeNode(None)
-    pre = head
+        return
     stack = [tree]
+    dummy = pre = TreeNode(None)
     while stack:
         node = stack.pop(-1)
-        pre.right = node
-        pre.left = None
-        pre = pre.right
         l, r = node.left, node.right
+        node.left = None  # 需要置空
+        node.right = None
+        pre.right = node
+        pre = node
         if r:
             stack.append(r)
         if l:
             stack.append(l)
-    return head.right
+    return dummy.right
 
 
 # trim 二叉搜索树

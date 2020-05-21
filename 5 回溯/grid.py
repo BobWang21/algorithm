@@ -311,6 +311,70 @@ def closed_island(grid):
     return num
 
 
+# dfs + 记忆
+def longest_increasing_path(matrix):
+    '''
+    329 最长递增路径为 nums =
+    [
+      [9,9,4],
+      [6,6,8],
+      [2,1,1]
+    ]
+    输出: 4  [1, 2, 6, 9]
+    '''
+    if not matrix or not matrix[0]:
+        return 0
+
+    rows, cols = len(matrix), len(matrix[0])
+    dirs = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+    dic = {}
+
+    def helper(row, col):
+        if (row, col) in dic:
+            return dic[(row, col)]
+        res = 1
+        for d in dirs:
+            i, j = row + d[0], col + d[1]
+            if 0 <= i < rows and 0 <= j < cols and matrix[i][j] > matrix[i][j]:
+                res = max(res, helper(i, j) + 1)
+        dic[(row, col)] = res
+        return res
+
+    ans = 0
+    for i in range(rows):
+        for j in range(cols):
+            ans = max(ans, helper(i, j))
+
+    return ans
+
+
+# 抢钱问题 记忆化深度搜索
+def rob(tree):
+    dic = {}
+
+    def helper(root):
+        if not root:
+            return 0, 0  # inc, max
+        if root in dic:
+            return dic[root]
+        left = helper(root.left)
+        right = helper(root.right)
+        include = root.val
+        if root.left:
+            include += helper(root.left.left)[1]  # 涉及到重复计算
+            include += helper(root.left.right)[1]
+        if root.right:
+            include += helper(root.right.left)[1]
+            include += helper(root.right.right)[1]
+        exclude = left[1] + right[1]
+        max_v = max(include, exclude)
+        dic.setdefault(root, (include, max_v))
+        return include, max_v
+
+    return helper(tree)[1]
+
+
 if __name__ == '__main__':
     print('\n路径中捡到的最多钱')
     board = [[100, 'o', 'o', 'o', 80]]
@@ -342,9 +406,6 @@ if __name__ == '__main__':
     start = [0, 0]
     end = [3, 4]
     print(maze_short_path(maze, start, end) == 11)
-
-    print('\nfind_cheapest_price')
-    print(find_cheapest_price([[0, 1, 100], [1, 2, 100], [0, 2, 500]], 0, 2, 1))
 
     print('\nWalls and Gates')
     rooms = [[2147483647, -1, 0, 2147483647],

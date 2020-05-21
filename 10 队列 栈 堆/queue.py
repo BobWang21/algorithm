@@ -48,12 +48,8 @@ def max_sliding_window(nums, k):
     return res
 
 
-# Input: nums1 = [4,1,2], nums2 = [1,3,4,2].
-# Output: [-1,3,-1]
-# Explanation:
-#     For number 4 in the first array, you cannot find the next greater number for it in the second array, so output -1.
-#     For number 1 in the first array, the next greater number for it in the second array is 3.
-#     For number 2 in the first array, there is no next greater number for it in the second array, so output -1.
+# Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
+# Output: [-1, 3, -1]
 def next_greater_element(nums1, nums2):
     if not nums1 or not nums2:
         return
@@ -81,11 +77,11 @@ def next_greater_element(nums1, nums2):
 def daily_temperatures(t):
     if not t:
         return
-    stack = []
     res = [0] * len(t)
+    stack = []
     for i, v in enumerate(t):
         while stack and t[stack[-1]] < v:
-            j = stack.pop()
+            j = stack.pop(-1)
             res[j] = i - j
         stack.append(i)
     return res
@@ -113,7 +109,7 @@ def largest_rectangle_area2(height):
     for i in range(n):
         while stack and height[stack[-1]] > height[i]:
             h = height[stack.pop()]
-            w = i - stack[-1] - 1 if stack else i
+            w = i - stack[-1] - 1 if stack else i  # 当前值为最小值长度为i
             ans = max(ans, h * w)
         stack.append(i)
     return ans

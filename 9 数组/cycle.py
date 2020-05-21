@@ -136,6 +136,26 @@ def move_zeros(nums):
     return nums
 
 
+def rotate(nums, k):
+    n = len(nums)
+    k %= n
+    if not k:
+        return
+    curr = 0
+    tmp = nums[curr]
+    cnt = 0
+    while cnt < n:
+        nxt = (curr + k) % n
+        while nxt != curr:
+            nums[nxt], tmp = tmp, nums[nxt]
+            nxt = (nxt + k) % n
+            cnt += 1
+        nums[nxt] = tmp
+        curr += 1
+        tmp = nums[curr]
+        cnt += 1
+
+
 if __name__ == '__main__':
     print('\n找到数组中重复元素')
     print(find_duplicate_num1([1, 2, 3, 4, 2]))

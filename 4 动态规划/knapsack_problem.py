@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # 动态规划 matrix[i][j] 表示前 i 件物品恰放入一个容量为 j 的背包可以获得的最大价值
 
+
 # 0-1 背包问题 回溯法
 def knapsack_backtrack(cost, val, cap):
     res = [-1]
@@ -83,16 +84,12 @@ def unbounded_knapsack3(costs, values, capacity):
 
 
 # 416. Partition Equal Subset Sum
-# Partition problem is to determine whether
-# a given set can be partitioned into two subsets
-# such that the sum of elements in both subsets is same.
-# 0-1背包问题, 背包的容量为整体重量的1/2,
-# 物品的重量等于物品的价值 包的重量为mean
-# 然后看可以装的物品的最大值是否等于mean
+# 0-1背包问题, 背包的容量为整体重量的1/2
 def can_partition(nums):
-    if sum(nums) % 2:
+    total = sum(nums)
+    if total % 2:
         return False
-    capacity = sum(nums) // 2
+    capacity = total // 2
 
     coins = []
     for val in nums:

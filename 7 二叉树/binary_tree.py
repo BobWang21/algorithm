@@ -109,6 +109,28 @@ def level_traversal2(root):
     return res
 
 
+# 垂直遍历
+def vertical_order(root):
+    if not root:
+        return []
+    dic = {}
+    queue = [(root, 0)]
+    while queue:
+        node, i = queue.pop(0)
+        dic.setdefault(i, [])
+        dic[i].append(node.val)
+        if node.left:
+            queue.append((node.left, i - 1))
+        if node.right:
+            queue.append((node.right, i + 1))
+
+    res = []
+    for k, v in dic.items():
+        res.append((k, v))
+    res.sort()
+    return [v[1] for v in res]
+
+
 def level_num(tree):
     if not tree:
         return 0

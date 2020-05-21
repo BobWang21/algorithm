@@ -7,6 +7,61 @@
 """
 
 
+# 求平方根
+def sqrt(n):
+    if n == 1:
+        return 1
+    l, r = 1, n
+    while l <= r:
+        m = l + (r - l) // 2
+        s = m * m
+        if s == n:
+            return m
+        elif s < n:
+            l = m + 1
+        else:
+            r = m - 1
+    return r
+
+
+def sqrt2(n):
+    def fun(x):
+        return x ** 2 - n  # 开口向上
+
+    if n == 1:
+        return 1
+    x = n // 2
+    f = fun(n)
+    while abs(f - n) < 0.1:
+        k = 2 * x
+        b = f - k * x
+        x = -b / k
+        f = fun(x)
+    return abs(x)
+
+
+# 最大公约数 辗转相除法
+# 294 = 84 * 3 + 42, 84 = 42 * 2 294 => 42 * 2 * 3 + 42
+def common_greatest_divisor(a, b):
+    if a < b:
+        a, b = b, a
+    if not a % b:
+        return b
+    return common_greatest_divisor(b, a % b)
+
+
+# 计算素数个数
+def count_primes(n):
+    if n < 2:
+        return 0
+    res = [True] * n
+    res[0] = res[1] = False
+    for i in range(2, int(n ** 0.5) + 1):
+        for j in range(2, (n - 1) // i + 1):
+            res[i * j] = False
+    return sum(res)
+
+
 def ten_2_binary(value):
     stack = []
     while value > 0:
@@ -17,8 +72,19 @@ def ten_2_binary(value):
     return stack
 
 
-# 123 -> 321
+# 123 -> 321 可以不用栈 123 进栈为[3, 2, 1]
 def reverse(x):
+    y, pre = abs(x), 0
+    om = (1 << 31) - 1 if x > 0 else 1 << 31  # out of memory (1 << 31)
+    while y:
+        pre = pre * 10 + y % 10  #
+        if pre > om:
+            return 0
+        y //= 10
+    return pre if x > 0 else -pre
+
+
+def reverse2(x):
     if x < 0:
         return -reverse(-x)
     stack = []
@@ -27,11 +93,11 @@ def reverse(x):
         stack.append(re)
         x = x // 10
     res = 0
-    i = 0
+    k = 1
     while stack:
         v = stack.pop(-1)
-        res += v * 10 ** i
-        i += 1
+        res += v * k
+        k *= 10
     return res if res < 2 ** 31 else 0
 
 
@@ -87,7 +153,7 @@ def is_power_of_2(n):
     return is_power_of_2(n // 2)
 
 
-# 不用除法
+# 29 两个数相除 不用除法
 def divide(dividend, divisor):
     sig = True if dividend * divisor > 0 else False  # 判断二者相除是正or负
     dividend, divisor = abs(dividend), abs(divisor)  # 将被除数和除数都变成正数
@@ -97,7 +163,7 @@ def divide(dividend, divisor):
         while tmp_divisor <= dividend:  # 当倍增后的除数大于被除数重新，变成最开始的除数
             dividend -= tmp_divisor
             res += count
-            count <<= 1  # 向左移动一位
+            count <<= 1  # *2
             tmp_divisor <<= 1  # 更新除数(将除数扩大两倍)
     res_value = res if sig else -res  # 给结果加上符号
     return max(min(res_value, 2 ** 31 - 1), -2 ** 31)
@@ -201,61 +267,13 @@ def hamming_distance(x, y):
     return bin(x ^ y).count('1')
 
 
-# 求平方根
-def sqrt(n):
-    if n == 1:
-        return 1
-    l, r = 1, n
-    while l <= r:
-        m = (l + r) / 2.0
-        s = m * m
-        if s == n:
-            return m
-        elif s < n:
-            l = m + 0.1
-        else:
-            r = m - 0.1
-    return r
-
-
-def sqrt2(n):
-    def fun(x):
-        return x ** 2 - n  # 开口向上
-
-    if n == 1:
-        return 1
-    x = n // 2
-    f = fun(n)
-    while abs(f - n) < 0.1:
-        k = 2 * x
-        b = f - k * x
-        x = -b / k
-        f = fun(x)
-    return abs(x)
-
-
-# 计算素数个数
-def count_primes(n):
-    if n < 2:
-        return 0
-    res = [True] * n
-    res[0] = res[1] = False
-    for i in range(2, int(n ** 0.5) + 1):
-        for j in range(2, (n - 1) // i + 1):
-            res[i * j] = False
-    return sum(res)
-
-
-# 最大公约数
-def common_greatest_divisor(a, b):
-    if a < b:
-        a, b = b, a
-    if not a % b:
-        return b
-    return common_greatest_divisor(b, a % b)
-
-
 if __name__ == '__main__':
+    print('\n求一个数的平方根')
+    print(sqrt(17))
+
+    print('\n最大公约数')
+    print(common_greatest_divisor(12, 38))
+
     print('\n十进制转2进制')
     print(ten_2_binary(24))
 
@@ -264,9 +282,6 @@ if __name__ == '__main__':
 
     print('\n字符串转数字')
     print(my_atoi('4193 with words'))
-
-    print('\n求一个数的平方根')
-    print(sqrt(17))
 
     print('\n计算素数个数')
     print(count_primes(10))
@@ -279,6 +294,3 @@ if __name__ == '__main__':
 
     print('\n阶层后0的个数')
     print(zero_nums(20))
-
-    print('\n最大公约数')
-    print(common_greatest_divisor(12, 38))

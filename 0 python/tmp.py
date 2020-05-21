@@ -11,8 +11,8 @@ def change1(nums):
     nums[0] = 100
 
 
-def change2(nums):  # 按地址传递 只可以修改, 不可以更改
-    nums = [1, 2]
+def change2(nums):
+    nums = [1, 2]  # 按地址传递 只可以修改, 不可以更改
 
 
 if __name__ == '__main__':
@@ -22,6 +22,8 @@ if __name__ == '__main__':
     math.isinf(a)
     print(isinstance([], list))  # 判断类型
     print(2 << 1)  # 左移
+    print(round(3.1, 1))
+    print(round(3.6, 1))
 
     print('\n随机')
     pro = random.random()  # 0-1
@@ -105,7 +107,11 @@ if __name__ == '__main__':
     print(graph)
 
     # 进制转换
+    print('\n位操作')
     print(bin(8)[2:])  # bin(8) = '0b1000'
     i = '5'
     print(eval(i))  # 字符转数字
     # print(eval('01')) 无法转换
+
+    print(2 << 2 - 1)  # 4 位操作的优先级低于 + -
+    print((2 << 2) - 1)  # 7

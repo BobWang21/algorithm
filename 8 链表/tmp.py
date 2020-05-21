@@ -114,10 +114,10 @@ def remove_duplicates2(head):
             pre.next = head
             pre = pre.next
             head = head.next
-        else:
+        else: # 和2sum 类似
             while head and head.next and head.val == head.next.val:
                 head = head.next
-            head = head.next  # 每次移动一步 出口为head.next为空 或者 head.val != head.next.val
+            head = head.next  # 每次移动一步 head.next为空 或者 head.val != head.next.val
     pre.next = head  # head 可能为空 也可能为尾结点
     return dummy.next
 
