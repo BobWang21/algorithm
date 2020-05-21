@@ -9,15 +9,15 @@ def most_data(nums):
         return
     n = len(nums)
     value = nums[0]
-    count = 1
+    cnt = 1
     for i in range(1, n):
-        if count == 0:
+        if cnt == 0:
             value = nums[i]
-            count = 1
+            cnt = 1
         elif nums[i] == value:
-            count += 1
+            cnt += 1
         else:
-            count -= 1
+            cnt -= 1
     return value
 
 

@@ -47,10 +47,10 @@ def rob1(nums):
 
 # 滚动数组
 def rob2(nums):
-    include = exclude = 0
+    inc = exc = 0
     for num in nums:
-        include, exclude = max(num, exclude + num), max(exclude, include)
-    return max(include, exclude)
+        inc, exc = exc + num, max(exc, inc)
+    return max(inc, exc)
 
 
 # 第一个和最后一个连成环 不能同时选
@@ -74,21 +74,19 @@ def rob_with_cycle(nums):
 
 # 连续子序列 和最大
 def max_sub_array(nums):
-    res = include_max = nums[0]
-    for val in nums[1:]:
-        include_max = max(val, include_max + val)
-        res = max(res, include_max)
+    inc, res = 0, -float('inf')
+    for num in nums:
+        inc = max(num, inc + num)
+        res = max(res, inc)
     return res
 
 
 # 连续子序列 乘积最大
 def max_continuous_product(nums):
-    res = include_min = include_max = nums[0]
+    res = inc_min = inc_max = nums[0]
     for val in nums[1:]:
-        include_min, include_max = min(val, val * include_max, val * include_min), \
-                                   max(val, val * include_max,
-                                       val * include_min)
-        res = max(include_max, res)
+        inc_min, inc_max = min(val, val * inc_max, val * inc_min), max(val, val * inc_max, val * inc_min)
+        res = max(inc_max, res)
     return res
 
 
@@ -108,14 +106,12 @@ def longest_increasing_subsequence(nums):
 def longest_increasing_subsequence2(nums):
     def binary_search(nums, target):
         l, r = 0, len(nums) - 1
-        while l <= r:
+        while l < r:
             mid = l + (r - l) // 2
-            if nums[mid] == target:
-                return mid
-            elif nums[mid] > target:
-                r -= 1
+            if nums[mid] < target:
+                l = mid + 1
             else:
-                l += 1
+                r = mid
         return l
 
     if not nums:
@@ -125,37 +121,36 @@ def longest_increasing_subsequence2(nums):
         if num > res[-1]:
             res.append(num)
         else:
-            idx = binary_search(res, num)  # 第一个大于该数的位置
+            idx = binary_search(res, num)  # 第一个大于等于该数的位置
             res[idx] = num
     return len(res)
 
 
-# 换硬币
-# 您会得到不同面额的硬币和总金额。
-# 编写一个函数来计算组成该数量所需的最少数量的硬币。
-# 如果这笔钱不能用硬币的任何组合来弥补，请返回-1。
+# 换硬币 最少硬币数 如果不能请返回-1。
 def coin_change(coins, amount):
     dp = [float('inf')] * (amount + 1)
     dp[0] = 0  # 当coin = amount 时使用
     for coin in coins:
         for i in range(coin, amount + 1):
             dp[i] = min(dp[i], dp[i - coin] + 1)
-    return dp[amount] if dp[amount] != float('inf') else -1
+    return dp[-1] if dp[-1] != float('inf') else -1
 
 
-# 最少硬币数
+# 多少种硬币换法
 def coin_change2(coins, amount):
     if amount < 0:
         return 0
+
     dp = [0] * (amount + 1)
     dp[0] = 1
 
     for coin in coins:  # 保证之前没有重复的coin组合
-        for amount in range(coin, amount + 1):
-            dp[amount] += dp[amount - coin]
+        for v in range(coin, amount + 1):
+            dp[v] += dp[v - coin]
     return dp[-1]
 
 
+# 注意这两种区别
 # def coin_change3(coins, amount):
 #     if amount < 0:
 #         return 0
@@ -167,18 +162,6 @@ def coin_change2(coins, amount):
 #             if v >= coin:
 #                 dp[v] += dp[v - coin]
 #     return dp[-1]
-
-
-# 279. Perfect Squares 12 = 4 + 4 + 4
-def num_squares(n):
-    dp = [float('inf')] * (n + 1)
-    dp[0] = 0  # 当coin = amount 时使用
-    for i in range(1, n + 1):
-        for coin in range(1, int(n ** 0.5) + 1):
-            square = coin ** 2
-            if i >= square:
-                dp[i] = min(dp[i], dp[i - square] + 1)
-    return dp[n]
 
 
 # 给定一个正整数数组 求和为target的所有组合数
@@ -203,6 +186,18 @@ def combination_sum(coins, target):
     return res[-1]
 
 
+# 279. Perfect Squares 12 = 4 + 4 + 4
+def num_squares(n):
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # 当coin = amount 时使用
+    for i in range(1, n + 1):
+        for coin in range(1, int(n ** 0.5) + 1):
+            square = coin ** 2
+            if i >= square:
+                dp[i] = min(dp[i], dp[i - square] + 1)
+    return dp[n]
+
+
 # 割绳子
 def max_product_after_cutting(m):
     if m == 1:
@@ -223,7 +218,7 @@ def max_product_after_cutting(m):
 # 从格子中选出礼物的最大值
 def max_gift(matrix):
     if not matrix:
-        return
+        return 0
     rows, cols = len(matrix) + 1, len(matrix[0]) + 1
     res = [[0] * cols for _ in range(rows)]
     for i in range(1, rows):
@@ -232,7 +227,7 @@ def max_gift(matrix):
     return res[-1][-1]
 
 
-# 最小路径和
+# 带权最小路径和
 def min_path_sum(matrix):
     if not matrix or not matrix[0]:
         return 0
@@ -240,7 +235,7 @@ def min_path_sum(matrix):
     rows, cols = len(matrix) + 1, len(matrix[0]) + 1
     dp = [[0] * cols for _ in range(rows)]
 
-    # 设置base 边界为无穷 只能直上直下
+    # 边界为无穷
     for i in range(rows):
         dp[i][0] = float('inf')
 
@@ -259,13 +254,13 @@ def min_path_sum(matrix):
 def maximal_square(matrix):
     if not matrix or not matrix[0]:
         return 0
-    rows, cols = len(matrix), len(matrix[0])
+    rows, cols = len(matrix) + 1, len(matrix[0]) + 1
 
-    dp = [[0] * (cols + 1) for _ in range(rows + 1)]
+    dp = [[0] * (cols) for _ in range(rows)]
 
     res = 0
-    for i in range(1, rows + 1):
-        for j in range(1, cols + 1):
+    for i in range(1, rows):
+        for j in range(1, cols):
             if matrix[i - 1][j - 1] == '1':
                 dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1
                 res = max(dp[i][j], res)

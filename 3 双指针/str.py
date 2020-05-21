@@ -104,7 +104,7 @@ def length_of_longest_substring(s):
     res = 0
     dic = {}
     for r, c in enumerate(s):
-        if c in dic and dic[c] >= l:
+        if c in dic and dic[c] >= l:  #
             l = dic[c] + 1
         res = max(res, r - l + 1)
         dic[c] = r
@@ -137,25 +137,25 @@ def length_of_longest_substring_k_distinct(s, k):
     return res
 
 
-# 判断是否为子序列
+# 判断是否为子序列 O(Max(m, n))
 def is_subsequence(s, t):
     if not s:
         return True
 
     m, n = len(s), len(t)
-    i = j = num = 0
+    i = j = 0
     while i < m and j < n:
         if s[i] == t[j]:
             i += 1
             j += 1
-            num += 1
-            if num == m:
+            if i == m:
                 return True
-        else:  # 看一个字符
+        else:  # 下一个字符
             j += 1
     return False
 
 
+# 适合判断多个s是否在t中
 def is_subsequence2(s, t):
     dic = defaultdict(list)
     for i, c in enumerate(t):
@@ -188,19 +188,18 @@ def is_subsequence2(s, t):
 # 最长前缀后缀
 def get_nxt(s):
     n = len(s)
-    lps = [0] * n
-
+    nxt = [0] * n
     l, r = 0, 1
     while r < n:
         if s[l] == s[r]:
             l += 1
-            lps[r] = l
+            nxt[r] = l
             r += 1
         elif l > 0:
-            l = lps[l - 1]  # 尝试第二长的前缀和后缀，看是否能继续延续
+            l = nxt[l - 1]  # 尝试第二长的前缀和后缀，看是否能继续延续
         else:
             r += 1  # 没有匹配的元素 'abcd'
-    return lps
+    return nxt
 
 
 # 判断是否为子串
@@ -218,11 +217,11 @@ def kmp(s, t):
     while i < m:
         if s[i] == t[j]:
             i += 1
-            j += 1  # j 最多增加M次 时间复杂度为O(M)
+            j += 1  # j 最多右移动M次 时间复杂度为O(M)
             if j == n:
                 return i - n
         elif j > 0:
-            j = nxt[j - 1]  # 只移动j坐标 减少也最多O(M)次
+            j = nxt[j - 1]  # 最多左移M次
         else:
             i += 1  # 没有匹配
     return -1

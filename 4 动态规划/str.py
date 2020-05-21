@@ -3,7 +3,7 @@
 from pprint import pprint
 
 
-# 最长回文子序列
+# 最长回文子序列 top down
 def longest_palindrome_subsequence(s):
     if not s:
         return s
@@ -34,8 +34,8 @@ def longest_palindrome(s):
         return s
     n = len(s)
     max_str = s[0]
-    # 初始化字符串两个位置之间是否为回文的二维数组
-    dp = [[False] * n for _ in range(n)]
+
+    dp = [[False] * n for _ in range(n)]  # 两个位置之间是否为回文的二维数组
 
     for l in range(1, n + 1):  # bottom up 长度
         for i in range(n):
@@ -48,7 +48,7 @@ def longest_palindrome(s):
             elif l == 2 and s[i] == s[j]:
                 dp[i][j] = True
                 max_str = s[i:j + 1]
-            elif dp[i + 1][j - 1] and s[i] == s[j]:  # dp[i, j] = dp[i+1, j-1] and s[i] == s[j]
+            elif s[i] == s[j] and dp[i + 1][j - 1]:  # dp[i, j] = dp[i+1, j-1] and s[i] == s[j]
                 dp[i][j] = True
                 max_str = s[i:j + 1]
     return max_str

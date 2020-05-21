@@ -111,7 +111,7 @@ def can_partition(nums):
 
 
 if __name__ == '__main__':
-    print('0-1 背包问题')
+    print('0-1背包问题')
     print(knapsack([1, 2, 3, 4], [1, 3, 4, 8], 7))
 
     print('\n完全背包问题')

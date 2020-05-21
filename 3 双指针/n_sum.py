@@ -47,7 +47,7 @@ def three_sum(nums, target):
                 r -= 1
             else:
                 res.append([nums[i], nums[l], nums[r]])
-                while l < r and nums[l] == nums[l + 1]:  # 跳出时left为最后一个相同的数
+                while l < r and nums[l] == nums[l + 1]:
                     l += 1
                 l += 1
     return res

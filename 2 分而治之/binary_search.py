@@ -10,9 +10,9 @@ def binary_search1(nums, target):
         if target == nums[mid]:
             return mid
         if target < nums[mid]:
-            r = mid - 1  # nums[r+1] > target
+            r = mid - 1  # nums[r+1]>target
         else:
-            l = mid + 1  # nums[l-1] < target
+            l = mid + 1  # nums[l-1]<target
     # 跳出循环时l-r=1 nums[l]>target, nums[r]<target
     return -1
 
@@ -32,35 +32,25 @@ def binary_search2(nums, l, r, target):
 
 # 有重复数字的非降序排序数组 返回第一个等于target
 def search_first_pos(nums, target):
-    """
-    l-1 严格小于target
-    r大于等于target
-    l = r 时为第一个等于target的坐标
-    """
     l, r = 0, len(nums) - 1
     while l < r:
         mid = l + (r - l) // 2
         if nums[mid] < target:
-            l = mid + 1
+            l = mid + 1  # nums[l-1] < target
         else:
-            r = mid
+            r = mid  # nums[r] >= target
     return l if nums[l] == target else -1  # 配合l < r 使用
 
 
 # 有重复数字的非降序排序数组 返回最后一个等于target
 def search_last_pos(nums, target):
-    """
-    l 小于等于target
-    r+1 大于target
-    l = r 时为最后一个等于target的坐标
-    """
     l, r = 0, len(nums) - 1
     while l < r:
         mid = l + (r - l + 1) // 2
         if nums[mid] <= target:
-            l = mid  # l == mid 需要考虑3, 4这种无限循环的情况
+            l = mid  # l == mid 需要考虑3, 4这种无限循环的情况 nums[l] <= target
         else:
-            r = mid - 1
+            r = mid - 1  # nums[r+1] > target
     return l if nums[l] == target else -1
 
 
@@ -119,6 +109,9 @@ def find_min(nums):
 
 
 def find_min2(nums):
+    if nums[0] <= nums[-1]:
+        return nums[0]
+
     l, r = 0, len(nums) - 1
     while l < r:
         mid = l + (r - l) // 2

@@ -3,6 +3,7 @@
 from collections import Counter
 
 
+# 左右指针
 def sorted_squares(nums):
     if not nums:
         return []
@@ -27,16 +28,15 @@ def move_zeros(nums):
         return
     j = 0
     for i in range(len(nums)):
-        if not nums[i]:
-            continue
-        nums[j] = nums[i]
-        j += 1
+        if nums[i]:
+            nums[j] = nums[i]
+            j += 1
     for i in range(j, len(nums)):
         nums[i] = 0
-
     return nums
 
 
+# 相差为K的pair
 def find_pairs(nums, k):
     if len(nums) < 2:
         return 0

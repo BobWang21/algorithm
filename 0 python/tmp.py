@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import heapq as hq
 import math
 import random
+import heapq as hq
 from collections import defaultdict
 
 
@@ -18,39 +18,27 @@ def change2(nums):
 if __name__ == '__main__':
     print('\n数字操作')
     print(4 / 2)  # 2.0,  2.0 = 2 索引必须是整数
-    a = float('inf')
-    math.isinf(a)
+    nums = float('inf')
+    math.isinf(nums)
     print(isinstance([], list))  # 判断类型
     print(2 << 1)  # 左移
     print(round(3.1, 1))
     print(round(3.6, 1))
 
-    print('\n随机')
-    pro = random.random()  # 0-1
-    print(pro)
-    randint = random.randint(0, 10)  # [0, 10]
-    print(randint)
-    print(random.shuffle([1, 2, 3]))
-    print(random.choice([1, 2, 3]))  # 随机抽取一个点
-
     print('\n列表')
-    a = [2, 3, 4, 5]
-    a.remove(2)  # 移除数值
-    tail = a.pop()  # 按位置移除, 默认为尾部, 并返回
+    nums = [2, 3, 4, 5]
+    nums.remove(2)  # 移除数值
+    tail = nums.pop()  # 按位置移除, 默认为尾部, 并返回
     print('list pop: ', tail)
-    print('list.index', a.index(3))  # 查找数据在列表中的索引, 返回第一个
-    max(a)
-    a.sort(reverse=True)  # 原地更改
-    a.reverse()
-    b = [3, 4]
-    a.insert(0, -1)  # 队首增加元素
-    a.append(3)  # 增加一个数
-    c = a + b  # 生成一个新的变量
-    nums = [1, 3, 100]
-    change1(nums[1:])  # 生成一个新的列表 b = a[:] 复制一份
-    print(nums)
+    print('list.index', nums.index(3))  # 查找数据在列表中的索引, 返回第一个
+    nums.reverse()  # 反转
     nums = [[1, 3], [2, 2], [3, 6]]
     nums.sort(key=lambda x: x[1] - x[0])  # 排序
+    print(nums)
+    nums.append(3)  # 增加一个数
+    print(nums, nums + [4])  # 生成一个新的变量
+    nums = [1, 3, 100]
+    change1(nums[1:])  # 切片和[:] 生成一个新的列表
     print(nums)
 
     print('\n字典')
@@ -71,11 +59,15 @@ if __name__ == '__main__':
     print([chr(ord('a') + i) for i in range(26)])
     lists = [c for c in s]  # split 是针对分隔符分割 默认空格
     print(lists)
+    s = '5'
+    print(eval(s))  # 字符转数字
+    # print(eval('01')) 无法转换
 
     print('\n集合')
-    a = ['a', 'b', 'c']
-    print(set(a))  # set(v) v 需要可迭代
-    c = {(1, 2)}  # set((1, 2)) 输出 {1, 2}
+    nums = set([1, 2, 3])  # set(v) v 需要可迭代
+    nums.remove(2)  # 移除元素
+    nums.add(2)
+    print(nums)
     A = {1, 2, 3}
     B = {3, 4, 5}
     C = A | B  # A与B的并集
@@ -86,9 +78,11 @@ if __name__ == '__main__':
     G = A ^ B  # A与B的差集 {1, 2, 4, 5}
     print(E, F, G)
 
-    a = {1, 2, 3}
-    a.remove(2)  # 移除元素
-    print(a)
+    print('\n随机数')
+    print(random.random())  # 0-1
+    print(random.randint(0, 10))  # [0, 10]
+    print(random.shuffle([1, 2, 3]))
+    print(random.choice([1, 2, 3]))  # 随机抽取一个点
 
     print('\nheapq')
     heap = [3, 4, 1, 2]
@@ -98,20 +92,16 @@ if __name__ == '__main__':
         print(hq.heappop(heap))
 
     print('\ndefaultdict')
-    graph = defaultdict(set)
-    graph[1].add(2)
-    print(graph)
+    dic = defaultdict(set)
+    dic[1].add(2)
+    print(dic)
 
-    graph = defaultdict(int)
-    graph[1] += 5
-    print(graph)
+    dic = defaultdict(int)
+    dic[1] += 5
+    print(dic)
 
     # 进制转换
     print('\n位操作')
     print(bin(8)[2:])  # bin(8) = '0b1000'
-    i = '5'
-    print(eval(i))  # 字符转数字
-    # print(eval('01')) 无法转换
-
     print(2 << 2 - 1)  # 4 位操作的优先级低于 + -
     print((2 << 2) - 1)  # 7
