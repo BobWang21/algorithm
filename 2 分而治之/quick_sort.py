@@ -26,7 +26,7 @@ def partition2(nums, l, r):
     lt, gt = l, r
     i = l
     pivot = nums[l]
-    while i <= gt:
+    while i <= gt:  # !!!
         if nums[i] < pivot:
             swap(i, lt)
             i += 1

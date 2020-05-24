@@ -17,14 +17,14 @@ def create_full_binary_tree(nums):
     queue = [tree]
     while nums:
         val = nums.pop(0)
-        head = queue[0]
-        if not head.left:
+        parent = queue[0]
+        if not parent.left:
             node = TreeNode(val)
-            head.left = node
+            parent.left = node
             queue.append(node)
-        elif not head.right:
+        elif not parent.right:
             node = TreeNode(val)
-            head.right = node
+            parent.right = node
             queue.append(node)
             queue.pop(0)  # 出队列
     return tree
@@ -131,6 +131,30 @@ def vertical_order(root):
     return [v[1] for v in res]
 
 
+# 判断二叉树是否为完全二叉树
+def is_complete_tree(root):
+    if not root:
+        return True
+    queue = [(root, 1)]
+    i = 0
+    while queue:
+        i += 1
+        node, idx = queue.pop(0)
+        if i != idx:
+            return False
+        l, r = node.left, node.right
+        if not l and not r:
+            continue
+        elif not l and r:
+            return False
+        elif l and r:
+            queue.append((l, 2 * idx))
+            queue.append((r, 2 * idx + 1))
+        else:
+            queue.append((l, 2 * idx))
+    return True
+
+
 def level_num(tree):
     if not tree:
         return 0
@@ -193,6 +217,14 @@ def deserialize(s):
                 queue.pop(0)
                 flag = 0
     return root
+
+
+class BSTNode():
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+        self.count = 0
 
 
 if __name__ == '__main__':

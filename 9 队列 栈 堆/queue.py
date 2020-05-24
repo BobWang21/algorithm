@@ -115,6 +115,26 @@ def largest_rectangle_area2(height):
     return ans
 
 
+def maxArea():
+    return
+
+
+def trap(height):
+    res = 0
+    stack = []
+    for i in range(len(height)):
+        while stack and height[stack[-1]] < height[i]:
+            j = stack.pop(-1)
+            if not stack:
+                break
+            d = i - stack[-1] - 1
+            h = min(height[i], height[stack[-1]]) - height[j]
+            res += d * h  # 可以多加的水
+        stack.append(i)
+
+    return res
+
+
 def max_area_min_sum_product(nums):
     if not nums:
         return 0
@@ -122,7 +142,7 @@ def max_area_min_sum_product(nums):
     n = len(nums)
     stack = []
     total = [0] * n
-    max_v = 0
+    res = 0
 
     for i, v in enumerate(nums):
         v = v if v >= 0 else 0
@@ -133,24 +153,8 @@ def max_area_min_sum_product(nums):
             pre_total = 0
             if stack:
                 pre_total = total[stack[-1]]
-            max_v = max(max_v, (total[i - 1] - pre_total) * nums[j])
+            res = max(res, (total[i - 1] - pre_total) * nums[j])
         stack.append(i)
-    return max_v
-
-
-def trap(height):
-    res = 0
-    stack = []
-    for i in range(len(height)):
-        while stack and height[i] > height[stack[-1]]:
-            j = stack.pop(-1)
-            if not stack:
-                break
-            distance = i - stack[-1] - 1
-            bounded_height = min(height[i], height[stack[-1]]) - height[j]
-            res += distance * bounded_height  # 可以多加的水
-        stack.append(i)
-
     return res
 
 

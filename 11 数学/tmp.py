@@ -143,14 +143,14 @@ def my_atoi(str):
     return res
 
 
-def is_power_of_2(n):
+def is_power_of_two1(n):
     if n == 0:  # base
         return False
     if n == 1:
         return True
     if n % 2:
         return False
-    return is_power_of_2(n // 2)
+    return is_power_of_two1(n // 2)
 
 
 # 29 两个数相除 不用除法
@@ -263,8 +263,22 @@ def zero_nums(n):
     return res
 
 
+# 循环将最后一位数字1变成0
+def hamming_weight(n):
+    cnt = 0
+    while n:
+        n &= n - 1
+        cnt += 1
+    return cnt
+
+
 def hamming_distance(x, y):
     return bin(x ^ y).count('1')
+
+
+# 2的幂 0b100的形式
+def is_power_of_two2(n):
+    return n > 0 and not (n & (n - 1))
 
 
 if __name__ == '__main__':

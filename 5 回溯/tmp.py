@@ -111,13 +111,15 @@ def combination_sum(nums, target):
 
     def dfs(idx, target, path):
         if not target:
-            res.append(path)
+            res.append(path[:])
             return
         if target < 0:  # 不满足条件
             return
         for i in range(idx, n):
             # 索引从 i 开始表示数字可以用多次!!!
-            dfs(i, target - nums[i], path + [nums[i]])
+            path.append(nums[i])
+            dfs(i, target - nums[i], path)
+            path.pop(-1)
 
     nums.sort()
     dfs(0, target, [])

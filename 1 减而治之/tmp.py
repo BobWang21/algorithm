@@ -2,53 +2,13 @@
 # -*- coding: utf-8 -*-
 from collections import defaultdict
 
-
-# 众数 超过一半的数
-def most_data(nums):
-    if not nums:
-        return
-    n = len(nums)
-    value = nums[0]
-    cnt = 1
-    for i in range(1, n):
-        if cnt == 0:
-            value = nums[i]
-            cnt = 1
-        elif nums[i] == value:
-            cnt += 1
-        else:
-            cnt -= 1
-    return value
-
-
-def search_matrix(matrix, target):
-    if not matrix or not matrix[0]:
-        return False
-    rows, cols = len(matrix), len(matrix[0])
-    i, j = 0, cols - 1
-    while i < rows and j >= 0:
-        num = matrix[i][j]
-        if num == target:
-            return True
-        elif num < target:
-            i += 1
-        else:
-            j -= 1
-    return False
-
-
-# 选择排序
-def select_sort(nums):
-    if not nums:
-        return
-    n = len(nums)
-    for i in range(n):
-        idx = i
-        for j in range(i + 1, n):
-            if nums[j] < nums[idx]:
-                idx = j
-        nums[idx], nums[i] = nums[i], nums[idx]
-    return nums
+'''
+kth 问题的几种解法
+1 桶排序 
+2 堆排序
+3 二分查找 需要构造递增序列
+4 对于未排序的 使用partition
+'''
 
 
 # 计数排序 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，
@@ -87,6 +47,20 @@ def top_k_frequent(nums, k):
                     return res[:k]
 
 
+# 连续数组和为K 前缀和
+def subarray_sum(nums, k):
+    dic = dict()
+    res = 0
+    total = 0
+    dic[0] = 1  # 初始化 可能total = k
+    for v in nums:
+        total += v
+        if total - k in dic:  # total - pre_total = k -> total - k in dic
+            res += dic[total - k]
+        dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
+    return res
+
+
 # 无序数组 最长连续区间 也可以使用并查集
 def longest_consecutive(nums):
     if not nums:
@@ -103,6 +77,117 @@ def longest_consecutive(nums):
         res = max(res, i)
 
     return res
+
+
+# 加油站 有点前缀和的意思
+def can_complete_circuit(gas, cost):
+    n = len(gas)
+    if sum(gas) - sum(cost) < 0:
+        return -1
+    total = 0
+    start = 0
+    for i in range(n):
+        if total + gas[i] - cost[i] >= 0:
+            total += gas[i] - cost[i]
+        else:
+            total = 0
+            start = i + 1
+    if start == n:
+        return -1
+    return start
+
+
+# 要求o(n) 左右扫描两次也是O(n)
+def product_except_self1(nums):
+    n = len(nums)
+    left = [1] * n
+    for i in range(1, n):
+        left[i] = left[i - 1] * nums[i - 1]
+
+    right = [1] * n
+    for i in range(n - 2, -1, -1):
+        right[i] = right[i + 1] * nums[i + 1]
+
+    for i in range(n):
+        right[i] = right[i] * left[i]
+    return right
+
+
+# o(1)空间 不算返回的空间
+def product_except_self2(nums):
+    n = len(nums)
+    res = [1] * n
+    k = nums[0]
+    for i in range(1, n):
+        res[i] *= k
+        k *= nums[i]
+
+    k = nums[-1]
+    for i in range(n - 2, -1, -1):
+        res[i] *= k
+        k *= nums[i]
+
+    return res
+
+
+# 众数 超过一半的数
+def most_data(nums):
+    if not nums:
+        return
+    n = len(nums)
+    value = nums[0]
+    cnt = 1
+    for i in range(1, n):
+        if cnt == 0:
+            value = nums[i]
+            cnt = 1
+        elif nums[i] == value:
+            cnt += 1
+        else:
+            cnt -= 1
+    return value
+
+
+def find_unsorted_subarray(nums):
+    if not nums or len(nums) == 1:
+        return 0
+    nums1 = nums[:]
+    nums1.sort()
+    n = len(nums)
+    l1 = 0
+    for i in range(n):
+        if nums[i] == nums1[i]:
+            l1 += 1
+            continue
+        else:
+            break
+    if l1 == n:
+        return 0
+
+    l2 = 0
+    for i in range(n - 1, -1, -1):
+        if nums[i] == nums1[i]:
+            l2 += 1
+            continue
+        else:
+            break
+    return n - (l1 + l2)
+
+
+def search_matrix(matrix, target):
+    if not matrix or not matrix[0]:
+        return False
+    rows, cols = len(matrix), len(matrix[0])
+    i, j = 0, cols - 1
+    while i < rows and j >= 0:
+        num = matrix[i][j]
+        if num == target:
+            return True
+        elif num < target:
+            i += 1
+        else:
+            j -= 1
+    return False
 
 
 # 区间合并
@@ -152,8 +237,6 @@ def next_permutation(nums):
 
 
 if __name__ == '__main__':
-    print('\n选择排序')
-    print(select_sort([3, 1, 4, 4, 10, -1]))
 
     print('\n众数')
     print(most_data([1, 3, 3, 3, 9]))
@@ -180,3 +263,16 @@ if __name__ == '__main__':
 
     print('\n下一个排列')
     print(next_permutation([1, 1, 3]))
+
+    print('\n找到未排序的部分')
+    print(find_unsorted_subarray([2, 6, 4, 8, 10, 9, 15]))
+
+    print('\n连续数组和为K')
+    print(subarray_sum([1, 2, 3, -3, 4], 0))
+
+    print('\n加油站问题')
+    print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
+
+    print('\n除自身以外数组的乘积')
+    print(product_except_self1([1, 2, 3, 4]))
+    print(product_except_self2([1, 2, 3, 4]))

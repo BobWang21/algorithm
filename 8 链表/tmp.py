@@ -365,6 +365,7 @@ def get_intersection_node2(headA, headB):
             s1 = headB
         else:
             s1 = s1.next
+
         if not s2:
             s2 = headA
         else:

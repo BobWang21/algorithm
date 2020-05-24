@@ -122,7 +122,7 @@ def validate_stack_sequences(pushed, popped):
     return False if stack else True
 
 
-# 删除字符串中的重复字母
+# 循环删除字符串中的连续重复字母
 def remove_duplicates(S):
     if not S:
         return S

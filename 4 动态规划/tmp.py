@@ -250,6 +250,21 @@ def min_path_sum(matrix):
     return dp[-1][-1]
 
 
+def minimum_total(nums):
+    if not nums or not nums[0]:
+        return 0
+
+    n = len(nums)
+
+    for i in range(1, n):
+        for j in range(len(nums[i])):
+            left = nums[i - 1][j - 1] if j > 0 else float('inf')
+            right = nums[i - 1][j] if j < len(nums[i - 1]) else float('inf')
+            nums[i][j] += min(left, right)
+
+    return min(nums[-1])
+
+
 # 最大正方形面积
 def maximal_square(matrix):
     if not matrix or not matrix[0]:
@@ -415,6 +430,9 @@ if __name__ == '__main__':
         [4, 2, 1]
     ]
     print(min_path_sum(matrix))
+
+    print('\n三角形最小路径和')
+    print(minimum_total([[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]))
 
     print('\n最大正方形面积')
     matrix = [["1", "0", "1", "0", "0"],

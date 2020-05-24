@@ -22,16 +22,45 @@ def sorted_squares(nums):
     return res
 
 
+# 26 原地删除升序数组中的重复数字 并返回非重复数组的长度
+# nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
+def remove_duplicates1(nums):
+    if not nums:
+        return 0
+    n = len(nums)
+    i = 1  # 第一个指针 下一个不重复数字放置的位置 类似 三指针的lt
+    for j in range(1, n):  # 第二个指针
+        if nums[j - 1] != nums[j]:
+            nums[i] = nums[j]
+            i += 1
+    return i
+
+
+# 数组中每个数字最多出现2次 返回删除重复数字后的长度
+def remove_duplicates2(nums):
+    if len(nums) <= 2:
+        return len(nums)
+    # 假设 nums[0...i] 符合要求
+    i = 1
+    j = 2
+    while j < len(nums):
+        if nums[j] != nums[i] or (nums[j] == nums[i] and nums[j] != nums[i - 1]):
+            i += 1
+            nums[i] = nums[j]
+        j += 1
+    return i + 1
+
+
 # 不改变顺序 把0移到数组尾部
 def move_zeros(nums):
     if not nums:
         return
-    j = 0
-    for i in range(len(nums)):
+    k, n = 0, len(nums)
+    for i in range(n):
         if nums[i]:
-            nums[j] = nums[i]
-            j += 1
-    for i in range(j, len(nums)):
+            nums[k] = nums[i]
+            k += 1
+    for i in range(k, n):
         nums[i] = 0
     return nums
 
@@ -79,7 +108,11 @@ if __name__ == '__main__':
     print('\n平方排序')
     print(sorted_squares([-7, -3, 2, 3, 11]))
 
-    print('\n移动0')
+    print('\n删除排查数组中的重复数值')
+    print(remove_duplicates1([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
+    print(remove_duplicates2([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
+
+    print('\n移动 0至数组尾部')
     print(move_zeros([0, -7, 0, 2, 3, 11]))
 
     print('\n相差为K的pair数目')

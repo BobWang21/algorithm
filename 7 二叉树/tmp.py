@@ -392,18 +392,18 @@ def sum_target_path2(tree, target):
 def right_side_view(tree):
     if not tree:
         return
-    current_level = [tree]
+    curr_level = [tree]
     res = []
-    while current_level:
+    while curr_level:
         next_level = []
-        for node in current_level:
+        for node in curr_level:
             left, right = node.left, node.right
             if left:
                 next_level.append(left)
             if right:
                 next_level.append(right)
         res.append(node.val)
-        current_level = next_level
+        curr_level = next_level
     return res
 
 
@@ -412,13 +412,13 @@ def right_side_view(tree):
 def zigzag_level_order(tree):
     if not tree:
         return
-    current_level = [tree]
+    curr_level = [tree]
     res = []
     direction = 1
-    while current_level:
+    while curr_level:
         next_level = []
         level_value = []
-        for node in current_level:
+        for node in curr_level:
             level_value.append(node.val)
             left, right = node.left, node.right
             if right:
@@ -428,7 +428,7 @@ def zigzag_level_order(tree):
 
         res.append(level_value[::direction])
         direction *= -1
-        current_level = next_level
+        curr_level = next_level
     return res
 
 
@@ -455,13 +455,15 @@ def serialize(tree):
 
 
 # 反序列化 递归
-def deserialize(s1):
-    if s1 == '':
-        return None
-    vals = s1.split()
+def deserialize(s):
+    if not s:
+        return
+    lists = [c for c in s]
 
     def helper():
-        val = vals.pop(0)
+        if not lists:
+            return
+        val = lists.pop(0)
         if val == '$':
             return
         root = TreeNode(val)
@@ -715,6 +717,44 @@ def delete_node(root, key):
     return root
 
 
+def counter_smaller(nums):
+    if not nums:
+        return []
+
+    tree = BSTNode(nums[-1])
+
+    def insert(tree, val):
+        if not tree:
+            return 0
+        if val > tree.val:
+            if not tree.right:
+                node = BSTNode(val)
+                tree.right = node
+                return tree.count + 1
+            else:
+                cnt = tree.count + 1
+                cnt += insert(tree.right, val)
+                return cnt
+
+        if not tree.left:
+            node = BSTNode(val)
+            tree.left = node
+            tree.count += 1
+            return 0
+        else:
+            tree.count += 1
+            return insert(tree.left, val)
+
+    n = len(nums)
+
+    res = [0]
+    for i in range(n - 2, -1, -1):
+        res.append(insert(tree, nums[i]))
+
+    res.reverse()
+    return res
+
+
 if __name__ == '__main__':
     print('\n根据先序遍历和中序遍历构建数')
     preorder = [3, 9, 20, 15, 7]
@@ -801,3 +841,6 @@ if __name__ == '__main__':
     print('\ntrimBST')
     tree = create_full_binary_tree([10, 1, 15, 3, 4, 12, 17])
     print(level_traversal(trimBST(tree, 4, 12)))
+
+    print('\n逆向个数')
+    print(counter_smaller([2, 0, 1]))
