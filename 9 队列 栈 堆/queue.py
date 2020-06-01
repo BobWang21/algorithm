@@ -115,10 +115,6 @@ def largest_rectangle_area2(height):
     return ans
 
 
-def maxArea():
-    return
-
-
 def trap(height):
     res = 0
     stack = []

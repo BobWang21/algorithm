@@ -74,11 +74,13 @@ def rob_with_cycle(nums):
 
 # 连续子序列 和最大
 def max_sub_array(nums):
-    inc, res = 0, -float('inf')
+    if not nums:
+        return 0
+    inc, exc = -float('inf'), -float('inf')  # 包含负数的最大值 初始值常用负无穷或
     for num in nums:
-        inc = max(num, inc + num)
-        res = max(res, inc)
-    return res
+        inc, exc = max(inc + num, num), max(inc, exc)
+
+    return max(inc, exc)
 
 
 # 连续子序列 乘积最大

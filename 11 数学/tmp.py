@@ -8,23 +8,40 @@
 
 
 # 求平方根
-def sqrt(n):
+def sqrt1(n):
     if n == 1:
         return 1
     l, r = 1, n
     while l <= r:
-        m = l + (r - l) // 2
-        s = m * m
+        mid = l + (r - l) // 2
+        s = mid * mid
         if s == n:
-            return m
-        elif s < n:
-            l = m + 1
+            return mid
+        if s < n:
+            l = mid + 1
         else:
-            r = m - 1
+            r = mid - 1
     return r
 
 
-def sqrt2(n):
+# 带精度的求平方根
+def sqrt2(n, precision):
+    if n == 1:
+        return 1
+    l, r = 1.0, n
+    while l <= r:
+        mid = l + (r - l) / 2.0
+        s = mid * mid
+        if abs(s - n) <= precision:
+            return mid
+        if s < n:
+            l = mid + precision * precision
+        else:
+            r = mid - precision * precision
+    return r
+
+
+def sqrt3(n):
     def fun(x):
         return x ** 2 - n  # 开口向上
 
@@ -278,12 +295,29 @@ def hamming_distance(x, y):
 
 # 2的幂 0b100的形式
 def is_power_of_two2(n):
-    return n > 0 and not (n & (n - 1))
+    return n > 0 and not (n & (n - 1))  # n和n-1的区别为n的最后一个1
+
+
+# 268 给定一个包含 0, 1, 2, ..., n 中 n 个数的序列，
+# 找出 0 .. n 中没有出现在序列中的那个数
+def missing_number(nums):
+    if not nums:
+        return 0
+
+    n = len(nums)
+
+    miss_value = n
+    for i in range(n):
+        miss_value ^= nums[i] ^ i
+
+    return miss_value
 
 
 if __name__ == '__main__':
     print('\n求一个数的平方根')
-    print(sqrt(17))
+    print(sqrt1(17))
+    x = sqrt2(17, 0.1)
+    print(x ** 2)
 
     print('\n最大公约数')
     print(common_greatest_divisor(12, 38))
@@ -308,3 +342,6 @@ if __name__ == '__main__':
 
     print('\n阶层后0的个数')
     print(zero_nums(20))
+
+    print('\n二进制1的个数')
+    print(hamming_weight(12))

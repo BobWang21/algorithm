@@ -3,6 +3,16 @@
 from collections import defaultdict
 
 
+# 解唯一 o(N)空间复杂度
+def two_sum(nums, target):
+    dic = dict()
+
+    for i in range(len(nums)):
+        if target - nums[i] in dic:
+            return [dic[target - nums[i]], i]
+        dic[nums[i]] = i
+
+
 # 解不唯一 O(N) 排序数组
 def two_sum(nums, target):
     n = len(nums)

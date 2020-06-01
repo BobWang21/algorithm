@@ -1,4 +1,5 @@
 import heapq as hq
+import random as rd
 
 
 class ListNode():
@@ -114,7 +115,7 @@ def remove_duplicates2(head):
             pre.next = head
             pre = pre.next
             head = head.next
-        else: # 和2sum 类似
+        else:  # 和2sum 类似
             while head and head.next and head.val == head.next.val:
                 head = head.next
             head = head.next  # 每次移动一步 head.next为空 或者 head.val != head.next.val
@@ -139,7 +140,7 @@ def tail(head, k):
     return slow.val
 
 
-# 链表中间的元素
+# 链表中间的元素 快慢指针
 def middle_node(head):
     if not head:
         return
@@ -151,6 +152,7 @@ def middle_node(head):
     return slow.val
 
 
+# 前后指针
 def remove_nth_from_end(head, n):
     if not head:
         return
@@ -373,11 +375,10 @@ def get_intersection_node2(headA, headB):
     return s1
 
 
-# 判断链表存在环以及环的入口 也可以使用set保存已经访问过的节点
+# 判断链表存在环以及环的入口
+# 不改变数组
 def detect_cycle2(head):
-    if not head:
-        return
-    if not head.next:
+    if not head or head.next:
         return False
     fast = slow = head
     while fast and fast.next:
@@ -412,28 +413,7 @@ def find_duplicate_num(nums):
 
 
 def is_palindrome(head):
-    if not head:
-        return True
-    if not head.next:
-        return True
-    pre = None
-    node = head
-    while node:
-        node.pre = pre
-        pre = node
-        node = node.next
-    while head != pre:
-        if head.val != pre.val:
-            return False
-        head = head.next
-        pre = pre.pre
-    return True
-
-
-def is_palindrome2(head):
-    if not head:
-        return True
-    if not head.next:
+    if not head or not head.next:
         return True
 
     fast = slow = head
@@ -442,8 +422,9 @@ def is_palindrome2(head):
         fast = fast.next.next
         pre_slow = slow
         slow = slow.next
+
     pre_slow.next = None
-    if fast:
+    if fast:  # 奇数
         slow = slow.next
 
     slow = reverse(slow)
@@ -452,6 +433,29 @@ def is_palindrome2(head):
             return False
         slow = slow.next
         head = head.next
+    return True
+
+
+def is_palindrome2(head):
+    if not head or not head.next:
+        return True
+
+    fast = slow = head
+    rev = None
+    while fast and fast.next:
+        fast = fast.next.next
+        curr = slow.next
+        slow.next = rev
+        rev = slow
+        slow = curr
+
+    if fast:  # 奇数
+        slow = slow.next
+    while rev and slow:
+        if rev.val != slow.val:
+            return False
+        slow = slow.next
+        rev = rev.next
     return True
 
 
@@ -538,6 +542,21 @@ def remove_zero_sum_sublists(head):
     return dummy.next
 
 
+# 随机
+def random_node(head):
+    if not head:
+        return
+
+    i = 1
+    while head:
+        if rd.randint(1, i) == 1:
+            res = head.val
+        i += 1
+        head = head.next
+
+    return res
+
+
 if __name__ == '__main__':
     print('\n链表翻转')
     head = construct_list_node([1, 3, 5, 7])
@@ -616,3 +635,6 @@ if __name__ == '__main__':
     print('\n链表奇偶分离')
     l = construct_list_node([5, 6, 7, 8])
     print_list_node(odd_even_list(l))
+
+    head = construct_list_node([1, 3, 5, 7])
+    print(random_node(head))

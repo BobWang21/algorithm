@@ -26,7 +26,7 @@ def kth_smallest(matrix, k):
     if not matrix or not matrix[0]:
         return
     n = len(matrix)
-    heap = [(matrix[i][0], i, 0) for i in range(n)]  # value row, col
+    heap = [(matrix[i][0], i, 0) for i in range(n)]  # value, row, col
     hq.heapify(heap)
     for i in range(k):
         v, row, col = hq.heappop(heap)

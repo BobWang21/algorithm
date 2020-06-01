@@ -104,6 +104,25 @@ def find_pairs2(nums, k):
     return res
 
 
+# 11. 盛最多水的容器
+# 无论是移动短板或者长板，我们都只关注移动后的新短板会不会变长
+# 如向内移动长板，对于新的木板：1.比原短板短，则新短板更短
+# 如果与原短板相等或者比原短板长，则新短板不变。
+# 所以，向内移动长板，一定不能使新短板变长
+# 因此消去状态的面积都 < S(i, j)
+def max_area(height):
+    res = 0
+    l, r = 0, len(height) - 1
+    while l < r:
+        if height[l] < height[r]:
+            res = max(res, (r - l) * height[l])
+            l += 1
+        else:
+            res = max(res, (r - l) * height[r])
+            r -= 1
+    return res
+
+
 if __name__ == '__main__':
     print('\n平方排序')
     print(sorted_squares([-7, -3, 2, 3, 11]))
