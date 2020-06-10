@@ -74,13 +74,38 @@ def unbounded_knapsack3(costs, values, capacity):
         return
     n = len(costs)
     res = [0] * (capacity + 1)
-    for i in range(1, capacity + 1):  # bottom up
-        for j in range(n):
-            cost, value = costs[j], values[j]
-            if i >= cost:
-                res[i] = max(res[i], res[i - cost] + value)
+    for cap in range(1, capacity + 1):  # bottom up
+        for k in range(n):
+            cost, value = costs[k], values[k]
+            if cap >= cost:
+                res[cap] = max(res[cap], res[cap - cost] + value)
 
     return res[-1]
+
+
+# 分组背包问题
+def mckp1(costs, weights, capacity):
+    rows, cols = len(costs) + 1, capacity + 1
+    dp = [[0] * cols for _ in range(rows)]
+
+    for i in range(1, rows):
+        for cap in range(1, cols):
+            dp[i][cap] = dp[i - 1][cap]
+            for j in range(len(costs[i - 1])):
+                if cap >= costs[i - 1][j]:
+                    dp[i][cap] = max(dp[i][cap], dp[i - 1][cap - costs[i - 1][j]] + weights[i - 1][j])
+    return dp[-1][-1]
+
+
+def mckp2(costs, weights, capacity):
+    dp = [0] * (capacity + 1)
+
+    for i in range(len(costs)):
+        for cap in range(1, 1 + capacity):
+            for j in range(len(costs[i])):
+                if cap >= costs[i][j]:
+                    dp[cap] = max(dp[cap], dp[cap - costs[i][j]] + weights[i][j])
+    return dp[-1]
 
 
 # 416. Partition Equal Subset Sum
@@ -111,12 +136,19 @@ def can_partition(nums):
 
 
 if __name__ == '__main__':
-    print('0-1背包问题')
+    print('\n0-1背包问题')
     print(knapsack([1, 2, 3, 4], [1, 3, 4, 8], 7))
 
     print('\n完全背包问题')
     print(unbounded_knapsack1([5, 10, 15], [10, 30, 20], 100))
     print(unbounded_knapsack3([5, 10, 15], [10, 30, 20], 100))
+
+    print('\n分组背包问题')
+    costs = [[5, 6], [6, 5]]
+    weights = [[6, 5], [6, 5]]
+    capacity = 11
+    print(mckp1(costs, weights, capacity))
+    print(mckp2(costs, weights, capacity))
 
     print('\n找到子序列和相等的两个分区')
     print(can_partition([3, 1, 5, 9, 12]))

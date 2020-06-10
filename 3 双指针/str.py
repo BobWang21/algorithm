@@ -6,6 +6,8 @@ from collections import defaultdict, Counter
 
 # 判断是否为回文
 def is_palindrome(s):
+    if not s:
+        return True
     l, r = 0, len(s) - 1
     while l < r:
         if not s[l].isalnum():  # isalnum() 数字或字符串
@@ -33,6 +35,24 @@ def reverse_string(s):
         l += 1
         r -= 1
     return ''.join(lists)
+
+
+# 循环移动K
+def rotate(nums, k):
+    n = len(nums)
+    k %= n
+
+    def reverse(nums, l, r):
+        while l < r:
+            nums[l], nums[r] = nums[r], nums[l]
+            l += 1
+            r -= 1
+
+    reverse(nums, 0, n - 1)
+    reverse(nums, 0, k - 1)
+    reverse(nums, k, n - 1)
+
+    return nums
 
 
 # 72 最小覆盖子串 滑动窗口
@@ -104,7 +124,7 @@ def length_of_longest_substring(s):
     res = 0
     dic = {}
     for r, c in enumerate(s):
-        if c in dic and dic[c] >= l:  #
+        if c in dic and dic[c] >= l:  # 分开写
             l = dic[c] + 1
         res = max(res, r - l + 1)
         dic[c] = r
@@ -292,6 +312,9 @@ def multiply2(num1, num2):
 
 
 if __name__ == '__main__':
+    print('\n数组循环移动K位')
+    print(rotate([1, 2, 3, 4], 2))
+
     print('\n最小覆盖子串')
     print(min_window('aaaaaaaaaaaabbbbbcdd', 'abcdd'))
 

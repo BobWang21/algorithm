@@ -3,20 +3,8 @@
 from collections import defaultdict
 
 
-# bottom up
+# 记忆化的 top down
 def fib1(n):
-    if n == 1:
-        return 1
-    if n == 2:
-        return 2
-    left, right = 1, 2
-    for i in range(3, n + 1):
-        left, right = right, left + right
-    return right
-
-
-# top down
-def fib2(n):
     dic = {1: 1, 2: 2}
 
     def helper(n):
@@ -27,6 +15,19 @@ def fib2(n):
         return res
 
     return helper(n)
+
+
+# bottom up
+# 可以记录所有状态 但当前状态只和最近前两个状态有关 因此只存最近两个状态
+def fib2(n):
+    if n == 1:
+        return 1
+    if n == 2:
+        return 2
+    left, right = 1, 2
+    for i in range(3, n + 1):
+        left, right = right, left + right
+    return right
 
 
 # dp[i] = max(dp[i-1], dp[i-2] + nums[i])
@@ -386,6 +387,107 @@ def max_profit3(prices):
     return dp[-1][-1][0]
 
 
+# 最大前缀 后缀
+def trap1(height):
+    if not height:
+        return 0
+
+    n = len(height)
+    l = [0] * n
+    r = [0] * n
+
+    for i in range(n):  # 动态规划 左右
+        if not i:
+            l[i] = height[i]
+        else:
+            l[i] = max(l[i - 1], height[i])
+
+    for i in range(n - 1, -1, -1):
+        if i == n - 1:
+            r[i] = height[i]
+        else:
+            r[i] = max(r[i + 1], height[i])
+
+    res = 0
+    for i in range(n):
+        res += min(l[i], r[i]) - height[i]
+    return res
+
+
+# 238. 除自身以外数组的乘积 左右各扫描一遍
+def product_except_self(nums):
+    n = len(nums)
+
+    l = [1] * n
+
+    for i in range(1, n):
+        l[i] = l[i - 1] * nums[i - 1]
+
+    r = 1
+    for i in range(n - 1, -1, -1):
+        l[i] *= r
+        r = r * nums[i]
+
+    return l
+
+
+# 鸡蛋
+# 动态规划算法的时间复杂度就是子问题个数 × 函数本身的复杂度
+# 函数本身的复杂度就是忽略递归部分的复杂度，这里 dp 函数中有一个 for 循环，
+# 所以函数本身的复杂度是 O(N) 所以算法的总时间复杂度是 O(K*N^2)
+def super_egg_drop(K, N):
+    memo = dict()
+
+    def dp(K, N):
+        # base case
+        if K == 1:
+            return N
+        if N == 0:
+            return 0
+        # 避免重复计算
+        if (K, N) in memo:
+            return memo[(K, N)]
+
+        res = float('INF')
+
+        # 穷举所有可能的选择
+        for i in range(1, N + 1):
+            res = min(max(dp(K, N - i), dp(K - 1, i - 1)) + 1, res)
+
+        memo[(K, N)] = res
+        return res
+
+    return dp(K, N)
+
+
+def super_egg_drop2(K, N):
+    memo = {}
+
+    def dp(k, n):
+        if (k, n) not in memo:
+            if n == 0:
+                ans = 0
+            elif k == 1:
+                ans = n
+            else:
+                l, r = 1, n
+                while l < r:
+                    mid = (l + r) // 2
+                    up = dp(k - 1, mid - 1)
+                    down = dp(k, n - mid)
+                    if down > up:
+                        l = mid + 1
+                    else:
+                        r = mid
+
+                ans = 1 + max(dp(k - 1, l - 1), dp(k, n - l))
+
+            memo[k, n] = ans
+        return memo[k, n]
+
+    return dp(K, N)
+
+
 if __name__ == '__main__':
     print('\nFibonacci sequence')
     print(fib1(39))
@@ -452,3 +554,9 @@ if __name__ == '__main__':
 
     print('有交易次数限制')
     print(max_profit3([3, 3, 5, 0, 0, 3, 1, 4]))
+
+    print('\n不包含自身的乘积')
+    print(product_except_self([1, 2, 3, 4]))
+
+    print('\n扔鸡蛋')
+    print(super_egg_drop(3, 4))

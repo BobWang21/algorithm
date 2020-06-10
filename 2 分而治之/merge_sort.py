@@ -10,7 +10,7 @@ import heapq as hq
 
 def merge_sort(nums):
     n = len(nums)
-    if n <= 1:  # 递归基
+    if n == 1:  # 递归基
         return nums
     mid = n // 2
     left = merge_sort(nums[:mid])

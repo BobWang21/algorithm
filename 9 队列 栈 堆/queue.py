@@ -1,51 +1,6 @@
-# 可以返回最大值的队列
-class MaxQueue():
-    def __init__(self):
-        self.queue1 = []
-        self.queue2 = []
-
-    def enqueue(self, v):
-        self.queue1.append(v)
-        while self.queue2 and self.queue2[-1] < v:
-            self.queue2.pop(-1)
-        self.queue2.append(v)
-
-    def dequeue(self):
-        v = self.queue1.pop(0)
-        if self.queue2[0] == v:
-            self.queue2.pop(0)
-
-    def get_max(self):
-        return self.queue2[0]
-
-
-# 滑动窗口的最大值 最大队列和最小栈类似
-def max_sliding_window(nums, k):
-    def enqueue(queue, i):  #
-        # 防止第一个划出窗口
-        if queue and i - queue[0] == k:
-            queue.pop(0)
-        # 比当前小的数字 都不可能是窗口中的最大值
-        while queue and nums[queue[-1]] < nums[i]:
-            queue.pop(-1)
-        queue.append(i)
-
-    n = len(nums)
-    if n * k == 0:
-        return nums
-    res = []
-    max_idx = 0
-    queue = []
-    for i in range(1, k):
-        enqueue(queue, i)
-        if nums[i] > nums[max_idx]:
-            max_idx = i
-    res.append(nums[max_idx])
-
-    for i in range(k, n):
-        enqueue(queue, i)
-        res.append(nums[queue[0]])
-    return res
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# 单调栈适用于结果和数组当前值得前后缀相关的问题
 
 
 # Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
@@ -87,6 +42,56 @@ def daily_temperatures(t):
     return res
 
 
+# 可以返回最大值的队列
+class MaxQueue():
+    def __init__(self):
+        self.queue1 = []
+        self.queue2 = []
+
+    def enqueue(self, v):
+        self.queue1.append(v)
+        while self.queue2 and self.queue2[-1] < v:
+            self.queue2.pop(-1)
+        self.queue2.append(v)
+
+    def dequeue(self):
+        v = self.queue1.pop(0)
+        if self.queue2[0] == v:
+            self.queue2.pop(0)
+
+    def get_max(self):
+        return self.queue2[0]
+
+
+# 滑动窗口的最大值 数值由前后决定
+def max_sliding_window(nums, k):
+    def enqueue(queue, i):  #
+        # 防止第一个划出窗口
+        if queue and i - queue[0] == k:
+            queue.pop(0)
+        # 比当前小的数字 都不可能是窗口中的最大值
+        while queue and nums[queue[-1]] < nums[i]:
+            queue.pop(-1)
+        queue.append(i)
+
+    n = len(nums)
+    if n * k == 0:
+        return nums
+    res = []
+    max_idx = 0
+    queue = []
+    for i in range(1, k):
+        enqueue(queue, i)
+        if nums[i] > nums[max_idx]:
+            max_idx = i
+    res.append(nums[max_idx])
+
+    for i in range(k, n):
+        enqueue(queue, i)
+        res.append(nums[queue[0]])
+    return res
+
+
 # 暴力法O(n^2)
 def largest_rectangle_area1(heights):
     max_rec = 0
@@ -115,7 +120,34 @@ def largest_rectangle_area2(height):
     return ans
 
 
-def trap(height):
+# 42 接雨水
+def trap1(height):
+    if not height:
+        return 0
+
+    n = len(height)
+    l = [0] * n
+    r = [0] * n
+
+    for i in range(n):  # 动态规划 左右
+        if not i:
+            l[i] = height[i]
+        else:
+            l[i] = max(l[i - 1], height[i])
+
+    for i in range(n - 1, -1, -1):
+        if i == n - 1:
+            r[i] = height[i]
+        else:
+            r[i] = max(r[i + 1], height[i])
+
+    res = 0
+    for i in range(n):
+        res += min(l[i], r[i]) - height[i]
+    return res
+
+
+def trap2(height):
     res = 0
     stack = []
     for i in range(len(height)):
@@ -179,4 +211,5 @@ if __name__ == '__main__':
     print(max_area_min_sum_product([81, 87, 47, 59, 81, 18, 25, 40, 56, 0]))
 
     print('\n接雨水')
-    print(trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
+    print(trap1([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
+    print(trap2([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))

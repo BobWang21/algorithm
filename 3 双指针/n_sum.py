@@ -3,8 +3,8 @@
 from collections import defaultdict
 
 
-# 解唯一 o(N)空间复杂度
-def two_sum(nums, target):
+# 未排序数组 解唯一 o(N)空间复杂度
+def two_sum1(nums, target):
     dic = dict()
 
     for i in range(len(nums)):
@@ -13,8 +13,8 @@ def two_sum(nums, target):
         dic[nums[i]] = i
 
 
-# 解不唯一 O(N) 排序数组
-def two_sum(nums, target):
+# 排序数组 解不唯一 O(N)
+def two_sum2(nums, target):
     n = len(nums)
     if n < 2:
         return []
@@ -90,7 +90,7 @@ def n_sum2(nums, target):
         if len(nums[idx:]) < k or nums[idx] * k > target or nums[-1] * k < target:
             return
         elif k == 2:
-            two_sum_paths = two_sum(nums[idx:], target)
+            two_sum_paths = two_sum1(nums[idx:], target)
             for sum_paths in two_sum_paths:
                 res.append(path + sum_paths)
         else:
@@ -222,7 +222,8 @@ def four_sum_count(A, B, C, D):
 
 if __name__ == '__main__':
     print('\n2 sum')
-    print(two_sum([1, 2, 7, 8, 11, 15], 9))
+    print(two_sum1([7, 8, 2, 3], 9))
+    print(two_sum2([1, 2, 7, 8, 11, 15], 9))
 
     print('\n3 sum')
     print(three_sum([2, 7, 7, 11, 15, 15, 20, 24, 24], 33))

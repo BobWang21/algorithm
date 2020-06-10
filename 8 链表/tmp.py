@@ -423,7 +423,7 @@ def is_palindrome(head):
         pre_slow = slow
         slow = slow.next
 
-    pre_slow.next = None
+    pre_slow.next = None  # 置空
     if fast:  # 奇数
         slow = slow.next
 
@@ -436,27 +436,29 @@ def is_palindrome(head):
     return True
 
 
-def is_palindrome2(head):
+# 1->2->3->4, 重新排列为 1->4->2->3.
+def reorder_list(head):
     if not head or not head.next:
-        return True
+        return head
 
-    fast = slow = head
-    rev = None
+    fast = slow = pre = head
     while fast and fast.next:
         fast = fast.next.next
-        curr = slow.next
-        slow.next = rev
-        rev = slow
-        slow = curr
+        pre = slow
+        slow = slow.next
+    pre.next = None
 
-    if fast:  # 奇数
-        slow = slow.next
-    while rev and slow:
-        if rev.val != slow.val:
-            return False
-        slow = slow.next
-        rev = rev.next
-    return True
+    second = reverse(slow)
+    first = head
+    dummy = pre = ListNode(-1)
+    while first:
+        pre.next = first
+        curr = first.next
+        first.next = second
+        pre = pre.next.next
+        first = curr
+        second = second.next
+    return dummy.next
 
 
 def partition(head, x):
@@ -557,6 +559,88 @@ def random_node(head):
     return res
 
 
+# 加1
+def plus_one(head):
+    if not head:
+        return
+    dummy = ListNode(0)
+    dummy.next = head
+
+    node = dummy
+    while node:
+        if node.val != 9:
+            not_nine = node
+        node = node.next
+    not_nine.val += 1
+
+    not_nine = not_nine.next
+    while not_nine:
+        not_nine.val = 0
+        not_nine = not_nine.next
+
+    return dummy if dummy.val else dummy.next
+
+
+class Node:
+    def __init__(self, x, next=None, random=None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+
+
+def copy_random_list(head):
+    if not head:
+        return
+    node = head
+    while node:
+        new_node = Node(node.val)
+        new_node.next = node.next
+        new_node.random = node.random
+        node.next = new_node
+        node = node.next.next
+
+    node = head.next
+    while node:
+        node.random = node.random.next if node.random else None
+        node = node.next.next if node.next else None
+
+    node = head
+    new_head = node.next
+    pre = dummy = Node(-1)
+    while node:
+        pre.next = node.next
+        pre = pre.next
+        node.next = node.next.next
+        node = node.next
+    return dummy.next
+
+
+# 删除节点 非第一个节点 和 最后一个节点
+def delete_node(node):
+    node.val = node.next.val
+    node.next = node.next.next
+
+
+def rotate_right(head, k):
+    if not head:
+        return
+    n = 0
+    node = head
+    tail = head
+    while node:
+        tail = node
+        node = node.next
+        n += 1
+    tail.next = head
+    k = n - k % n - 1  # 新头部为 n - k % n
+    new_tail = head
+    for _ in range(k):
+        new_tail = new_tail.next
+    new_head = new_tail.next
+    new_tail.next = None
+    return new_head
+
+
 if __name__ == '__main__':
     print('\n链表翻转')
     head = construct_list_node([1, 3, 5, 7])
@@ -630,7 +714,11 @@ if __name__ == '__main__':
 
     print('\n判断是否为回文')
     l = construct_list_node([1, 2])
-    print(is_palindrome2(l))
+    print(is_palindrome(l))
+
+    print('\n链表排序')
+    l = construct_list_node([5, 6, 7, 8])
+    print_list_node(reorder_list(l))
 
     print('\n链表奇偶分离')
     l = construct_list_node([5, 6, 7, 8])
@@ -638,3 +726,7 @@ if __name__ == '__main__':
 
     head = construct_list_node([1, 3, 5, 7])
     print(random_node(head))
+
+    print('\n链表右移动K位')
+    l = construct_list_node([5, 6, 7, 8, 9, 10])
+    print_list_node(rotate_right(l, 2))

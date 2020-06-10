@@ -6,6 +6,8 @@
 大于10进位
 """
 
+import heapq as hq
+
 
 # 求平方根
 def sqrt1(n):
@@ -269,6 +271,20 @@ def get_ugly_number(n):
             min5 += 1
         num += 1
     return res[-1]
+
+
+def get_kth_magic_number(k):
+    s = set()
+    heap = [1]
+    while True:
+        v = hq.heappop(heap)
+        if v not in s:
+            s.add(v)
+            hq.heappush(heap, v * 3)
+            hq.heappush(heap, v * 5)
+            hq.heappush(heap, v * 7)
+        if len(s) == k:
+            return v
 
 
 # 阶层后0的个数 因式分解 2^(m) * 3^(k) * 5^(n)... min(m, n) 含有5的个数

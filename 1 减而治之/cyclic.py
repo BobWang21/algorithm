@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 循环排序: 适合于数值区间在一定范围内的数组
 # 访问标记正负 适合于正数
-# 双指针
+# 快慢双指针 不修改列表
 
 
 def cyclic_sort(nums):
@@ -12,7 +12,7 @@ def cyclic_sort(nums):
     for i in range(n):
         while nums[i] != i + 1:
             j = nums[i] - 1
-            if nums[j] == j + 1:  # 说明已经存在
+            if nums[j] == j + 1:  # 该位置已经排好
                 break
             nums[i], nums[j] = nums[j], nums[i]
     return nums
@@ -36,8 +36,10 @@ def first_missing_positive(nums):
     n = len(nums)
 
     for i in range(n):
-        while 0 < nums[i] <= n and nums[nums[i] - 1] != nums[i]:
+        while 0 < nums[i] <= n:
             j = nums[i] - 1
+            if nums[j] == j + 1:  # nums[j] == nums[i]
+                break
             nums[i], nums[j] = nums[j], nums[i]
 
     for i in range(n):
@@ -90,8 +92,8 @@ def find_duplicate_num2(nums):
             return j
 
 
-# 1 - n 的 n + 1 个数中 只有一个数重复一次或多次
-# 要求 O(1)空间复杂度!!!
+# 1 - n 的 n + 1 个数中 只有一个数字重复 数字重复一次或多次
+# 要求 O(1)空间复杂度!!!  不能修改列表
 def find_duplicate_num3(nums):
     fast = slow = nums[0]
     # 证明有环 快慢两个指针
@@ -132,10 +134,11 @@ def rotate(nums, k):
 if __name__ == '__main__':
     print('\ncyclic sort')
     print(cyclic_sort([7, 5, 8, 1, 2, 9, 3, 4, 6, 10]))
+    print(cyclic_sort([2, 2, 1]))
 
     print('\n找到缺失的最小正数')
     print(first_missing_positive([3, 4, -1, 1]))
 
     print('\n找到数组中重复元素')
-    print(find_duplicate_num1([1, 2, 3, 4, 2]))
+    print(find_duplicate_num1([1, 2, 4, 3, 2]))
     print(find_duplicate_num2([1, 2, 3, 2, 0]))

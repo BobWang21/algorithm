@@ -26,7 +26,7 @@ def diagnose_traverse(data):
 
 def clockwise_traverse(data):
     cols, rows = len(data), len(data[0])
-    iteration = min(cols + 1, rows + 1) >> 1
+    iteration = min(cols + 1, rows + 1) // 2
     res = []
     for i in range(iteration):
         row, col = i, i

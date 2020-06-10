@@ -23,10 +23,10 @@ def partition2(nums, l, r):
 
     if not nums:
         return []
-    lt, gt = l, r
+    lt, mt = l, r
     i = l
     pivot = nums[l]
-    while i <= gt:  # !!!
+    while i <= mt:  # !!!
         if nums[i] < pivot:
             swap(i, lt)
             i += 1
@@ -34,9 +34,9 @@ def partition2(nums, l, r):
         elif nums[i] == pivot:  # nums[i-1] <= pivot!
             i += 1
         else:
-            swap(gt, i)
-            gt -= 1  # 后边换过来的数 并不知道其数值 因此不移动i
-    return lt, gt
+            swap(mt, i)
+            mt -= 1  # 后边换过来的数 并不知道其数值 因此不移动i
+    return lt, mt
 
 
 def quick_sort1(nums, lo, hi):
@@ -46,11 +46,11 @@ def quick_sort1(nums, lo, hi):
         quick_sort1(nums, mid + 1, hi)
 
 
-def quick_sort2(nums, lo, hi):
-    if lo < hi:  # 长度为1不用排序
-        lt, mt = partition2(nums, lo, hi)
-        quick_sort2(nums, lo, lt - 1)
-        quick_sort2(nums, mt + 1, hi)
+def quick_sort2(nums, l, r):
+    if l < r:  # 长度为1不用排序
+        lt, mt = partition2(nums, l, r)
+        quick_sort2(nums, l, lt - 1)
+        quick_sort2(nums, mt + 1, r)
 
 
 # 奇数在左边 偶数在右边
@@ -124,11 +124,10 @@ def sort_colors(nums):
     return nums
 
 
-# 179 输入: [3,30,34,5,9] 输出: 9534330
+# 179 输入: [3, 30, 34, 5, 9] 输出: 9534330
 def largest_number(nums):
     if not nums:
         return ''
-    nums = [str(num) for num in nums]
 
     def bigger(s1, s2):
         return s1 + s2 > s2 + s1
@@ -136,11 +135,11 @@ def largest_number(nums):
     def partition(l, r):
         pivot = nums[l]
         while l < r:
-            while l < r and bigger(pivot, nums[r]):  # >
+            while l < r and bigger(pivot, nums[r]):
                 r -= 1
             nums[l] = nums[r]
 
-            while l < r and not bigger(pivot, nums[l]):  # <
+            while l < r and not bigger(pivot, nums[l]):  # 此处需要not
                 l += 1
             nums[l], nums[r] = nums[r], nums[l]
         nums[l] = pivot
@@ -152,6 +151,7 @@ def largest_number(nums):
             quick_sort(l, pivot - 1)
             quick_sort(pivot + 1, r)
 
+    nums = [str(num) for num in nums]
     quick_sort(0, len(nums) - 1)
     s = ''.join(nums)
     return '0' if s[0] == '0' else s

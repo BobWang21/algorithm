@@ -41,14 +41,32 @@ def remove_duplicates2(nums):
     if len(nums) <= 2:
         return len(nums)
     # 假设 nums[0...i] 符合要求
-    i = 1
-    j = 2
-    while j < len(nums):
-        if nums[j] != nums[i] or (nums[j] == nums[i] and nums[j] != nums[i - 1]):
-            i += 1
-            nums[i] = nums[j]
-        j += 1
-    return i + 1
+    j = 1  # 记录最后一个满足要求的位置
+    for i in range(2, len(nums)):
+        if nums[i] != nums[i - 1] or nums[i] != nums[j - 1]:
+            j += 1
+            nums[j] = nums[i]
+
+    return j + 1
+
+
+def remove_duplicates3(nums):
+    if len(nums) <= 2:
+        return nums
+    cnt = 1
+    n = len(nums)
+    j = 1
+    for i in range(1, n):
+        if nums[i] == nums[i - 1]:
+            if cnt == 1:
+                nums[j] = nums[i]
+                j += 1
+                cnt += 1
+        else:
+            nums[j] = nums[i]
+            j += 1
+            cnt = 1
+    return nums[:j]
 
 
 # 不改变顺序 把0移到数组尾部
@@ -130,6 +148,7 @@ if __name__ == '__main__':
     print('\n删除排查数组中的重复数值')
     print(remove_duplicates1([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
     print(remove_duplicates2([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
+    print(remove_duplicates3([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
 
     print('\n移动 0至数组尾部')
     print(move_zeros([0, -7, 0, 2, 3, 11]))

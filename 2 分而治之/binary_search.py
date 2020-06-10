@@ -34,7 +34,7 @@ def binary_search2(nums, l, r, target):
 def search_first_pos(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:
-        mid = l + (r - l) // 2
+        mid = l + (r - l) // 2  # 左中位数
         if nums[mid] < target:
             l = mid + 1  # nums[l-1] < target
         else:
@@ -46,7 +46,7 @@ def search_first_pos(nums, target):
 def search_last_pos(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:
-        mid = l + (r - l + 1) // 2
+        mid = l + (r - l + 1) // 2  # 右中位数
         if nums[mid] <= target:
             l = mid  # l == mid 需要考虑3, 4这种无限循环的情况 nums[l] <= target
         else:

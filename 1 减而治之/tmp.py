@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 '''
-kth 问题的几种解法
+TopK 问题的几种解法
 1 桶排序 
 2 堆排序
 3 二分查找 需要构造递增序列
@@ -97,39 +97,6 @@ def can_complete_circuit(gas, cost):
     return start
 
 
-# 要求o(n) 左右扫描两次也是O(n)
-def product_except_self1(nums):
-    n = len(nums)
-    left = [1] * n
-    for i in range(1, n):
-        left[i] = left[i - 1] * nums[i - 1]
-
-    right = [1] * n
-    for i in range(n - 2, -1, -1):
-        right[i] = right[i + 1] * nums[i + 1]
-
-    for i in range(n):
-        right[i] = right[i] * left[i]
-    return right
-
-
-# o(1)空间 不算返回的空间
-def product_except_self2(nums):
-    n = len(nums)
-    res = [1] * n
-    k = nums[0]
-    for i in range(1, n):
-        res[i] *= k
-        k *= nums[i]
-
-    k = nums[-1]
-    for i in range(n - 2, -1, -1):
-        res[i] *= k
-        k *= nums[i]
-
-    return res
-
-
 # 众数 超过一半的数
 def most_data(nums):
     if not nums:
@@ -146,6 +113,20 @@ def most_data(nums):
         else:
             cnt -= 1
     return value
+
+
+def second_largest(nums):
+    size = len(nums)
+    if size < 2:
+        raise Exception('array length must be more than 2')
+    first = second = -float('inf')
+    for i in range(size):
+        if nums[i] > first:
+            second = first
+            first = nums[i]
+        elif nums[i] > second:
+            second = nums[i]
+    return second
 
 
 def find_unsorted_subarray(nums):
@@ -237,7 +218,6 @@ def next_permutation(nums):
 
 
 if __name__ == '__main__':
-
     print('\n众数')
     print(most_data([1, 3, 3, 3, 9]))
 
@@ -248,6 +228,9 @@ if __name__ == '__main__':
         [23, 30, 34, 50]
     ]
     print(search_matrix(matrix, 16))
+
+    print('数组中第2大的数')
+    print(second_largest([2, 3, 4, 10, 100]))
 
     print('\n计数排序')
     print(sort_colors([2, 0, 2, 1, 1, 0]))
@@ -272,7 +255,3 @@ if __name__ == '__main__':
 
     print('\n加油站问题')
     print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
-
-    print('\n除自身以外数组的乘积')
-    print(product_except_self1([1, 2, 3, 4]))
-    print(product_except_self2([1, 2, 3, 4]))
