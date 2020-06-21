@@ -88,24 +88,23 @@ def merge_k_sorted_nums1(nums):
     b = merge_k_sorted_nums1(nums[mid:])
     return merge3(a, b)
 
+    return res
+
 
 def merge_k_sorted_nums2(nums):
     if not nums or not nums[0]:
-        return
+        return []
+
     n = len(nums)
-    if n == 1:
-        return nums[0]
-    heap = []
-    for i in range(n):
-        v = nums[i].pop(0)
-        hq.heappush(heap, (v, i))  # 记录二维数据
+    heap = [(nums[i][0], i, 0) for i in range(n)]
+    hq.heapify(heap)
+
     res = []
     while heap:
-        v, i = hq.heappop(heap)
+        v, i, j = hq.heappop(heap)
         res.append(v)
-        if nums[i]:
-            v = nums[i].pop(0)
-            hq.heappush(heap, (v, i))
+        if j + 1 < len(nums[i]):
+            hq.heappush(heap, (nums[i][j + 1], i, j + 1))
     return res
 
 

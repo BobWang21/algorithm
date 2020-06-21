@@ -330,7 +330,7 @@ if __name__ == '__main__':
     print(length_of_longest_substring_k_distinct('eceebaaaa', 2))
 
     print('\n最长前缀后缀长度')
-    print(get_nxt('ababa'))
+    print(get_nxt('bcbabcbc'))
 
     print('\nKMP')
     print(kmp('hello', 'll'))

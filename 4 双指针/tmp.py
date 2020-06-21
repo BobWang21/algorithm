@@ -30,7 +30,7 @@ def remove_duplicates1(nums):
     n = len(nums)
     i = 1  # 第一个指针 下一个不重复数字放置的位置 类似 三指针的lt
     for j in range(1, n):  # 第二个指针
-        if nums[j - 1] != nums[j]:
+        if nums[j - 1] != nums[j]:  # 非重复数字
             nums[i] = nums[j]
             i += 1
     return i
@@ -139,6 +139,25 @@ def max_area(height):
             res = max(res, (r - l) * height[r])
             r -= 1
     return res
+
+
+# 取值为正数的数组 和大于等于s 最小数组
+def min_sub_array_len(nums, s):
+    if not nums or min(nums) > s:
+        return 0
+    if max(nums) >= s:
+        return 1
+    n = len(nums)
+    i = 0
+    total = 0
+    res = float('inf')
+    for j in range(n):
+        total += nums[j]
+        while total >= s:
+            res = min(res, j - i + 1)
+            total -= nums[i]
+            i += 1
+    return res if res < float('inf') else 0
 
 
 if __name__ == '__main__':

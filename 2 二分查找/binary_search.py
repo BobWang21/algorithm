@@ -268,7 +268,7 @@ def find_kth_number(m, n, k):
 
 
 # Find Kth Smallest Pair Distance
-# 双指针 + 二分查找 差值小于等于某个数的pair数 为递增函数!!!
+# 双指针 + 2 二分查找 差值小于等于某个数的pair数 为递增函数!!!
 def smallest_distance_pair_3(nums, k):
     nums.sort()
     n = len(nums)
@@ -294,7 +294,7 @@ def smallest_distance_pair_3(nums, k):
     return l
 
 
-# 字典序 第k个数字 二分查找
+# 字典序 第k个数字 2 二分查找
 def find_kth_number(n, k):
     def prefix_num(prefix, n):
         cnt = 0
@@ -320,7 +320,7 @@ def find_kth_number(n, k):
 
 
 if __name__ == '__main__':
-    print('\n二分查找')
+    print('\n2 二分查找')
     nums = [1, 3, 5, 9, 10, 16, 17]
     print(binary_search1(nums, 3))
 

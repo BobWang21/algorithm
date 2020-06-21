@@ -3,6 +3,7 @@
 # 循环排序: 适合于数值区间在一定范围内的数组
 # 访问标记正负 适合于正数
 # 快慢双指针 不修改列表
+# 异或操作
 
 
 def cyclic_sort(nums):
@@ -36,7 +37,7 @@ def first_missing_positive(nums):
     n = len(nums)
 
     for i in range(n):
-        while 0 < nums[i] <= n:
+        while 0 < nums[i] <= n and nums[i] != i + 1:
             j = nums[i] - 1
             if nums[j] == j + 1:  # nums[j] == nums[i]
                 break
@@ -129,6 +130,21 @@ def rotate(nums, k):
         curr += 1
         tmp = nums[curr]
         cnt += 1
+
+
+# 268 给定一个包含 0, 1, 2, ..., n 中 n 个数的序列，
+# 找出 0 .. n 中没有出现在序列中的那个数
+def missing_number(nums):
+    if not nums:
+        return 0
+
+    n = len(nums)
+
+    miss_value = n
+    for i in range(n):
+        miss_value ^= nums[i] ^ i
+
+    return miss_value
 
 
 if __name__ == '__main__':

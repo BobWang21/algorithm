@@ -6,7 +6,7 @@ from collections import defaultdict
 TopK 问题的几种解法
 1 桶排序 
 2 堆排序
-3 二分查找 需要构造递增序列
+3 2 二分查找 需要构造递增序列
 4 对于未排序的 使用partition
 '''
 
@@ -113,6 +113,51 @@ def most_data(nums):
         else:
             cnt -= 1
     return value
+
+
+def majority_element(nums):
+    if not nums:
+        return []
+    n = len(nums)
+
+    v1 = v2 = nums[0]
+    cnt1 = cnt2 = 0
+    for num in nums:
+        if num == v1:
+            cnt1 += 1
+            continue
+        if num == v2:
+            cnt2 += 1
+            continue
+
+        if not cnt1:
+            cnt1 += 1
+            v1 = num
+            continue
+        if not cnt2:
+            cnt2 += 1
+            v2 = num
+            continue
+
+        cnt1 -= 1
+        cnt2 -= 1
+
+    cnt1 = cnt2 = 0
+    for num in nums:
+        if num == v1:  # 可能为重复
+            cnt1 += 1
+            continue
+        if num == v2:
+            cnt2 += 1
+    res = []
+
+    if cnt1 > n // 3:
+        res.append(v1)
+
+    if cnt2 > n // 3:
+        res.append(v2)
+
+    return res
 
 
 def second_largest(nums):

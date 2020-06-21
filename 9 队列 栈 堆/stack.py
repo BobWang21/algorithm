@@ -44,6 +44,19 @@ def valid_parentheses(s):
     return True if not stack else False
 
 
+# 判断括号是否合法 只含有( )
+def is_balanced_parentheses(s):
+    balance = 0
+    for char in s:
+        if char == "(":
+            balance = balance + 1
+        if char == ")":
+            balance = balance - 1
+        if balance < 0:
+            return False
+    return balance == 0
+
+
 # 波兰表达式
 def eval_RPN(tokens):
     stack = []
@@ -63,6 +76,32 @@ def eval_RPN(tokens):
                 s = int(c1 / c2)
             stack.append(s)
     return stack[-1]
+
+
+# 移除无效括号
+def min_remove_to_make_valid(s):
+    if not s:
+        return
+    n = len(s)
+    valid = set()
+    stack = []
+
+    for i in range(n):
+        c = s[i]
+        if c.isalpha():
+            valid.add(i)
+        elif c == '(':
+            stack.append(i)
+        elif stack:
+            j = stack.pop(-1)
+            valid.add(i)
+            valid.add(j)
+
+    res = ''
+    for i in range(n):
+        if i in valid:
+            res += s[i]
+    return res
 
 
 class Queue():

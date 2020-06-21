@@ -94,7 +94,7 @@ def max_continuous_product(nums):
 
 
 # 最长上升子序列
-def longest_increasing_subsequence(nums):
+def LIS(nums):
     dp = [1] * len(nums)
     res = 1
     for i, val in enumerate(nums):
@@ -106,7 +106,7 @@ def longest_increasing_subsequence(nums):
 
 
 # res[i] 保存长度为i+1的子串的最小值 nlog(n)
-def longest_increasing_subsequence2(nums):
+def LIS2(nums):
     def binary_search(nums, target):
         l, r = 0, len(nums) - 1
         while l < r:
@@ -507,7 +507,7 @@ if __name__ == '__main__':
     print(max_continuous_product([-1, 2, 3, 0.1, -10]))
 
     print('\n最长上升子序列')
-    print(longest_increasing_subsequence([2, 5, 3, 4, 1, 7, 6]))
+    print(LIS([2, 5, 3, 4, 1, 7, 6]))
 
     print('\n换硬币')
     print(coin_change([1, 2, 5, 10], 11))

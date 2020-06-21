@@ -479,6 +479,7 @@ def clone_graph(node):
 if __name__ == '__main__':
     print('\nn sum 回溯版')
 print(n_sum1([1, 1, 2, 3, 4], 3, 6))
+print(n_s([1, 1, 2, 3, 4], 3, 6))
 print(n_sum2([1, 1, 2, 3, 4], 3, 6))
 
 print('\nk个和相等的子数组')

@@ -309,7 +309,7 @@ def hamming_distance(x, y):
     return bin(x ^ y).count('1')
 
 
-# 2的幂 0b100的形式
+# 2的幂 100的形式
 def is_power_of_two2(n):
     return n > 0 and not (n & (n - 1))  # n和n-1的区别为n的最后一个1
 
@@ -327,6 +327,11 @@ def missing_number(nums):
         miss_value ^= nums[i] ^ i
 
     return miss_value
+
+
+# 获取数值对应的二进制 第k位取值 idx从0开始
+def find_bit_k_value(val, k):
+    return (val >> k) & 1
 
 
 if __name__ == '__main__':
@@ -361,3 +366,6 @@ if __name__ == '__main__':
 
     print('\n二进制1的个数')
     print(hamming_weight(12))
+
+    print('\n二进制k位对应的的取值')
+    print(find_bit_k_value(8, 3))
