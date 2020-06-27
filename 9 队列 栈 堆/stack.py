@@ -44,7 +44,7 @@ def valid_parentheses(s):
     return True if not stack else False
 
 
-# 判断括号是否合法 只含有( )
+# 判断括号是否合法 只含有()
 def is_balanced_parentheses(s):
     balance = 0
     for char in s:
@@ -55,6 +55,21 @@ def is_balanced_parentheses(s):
         if balance < 0:
             return False
     return balance == 0
+
+
+# 多余的'(', ')'
+def useless_parentheses(s):
+    if not s:
+        return 0, 0
+    l = r = 0
+    for ch in s:
+        if ch == "(":
+            l += 1  # '('的数目
+        elif l:
+            l -= 1  # 消去一个 '('
+        else:
+            r += 1  # 多一个 ')'
+    return l, r
 
 
 # 波兰表达式
@@ -175,6 +190,82 @@ def remove_duplicates(S):
     return ''.join(stack)
 
 
+# 1- 2 / 50*4-9+45
+# 1 + 2 - 3
+def calculate(s):
+    if not s:
+        return
+
+    lists = []
+    v = None
+    for c in s:
+        if c in {' ', '+', '-', '*', '/'}:
+            if c == ' ':
+                if v is not None:
+                    lists.append(v)
+                    v = None
+            elif v is not None:
+                lists.append(v)
+                lists.append(c)
+                v = None
+            else:
+                lists.append(c)
+        else:
+            v = 10 * v + int(c) if v is not None else int(c)
+    if v is not None:
+        lists.append(v)
+    # print(lists)
+    res = 0
+    stack1, stack2 = [], []
+
+    for c in lists:
+        if c in {'*', '/', '+', '-'}:
+            stack2.append(c)
+        else:
+            if stack2 and stack2[-1] in {'*', '/'}:
+                operate = stack2.pop(-1)
+                if operate == '*':
+                    v = int(c) * stack1.pop(-1)
+                else:
+                    v = stack1.pop(-1) // int(c)
+                stack1.append(v)
+
+            else:
+                stack1.append(int(c))
+    # print(stack1, stack2)
+    while stack2:
+        v = stack1.pop(-1)
+        res += v if stack2.pop(-1) == '+' else -v
+    res += stack1.pop(-1)
+    return res
+
+
+# 当遇到第二个运算符开始运算  1-2 / 50*4-9+45
+def calculate2(s):
+    if not s:
+        return 0
+    sign, stack, num, n = '+', [], 0, len(s)  # 保存之前的当符号 和 最近一个数值
+    for i in range(n):
+        if s[i].isdigit():
+            num = num * 10 + int(s[i])
+        if (not s[i].isdigit() and not s[i].isspace()) or i == n - 1:  # 符号 或 最后一个符号
+            if sign == '+':
+                stack.append(num)
+            elif sign == '-':
+                stack.append(-num)
+            elif sign == '*':
+                stack.append(stack.pop(-1) * num)
+            else:
+                v = stack.pop(-1)
+                if v // num < 0 and v % num:  # 负数
+                    stack.append(v // num + 1)
+                else:
+                    stack.append(v // num)
+            sign = s[i]
+            num = 0
+    return sum(stack)
+
+
 if __name__ == '__main__':
     print('\n十进制转二进制')
     print(ten_2_binary(10))
@@ -185,6 +276,10 @@ if __name__ == '__main__':
     print('\n波兰表达式')
     token = ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]
     print(eval_RPN(token))
+
+    print('\n计算器')
+    print(calculate('1 + 1 * 5 * 4 - 9 + 45'))
+    print(calculate2('1 + 1 * 5 * 4 - 9 + 45'))
 
     print('\n两个栈实现队列')
     queue = Queue()

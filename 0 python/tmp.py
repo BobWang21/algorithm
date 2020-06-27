@@ -21,9 +21,11 @@ if __name__ == '__main__':
     nums = float('inf')
     math.isinf(nums)
     print(isinstance([], list))  # 判断类型
-    print(2 << 1)  # 左移
     print(round(3.1, 1))
     print(round(3.6, 1))
+    print(int('001'))
+    print(eval('1'))
+    print(divmod(6, 4))
 
     print('\n列表')
     nums = [2, 3, 4, 5]

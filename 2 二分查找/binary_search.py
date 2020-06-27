@@ -39,7 +39,8 @@ def search_first_pos(nums, target):
             l = mid + 1  # nums[l-1] < target
         else:
             r = mid  # nums[r] >= target
-    return l if nums[l] == target else -1  # 配合l < r 使用
+    # return l
+    return l if nums[l] == target else -1  # 配合l < r 使用 因为l < r 时 取不到 n - 1
 
 
 # 有重复数字的非降序排序数组 返回最后一个等于target
@@ -190,29 +191,33 @@ def find_missed_value(nums):
 def find_median_sorted_arrays(nums1, nums2):
     m, n = len(nums1), len(nums2)
     if m > n:
-        return find_median_sorted_arrays(nums2, nums1)  # 选择数组小的进行二分
-    k = (m + n + 1) // 2  # 左中点
-    l, r = 0, m
+        nums1, nums2 = nums2, nums1
+    k = (m + n + 1) // 2  # 个数
+
+    l, r = 0, m  # 我们需要的时l - 1
     while l < r:
-        m1 = l + (r - l) // 2  # l = r = m 才会越界
-        m2 = k - m1  # (m + n + 1 - l - r) // 2 > 0
-        # l + r <= 2m
-        # n >= m
-        # m + n + 1 - 2m >= 1
-        if nums1[m1] <= nums2[m2 - 1]:  # nums1[l/r] >= nums2[m2-1] !!!
-            l = m1 + 1
+        mid = l + (r - l + 1) // 2
+        m1 = k - mid
+        if nums1[mid - 1] <= nums2[m1]:  # l - 1 < x,  l > x
+            l = mid
         else:
-            r = m1
-    m1 = l
-    m2 = k - l
-    c1 = max(nums1[m1 - 1] if m1 > 0 else -float('inf'), nums2[m2 - 1] if m2 > 0 else -float('inf'))
+            r = mid - 1
+    # l为边界
+    x1, x2 = l - 1, k - l - 1
+    v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
+             nums2[x2] if 0 <= x2 < n else -float('inf')
+             )
+    print(v1)
 
     if (m + n) % 2:
-        return c1
+        return v1
 
-    c2 = min(nums1[m1] if m1 < m else float('inf'), nums2[m2] if m2 < n else float('inf'))
+    v2 = min(
+        nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
+        nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf')
+    )
 
-    return (c1 + c2) / 2.0
+    return (v1 + v2) / 2.0
 
 
 # 比左、右两边数都大的数
@@ -325,7 +330,7 @@ if __name__ == '__main__':
     print(binary_search1(nums, 3))
 
     print('\n最小索引')
-    print(search_first_pos([1, 2, 3, 3, 9], 5))
+    print(search_first_pos([1, 2, 3, 3, 10], 9))
 
     print('\n最大索引')
     print(search_last_pos([1, 2, 3, 3, 9], 3))

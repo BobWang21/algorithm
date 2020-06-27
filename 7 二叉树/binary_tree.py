@@ -109,52 +109,6 @@ def level_traversal2(root):
     return res
 
 
-# 垂直遍历
-def vertical_order(root):
-    if not root:
-        return []
-    dic = {}
-    queue = [(root, 0)]
-    while queue:
-        node, i = queue.pop(0)
-        dic.setdefault(i, [])
-        dic[i].append(node.val)
-        if node.left:
-            queue.append((node.left, i - 1))
-        if node.right:
-            queue.append((node.right, i + 1))
-
-    res = []
-    for k, v in dic.items():
-        res.append((k, v))
-    res.sort()
-    return [v[1] for v in res]
-
-
-# 判断二叉树是否为完全二叉树
-def is_complete_tree(root):
-    if not root:
-        return True
-    queue = [(root, 1)]
-    i = 0
-    while queue:
-        i += 1
-        node, idx = queue.pop(0)
-        if i != idx:
-            return False
-        l, r = node.left, node.right
-        if not l and not r:
-            continue
-        elif not l and r:
-            return False
-        elif l and r:
-            queue.append((l, 2 * idx))
-            queue.append((r, 2 * idx + 1))
-        else:
-            queue.append((l, 2 * idx))
-    return True
-
-
 def level_num(tree):
     if not tree:
         return 0
@@ -217,14 +171,6 @@ def deserialize(s):
                 queue.pop(0)
                 flag = 0
     return root
-
-
-class BSTNode():
-    def __init__(self, val):
-        self.val = val
-        self.left = None
-        self.right = None
-        self.count = 0
 
 
 if __name__ == '__main__':

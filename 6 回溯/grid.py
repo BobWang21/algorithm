@@ -129,7 +129,7 @@ def maze_short_path(maze, start, destination):
     return bfs()
 
 
-# 286 -1: 墙 0:大门 INF:空房间 2147483647来表示
+# 286 -1:墙 0:大门 INF:空房间 2147483647来表示
 # 直接法 会超时
 def walls_and_gates2(rooms):
     INF = 2147483647
@@ -186,7 +186,7 @@ def walls_and_gates(rooms):
                     queue.append((i, j, layer + 1))
 
 
-# 200. 岛屿数量
+# 200. 岛屿数量 也可使用union and find
 def num_islands(grid):
     if not grid:
         return 0
@@ -266,9 +266,9 @@ def surrounded_regions2(board):
         path.add((i, j))
 
         if dfs(i - 1, j, path) and dfs(i + 1, j, path) and dfs(i, j - 1, path) and dfs(i, j + 1, path):
-            return True
+            return True  # 正确的时候 不会回溯
 
-        back(path)  # 四个方向为并列关系 如果前3个方向正确 后1个错误回溯时 只能回溯最后1个方向
+        back(path)  # 如果前3个方向正确, 最后一个后1个错误时, 无法回溯正确的方向
 
         return False
 
@@ -311,42 +311,38 @@ def closed_island(grid):
     return num
 
 
-# dfs + 记忆
+# dfs + 记忆 dp[i][j] = max(dp[x][y]) + 1
+# (x, y)为(i, j)的相邻点 存在重复计算
 def longest_increasing_path(matrix):
-    '''
-    329 最长递增路径为 nums =
-    [
-      [9,9,4],
-      [6,6,8],
-      [2,1,1]
-    ]
-    输出: 4  [1, 2, 6, 9]
-    '''
     if not matrix or not matrix[0]:
         return 0
 
     rows, cols = len(matrix), len(matrix[0])
-    dirs = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     dic = {}
 
-    def helper(row, col):
-        if (row, col) in dic:
-            return dic[(row, col)]
-        res = 1
-        for d in dirs:
-            i, j = row + d[0], col + d[1]
-            if 0 <= i < rows and 0 <= j < cols and matrix[i][j] > matrix[i][j]:
-                res = max(res, helper(i, j) + 1)
-        dic[(row, col)] = res
-        return res
+    def dfs(i, j):
+        if (i, j) in dic:
+            return dic[(i, j)]
+        tmp = matrix[i][j]
+        matrix[i][j] = '.'
+        res = 0
+        for d in directions:
+            r, c = i + d[0], j + d[1]
+            if r < 0 or r == rows or c < 0 or c == cols or matrix[r][c] == '.':
+                continue
+            if matrix[r][c] > tmp:
+                res = max(res, dfs(r, c))
+        matrix[i][j] = tmp
+        dic[(i, j)] = res + 1
+        return res + 1
 
-    ans = 0
+    res = 0
     for i in range(rows):
         for j in range(cols):
-            ans = max(ans, helper(i, j))
+            res = max(res, dfs(i, j))
 
-    return ans
+    return res
 
 
 # 抢钱问题 记忆化深度搜索
@@ -373,6 +369,38 @@ def rob(tree):
         return include, max_v
 
     return helper(tree)[1]
+
+
+# 单词搜索 or
+def exist(board, word):
+    rows, cols = len(board), len(board[0])
+    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+    n = len(word)
+
+    def dfs(i, j, k):
+        if k == n:
+            return True
+
+        if i < 0 or i == rows or j < 0 or j == cols or board[i][j] == '.':
+            return False
+
+        if board[i][j] != word[k]:
+            return False
+
+        w = board[i][j]
+        board[i][j] = '.'
+        for d in directions:
+            r, c = i + d[0], j + d[1]
+            if dfs(r, c, k + 1):
+                return True
+        board[i][j] = w
+        return False
+
+    for i in range(rows):
+        for j in range(cols):
+            if dfs(i, j, 0):
+                return True
+    return False
 
 
 if __name__ == '__main__':

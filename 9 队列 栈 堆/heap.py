@@ -1,5 +1,5 @@
 import heapq as hq
-from collections import Counter
+from collections import defaultdict
 
 
 # 合并K个有序数组[[1, 1], [2, 3]]
@@ -56,10 +56,21 @@ def k_smallest_pairs(nums1, nums2, k):
 # 692 给一非空的单词列表，返回前 k 个出现次数最多的单词。
 # 返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率，按字母顺序排序。
 def top_k_frequent(words, k):
-    count = Counter(words)
-    heap = [(-freq, word) for word, freq in count.items()]  # 如果第一个元素相同 会根据第二个元素排序
+    if not words:
+        return
+    dic = defaultdict(int)
+
+    for word in words:
+        dic[word] += 1
+
+    heap = [(-cnt, word) for word, cnt in dic.items()]
     hq.heapify(heap)
-    return [hq.heappop(heap)[1] for _ in range(k)]
+
+    res = []
+    for i in range(k):
+        if heap:
+            res.append(hq.heappop(heap)[1])
+    return res
 
 
 # 也可以使用 partition
@@ -129,6 +140,24 @@ def check():
     while heap:
         res.append(-hq.heappop(heap))
     print(res)  # 返回顺序为[2, 1, -10] 不是 [-10, 1, 2]
+
+
+# 253. 会议室 II
+def min_meeting_rooms(intervals):
+    if not intervals:
+        return 0
+
+    intervals.sort()
+    heap = [intervals[0][1]]
+
+    for s, e in intervals[1:]:
+        if heap[0] <= s:
+            hq.heappop(heap)
+            hq.heappush(heap, e)
+        else:
+            hq.heappush(heap, e)
+
+    return len(heap)
 
 
 if __name__ == '__main__':

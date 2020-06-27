@@ -3,7 +3,6 @@
 """
 1 层次遍历
 2 路径
-3 二叉搜索树
 """
 
 from binary_tree import *
@@ -175,115 +174,14 @@ def substructure(s, t):
             return helper(s.left, t.left) and helper(s.right, t.right)
         return False
 
-    if not s and not t:
+    if not t:
         return True
-    if not s or not t:
+    if not s:
         return False
 
     if helper(s, t):  # helper返回True时才能结束, False不能返回
         return True
     return is_subtree(s.left, t) or is_subtree(s.right, t)
-
-
-# 判断二叉树是否为二叉搜索树
-def is_valid_bst(tree):
-    if not tree:
-        return True
-
-    def helper(tree, lo, hi):
-        if not tree:
-            return True
-        v = tree.val
-        if v <= lo or v >= hi:
-            return False
-        return helper(tree.left, lo, v) and helper(tree.right, v, hi)
-
-    return helper(tree, -float('inf'), float('inf'))
-
-
-# 二叉搜索树第K大的数 中序遍历
-def top_k_binary_search_tree(tree, k):
-    if not tree:
-        return
-    stack = []
-    node = tree
-    count = 0
-    while node or stack:
-        while node:
-            stack.append(node)
-            node = node.right
-        node = stack.pop(-1)
-        count += 1
-        if count == k:
-            return node.val
-        node = node.left
-
-
-# 二叉搜索树第K大的数 递归
-def top_k_binary_search_tree2(tree, k):
-    if not tree:
-        return
-    res = [k]
-
-    def helper(tree):
-        if not tree:
-            return
-        if res[0] <= 0:  # 提前返回
-            return
-        l, r = tree.left, tree.right
-        if r:
-            helper(r)
-        res[0] -= 1
-        if res[0] == 0:
-            res.append(tree.val)
-            return
-        if l:
-            helper(l)
-
-    helper(tree)
-    return res[1]
-
-
-# Given a Binary Search Tree (BST), convert it to a Greater Tree such that
-# every key of the original BST is changed to the original key plus sum of
-# all keys greater than the original key in BST.
-# 538. Convert BST to Greater Tree
-def convert_bst_2_greater_tree(tree):
-    node = tree
-    stack = []
-    total = 0
-    res = []
-    while node or stack:
-        while node:
-            stack.append(node)
-            node = node.right
-        if stack:
-            node = stack.pop(-1)
-            node.val = node.val + total
-            res.append(node.val)
-            total = node.val
-            node = node.left
-    return res
-
-
-# 检查一个遍历是否为二叉搜索树的后序遍历
-def check_poster_order(post):
-    if len(post) <= 1:
-        return True
-
-    root = post[0]
-    if post[0] > root or post[-2] < root:  # 仅有左子树 或 右子树
-        return check_poster_order(post[:-1])
-    l, n = 0, len(post)
-    # 根据左子树 < 根 < 右子树 切分左右子树
-    while l < n - 1 and post[l] < root:
-        l += 1
-    p = l
-    while l < n - 1 and post[l] > root:
-        l += 1
-    if l != n - 1:
-        return False
-    return check_poster_order(post[:p]) and check_poster_order(post[p:-1])
 
 
 # 打印所有路径
@@ -344,28 +242,7 @@ def have_path_sum(tree, target):
 
 
 # 打印所有路径 从根节点到叶节点和为某个数的路径
-def sum_target_path1(tree, target):
-    if not tree:
-        return []
-
-    res = []
-
-    def helper(tree, target, path):
-        if not tree.left and not tree.right and target == tree.val:  # 叶节点等于target
-            res.append(path + [tree.val])
-            return
-        if not tree.left and not tree.right:  # 叶节点不等于target
-            return
-        if tree.left:
-            helper(tree.left, target - tree.val, path + [tree.val])
-        if tree.right:
-            helper(tree.right, target - tree.val, path + [tree.val])
-
-    helper(tree, target, [])
-    return res
-
-
-def sum_target_path2(tree, target):
+def sum_target_path(tree, target):
     if not tree:
         return []
 
@@ -386,6 +263,52 @@ def sum_target_path2(tree, target):
 
     helper(tree, target, [])
     return res
+
+
+# 垂直遍历
+def vertical_order(root):
+    if not root:
+        return []
+    dic = {}
+    queue = [(root, 0)]
+    while queue:
+        node, i = queue.pop(0)
+        dic.setdefault(i, [])
+        dic[i].append(node.val)
+        if node.left:
+            queue.append((node.left, i - 1))
+        if node.right:
+            queue.append((node.right, i + 1))
+
+    res = []
+    for k, v in dic.items():
+        res.append((k, v))
+    res.sort()
+    return [v[1] for v in res]
+
+
+# 判断二叉树是否为完全二叉树
+def is_complete_tree(root):
+    if not root:
+        return True
+    queue = [(root, 1)]
+    i = 0
+    while queue:
+        i += 1
+        node, idx = queue.pop(0)
+        if i != idx:
+            return False
+        l, r = node.left, node.right
+        if not l and not r:
+            continue
+        if not l and r:
+            return False
+        if l and r:
+            queue.append((l, 2 * idx))
+            queue.append((r, 2 * idx + 1))
+        else:
+            queue.append((l, 2 * idx))
+    return True
 
 
 # 右侧看到的节点 层次遍历
@@ -611,21 +534,6 @@ def flatten(tree):
     return dummy.right
 
 
-# trim 二叉搜索树
-def trimBST(tree, L, R):
-    if not tree:
-        return
-    if tree.val < L:
-        return trimBST(tree.right, L, R)
-    if tree.val > R:
-        return trimBST(tree.left, L, R)
-    left = trimBST(tree.left, L, R)
-    right = trimBST(tree.right, L, R)
-    tree.left = left
-    tree.right = right
-    return tree
-
-
 def width_of_tree(tree):
     if not tree:
         return 0
@@ -691,70 +599,6 @@ def path_sum2(root, sum):
     return res[0]
 
 
-# 删除二叉搜索树中的节点
-def delete_node(root, key):
-    def find_max(node):
-        while node.left:
-            node = node.left
-        return node
-
-    if not root:
-        return
-
-    if key < root.val:
-        root.left = delete_node(root.left, key)
-    elif key > root.val:
-        root.right = delete_node(root.right, key)
-    else:
-        if not root.left:
-            return root.right
-        if not root.right:
-            return root.left
-        max_node = find_max(root.right)
-        root.val = max_node.val
-        root.left = delete_node(root.left, root.val)
-
-    return root
-
-
-def counter_smaller(nums):
-    if not nums:
-        return []
-
-    tree = BSTNode(nums[-1])
-
-    def insert(tree, val):
-        if not tree:
-            return 0
-        if val > tree.val:
-            if not tree.right:
-                node = BSTNode(val)
-                tree.right = node
-                return tree.count + 1
-            else:
-                cnt = tree.count + 1
-                cnt += insert(tree.right, val)
-                return cnt
-
-        if not tree.left:
-            node = BSTNode(val)
-            tree.left = node
-            tree.count += 1
-            return 0
-        else:
-            tree.count += 1
-            return insert(tree.left, val)
-
-    n = len(nums)
-
-    res = [0]
-    for i in range(n - 2, -1, -1):
-        res.append(insert(tree, nums[i]))
-
-    res.reverse()
-    return res
-
-
 if __name__ == '__main__':
     print('\n根据先序遍历和中序遍历构建数')
     preorder = [3, 9, 20, 15, 7]
@@ -781,9 +625,6 @@ if __name__ == '__main__':
     print('\n锯齿层次遍历')
     print(zigzag_level_order(tree))
 
-    print('\nbst 转换成 greater_tree')
-    print(convert_bst_2_greater_tree(tree))
-
     tree = create_full_binary_tree([-5, 2, 5])
     print('\n子树和出现次数最多的数字')
     print(most_frequent_subtree_sum(tree))
@@ -793,14 +634,13 @@ if __name__ == '__main__':
     print(binary_tree_paths(tree))
     print(binary_tree_paths2(tree))
 
-    print('\n打印根节点到叶节和为某个数的路径')
-    print(sum_target_path1(tree, 5))
-    print(sum_target_path2(tree, 5))
-
-    print('是否存在和为某个数的路径')
+    print('\n是否存在和为某个数的路径')
     tree = create_full_binary_tree([i for i in range(7)])
     print(have_path_sum(tree, 4))
     print(have_path_sum(tree, 9))
+
+    print('\n路径和为某个数的路径')
+    print(sum_target_path(tree, 8))
 
     print('\n路径组成数字之和')
     print(sum_numbers(tree))
@@ -818,13 +658,6 @@ if __name__ == '__main__':
     tree = deserialize(string)
     print(level_traversal(tree))
 
-    print('检查二叉搜索树后续遍历是否合法')
-    print(check_poster_order([1, 6, 3, 2, 5]))
-
-    print('\n二叉搜索树的第k大节点')
-    tree = create_full_binary_tree([5, 3, 7, 2, 4, 6, 8])
-    print(top_k_binary_search_tree2(tree, 1))
-
     print('\n中序遍历的下一个节点')
     tree = construct_parent()[3]
     print(inorder_tra_next_node(tree))
@@ -837,10 +670,3 @@ if __name__ == '__main__':
         res.append(head.val)
         head = head.right
     print(res)
-
-    print('\ntrimBST')
-    tree = create_full_binary_tree([10, 1, 15, 3, 4, 12, 17])
-    print(level_traversal(trimBST(tree, 4, 12)))
-
-    print('\n逆向个数')
-    print(counter_smaller([2, 0, 1]))

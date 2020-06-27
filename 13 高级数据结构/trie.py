@@ -1,5 +1,8 @@
-class Trie(object):
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+
+class Trie(object):
     def __init__(self):
         self.dic = {}  # 嵌套字典
 
@@ -23,8 +26,6 @@ class Trie(object):
     # 是否为树的某段
     def starts_with(self, prefix):
         dic = self.dic
-        if not dic:
-            return False
         for c in prefix:
             if c in dic:
                 dic = dic[c]
@@ -45,7 +46,6 @@ def find_words(board, words):
     res = set()
 
     directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]  # ← → ↑ ↓
-    tmp = []
 
     def helper(i, j, path):
         if i < 0 or j < 0 or i == rows or j == cols:
@@ -56,25 +56,21 @@ def find_words(board, words):
 
         new_word = path + board[i][j]
         if not trie.starts_with(new_word):
-            return False
+            return
 
         if trie.search(new_word):
             res.add(new_word)
 
-        c = board[i][j]
+        ch = board[i][j]
         board[i][j] = '.'
         for direction in directions:  # 四个方向独立
             helper(i + direction[0], j + direction[1], new_word)
-
-        board[i][j] = c  # 无论如何 都会回溯
+        board[i][j] = ch  # 无论如何都回溯
 
     for i in range(rows):
         for j in range(cols):
             helper(i, j, '')
 
-    tmp.sort()
-    for l in tmp:
-        print(l)
     return list(res)
 
 

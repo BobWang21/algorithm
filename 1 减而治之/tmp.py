@@ -53,12 +53,29 @@ def subarray_sum(nums, k):
     res = 0
     total = 0
     dic[0] = 1  # 初始化 可能total = k
-    for v in nums:
-        total += v
+    for num in nums:
+        total += num  # 以num为结尾的连续数组
         if total - k in dic:  # total - pre_total = k -> total - k in dic
             res += dic[total - k]
         dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
     return res
+
+
+# 523 给定一个包含 非负数 的数组和一个目标 整数 k，
+# 编写一个函数来判断该数组是否含有连续的子数组，其大小至少为 2，
+# 且总和为 k 的倍数，即总和为 n*k，其中 n 也是一个整数。
+def check_subarray_sum(nums, k):
+    if len(nums) < 2:
+        return False
+    dic, cur = {0: -1}, 0
+    for i, num in enumerate(nums):
+        cur += num
+        if k:
+            cur %= k
+        j = dic.setdefault(cur, i)  # 余数相同
+        if i - j > 1:
+            return True
+    return False
 
 
 # 无序数组 最长连续区间 也可以使用并查集

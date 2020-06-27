@@ -1,16 +1,24 @@
-# 线段树
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+"""
+线段树 区间最大值/最小值/和
+"""
+
+
 class SegmentTree():
     def __init__(self, sum, start, end, left=None, right=None):
         self.sum = sum
         self.left = left
         self.right = right
-        self.start = start
-        self.end = end
+        self.start = start  # 索引起点
+        self.end = end  # 索引终点
 
 
 def build_tree(start, end, nums):
     if not nums:
-        return 0
+        return
     if start == end:
         return SegmentTree(nums[start], start, end)
     mid = (start + end) // 2

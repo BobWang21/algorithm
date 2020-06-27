@@ -51,6 +51,7 @@ def find_order(num_courses, prerequisites):
     return res if len(res) == num_courses else []
 
 
+# 269 火星词典
 def alien_order(words):
     if not words:
         return
@@ -59,14 +60,14 @@ def alien_order(words):
     if n == 1:
         return words[0]
 
-    dic = defaultdict(set)
     chr_set = set()  # 所有的字母
     for word in words:
-        chr_set = chr_set | set(word)
+        for ch in word:
+            chr_set.add(ch)
 
+    dic = defaultdict(set)
     for i in range(n - 1):
         for j in range(i + 1, n):
-            print(i, j)
             word1 = words[i]
             word2 = words[j]
             m_len = len(word1)
@@ -81,21 +82,19 @@ def alien_order(words):
                 elif not c1 or not c2:
                     break
                 else:
-                    chr_set.add(c1)
-                    chr_set.add(c2)
                     dic[c1].add(c2)
                     break
-    print(dic)
 
     degree = defaultdict(int)  # 入度
     for _, v in dic.items():
         for u in v:
             degree[u] += 1
+
     queue = []
     for v in chr_set:
         if not degree[v]:
             queue.append(v)
-    print(queue)
+
     res = ''
     while queue:
         i = queue.pop(0)
@@ -105,7 +104,6 @@ def alien_order(words):
             if not degree[j]:
                 queue.append(j)
         del dic[i]
-    print(dic, res)
     return res if not dic else ''
 
 

@@ -17,7 +17,7 @@ def possible_bipartition(n, dislikes):
         for j in dic[i]:
             if not colors[j]:
                 dfs(j, -color)
-            elif colors[j] == color:  # 冲突一定是已经涂色的顶点
+            elif colors[j] == color:  # 已经涂色的顶点, 发生冲突
                 return False
         return True
 

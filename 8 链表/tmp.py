@@ -337,30 +337,9 @@ def merge_k_sorted_lists2(lists):
     return dummy.next
 
 
-def get_intersection_node(headA, headB):
-    if not headA or not headB:
-        return
-    s1, s2 = [], []
-    while headA:
-        s1.append(headA)
-        headA = headA.next
-    while headB:
-        s2.append(headB)
-        headB = headB.next
-    res = None
-    while s1 and s2:
-        v1 = s1.pop(-1)
-        v2 = s2.pop(-1)
-        if v1 == v2:
-            res = v1
-        else:
-            break
-    return res
-
-
 # a + l + b = b + l + a
 # 寻找公共点 和 环 差不多
-def get_intersection_node2(headA, headB):
+def get_intersection_node(headA, headB):
     s1, s2 = headA, headB
     while s1 != s2:
         if not s1:

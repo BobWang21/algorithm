@@ -59,6 +59,7 @@ def find_circle_num2(M):
     return res
 
 
+# 是否存在环
 def check_circle(M):
     if not M or not M[0]:
         return 0
@@ -76,8 +77,7 @@ def check_circle(M):
         x = find(x)
         y = find(y)
         if x == y:
-            return True  # 在同一个集合中 再加一条边 说明存在环
-        # 减少计算
+            return True
         if rank[x] < rank[y]:
             parent[x] = y
         elif rank[x] > rank[y]:
@@ -97,7 +97,9 @@ def check_circle(M):
 def are_sentences_similar_two(words1, words2, pairs):
     if len(words1) != len(words2):
         return False
+
     word_set = set()
+
     for u, v in pairs:  # 去重
         word_set.add(u)
         word_set.add(v)
@@ -202,7 +204,7 @@ def longest_consecutive(nums):
             i = parent[i]
         return i
 
-    def merge(x, y):
+    def union(x, y):
         x = find(x)
         y = find(y)
         if x == y:
@@ -214,7 +216,7 @@ def longest_consecutive(nums):
     res = 1  # 如果为[2]
     for num in nums:
         if num + 1 in parent:
-            res = max(res, merge(num, num + 1))
+            res = max(res, union(num, num + 1))
     return res
 
 

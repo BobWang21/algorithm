@@ -398,7 +398,7 @@ def generate_parenthesis(n):
             return
         if i < 0 or j < 0:
             return
-        for c in ['(', ')']:
+        for c in '()':
             if not stack:
                 helper(i - 1, j, path + '(', ['('])
                 break
@@ -413,119 +413,94 @@ def generate_parenthesis(n):
     return res
 
 
-def max_profit(prices):
-    if not prices and len(prices) == 1:
-        return 0
-    n = len(prices)
+# 301. 删除无效的括号
+def remove_invalid_parentheses(s):
+    if not s:
+        return ['']
 
-    cold, buy, sell = [0, 1, 2]
-    res = [0]
+    l = r = 0  # 多余的括号
+    for ch in s:
+        if ch in {'(', ')'}:
+            if ch == '(':
+                l += 1
+            elif l:
+                l -= 1
+            else:
+                r += 1
 
-    def helper(idx, buy_price, status, profit):
-        if idx == n:
-            res[0] = max(res[0], profit)
+    n, res = len(s), set()  # 因为可能存在重复值 所以使用set保存结果
+
+    def dfs(i, l, r, left, path):  # left 表示剩余的左括号
+        if i == n and not l and not r and not left:
+            res.add(path)
+        if i == n:
             return
-
-        if status == cold:
-            if not buy_price:
-                helper(idx + 1, prices[idx], buy, profit)
-            helper(idx + 1, buy_price, cold, profit)
-            if buy_price:
-                helper(idx + 1, None, sell, profit + prices[idx] - buy_price)
+        if s[i] not in {'(', ')'}:
+            dfs(i + 1, l, r, left, path + s[i])
             return
-        if status == sell:
-            helper(idx + 1, None, cold, profit)
-            return
+        if s[i] == '(':
+            dfs(i + 1, l, r, left + 1, path + s[i])  # 加
+            if l:
+                dfs(i + 1, l - 1, r, left, path)  # 不加
+        else:
+            if left:
+                dfs(i + 1, l, r, left - 1, path + s[i])  # 加
+            if r:
+                dfs(i + 1, l, r - 1, left, path)  # 不加
 
-        if status == buy:
-            v = prices[idx] - buy_price
-            if v > 0:
-                helper(idx + 1, None, sell, profit + v)
-            helper(idx + 1, buy_price, cold, profit)
-            return
-
-    helper(0, None, cold, 0)
-    return res[0]
-
-
-class Node(object):
-    def __init__(self, val=0, neighbors=[]):
-        self.val = val
-        self.neighbors = neighbors
-
-
-# 图复制
-def clone_graph(node):
-    visited = dict()
-
-    def dfs(node):
-        if not node:
-            return node
-
-        if node in visited:
-            return visited[node]
-
-        clone_node = Node(node.val, [])
-        visited[node] = clone_node
-
-        if node.neighbors:
-            clone_node.neighbors = [dfs(n) for n in node.neighbors]
-
-        return clone_node
-
-    return dfs(node)
+    dfs(0, l, r, 0, '')
+    return list(res)
 
 
 if __name__ == '__main__':
     print('\nn sum 回溯版')
-print(n_sum1([1, 1, 2, 3, 4], 3, 6))
-print(n_s([1, 1, 2, 3, 4], 3, 6))
-print(n_sum2([1, 1, 2, 3, 4], 3, 6))
+    print(n_sum1([1, 1, 2, 3, 4], 3, 6))
+    print(n_sum2([1, 1, 2, 3, 4], 3, 6))
 
-print('\nk个和相等的子数组')
-nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
-print(can_partition_k_subsets(nums, 4))
+    print('\nk个和相等的子数组')
+    nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
+    print(can_partition_k_subsets(nums, 4))
 
-print('\n数组中不包含重复数字 一个数字可以用无数次')
-print(combination_sum([2, 3, 5], 8))
+    print('\n数组中不包含重复数字 一个数字可以用无数次')
+    print(combination_sum([2, 3, 5], 8))
 
-print('\n数组中包含重复数字 一个数字只能用一次')
-print(combination_sum2([1, 1, 2, 3, 4], 4))
+    print('\n数组中包含重复数字 一个数字只能用一次')
+    print(combination_sum2([1, 1, 2, 3, 4], 4))
 
-print('\n排列问题')
-print(permutations([1, 2, 3]))
-print(permutations2([1, 2, 1]))
+    print('\n排列问题')
+    print(permutations([1, 2, 3]))
+    print(permutations2([1, 2, 1]))
 
-print('\n全集')
-print(subset([1, 2, 3]))
+    print('\n全集')
+    print(subset([1, 2, 3]))
 
-print('\n背包问题')
-print(knapsack([1, 2, 3, 4], [1, 3, 5, 8], 5))
+    print('\n背包问题')
+    print(knapsack([1, 2, 3, 4], [1, 3, 5, 8], 5))
 
-print('\n两个轮船分集装箱')
-print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))
+    print('\n两个轮船分集装箱')
+    print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))
 
-print('\nLetter Case Permutation')
-print(letter_case_permutation("a1b2"))
+    print('\nLetter Case Permutation')
+    print(letter_case_permutation("a1b2"))
 
-print('\n Word Ladder')
-a = "qa"
-b = "sq"
-c = ["si", "go", "se", "cm", "so", "ph", "mt", "db", "mb", "sb", "kr", "ln", "tm", "le", "av", "sm", "ar", "ci",
-     "ca", "br", "ti", "ba", "to", "ra", "fa", "yo", "ow", "sn", "ya", "cr", "po", "fe", "ho", "ma", "re", "or",
-     "rn", "au", "ur", "rh", "sr", "tc", "lt", "lo", "as", "fr", "nb", "yb", "if", "pb", "ge", "th", "pm", "rb",
-     "sh", "co", "ga", "li", "ha", "hz", "no", "bi", "di", "hi", "qa", "pi", "os", "uh", "wm", "an", "me", "mo",
-     "na", "la", "st", "er", "sc", "ne", "mn", "mi", "am", "ex", "pt", "io", "be", "fm", "ta", "tb", "ni", "mr",
-     "pa", "he", "lr", "sq", "ye"]
-print(word_ladder(a, b, c))
-print("\nip恢复")
-print(restore_ip_addresses("010010"))
+    print('\n Word Ladder')
+    a = "qa"
+    b = "sq"
+    c = ["si", "go", "se", "cm", "so", "ph", "mt", "db", "mb", "sb", "kr", "ln", "tm", "le", "av", "sm", "ar", "ci",
+         "ca", "br", "ti", "ba", "to", "ra", "fa", "yo", "ow", "sn", "ya", "cr", "po", "fe", "ho", "ma", "re", "or",
+         "rn", "au", "ur", "rh", "sr", "tc", "lt", "lo", "as", "fr", "nb", "yb", "if", "pb", "ge", "th", "pm", "rb",
+         "sh", "co", "ga", "li", "ha", "hz", "no", "bi", "di", "hi", "qa", "pi", "os", "uh", "wm", "an", "me", "mo",
+         "na", "la", "st", "er", "sc", "ne", "mn", "mi", "am", "ex", "pt", "io", "be", "fm", "ta", "tb", "ni", "mr",
+         "pa", "he", "lr", "sq", "ye"]
+    print(word_ladder(a, b, c))
+    print("\nip恢复")
+    print(restore_ip_addresses("010010"))
 
-print('\n嵌套链表权重和')
-print(nested_list_weight_sum([1, [4, [6]]]))
+    print('\n嵌套链表权重和')
+    print(nested_list_weight_sum([1, [4, [6]]]))
 
-print('\n生成括号')
-print(generate_parenthesis(2))
+    print('\n生成括号')
+    print(generate_parenthesis(2))
 
-print('\n股票买卖')
-print(max_profit([1, 2, 4]))
+    print('\n删除无效的括号')
+    print(remove_invalid_parentheses("(a)())()"))

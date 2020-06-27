@@ -69,6 +69,40 @@ def common_greatest_divisor(a, b):
     return common_greatest_divisor(b, a % b)
 
 
+def fraction_to_decimal(numerator, denominator):
+    if numerator == 0:
+        return "0"
+    res = []
+    # 首先判断结果正负, 异或作用就是 两个数不同 为 True 即 1 ^ 0 = 1 或者 0 ^ 1 = 1
+    if (numerator > 0) ^ (denominator > 0):  # 防止溢出 异号为负数
+        res = '-'
+    else:
+        res = ''
+    numerator, denominator = abs(numerator), abs(denominator)
+    # 判读到底有没有小数
+    a, b = divmod(numerator, denominator)
+    res += str(a)
+    # 无小数
+    if not b:
+        return res
+
+    res += "."
+    # 处理余数
+    # 把所有出现过的余数记录下来
+    loc = {b: len(res)}  # 先把余数记录到词典中
+    while b:
+        b *= 10
+        a, b = divmod(b, denominator)
+        res += str(a)
+        # 余数前面出现过,说明开始循环了,加括号
+        if b in loc:
+            i = loc[b]
+            res = res[:i] + '(' + res[i:] + ')'
+            break
+        loc[b] = len(res)
+    return res
+
+
 # 计算素数个数
 def count_primes(n):
     if n < 2:
@@ -205,9 +239,7 @@ def is_happy(n):
             n = n // 10
         return int(total)
 
-    if n == 1:
-        return True
-    seen = set()
+    seen = set(n)
     while n != 1:
         if n in seen:
             return False
@@ -256,33 +288,40 @@ def is_ugly2(num):
         return False
 
 
-def get_ugly_number(n):
+# 三指针
+def nth_ugly_number(n):
+    if n == 1:
+        return 1
+
     res = [1]
-    num = 1
-    min2 = min3 = min5 = 0
-    while num < n:
-        value = min(2 * res[min2], 3 * res[min3], 5 * res[min5])
-        res.append(value)
-        while 2 * res[min2] <= res[-1]:
-            min2 += 1
-        while 3 * res[min3] <= res[-1]:
-            min3 += 1
-        while 5 * res[min5] <= res[-1]:
-            min5 += 1
-        num += 1
+    i_2 = i_3 = i_5 = 0
+
+    for i in range(n - 1):
+        nxt_2 = res[i_2] * 2
+        nxt_3 = res[i_3] * 3
+        nxt_5 = res[i_5] * 5
+        v = min(nxt_2, nxt_3, nxt_5)
+        res.append(v)
+
+        if nxt_2 == v:
+            i_2 += 1
+        if nxt_3 == v:
+            i_3 += 1
+        if nxt_5 == v:
+            i_5 += 1
     return res[-1]
 
 
-def get_kth_magic_number(k):
+def nth_ugly_number2(k):
     s = set()
     heap = [1]
     while True:
         v = hq.heappop(heap)
         if v not in s:
             s.add(v)
+            hq.heappush(heap, v * 2)
             hq.heappush(heap, v * 3)
             hq.heappush(heap, v * 5)
-            hq.heappush(heap, v * 7)
         if len(s) == k:
             return v
 
@@ -359,7 +398,7 @@ if __name__ == '__main__':
     print(reverse(123))
 
     print('\n丑数')
-    print(get_ugly_number(10))
+    print(nth_ugly_number(10))
 
     print('\n阶层后0的个数')
     print(zero_nums(20))
