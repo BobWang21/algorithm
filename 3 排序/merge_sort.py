@@ -88,8 +88,6 @@ def merge_k_sorted_nums1(nums):
     b = merge_k_sorted_nums1(nums[mid:])
     return merge3(a, b)
 
-    return res
-
 
 def merge_k_sorted_nums2(nums):
     if not nums or not nums[0]:

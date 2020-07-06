@@ -30,18 +30,19 @@ def reverse(x):
     return res if res < 2 ** 31 else 0
 
 
-def valid_parentheses(s):
-    pair_dic = {']': '[', '}': '{', ')': '('}
+# 循环删除字符串中的连续重复字母
+# 类似俄罗斯方块的消去
+def remove_duplicates(S):
+    if not S:
+        return S
     stack = []
-    for c in s:
-        if c in pair_dic:
-            if stack and stack.pop(-1) == pair_dic[c]:
-                continue
-            else:
-                return False
+    for c in S:
+        if stack and stack[-1] == c:
+            stack.pop(-1)
         else:
             stack.append(c)
-    return True if not stack else False
+
+    return ''.join(stack)
 
 
 # 判断括号是否合法 只含有()
@@ -72,25 +73,18 @@ def useless_parentheses(s):
     return l, r
 
 
-# 波兰表达式
-def eval_RPN(tokens):
+def valid_parentheses(s):
+    pair_dic = {']': '[', '}': '{', ')': '('}
     stack = []
-    for c in tokens:
-        if c not in {'+', '-', '*', '/'}:
-            stack.append(int(c))
-        else:
-            c2 = stack.pop(-1)
-            c1 = stack.pop(-1)
-            if c == '+':
-                s = c1 + c2
-            elif c == '-':
-                s = c1 - c2
-            elif c == '*':
-                s = int(c1 * c2)
+    for c in s:
+        if c in pair_dic:
+            if stack and stack.pop(-1) == pair_dic[c]:
+                continue
             else:
-                s = int(c1 / c2)
-            stack.append(s)
-    return stack[-1]
+                return False
+        else:
+            stack.append(c)
+    return True if not stack else False
 
 
 # 移除无效括号
@@ -117,6 +111,141 @@ def min_remove_to_make_valid(s):
         if i in valid:
             res += s[i]
     return res
+
+
+# 波兰表达式
+def eval_RPN(tokens):
+    stack = []
+    for c in tokens:
+        if c not in {'+', '-', '*', '/'}:
+            stack.append(int(c))
+        else:
+            c2 = stack.pop(-1)
+            c1 = stack.pop(-1)
+            if c == '+':
+                s = c1 + c2
+            elif c == '-':
+                s = c1 - c2
+            elif c == '*':
+                s = int(c1 * c2)
+            else:
+                s = int(c1 / c2)
+            stack.append(s)
+    return stack[-1]
+
+
+# 1- 2 / 50*4-9+45
+# 1 + 2 - 3
+def calculate1(s):
+    if not s:
+        return 0
+    s += '+'
+    sign, num, stack = '+', 0, []
+
+    for ch in s:
+        if ch.isspace():  # 排除空格
+            continue
+        if ch.isdigit():
+            num = num * 10 + int(ch)
+        else:  # '+-*/'
+            if sign == '+':
+                stack.append(num)
+            elif sign == '-':
+                stack.append(-num)
+            elif sign == '*':
+                v = stack.pop(-1)
+                stack.append(v * num)
+            else:
+                v = stack.pop(-1)
+                if v < 0:
+                    stack.append(-((-v) // num))  # 注意负数的优先级
+                else:
+                    stack.append(v // num)
+            num = 0
+            sign = ch
+
+    return sum(stack)
+
+
+# (4 + (1-2))
+def calculate2(s):
+    stack = []
+    num = 0
+    res = 0  # For the on-going result
+    sign = 1  # 1 means positive, -1 means negative
+    s += '+'
+    for ch in s:
+        if ch.isdigit():
+            num = num * 10 + int(ch)
+        elif ch == '+':
+            res += sign * num
+            sign = 1
+            num = 0
+        elif ch == '-':
+            res += sign * num
+            sign = -1
+            num = 0
+        elif ch == '(':
+            stack.append(res)
+            stack.append(sign)
+            sign = 1
+            res = 0
+        elif ch == ')':
+            res += sign * num
+            res *= stack.pop()  # stack pop 1, sign
+            res += stack.pop()  # stack pop 2, operand
+            num = 0
+    return res + sign * num
+
+
+# 带括号的(+ - * /)
+def calculate3(s):
+    if not s:
+        return 0
+
+    def helper(queue):
+        sign, num, stack = '+', 0, []
+        while queue:
+            ch = queue.pop(0)
+            if ch.isdigit():
+                num = num * 10 + int(ch)
+                continue
+            elif ch == '(':  # 递归
+                num = helper(queue)  # 可以继续处理
+            else:  # '+-*/)'
+                if sign == '+':
+                    stack.append(num)
+                elif sign == '-':
+                    stack.append(-num)
+                elif sign == '*':
+                    v = stack.pop(-1)
+                    stack.append(v * num)
+                else:
+                    v = stack.pop(-1)
+                    if v < 0:
+                        stack.append(-((-v) // num))  # 注意负数的优先级
+                    else:
+                        stack.append(v // num)
+                if ch == ')':
+                    break
+                num = 0
+                sign = ch
+        return sum(stack)
+
+    queue = [c for c in s if not c.isspace()]
+    queue.append('+')
+    return helper(queue)
+
+
+# 判断一个路径是否为出栈路径
+def validate_stack_sequences(pushed, popped):
+    stack = []
+    while pushed:
+        stack.append(pushed.pop(0))
+        while stack and stack[-1] == popped[0]:
+            stack.pop(-1)
+            popped.pop(0)
+    return False if stack else True
 
 
 class Queue():
@@ -162,110 +291,6 @@ class MinStack():
         return self.min[-1]
 
 
-# 判断一个路径是否为出栈路径
-def validate_stack_sequences(pushed, popped):
-    if len(pushed) != len(popped):
-        return False
-    stack = []
-    while pushed:
-        v = pushed.pop(0)  # 先进栈
-        stack.append(v)
-        while stack and stack[-1] == popped[0]:
-            stack.pop(-1)
-            popped.pop(0)
-    return False if stack else True
-
-
-# 循环删除字符串中的连续重复字母
-def remove_duplicates(S):
-    if not S:
-        return S
-    stack = []
-    for c in S:
-        if stack and stack[-1] == c:
-            stack.pop(-1)
-        else:
-            stack.append(c)
-
-    return ''.join(stack)
-
-
-# 1- 2 / 50*4-9+45
-# 1 + 2 - 3
-def calculate(s):
-    if not s:
-        return
-
-    lists = []
-    v = None
-    for c in s:
-        if c in {' ', '+', '-', '*', '/'}:
-            if c == ' ':
-                if v is not None:
-                    lists.append(v)
-                    v = None
-            elif v is not None:
-                lists.append(v)
-                lists.append(c)
-                v = None
-            else:
-                lists.append(c)
-        else:
-            v = 10 * v + int(c) if v is not None else int(c)
-    if v is not None:
-        lists.append(v)
-    # print(lists)
-    res = 0
-    stack1, stack2 = [], []
-
-    for c in lists:
-        if c in {'*', '/', '+', '-'}:
-            stack2.append(c)
-        else:
-            if stack2 and stack2[-1] in {'*', '/'}:
-                operate = stack2.pop(-1)
-                if operate == '*':
-                    v = int(c) * stack1.pop(-1)
-                else:
-                    v = stack1.pop(-1) // int(c)
-                stack1.append(v)
-
-            else:
-                stack1.append(int(c))
-    # print(stack1, stack2)
-    while stack2:
-        v = stack1.pop(-1)
-        res += v if stack2.pop(-1) == '+' else -v
-    res += stack1.pop(-1)
-    return res
-
-
-# 当遇到第二个运算符开始运算  1-2 / 50*4-9+45
-def calculate2(s):
-    if not s:
-        return 0
-    sign, stack, num, n = '+', [], 0, len(s)  # 保存之前的当符号 和 最近一个数值
-    for i in range(n):
-        if s[i].isdigit():
-            num = num * 10 + int(s[i])
-        if (not s[i].isdigit() and not s[i].isspace()) or i == n - 1:  # 符号 或 最后一个符号
-            if sign == '+':
-                stack.append(num)
-            elif sign == '-':
-                stack.append(-num)
-            elif sign == '*':
-                stack.append(stack.pop(-1) * num)
-            else:
-                v = stack.pop(-1)
-                if v // num < 0 and v % num:  # 负数
-                    stack.append(v // num + 1)
-                else:
-                    stack.append(v // num)
-            sign = s[i]
-            num = 0
-    return sum(stack)
-
-
 if __name__ == '__main__':
     print('\n十进制转二进制')
     print(ten_2_binary(10))
@@ -278,8 +303,12 @@ if __name__ == '__main__':
     print(eval_RPN(token))
 
     print('\n计算器')
-    print(calculate('1 + 1 * 5 * 4 - 9 + 45'))
-    print(calculate2('1 + 1 * 5 * 4 - 9 + 45'))
+    print(calculate1('1 + 1 * 5 * 4 - 9 + 45'))
+    print(calculate2('(1+(4+5+2)-3)+(6+8)'))
+    print(calculate3('(2+6* 3+5- (3*14/7+2)*5)+3'))  # -12
+
+    print('\n是否为出栈路径')
+    print(validate_stack_sequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]))
 
     print('\n两个栈实现队列')
     queue = Queue()
@@ -291,6 +320,3 @@ if __name__ == '__main__':
     queue.push(6)
     for _ in range(3):
         print(queue.pop())
-
-    print('\n是否为出栈路径')
-    print(validate_stack_sequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]))

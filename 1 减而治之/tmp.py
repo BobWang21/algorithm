@@ -49,13 +49,13 @@ def top_k_frequent(nums, k):
 
 # 连续数组和为K 前缀和
 def subarray_sum(nums, k):
-    dic = dict()
     res = 0
     total = 0
+    dic = dict()
     dic[0] = 1  # 初始化 可能total = k
     for num in nums:
         total += num  # 以num为结尾的连续数组
-        if total - k in dic:  # total - pre_total = k -> total - k in dic
+        if total - k in dic:  # total - k = pre_sum -> total - k in dic
             res += dic[total - k]
         dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
     return res
@@ -67,33 +67,15 @@ def subarray_sum(nums, k):
 def check_subarray_sum(nums, k):
     if len(nums) < 2:
         return False
-    dic, cur = {0: -1}, 0
+    dic, total = {0: -1}, 0  # 0
     for i, num in enumerate(nums):
-        cur += num
+        total += num
         if k:
-            cur %= k
-        j = dic.setdefault(cur, i)  # 余数相同
+            total %= k
+        j = dic.setdefault(total, i)
         if i - j > 1:
             return True
     return False
-
-
-# 无序数组 最长连续区间 也可以使用并查集
-def longest_consecutive(nums):
-    if not nums:
-        return 0
-    s = set(nums)
-    res = 1
-    for v in s:
-        if v - 1 in s:
-            continue
-        i = 1
-        while v + 1 in s:
-            i += 1
-            v += 1
-        res = max(res, i)
-
-    return res
 
 
 # 加油站 有点前缀和的意思
@@ -114,6 +96,24 @@ def can_complete_circuit(gas, cost):
     return start
 
 
+# 无序数组 最长连续区间 也可以使用并查集
+def longest_consecutive(nums):
+    if not nums:
+        return 0
+    s = set(nums)
+    res = 1
+    for v in s:
+        if v - 1 in s:
+            continue
+        i = 1
+        while v + 1 in s:
+            i += 1
+            v += 1
+        res = max(res, i)
+
+    return res
+
+
 # 众数 超过一半的数
 def most_data(nums):
     if not nums:
@@ -132,6 +132,7 @@ def most_data(nums):
     return value
 
 
+# n // 3
 def majority_element(nums):
     if not nums:
         return []
@@ -161,7 +162,7 @@ def majority_element(nums):
 
     cnt1 = cnt2 = 0
     for num in nums:
-        if num == v1:  # 可能为重复
+        if num == v1:  # 可能v1 = v2
             cnt1 += 1
             continue
         if num == v2:

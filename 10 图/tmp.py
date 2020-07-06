@@ -34,30 +34,65 @@ def clone_graph(node):
 
 # 1192 tarjan强连通分量算法 用于寻找bridge
 def critical_connections(n, connections):
-    graph = defaultdict(list)
-    rank = [-1] * n
+    dic = defaultdict(list)
+    dfs = [-1] * n
     low = [10001] * n
     for u, v in connections:
-        graph[u].append(v)
-        graph[v].append(u)
+        dic[u].append(v)
+        dic[v].append(u)
 
-    def dfs(prev, curr, depth):
-        if rank[curr] != -1:
+    def tarjan(prev, curr, depth):
+        if dfs[curr] != -1:
             return low[curr]
-        low[curr] = rank[curr] = depth
-        for nxt in graph[curr]:
+        low[curr] = dfs[curr] = depth
+
+        for nxt in dic[curr]:
             if nxt == prev:  # 无向图 会导致最终的low都相等
                 continue
-            low[curr] = min(low[curr], dfs(curr, nxt, depth + 1))
+            low[curr] = min(low[curr], tarjan(curr, nxt, depth + 1))
         return low[curr]
 
-    dfs(-1, connections[0][0], 0)
+    tarjan(-1, connections[0][0], 0)
 
     res = []
     for connection in connections:
         u, v = connection
-        if low[v] > rank[u] or low[u] > rank[v]:  # 无向图 环中的点 low[u] <= rank[v]!
+        if low[v] > dfs[u] or low[u] > dfs[v]:  # 无向图 环中的点 low[u] <= rank[v]!
             res.append(connection)
+    return res
+
+
+def criticalConnections(n, connections):
+    """
+    :type n: int
+    :type connections: List[List[int]]
+    :rtype: List[List[int]]
+    """
+    rank, less = [0] * n, [float('inf')] * n
+
+    dic = defaultdict(list)
+
+    for u, v in connections:
+        dic[u].append(v)
+        dic[v].append(u)
+
+    def dfs(pre, curr, r):
+        if not rank[curr]:
+            return less[curr]
+
+        rank[curr] = less[curr] = r
+        for nxt in dic[curr]:
+            if nxt == pre:
+                continue
+            less[curr] = min(less[curr], dfs(curr, nxt, r + 1))
+        return less[curr]
+
+    dfs(-1, connections[0][0], 1)
+
+    res = []
+    for u, v in connections:
+        if less[v] > rank[u] or less[u] > rank[v]:
+            res.append([u, v])
     return res
 
 

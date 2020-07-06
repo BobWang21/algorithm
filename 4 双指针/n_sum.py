@@ -153,9 +153,10 @@ def find_continuous_sequence(target):
     return res
 
 
+# 加减
 def find_target_sum_ways(nums, S):
-    res = [0]
     n = len(nums)
+    res = [0]
 
     def helper(idx, total):
         if idx == n and total == S:

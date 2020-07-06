@@ -154,7 +154,7 @@ def min_sub_array_len(nums, s):
     for j in range(n):
         total += nums[j]
         while total >= s:
-            res = min(res, j - i + 1)
+            res = min(res, j - i + 1)  # 注意这个位置!!!
             total -= nums[i]
             i += 1
     return res if res < float('inf') else 0

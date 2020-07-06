@@ -101,7 +101,7 @@ def remove_duplicates(head):
     return dummy.next
 
 
-# 82 例如链表1->2->3->3->4->4->5 处理后为 2->5
+# 82 例如链表1->2->3->3->4->4->5 处理后为1->2->5
 def remove_duplicates2(head):
     if not head:
         return
@@ -374,23 +374,7 @@ def detect_cycle2(head):
     return slow.val
 
 
-def find_duplicate_num(nums):
-    fast = slow = nums[0]
-    # 证明有环 快慢两个指针
-    while True:
-        slow = nums[slow]
-        fast = nums[nums[fast]]
-        if fast == slow:
-            break
-    # 入口
-    ptr1 = nums[0]
-    ptr2 = fast
-    while ptr1 != ptr2:
-        ptr1 = nums[ptr1]
-        ptr2 = nums[ptr2]
-    return ptr1
-
-
+# 回文
 def is_palindrome(head):
     if not head or not head.next:
         return True

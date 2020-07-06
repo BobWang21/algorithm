@@ -23,8 +23,8 @@ if __name__ == '__main__':
     print(isinstance([], list))  # 判断类型
     print(round(3.1, 1))
     print(round(3.6, 1))
-    print(int('001'))
-    print(eval('1'))
+    print(int('001'))  # ✔️
+    print(eval('1'))  # ×
     print(divmod(6, 4))
 
     print('\n列表')
@@ -55,6 +55,7 @@ if __name__ == '__main__':
     s.isalpha()  # 判断是否为字母
     s.isdigit()  # 判断是否为数字
     s.isalnum()  # 是否为数字或字母
+    s.isspace()  # 判断空格
     ''.join(['a', 'b', 'c'])  # 列表转换成字符串
     print(chr(97))  # 数字转字符
     print(ord('a'))  # 字母对应的数字
@@ -62,8 +63,6 @@ if __name__ == '__main__':
     lists = [c for c in s]  # split 是针对分隔符分割 默认空格
     print(lists)
     s = '5'
-    print(eval(s))  # 字符转数字
-    # print(eval('01')) 无法转换
 
     print('\n集合')
     nums = set([1, 2, 3])  # set(v) v 需要可迭代

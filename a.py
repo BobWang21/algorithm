@@ -332,6 +332,38 @@ def counter_smaller(nums):
     return res
 
 
+class Solution(object):
+    def findMedianSortedArrays(self, nums1, nums2):
+        m, n = len(nums1), len(nums2)
+        if m > n:
+            return self.findMedianSortedArrays(nums2, nums1)
+        k = (m + n + 1) // 2
+
+        l, r = 0, m - 1
+        while l < r:
+            mid = l + (r - l + 1) // 2
+            if nums1[mid] <= nums2[k - mid - 1]:
+                l = mid
+            else:
+                r = mid - 1
+        l = l if nums1[l] <= nums2[k - l - 1] else l - 1
+        x1, x2 = l, k - l - 1
+
+        v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
+                 nums2[x2] if 0 <= x2 < n else -float('inf')
+                 )
+
+        if (m + n) % 2:
+            return v1
+
+        v2 = min(
+            nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
+            nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf')
+        )
+
+        return (v1 + v2) / 2.0
+
+
 if __name__ == '__main__':
     print(cyclic_sort([5, 3, 1, 2, 4]))
 

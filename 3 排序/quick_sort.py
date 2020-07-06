@@ -3,17 +3,17 @@
 import random
 
 
-def partition1(nums, lo, hi):  # 原地修改
-    pivot = nums[lo]  # 可以随机选择pivot
-    while lo < hi:
-        while lo < hi and pivot <= nums[hi]:  # 右
-            hi -= 1
-        nums[lo] = nums[hi]  # 替换已保存的数据
-        while lo < hi and nums[lo] <= pivot:  # 左 左右必须有一个包含等于号
-            lo += 1
-        nums[hi] = nums[lo]  # 替换已保存的数据
-    nums[lo] = pivot
-    return lo
+def partition1(nums, l, r):  # 原地修改
+    pivot = nums[l]  # 可以随机选择pivot
+    while l < r:
+        while l < r and pivot <= nums[r]:  # 右
+            r -= 1
+        nums[l] = nums[r]  # 替换已保存的数据
+        while l < r and nums[l] <= pivot:  # 左 左右必须有一个包含等于号
+            l += 1
+        nums[r] = nums[l]  # 替换已保存的数据
+    nums[l] = pivot
+    return l
 
 
 # 三个指针 partition
@@ -39,11 +39,11 @@ def partition2(nums, l, r):
     return lt, mt
 
 
-def quick_sort1(nums, lo, hi):
-    if lo < hi:  # 长度为1不用排序
-        mid = partition1(nums, lo, hi)
-        quick_sort1(nums, lo, mid - 1)
-        quick_sort1(nums, mid + 1, hi)
+def quick_sort1(nums, l, r):
+    if l < r:  # 长度为1不用排序
+        mid = partition1(nums, l, r)
+        quick_sort1(nums, l, mid - 1)
+        quick_sort1(nums, mid + 1, r)
 
 
 def quick_sort2(nums, l, r):

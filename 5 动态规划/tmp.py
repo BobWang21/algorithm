@@ -448,7 +448,7 @@ def super_egg_drop(K, N):
         if (K, N) in memo:
             return memo[(K, N)]
 
-        res = float('INF')
+        res = float('inf')
 
         # 穷举所有可能的选择
         for i in range(1, N + 1):
@@ -461,31 +461,37 @@ def super_egg_drop(K, N):
 
 
 def super_egg_drop2(K, N):
-    memo = {}
+    dic = {}
 
     def dp(k, n):
-        if (k, n) not in memo:
-            if n == 0:
-                ans = 0
-            elif k == 1:
-                ans = n
+        if k == 1:
+            return n
+        if n == 0:
+            return 0
+
+        if (k, n) in dic:
+            return dic[(k, n)]
+
+        res = float('inf')
+        l, r = 1, n
+        while l + 1 < r:
+            mid = l + (r - l) // 2
+            v1 = dp(k, n - mid)
+            v2 = dp(k - 1, mid - 1)
+            if v1 > v2:
+                l = mid + 1
             else:
-                l, r = 1, n
-                while l < r:
-                    mid = (l + r) // 2
-                    up = dp(k - 1, mid - 1)
-                    down = dp(k, n - mid)
-                    if down > up:
-                        l = mid + 1
-                    else:
-                        r = mid
+                r = mid
 
-                ans = 1 + max(dp(k - 1, l - 1), dp(k, n - l))
-
-            memo[k, n] = ans
-        return memo[k, n]
+        for x in [l, r]:
+            res = min(res, max(dp(k - 1, x - 1), dp(k, n - x)) + 1)
+        dic[(k, n)] = res
+        return res
 
     return dp(K, N)
+
+
+# 区间dp
 
 
 if __name__ == '__main__':
@@ -559,4 +565,4 @@ if __name__ == '__main__':
     print(product_except_self([1, 2, 3, 4]))
 
     print('\n扔鸡蛋')
-    print(super_egg_drop(3, 4))
+    print(super_egg_drop(3, 14))
