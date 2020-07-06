@@ -203,6 +203,35 @@ def permutations2(nums):
     return res
 
 
+def permutations3(nums):
+    nums.sort()
+
+    n = len(nums)
+    visited = [False] * n
+
+    res = []
+
+    def dfs(path):
+        if len(path) == n:
+            res.append(path[:])
+            return
+
+        for i in range(n):
+            if visited[i]:
+                continue
+            if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
+                continue
+            visited[i] = True
+            path.append(nums[i])
+            dfs(path)
+            path.pop(-1)
+            visited[i] = False
+
+    dfs([])
+
+    return res
+
+
 # 子集问题
 def subset(candidates):
     res = []
@@ -470,6 +499,7 @@ if __name__ == '__main__':
     print('\n排列问题')
     print(permutations([1, 2, 3]))
     print(permutations2([1, 2, 1]))
+    print(permutations3([1, 2, 1]))
 
     print('\n全集')
     print(subset([1, 2, 3]))
