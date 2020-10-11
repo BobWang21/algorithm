@@ -24,7 +24,7 @@ if __name__ == '__main__':
     print(round(3.1, 1))
     print(round(3.6, 1))
     print(int('001'))  # ✔️
-    print(eval('1'))  # ×
+    print(eval('1'))  # eval('001') ×
     print(divmod(6, 4))
 
     print('\n列表')
@@ -38,14 +38,14 @@ if __name__ == '__main__':
     nums.sort(key=lambda x: x[1] - x[0])  # 排序
     print(nums)
     nums.append(3)  # 增加一个数
-    print(nums, nums + [4])  # 生成一个新的变量
+    print(nums + [4])  # 生成一个新的变量
     nums = [1, 3, 100]
     change1(nums[1:])  # 切片和[:] 生成一个新的列表
     print(nums)
 
     print('\n字典')
     dic = {1: 3}
-    dic[1] = dic.get(2, 0) + 1
+    print(dic.get(3, 0)) # default value
     for k, v in dic.items():
         print(k, v)
     print(type({}))  # {}表示字典
@@ -88,6 +88,7 @@ if __name__ == '__main__':
     print('\nheapq')
     heap = [3, 4, 1, 2]
     hq.heapify(heap)  # 改成堆
+    hq.heappush(heap, 5)
     print(heap)
     while heap:
         print(hq.heappop(heap))

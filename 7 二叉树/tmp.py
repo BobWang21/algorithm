@@ -241,27 +241,25 @@ def have_path_sum(tree, target):
     return left or right
 
 
-# 打印所有路径 从根节点到叶节点和为某个数的路径
-def sum_target_path(tree, target):
-    if not tree:
+# 113 打印所有路径 从根节点到叶节点和为某个数的路径
+def path_sum2(root, sum):
+    if not root:
         return []
 
     res = []
 
-    def helper(tree, target, path):
-        if not tree.left and not tree.right and target == tree.val:  # 叶节点等于target
-            res.append(path + [tree.val])  # 生成一个新的变量
+    def dfs(root, val, path):
+        if not root:
             return
-        if not tree.left and not tree.right:  # 叶节点不等于target
+        if not root.left and not root.right and root.val == val:
+            res.append(path + [root.val])
             return
-        path.append(tree.val)
-        if tree.left:
-            helper(tree.left, target - tree.val, path)
-        if tree.right:
-            helper(tree.right, target - tree.val, path)
-        path.pop(-1)  # 无论如何 都可返回
+        path.append(root.val)
+        dfs(root.left, val - root.val, path)
+        dfs(root.right, val - root.val, path)
+        path.pop(-1)
 
-    helper(tree, target, [])
+    dfs(root, sum, [])
     return res
 
 
@@ -640,7 +638,7 @@ if __name__ == '__main__':
     print(have_path_sum(tree, 9))
 
     print('\n路径和为某个数的路径')
-    print(sum_target_path(tree, 8))
+    print(path_sum2(tree, 8))
 
     print('\n路径组成数字之和')
     print(sum_numbers(tree))
