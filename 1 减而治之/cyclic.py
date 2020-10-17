@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # 循环排序: 适合于数值区间在一定范围内的数组
-# 访问标记正负 适合于正数
+# 访问标记正负 适合于正数 数组可以修改
 # 快慢双指针 不修改列表
 # 异或操作
+# Hashmap
+# 二分查找
 
 
 def cyclic_sort(nums):
@@ -49,7 +51,7 @@ def first_missing_positive(nums):
     return n + 1  # 如果数组是[1, 2, 3] !!!
 
 
-# 使用负数标记已存在的数
+# 使用负数标记 已存在的数
 def find_disappeared_numbers(nums):
     for i in range(len(nums)):
         v = abs(nums[i]) - 1
@@ -145,6 +147,23 @@ def missing_number(nums):
         miss_value ^= nums[i] ^ i
 
     return miss_value
+
+
+# 287. 寻找重复数
+def findDuplicate(nums):
+    n = len(nums)
+
+    def count(target):
+        return sum([1 if v <= target else 0 for v in nums])
+
+    l, r = 0, n - 1
+    while l < r:
+        mid = l + (r - l) // 2
+        if count(mid) <= mid:
+            l = mid + 1
+        else:
+            r = mid
+    return l
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-# 非递归
+# 非递归版本 标准二分查找
 def binary_search1(nums, target):
     l, r = 0, len(nums) - 1
     while l <= r:
@@ -13,11 +13,11 @@ def binary_search1(nums, target):
             r = mid - 1  # nums[r+1]>target
         else:
             l = mid + 1  # nums[l-1]<target
-    # 跳出循环时l-r=1 nums[l]>target, nums[r]<target
+    # 跳出循环时l=r+1 nums[l]>target, nums[r]<target
     return -1
 
 
-# 递归
+# 递归版本 二分查找
 def binary_search2(nums, l, r, target):
     if l <= r:
         mid = l + (r - l) // 2
@@ -49,7 +49,7 @@ def search_last_pos(nums, target):
     while l < r:
         mid = l + (r - l + 1) // 2  # 右中位数
         if nums[mid] <= target:
-            l = mid  # l == mid 需要考虑3, 4这种无限循环的情况 nums[l] <= target
+            l = mid  # l == mid 需要考虑l,r=3,4这种无限循环的情况 nums[l] <= target
         else:
             r = mid - 1  # nums[r+1] > target
     return l if nums[l] == target else -1
@@ -112,23 +112,7 @@ def get_number_of_k(nums, target):
     return right - left + 1
 
 
-# 旋转数组中的最小值
-# [3 4 1 2] 为 [1 2 3 4]的旋转数组
-def find_min(nums):
-    if nums[0] <= nums[-1]:
-        return nums[0]
-
-    l, r = 0, len(nums) - 1
-    while l < r:
-        mid = l + (r - l) // 2
-        if nums[mid] >= nums[0]:  # 左半部分递增
-            l = mid + 1
-        else:
-            r = mid
-    return nums[l]  # 一定存在, 因此不需补丁
-
-
-# 旋转数组查找
+# 33. 搜索旋转排序数组
 def search(nums, target):
     if not nums:
         return -1
@@ -138,16 +122,18 @@ def search(nums, target):
         mid = l + (r - l) // 2
         if nums[mid] == target:
             return mid
-        if nums[mid] >= nums[0]:
-            if nums[0] <= target <= nums[mid]:
+        if nums[0] < nums[mid]:  # 此处小于等于
+            if nums[0] <= target < nums[mid]:
                 r = mid - 1
             else:
+                l = mid + 1  # 若等于nums[0]=nums[mid] 则l + 1
+        elif nums[mid] < nums[0]:
+            if nums[mid] < target <= nums[-1]:
                 l = mid + 1
+            else:
+                r = mid - 1
         else:
-            if nums[mid] <= target <= nums[-1]:
-                l = mid + 1
-            else:
-                r = mid - 1
+            l += 1
     return -1
 
 
@@ -182,10 +168,8 @@ def find_median_sorted_arrays(nums1, nums2):
     return (v1 + v2) / 2.0
 
 
-# 比左、右两边数都大的数
+# 162. 寻找峰值
 def find_peak_element(nums):
-    if len(nums) == 1:
-        return 0
     l, r = 0, len(nums) - 1
     while l < r:
         mid = l + (r - l) // 2
@@ -195,6 +179,22 @@ def find_peak_element(nums):
             r = mid  # nums[r] > nums[r+1]
     # l=r 时  nums[l-1] < nums[l] = nums[r] > nums[r+1]
     return l
+
+
+# 旋转数组中的最小值
+# [3 4 1 2] 为 [1 2 3 4]的旋转数组
+def find_min(nums):
+    if nums[0] <= nums[-1]:
+        return nums[0]
+
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = l + (r - l) // 2
+        if nums[mid] >= nums[0]:  # nums[l-1] >= nums[0]
+            l = mid + 1
+        else:
+            r = mid # nums[r] < nums[0]
+    return nums[l]
 
 
 # 441 排列硬币 潜在递增函数
