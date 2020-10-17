@@ -364,6 +364,25 @@ class Solution(object):
         return (v1 + v2) / 2.0
 
 
+def unique_len(s):
+    n = len(s)
+    if n <= 1:
+        return n
+    res = 0
+    l = 0
+    dic = {}
+    for r in range(n):
+        c = s[r]
+        if c not in dic or dic[c] < l:
+            dic[c] = r
+            res = max(r - l + 1, res)
+        else:
+            l = dic[c] + 1
+            dic[c] = r
+    return res
+
+
+
 if __name__ == '__main__':
     print(cyclic_sort([5, 3, 1, 2, 4]))
 
@@ -383,3 +402,5 @@ if __name__ == '__main__':
     print(remove("()())()"))
 
     print(counter_smaller([5, 2, 6, 1]))
+    s = 'abcdabcd'
+    print(unique_len(s))
