@@ -3,58 +3,7 @@
 from pprint import pprint
 
 
-# 最长回文子序列 top down
-def longest_palindrome_subsequence(s):
-    if not s:
-        return s
-    n = len(s)
-    dic = dict()
-
-    def helper(l, r):
-        if (l, r) in dic:
-            return dic[(l, r)]
-        if l == r:  # 回文问题考虑奇数和偶数 奇数
-            dic[(l, r)] = 1
-            return 1
-        if r - l == 1:  # 偶数
-            dic[(l, r)] = 2 if s[l] == s[r] else 1
-            return dic[(l, r)]
-        if s[l] == s[r]:
-            dic[(l, r)] = helper(l + 1, r - 1) + 2
-            return dic[(l, r)]
-        dic[(l, r)] = max(helper(l + 1, r), helper(l, r - 1))
-        return dic[(l, r)]
-
-    return helper(0, n - 1)
-
-
-# 最长回文子串
-def longest_palindrome(s):
-    if not s:
-        return s
-    n = len(s)
-    max_str = s[0]
-
-    dp = [[False] * n for _ in range(n)]  # 两个位置之间是否为回文的二维数组
-
-    for l in range(1, n + 1):  # bottom up 长度
-        for i in range(n):
-            j = l + i - 1
-            if j >= n:
-                break
-            if l == 1 and s[i] == s[j]:
-                dp[i][j] = True
-                max_str = s[i:j + 1]
-            elif l == 2 and s[i] == s[j]:
-                dp[i][j] = True
-                max_str = s[i:j + 1]
-            elif s[i] == s[j] and dp[i + 1][j - 1]:  # dp[i, j] = dp[i+1, j-1] and s[i] == s[j]
-                dp[i][j] = True
-                max_str = s[i:j + 1]
-    return max_str
-
-
-# 最长公共子序列
+# 最长公共子序列 子序列不连续 子串连续
 def LCS(s1, s2):
     l1, l2 = len(s1), len(s2)
     dp = [[0] * (l2 + 1) for _ in range(l1 + 1)]
@@ -79,6 +28,58 @@ def longest_common_str(s1, s2):
 
     pprint(dp)
     return dp[-1][-1]
+
+
+# 516 最长回文子序列 top down
+def longest_palindrome_subsequence(s):
+    if not s:
+        return s
+    n = len(s)
+    dic = dict()
+
+    def helper(l, r):
+        if (l, r) in dic:
+            return dic[(l, r)]
+        # 回文问题考虑奇数和偶数
+        if l == r:  # 奇数
+            dic[(l, r)] = 1
+            return 1
+        if r - l == 1:  # 偶数
+            dic[(l, r)] = 2 if s[l] == s[r] else 1
+            return dic[(l, r)]
+        if s[l] == s[r]:
+            dic[(l, r)] = helper(l + 1, r - 1) + 2
+            return dic[(l, r)]
+        dic[(l, r)] = max(helper(l + 1, r), helper(l, r - 1))
+        return dic[(l, r)]
+
+    return helper(0, n - 1)
+
+
+# 409 最长回文子串
+def longest_palindrome(s):
+    if not s:
+        return s
+    n = len(s)
+    res = s[0]
+
+    dp = [[False] * n for _ in range(n)]  # 两个位置之间是否为回文的二维数组
+
+    for l in range(1, n + 1):  # bottom up 长度
+        for i in range(n):
+            j = l + i - 1
+            if j >= n:
+                break
+            if l == 1 and s[i] == s[j]:
+                dp[i][j] = True
+                res = s[i:j + 1]
+            elif l == 2 and s[i] == s[j]:
+                dp[i][j] = True
+                res = s[i:j + 1]
+            elif s[i] == s[j] and dp[i + 1][j - 1]:  # dp[i, j] = dp[i+1, j-1] and s[i] == s[j]
+                dp[i][j] = True
+                res = s[i:j + 1]
+    return res
 
 
 # 编辑距离
@@ -120,17 +121,17 @@ def word_break(s, word_dict):
 
 
 if __name__ == '__main__':
-    print('\n最长回文子序列')
-    print(longest_palindrome_subsequence('babadada'))
-
-    print('\n最长回文子串')
-    print(longest_palindrome('babadada'))
-
     print('\n最长公共子序列')
     print(LCS('abcbdab', 'bdcaba'))
 
     print('\n最长公共子串')
     print(longest_common_str([0, 1, 1, 1, 1], [1, 0, 1, 0, 1]))
+
+    print('\n最长回文子序列')
+    print(longest_palindrome_subsequence('babadada'))
+
+    print('\n最长回文子串')
+    print(longest_palindrome('babadada'))
 
     print('\n最短编辑距离')
     print(edit_distance("intention", "execution"))

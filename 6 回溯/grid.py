@@ -129,41 +129,7 @@ def maze_short_path(maze, start, destination):
     return bfs()
 
 
-# 286 -1:墙 0:大门 INF:空房间 2147483647来表示
-# 直接法 会超时
-def walls_and_gates2(rooms):
-    INF = 2147483647
-    if not rooms or not rooms[0]:
-        return
-    rows, cols = len(rooms), len(rooms[0])
-
-    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-
-    def bfs(i, j, visited):
-        queue = [(i, j, 0)]
-        visited[i][j] = True
-        while queue:
-            r, c, layer = queue.pop(0)
-            for direction in directions:
-                i, j = r + direction[0], c + direction[1]
-                if 0 <= i < rows and 0 <= j < cols:
-                    if rooms[i][j] == -1:
-                        continue
-                    if rooms[i][j] == 0:
-                        return layer + 1
-                    if not visited[i][j]:
-                        queue.append((i, j, layer + 1))
-                        visited[i][j] = True
-        return INF
-
-    for i in range(rows):
-        for j in range(cols):
-            if rooms[i][j] == INF:
-                visited = [[False] * cols for _ in range(rows)]
-                rooms[i][j] = bfs(i, j, visited)
-
-
-# 多向BFS
+# 286 多向BFS
 def walls_and_gates(rooms):
     if not rooms or not rooms[0]:
         return

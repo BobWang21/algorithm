@@ -78,7 +78,7 @@ def is_balanced2(tree):
     return helper(tree) != -1
 
 
-# 二叉树的叶节点之间的最大路径边数 可能不经过根节点
+# 543. 二叉树的直径
 def diameter_of_binary_tree(root):
     res = [-1]
 
@@ -119,7 +119,7 @@ def most_frequent_subtree_sum(tree):
     return max_key
 
 
-# 二叉树是否对称
+# 101. 对称二叉树 二叉树是否对称
 def is_symmetric(tree):
     """
          5
@@ -141,7 +141,9 @@ def is_symmetric(tree):
     return helper(tree.left, tree.right)
 
 
-# 子树
+# 572. 另一个树的子树
+# DFS 暴力匹配 时间复杂度为O(M) * O(N)
+# 可使用KMP算法进行优化
 def is_subtree(s, t):
     def helper(s, t):  # 已知两颗树 两棵树是否完全相同
         if not s and not t:
@@ -184,14 +186,14 @@ def substructure(s, t):
     return is_subtree(s.left, t) or is_subtree(s.right, t)
 
 
-# 打印所有路径
+# 257. 二叉树的所有路径
 def binary_tree_paths(tree):
     if not tree:
         return []
     left = binary_tree_paths(tree.left)
     right = binary_tree_paths(tree.right)
     paths = left + right
-    if not paths:  # 叶节点
+    if not paths:  # 叶节点 没有这个会输出空
         return [str(tree.val)]
     res = []
     for path in paths:
@@ -201,17 +203,18 @@ def binary_tree_paths(tree):
 
 # 借鉴回溯思想
 def binary_tree_paths2(tree):
-    def helper(tree, path, res):
+    res = []
+
+    def helper(tree, path):
         if not tree.left and not tree.right:
             res.append(path + [tree.val])
             return
         if tree.left:
-            helper(tree.left, path + [tree.val], res)
+            helper(tree.left, path + [tree.val])
         if tree.right:
-            helper(tree.right, path + [tree.val], res)
+            helper(tree.right, path + [tree.val])
 
-    res = []
-    helper(tree, [], res)
+    helper(tree, [])
     return res
 
 
@@ -241,25 +244,28 @@ def have_path_sum(tree, target):
     return left or right
 
 
-# 113 打印所有路径 从根节点到叶节点和为某个数的路径
-def path_sum2(root, sum):
+# 113 打印所有路径
+# 路径的数目为 O(N)，并且每一条路径的节点个数也为 O(N)，
+# 因此要将这些路径全部添加进答案中，时间复杂度为 O(N^2)
+def path_sum2(root, target):
     if not root:
         return []
 
     res = []
+    path = []
 
-    def dfs(root, val, path):
+    def dfs(root, val):
         if not root:
             return
         if not root.left and not root.right and root.val == val:
             res.append(path + [root.val])
             return
         path.append(root.val)
-        dfs(root.left, val - root.val, path)
-        dfs(root.right, val - root.val, path)
+        dfs(root.left, val + root.val)
+        dfs(root.right, val + root.val)
         path.pop(-1)
 
-    dfs(root, sum, [])
+    dfs(root, target)
     return res
 
 
@@ -285,7 +291,7 @@ def vertical_order(root):
     return [v[1] for v in res]
 
 
-# 判断二叉树是否为完全二叉树
+# 958. 判断二叉树是否为完全二叉树
 def is_complete_tree(root):
     if not root:
         return True
@@ -424,16 +430,16 @@ def inorder_tra_next_node(node):
         while node.left:
             node = node.left
         return node.val
-    elif not node.parent:
+    if not node.parent:
         return
-    elif node.parent.left == node:
+    if node.parent.left == node:
         return node.parent.val
-    else:
-        while node.parent:
-            if node == node.parent.left:
-                return node.parent.val
-            node = node.parent
-        return
+
+    while node.parent:
+        if node == node.parent.left:
+            return node.parent.val
+        node = node.parent
+    return
 
 
 # 抢钱问题 节点之间不能存在父子关系

@@ -116,10 +116,10 @@ def level_num(tree):
 
 
 # 最小深度 根节点到叶节点! 也可以使用bfs
-def min_depth(root):
-    if not root:
+def min_depth(tree):
+    if not tree:
         return 0
-    l, r = root.left, root.right
+    l, r = tree.left, tree.right
     if not l:
         return min_depth(r) + 1
     if not r:
@@ -176,7 +176,7 @@ def deserialize(s):
 if __name__ == '__main__':
     print('\n先序遍历')
     tree = create_full_binary_tree([i for i in range(7)])
-    print(level_traversal(tree))
+    print(preorder2(tree))
 
     print('\n中序遍历')
     print(inorder_traversal(tree))

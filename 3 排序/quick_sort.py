@@ -73,7 +73,10 @@ def sort_array_by_parity(nums):
 
 # 无序数组的前K个数T(n) = n + T(n/2) ->O(n)
 def get_top_k(nums, k):
-    if not nums or len(nums) < k:
+    if k <= 0:
+        return []
+
+    if len(nums) < k:
         return nums
 
     def partition(l, r):

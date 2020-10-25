@@ -18,7 +18,8 @@ def fib1(n):
 
 
 # bottom up
-# 可以记录所有状态 但当前状态只和最近前两个状态有关 因此只存最近两个状态
+# 可以记录所有状态
+# 但当前状态只和最近前两个状态有关 因此只存最近两个状态
 def fib2(n):
     if n == 1:
         return 1
@@ -73,14 +74,13 @@ def rob_with_cycle(nums):
     return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
 
 
-# 连续子序列 和最大
+# 53 连续子序列 和最大
 def max_sub_array(nums):
     if not nums:
         return 0
-    inc, exc = -float('inf'), -float('inf')  # 包含负数的最大值 初始值常用负无穷或
+    inc = exc = -float('inf')  # 包含负数的最大值 初始值常用负无穷或
     for num in nums:
         inc, exc = max(inc + num, num), max(inc, exc)
-
     return max(inc, exc)
 
 
@@ -147,7 +147,7 @@ def coin_change2(coins, amount):
     dp = [0] * (amount + 1)
     dp[0] = 1
 
-    for coin in coins:  # 保证之前没有重复的coin组合
+    for coin in coins:  # 保证coin 之前没用过!
         for v in range(coin, amount + 1):
             dp[v] += dp[v - coin]
     return dp[-1]

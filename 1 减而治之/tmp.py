@@ -11,9 +11,25 @@ TopK 问题的几种解法
 '''
 
 
-# 计数排序 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，
+def search_matrix(matrix, target):
+    if not matrix or not matrix[0]:
+        return False
+    rows, cols = len(matrix), len(matrix[0])
+    i, j = 0, cols - 1
+    while i < rows and j >= 0:
+        num = matrix[i][j]
+        if num == target:
+            return True
+        elif num < target:
+            i += 1
+        else:
+            j -= 1
+    return False
+
+
+# 计数排序 给定一个包含红色、白色和蓝色，n个元素的数组，
 # 原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列
-# 使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+# 使用整数 0, 1 和 2 分别表示红色、白色和蓝色。
 def sort_colors(nums):
     if not nums:
         return []
@@ -47,7 +63,7 @@ def top_k_frequent(nums, k):
                     return res[:k]
 
 
-# 连续数组和为K 前缀和
+# 560. 和为K的子数组 前缀和
 def subarray_sum(nums, k):
     res = 0
     total = 0
@@ -61,7 +77,7 @@ def subarray_sum(nums, k):
     return res
 
 
-# 523 给定一个包含 非负数 的数组和一个目标 整数 k，
+# 523 给定一个包含 非负数 的数组和一个目标 整数k，
 # 编写一个函数来判断该数组是否含有连续的子数组，其大小至少为 2，
 # 且总和为 k 的倍数，即总和为 n*k，其中 n 也是一个整数。
 def check_subarray_sum(nums, k):
@@ -218,22 +234,6 @@ def find_unsorted_subarray(nums):
     return n - (l1 + l2)
 
 
-def search_matrix(matrix, target):
-    if not matrix or not matrix[0]:
-        return False
-    rows, cols = len(matrix), len(matrix[0])
-    i, j = 0, cols - 1
-    while i < rows and j >= 0:
-        num = matrix[i][j]
-        if num == target:
-            return True
-        elif num < target:
-            i += 1
-        else:
-            j -= 1
-    return False
-
-
 # 区间合并
 def merge(intervals):
     if not intervals or not intervals[0]:
@@ -281,9 +281,6 @@ def next_permutation(nums):
 
 
 if __name__ == '__main__':
-    print('\n众数')
-    print(most_data([1, 3, 3, 3, 9]))
-
     print('\n矩阵查找')
     matrix = [
         [1, 3, 5, 7],
@@ -291,6 +288,8 @@ if __name__ == '__main__':
         [23, 30, 34, 50]
     ]
     print(search_matrix(matrix, 16))
+    print('\n众数')
+    print(most_data([1, 3, 3, 3, 9]))
 
     print('数组中第2大的数')
     print(second_largest([2, 3, 4, 10, 100]))

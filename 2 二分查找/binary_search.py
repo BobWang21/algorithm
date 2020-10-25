@@ -40,7 +40,7 @@ def search_first_pos(nums, target):
         else:
             r = mid  # nums[r] >= target
     # return l
-    return nums[l] if nums[l] == target else -1  # 取不到 l == r 补丁!
+    return nums[l] if nums[l] == target else -1  # 取不到 l=r 补丁!
 
 
 # 有重复数字的非降序排序数组 返回最后一个等于target
@@ -81,7 +81,7 @@ def find_missed_value(nums):
     return l
 
 
-# 数字在排序数组中出现的次数
+# 34. 在排序数组中查找元素的第一个和最后一个位置
 def get_number_of_k(nums, target):
     if not nums:
         return 0
@@ -142,7 +142,7 @@ def find_median_sorted_arrays(nums1, nums2):
     if m > n:
         return find_median_sorted_arrays(nums2, nums1)
 
-    k = (m + n + 1) // 2
+    k = (m + n + 1) // 2  # 左中位数的个数
     l, r = 0, m - 1
     while l < r:
         mid = l + (r - l + 1) // 2
@@ -159,13 +159,13 @@ def find_median_sorted_arrays(nums1, nums2):
 
     if (m + n) % 2:
         return v1
-
+    
     v2 = min(
         nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
         nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf')
     )
 
-    return (v1 + v2) / 2.0
+    return (v1 + v2) / 2
 
 
 # 162. 寻找峰值
@@ -193,7 +193,7 @@ def find_min(nums):
         if nums[mid] >= nums[0]:  # nums[l-1] >= nums[0]
             l = mid + 1
         else:
-            r = mid # nums[r] < nums[0]
+            r = mid  # nums[r] < nums[0]
     return nums[l]
 
 
@@ -221,7 +221,7 @@ def smallest_distance_pair_3(nums, k):
     nums.sort()
     n = len(nums)
 
-    def no_more_than(target):
+    def nmt(target):
         j = 1
         res = 0
         for i in range(n - 1):
@@ -233,7 +233,7 @@ def smallest_distance_pair_3(nums, k):
     l, r = 0, nums[-1] - nums[0]
     while l < r:
         mid = (l + r) // 2
-        count = no_more_than(mid)
+        count = nmt(mid)
         if count >= k:
             r = mid
         else:
@@ -259,6 +259,37 @@ def find_kth_number1(m, n, k):
     return l  # 一定满足条件 所以不用补丁
 
 
+# 378. 有序矩阵中第K小的元素
+# 给定一n x n矩阵，其中每行和每列元素均按升序排序，找到矩阵中第 k 小的元素。
+# 示例：matrix = [[ 1,  5,  9],
+#               [10, 11, 13],
+#               [12, 13, 15]],
+# k = 8, 返回 13。
+def kth_smallest(matrix, k):
+    n = len(matrix)
+
+    def count(v):
+        res = 0
+        i, j = n - 1, 0
+        while i >= 0 and j < n:
+            if matrix[i][j] <= v:
+                res += i + 1
+                j += 1
+            else:
+                i -= 1
+        return res
+
+    l, r = matrix[0][0], matrix[-1][-1]
+    while l < r:
+        mid = l + (r - l) // 2
+        cnt = count(mid)
+        if cnt < k:
+            l = mid + 1
+        else:
+            r = mid
+    return l
+
+
 # 440 字典序 第k个数字 2 二分查找 十叉树
 def find_kth_number2(n, k):
     def prefix_num(prefix):
@@ -282,6 +313,9 @@ def find_kth_number2(n, k):
             rank += cnt
             prefix += 1
     return prefix
+
+
+
 
 
 if __name__ == '__main__':

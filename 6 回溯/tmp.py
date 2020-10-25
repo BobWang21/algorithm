@@ -116,8 +116,8 @@ def combination_sum(nums, target):
         if target < 0:  # 不满足条件
             return
         for i in range(idx, n):
-            # 索引从 i 开始表示数字可以用多次!!!
             path.append(nums[i])
+            # 索引从 i 开始表示数字可以用多次!!!
             dfs(i, target - nums[i], path)
             path.pop(-1)
 
@@ -151,8 +151,8 @@ def combination_sum2(nums, target):
     return res
 
 
-# 全排列 输入数组中不含重复数字
-def permutations(nums):
+# 46 全排列 输入数组中不含重复数字
+def permute1(nums):
     """
     Given a collection of distinct integers, return all possible permutations.
     Example:
@@ -181,8 +181,33 @@ def permutations(nums):
     return res
 
 
-# 输入数组中含重复数字
-def permutations2(nums):
+def permute2(nums):
+    if not nums:
+        return []
+
+    res = []
+    n = len(nums)
+    visited = [False] * n
+
+    def dfs(path):
+        if len(path) == n:
+            res.append(path[:])
+
+        for i in range(n):
+            if visited[i]:
+                continue
+            visited[i] = True
+            path.append(nums[i])
+            dfs(path)
+            path.pop(-1)
+            visited[i] = False
+
+    dfs([])
+    return res
+
+
+# 47. 全排列 输入数组中含重复数字
+def permute_unique1(nums):
     if not nums:
         return []
 
@@ -192,18 +217,18 @@ def permutations2(nums):
         if not candidates:
             res.append(path)
             return
-        for i, val in enumerate(candidates):
-            if i > 0 and candidates[i - 1] == val:  # 不可出现在同一层
+        for i in candidates:
+            if i > 0 and candidates[i] == candidates[i - 1]:  # 不可出现在同一层
                 continue
             # 候选集中去除访问过的元素
-            dfs(candidates[:i] + candidates[i + 1:], path + [val])
+            dfs(candidates[:i] + candidates[i + 1:], path + [candidates[i]])
 
     nums.sort()
     dfs(nums, [])
     return res
 
 
-def permutations3(nums):
+def permute_unique2(nums):
     nums.sort()
 
     n = len(nums)
@@ -219,6 +244,7 @@ def permutations3(nums):
         for i in range(n):
             if visited[i]:
                 continue
+            # nums[i-1] 和 nums[i] 不能在同一个位置
             if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
                 continue
             visited[i] = True
@@ -497,9 +523,9 @@ if __name__ == '__main__':
     print(combination_sum2([1, 1, 2, 3, 4], 4))
 
     print('\n排列问题')
-    print(permutations([1, 2, 3]))
-    print(permutations2([1, 2, 1]))
-    print(permutations3([1, 2, 1]))
+    print(permute1([1, 2, 3]))
+    print(permute2([1, 2, 1]))
+    print(permute_unique1([1, 2, 1]))
 
     print('\n全集')
     print(subset([1, 2, 3]))

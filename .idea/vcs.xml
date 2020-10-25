@@ -2,19 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/GoMILP" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/GoMILP2" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/algo-common-api" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/algo-driver-order-stats" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/algo-dynamic-price-api" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/algo-dynamic-price-async" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/algo-judge" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/algo-trip-pack" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/algorithm-protocol" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/go-interlang" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/golp" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/oride-research" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Go/uops-bonus-decision" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/algorithm" vcs="Git" />
   </component>
 </project>

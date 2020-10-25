@@ -46,7 +46,7 @@ def unbounded_knapsack1(costs, val, capacity):
         for j in range(1, cols):
             res[i][j] = res[i - 1][j]
             k = 1
-            while cost * k <= j:
+            while cost * k <= j:  # 从i - 1开始
                 res[i][j] = max(res[i][j], res[i - 1][j - cost * k] + value * k)
                 k += 1
 
@@ -54,33 +54,26 @@ def unbounded_knapsack1(costs, val, capacity):
 
 
 def unbounded_knapsack2(costs, values, capacity):
-    if not costs or not values or len(costs) != len(values):
-        return
-    n = len(costs)
-    res = [[0] * (capacity + 1) for _ in range(n + 1)]
-    for i in range(1, n + 1):
+    rows, cols = len(costs) + 1, capacity + 1
+    dp = [[0] * cols for _ in range(rows)]
+    for i in range(1, rows):
         cost = costs[i - 1]
         value = values[i - 1]
-        for j in range(1, capacity + 1):
-            res[i][j] = res[i - 1][j]
-            if j >= cost:  # res[i][j] 索引从i开始 可以重复使用物品
-                res[i][j] = max(res[i][j], res[i][j - cost] + value)
-    return res[-1][-1]
+        for j in range(1, cols):
+            dp[i][j] = dp[i - 1][j]
+            if j >= cost:  # 索引从i开始 可以重复使用物品
+                dp[i][j] = max(dp[i][j], dp[i][j - cost] + value)
+    return dp[-1][-1]
 
 
 # 使用1维数组表示
 def unbounded_knapsack3(costs, values, capacity):
-    if not costs or not values or len(costs) != len(values):
-        return
-    n = len(costs)
-    res = [0] * (capacity + 1)
-    for cap in range(1, capacity + 1):  # bottom up
-        for k in range(n):
-            cost, value = costs[k], values[k]
-            if cap >= cost:
-                res[cap] = max(res[cap], res[cap - cost] + value)
-
-    return res[-1]
+    dp = [0] * (capacity + 1)
+    for i in range(1, capacity + 1):
+        for j, cost in enumerate(costs):
+            if i >= cost:
+                dp[i] = max(dp[i], dp[i - cost] + values[j])
+    return dp[-1]
 
 
 # 分组背包问题
@@ -88,12 +81,13 @@ def mckp1(costs, weights, capacity):
     rows, cols = len(costs) + 1, capacity + 1
     dp = [[0] * cols for _ in range(rows)]
 
-    for i in range(1, rows):
-        for cap in range(1, cols):
-            dp[i][cap] = dp[i - 1][cap]
-            for j in range(len(costs[i - 1])):
-                if cap >= costs[i - 1][j]:
-                    dp[i][cap] = max(dp[i][cap], dp[i - 1][cap - costs[i - 1][j]] + weights[i - 1][j])
+    for i in range(1, rows):  # 分组
+        for j in range(1, cols):  # 重量
+            dp[i][j] = dp[i - 1][j]
+            n = len(costs[i - 1])
+            for k in range(n):
+                if j >= costs[i - 1][k]:
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j - costs[i - 1][k]] + weights[i - 1][k])
     return dp[-1][-1]
 
 
@@ -141,6 +135,7 @@ if __name__ == '__main__':
 
     print('\n完全背包问题')
     print(unbounded_knapsack1([5, 10, 15], [10, 30, 20], 100))
+    print(unbounded_knapsack2([5, 10, 15], [10, 30, 20], 100))
     print(unbounded_knapsack3([5, 10, 15], [10, 30, 20], 100))
 
     print('\n分组背包问题')
