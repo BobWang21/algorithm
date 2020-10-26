@@ -39,7 +39,7 @@ def reverse(head):
     return pre
 
 
-# 1->2->3->4 转换成 2->1->4->3
+# 24 1->2->3->4 转换成 2->1->4->3
 def swap_pairs(head):
     if not head:
         return
@@ -71,21 +71,21 @@ def reverse_k_group(head, k):
 
     i = 1
     fast = head
-    while fast and i < k:  # i = 1 包含k个节点
+    while i < k and fast:  # i = 1 包含k个节点
         fast = fast.next
         i += 1
 
     if not fast:
         return head
 
-    nxt = fast.next
+    curr = fast.next
     fast.next = None  # 切断
     new_head, tail = reverse(head)
-    tail.next = reverse_k_group(nxt, k)
+    tail.next = reverse_k_group(curr, k)
     return new_head
 
 
-# 例如链表1->2->3->3->4->4->5 处理后为 1->2-3->5
+# 83 例如链表1->2->3->3->4->4->5 处理后为 1->2-3->5
 def remove_duplicates(head):
     if not head:
         return
@@ -323,8 +323,7 @@ def merge_k_sorted_lists2(lists):
     heap = []
     for l in lists:
         if l:
-            hq.heappush(heap, (l.val, l))
-
+            hq.heappush(heap, (l.val, l))  # 加入value为了排序
     dummy = curr = ListNode(-1)
     while heap:
         v, node = hq.heappop(heap)
