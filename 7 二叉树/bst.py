@@ -61,7 +61,7 @@ def top_k_binary_search_tree2(tree, k):
         if r:
             helper(r)
         res[0] -= 1
-        if res[0] == 0:
+        if not res[0]:
             res.append(tree.val)
             return
         if l:

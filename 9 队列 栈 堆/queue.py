@@ -3,6 +3,7 @@
 # 单调栈适用于结果和数组当前值得前后缀相关的问题
 
 
+# 496. 下一个更大元素 I
 # Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
 # Output: [-1, 3, -1]
 def next_greater_element(nums1, nums2):
@@ -23,12 +24,7 @@ def next_greater_element(nums1, nums2):
     return res
 
 
-# Given a list of daily temperatures T,
-# return a list such that, for each day in the input,
-# tells you how many days you would have to wait until a warmer temperature.
-# If there is no future day for which this is possible, put 0 instead.
-# For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73],
-# your output should be [1, 1, 4, 2, 1, 1, 0, 0].
+# 739 需要多少天 气温会升高
 def daily_temperatures(t):
     if not t:
         return

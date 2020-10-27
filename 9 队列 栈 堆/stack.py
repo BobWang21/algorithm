@@ -4,7 +4,7 @@
 
 def ten_2_binary(value):
     stack = []
-    while value != 0:
+    while value:
         remainder = value % 2
         stack.append(remainder)
         value = value >> 1
@@ -45,7 +45,7 @@ def remove_duplicates(S):
     return ''.join(stack)
 
 
-# 判断括号是否合法 只含有()
+# 判断括号是否合法 只含有() 计数法
 def is_balanced_parentheses(s):
     balance = 0
     for char in s:
@@ -248,22 +248,22 @@ def validate_stack_sequences(pushed, popped):
     return False if stack else True
 
 
-class Queue():
+# 剑指 Offer 09. 用两个栈实现队列
+class CQueue:
     def __init__(self):
-        self.stack1 = []
-        self.stack2 = []
+        self.A, self.B = [], []
 
-    def push(self, v):
-        self.stack1.append(v)
+    def appendTail(self, value):
+        self.A.append(value)
 
-    def pop(self):
-        if not self.stack2:
-            if not self.stack1:
-                raise Exception('X')
-            else:
-                while self.stack1:
-                    self.stack2.append(self.stack1.pop(-1))
-        return self.stack2.pop(-1)
+    def deleteHead(self):
+        if self.B:
+            return self.B.pop()
+        if not self.A:
+            return -1
+        while self.A:
+            self.B.append(self.A.pop())
+        return self.B.pop()
 
 
 # 用两个栈实现最小栈
@@ -311,7 +311,7 @@ if __name__ == '__main__':
     print(validate_stack_sequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]))
 
     print('\n两个栈实现队列')
-    queue = Queue()
+    queue = CQueue()
     queue.push(3)
     queue.push(4)
     queue.push(5)
