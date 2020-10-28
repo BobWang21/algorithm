@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 
-# 图是否二分 染色
+# 886 图是否二分 染色
 def possible_bipartition(n, dislikes):
     dic = defaultdict(set)
     for u, v in dislikes:
@@ -13,11 +13,11 @@ def possible_bipartition(n, dislikes):
     colors = [0] * n
 
     def dfs(i, color):
-        colors[i] = color
+        colors[i] = color  # 入口都未染色
         for j in dic[i]:
-            if not colors[j]:
-                dfs(j, -color)
-            elif colors[j] == color:  # 已经涂色的顶点, 发生冲突
+            if not colors[j] and dfs(j, -color):
+                return False
+            if colors[j] == color:  # 已经涂色的顶点, 发生冲突
                 return False
         return True
 

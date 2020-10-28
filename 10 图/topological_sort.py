@@ -4,7 +4,7 @@
 from collections import defaultdict
 
 
-# 拓扑排序
+# 207. 课程表
 def can_finish(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u 原来你就是邻接表!!!
     indegree = [0] * num_courses  # 入度

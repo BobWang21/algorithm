@@ -73,7 +73,7 @@ def top_k_frequent(words, k):
     return res
 
 
-# 也可以使用 partition
+# 295 partition
 class MedianFinder(object):
 
     def __init__(self):
