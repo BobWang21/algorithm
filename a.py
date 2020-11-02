@@ -1,77 +1,57 @@
-def binary_search(nums, target):
+def max_sum(nums):
     if not nums:
-        return -1
-    l, r = 0, len(nums) - 1
-    while l <= r:
-        mid = l + (r - l) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[mid] < target:
-            l = mid + 1
-        else:
-            r = mid - 1
-    return -1
-
-
-def first_bigger_pos(nums, target):
-    if not nums:
-        return -1
-    l, r = 0, len(nums) - 1
-    while l < r:
-        mid = l + (r - l) // 2
-        if nums[mid] < target:
-            l = mid + 1
-        else:
-            r = mid
-    return l if nums[l] >= target else -1
-
-
-def first_large(nums, target):
-    if not nums:
-        return -1
-    l, r = 0, len(nums) - 1
-    while l < r:
-        mid = l + (r - l) // 2
-        if nums[mid] <= target:
-            l = mid + 1
-        else:
-            r = mid
-    return l if nums[l] > target else -1
-
-
-
-def search_last_pos(nums, target):
-    if not nums:
-        return -1
-    l, r = 0, len(nums) - 1
-    while l < r:
-        mid = l + (r - l + 1) // 2
-        if nums[mid] <= target:
-            l = mid
-        else:
-            r = mid - 1
-    return l if nums[l] == target else -1
-
-
-def find_duplicate(nums):
+        return 0
+    res = -float('inf')
+    inc = exc = -float('inf')
     n = len(nums)
+    for i in range(n):
+        inc, exc = max(nums[i], exc + nums[i]), max(inc, exc)
+        res = max(res, inc, exc)
 
-    def count(target):
-        return sum([1 if v <= target else 0 for v in nums])
-
-    l, r = 0, n - 1
-    while l < r:
-        mid = l + (r - l) // 2
-        if count(mid) <= mid:
-            l = mid + 1
-        else:
-            r = mid
-    return l
+    return res
 
 
+def permutate(nums, v):
+    if not nums:
+        return []
+    cnt = 0
+    n = len(nums)
+    for num in nums:
+        if num == v:
+            cnt += 1
+    if cnt % 2:
+        return []
+
+    nums.sort()
+    res = []
+    seen = [False] * n
+
+    def dfs(path, v_cnt):
+        if len(path) == n:
+            res.append(path[:])
+            return
+
+        for i in range(n):
+            if seen[i]:
+                continue
+            if i > 0 and nums[i] == nums[i - 1] and nums[i] != v and not seen[i - 1]:
+                continue
+            if nums[i] == v and v_cnt < cnt:
+                path.append(nums[i])
+                path.append(nums[i])
+
+                dfs(path, v_cnt + 2)
+            else:
+                seen[i] = True
+                path.append(nums[i])
+                dfs(path, v_cnt)
+                seen[i] = False
+                path.pop(-1)
+
+    dfs([], 0)
+    return res
 
 
 if __name__ == '__main__':
-    print(binary_search([1, 3, 5], 1))
-    print(search_last_pos([1, 3, 3, 5], 3))
-    print(find_duplicate([3,1,3,4,2]))
+    nums = [1, 1, 1, 1, 2]
+    print(permutate(nums, 1))

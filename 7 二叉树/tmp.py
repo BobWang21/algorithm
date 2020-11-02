@@ -484,8 +484,7 @@ def rob2(tree):
     return max(helper(tree))
 
 
-# 124 可以不经过根节点 不含有负数 参考动态规划
-# 包含根节点的最大值 和 不包含根节点的最大值
+# 124. 二叉树中的最大路径和
 def max_sum_path(tree):
     res = [-float('inf')]
 

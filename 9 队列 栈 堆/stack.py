@@ -45,7 +45,7 @@ def remove_duplicates(S):
     return ''.join(stack)
 
 
-# 判断括号是否合法 只含有() 计数法
+# 判断括号是否合法 只含有() 计数法 摩尔投票法？
 def is_balanced_parentheses(s):
     balance = 0
     for char in s:

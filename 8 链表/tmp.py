@@ -550,30 +550,31 @@ class Node:
         self.random = random
 
 
+# 138. 复制带随机指针的链表
 def copy_random_list(head):
     if not head:
         return
     node = head
-    while node:
+    while node:  # 老新交替 代替dic
         new_node = Node(node.val)
         new_node.next = node.next
-        new_node.random = node.random
         node.next = new_node
         node = node.next.next
 
-    node = head.next
-    while node:
-        node.random = node.random.next if node.random else None
-        node = node.next.next if node.next else None
-
     node = head
-    new_head = node.next
-    pre = dummy = Node(-1)
     while node:
-        pre.next = node.next
+        node.next.random = node.random.next if node.random else None
+        node = node.next.next
+
+    dummy = pre = Node(-1)
+    node = head
+    while node:
+        nxt = node.next
+        node.next = node.next.next if node.next else None
+        pre.next = nxt
         pre = pre.next
-        node.next = node.next.next
         node = node.next
+
     return dummy.next
 
 
@@ -601,6 +602,34 @@ def rotate_right(head, k):
     new_head = new_tail.next
     new_tail.next = None
     return new_head
+
+
+# 92. 反转链表 II 反转从位置 m 到 n 的链表
+def reverse_between(head, m, n):
+    if not head or m == n:
+        return head
+    i = 1
+    first_tail = None
+    node = head
+    while i < m:
+        i += 1
+        first_tail = node
+        node = node.next
+
+    second_tail = node
+    pre = None
+    while i <= n:
+        i += 1
+        nxt = node.next
+        node.next = pre
+        pre = node
+        node = nxt
+    if first_tail:  # m == 1
+        first_tail.next = pre
+    else:
+        head = pre
+    second_tail.next = node
+    return head
 
 
 if __name__ == '__main__':

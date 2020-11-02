@@ -6,7 +6,7 @@ from collections import defaultdict
 TopK 问题的几种解法
 1 桶排序 
 2 堆排序
-3 2 二分查找 需要构造递增序列
+3 二分查找 需要构造递增序列
 4 对于未排序的 使用partition
 '''
 
@@ -131,6 +131,7 @@ def longest_consecutive(nums):
 
 
 # 众数 超过一半的数
+# 摩尔投票法的核心就是一一抵消
 def most_data(nums):
     if not nums:
         return
@@ -141,7 +142,7 @@ def most_data(nums):
         if cnt == 0:
             value = nums[i]
             cnt = 1
-        elif nums[i] == value:
+        if nums[i] == value:
             cnt += 1
         else:
             cnt -= 1

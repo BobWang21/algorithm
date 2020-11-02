@@ -1,6 +1,42 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# 78 子集问题
+# 时间复杂度：O(n * 2^n) 2^n种可能 每种可能需要O(n)构造子集
+def subset(nums):
+    res = []
+    n = len(nums)
+
+    def dfs(idx, path):  # 防止重复 所以顺序加入
+        res.append(path)  # 把路径全部记录下来
+        for i in range(idx, n):
+            dfs(i + 1, path + [nums[i]])  # 生成新的 不需要回溯
+
+    dfs(0, [])
+    return res
+
+
+# 90. 子集 II 包含重复
+def subsets_with_dup(nums):
+    if not nums:
+        return []
+
+    n, res, path = len(nums), [], []
+
+    def helper(idx=0):
+        res.append(path[:])
+
+        for i in range(idx, n):
+            if i > idx and nums[i - 1] == nums[i]:
+                continue
+            path.append(nums[i])
+            helper(i + 1)
+            path.pop(-1)
+
+    nums.sort()
+    helper()
+    return res
+
 
 def n_sum1(nums, k, target):
     if not nums or len(nums) < k or target < 0:
@@ -258,27 +294,6 @@ def permute_unique2(nums):
     return res
 
 
-# 子集问题
-def subset(candidates):
-    res = []
-    n = len(candidates)
-
-    def dfs(idx, path):
-        res.append(path)  # 把路径全部记录下来
-        for i in range(idx, n):
-            dfs(i + 1, path + [candidates[i]])
-
-    dfs(0, [])
-    return res
-
-
-def subsets2(nums):
-    res = [[]]
-    for num in nums:
-        res += [curr + [num] for curr in res]  # 之前的解并不包含当前数字
-    return res
-
-
 # 递增子序列
 def find_sub_sequences(nums):
     if not nums:
@@ -366,34 +381,34 @@ def letter_case_permutation(s):
 
 # 93. 复原IP地址 '010010' 恢复ip
 def restore_ip_addresses(s):
-    if not s:
+    if not s or len(s) > 12:
         return []
 
     def valid(s):
-        if len(s) > 1 and s[0] == '0':
-            return False
-        if int(s) > 255:
-            return False
-        return True
+        if s[0] == '0':  # 0 开头
+            if len(s) < 2:
+                return True
+            else:
+                return False
+        return int(s) <= 255
 
-    res, n = [], len(s)
+    res = []
+    n = len(s)
 
-    def helper(idx, path, k):
-        if k == 4 and idx == n:
-            res.append(path)
+    def dfs(idx, path):
+        if idx == n and len(path) == 4:
+            res.append('.'.join(path))
             return
-        if k == 4 or idx == n:
+        if idx == n or len(path) == 4:
             return
-        for i in range(1, 4):
+        for i in range(1, 4):  # 每次加 1-3 个数
             if idx + i <= n:
                 string = s[idx: idx + i]
                 if valid(string):
-                    if not k:  # '.'的位置
-                        helper(idx + i, string, 1)
-                    else:
-                        helper(idx + i, path + '.' + string, k + 1)
+                    dfs(idx + i, path + [string])
 
-    helper(0, '', 0)
+    dfs(0, [])
+
     return res
 
 
@@ -442,6 +457,7 @@ def nested_list_weight_sum(nums):
     return res[0]
 
 
+# 22. 括号生成
 def generate_parenthesis(n):
     if n < 0:
         return []
@@ -465,6 +481,29 @@ def generate_parenthesis(n):
                 helper(i - 1, j, path + '(', stack + ['('])
 
     helper(n, n, '', [])
+    return res
+
+
+def generate_parenthesis2(n):
+    if not n:
+        return []
+
+    res = []
+
+    def helper(path, i, left):  # i:未匹配的左括号 left:左括号数
+        if not i and left == n:
+            res.append(path)
+            return
+
+        if not i:
+            helper(path + '(', 1, left + 1)
+        elif left < n:
+            helper(path + '(', i + 1, left + 1)
+            helper(path + ')', i - 1, left)
+        else:
+            helper(path + ')', i - 1, left)
+
+    helper('', 0, 0)
     return res
 
 
@@ -508,6 +547,10 @@ def remove_invalid_parentheses(s):
 
 
 if __name__ == '__main__':
+    print('\n全集')
+    print(subset([1, 2, 3]))
+    print(subsets_with_dup([1, 2, 2, 3]))
+
     print('\nn sum 回溯版')
     print(n_sum1([1, 1, 2, 3, 4], 3, 6))
     print(n_sum2([1, 1, 2, 3, 4], 3, 6))
@@ -526,9 +569,6 @@ if __name__ == '__main__':
     print(permute1([1, 2, 3]))
     print(permute2([1, 2, 1]))
     print(permute_unique1([1, 2, 1]))
-
-    print('\n全集')
-    print(subset([1, 2, 3]))
 
     print('\n背包问题')
     print(knapsack([1, 2, 3, 4], [1, 3, 5, 8], 5))
