@@ -20,13 +20,13 @@ def clone_graph(node):
             return dic[node]
 
         new_node = Node(node.val)
-        dic[node] = new_node
+        dic[node] = new_node  # hash的是地址
 
-        res = []
+        neighbors = []
         for n in node.neighbors:
-            res.append(dfs(n))
+            neighbors.append(dfs(n))
 
-        new_node.neighbors = res
+        new_node.neighbors = neighbors
         return new_node
 
     return dfs(node)

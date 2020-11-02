@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# 单调栈适用于结果和数组当前值得前后缀相关的问题
+# 单调栈适用于结果和数组当前值的前后缀相关的问题
 
 
 # 496. 下一个更大元素 I
@@ -102,18 +102,19 @@ def largest_rectangle_area1(heights):
     return max_rec
 
 
+# 84. 柱状图中最大的矩形
 def largest_rectangle_area2(height):
     height.append(0)  # 为了让剩余元素出栈
     stack = []
-    ans = 0
+    res = 0
     n = len(height)
     for i in range(n):
         while stack and height[stack[-1]] > height[i]:
             h = height[stack.pop()]
             w = i - stack[-1] - 1 if stack else i  # 当前值为最小值长度为i
-            ans = max(ans, h * w)
+            res = max(res, h * w)
         stack.append(i)
-    return ans
+    return res
 
 
 # 42 接雨水

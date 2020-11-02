@@ -1,3 +1,6 @@
+import random as rd
+
+
 class Node():
     def __init__(self, key, val):
         self.key = key
@@ -65,6 +68,58 @@ class LRUCache(object):
         pre.next = nxt
         nxt.pre = pre
         del self.dic[key]
+
+
+class RandomizedSet(object):
+    def __init__(self):
+        self.array = []
+        self.dic = {}
+
+    def insert(self, val):
+        """
+        Inserts a value to the set. Returns true if the set did not already contain the specified element.
+        :type val: int
+        :rtype: bool
+        """
+        if val in self.dic:
+            return False
+        n = len(self.array)
+        self.array.append(val)
+        self.dic[val] = n
+        return True
+
+    def remove(self, val):
+        """
+        Removes a value from the set. Returns true if the set contained the specified element.
+        :type val: int
+        :rtype: bool
+        """
+        if val in self.dic:
+            idx = self.dic[val]
+            n = len(self.array)
+            self.array[n - 1], self.array[idx] = self.array[idx], self.array[n - 1]
+            self.dic[self.array[idx]] = idx
+            del self.dic[val]
+            self.array.pop(-1)
+            return True
+        else:
+            return False
+
+    def getRandom(self):
+        """
+        Get a random element from the set.
+        :rtype: int
+        """
+        n = len(self.array)
+        idx = rd.randint(0, n - 1)
+        return self.array[idx]
+
+
+# Your RandomizedSet object will be instantiated and called as such:
+# obj = RandomizedSet()
+# param_1 = obj.insert(val)
+# param_2 = obj.remove(val)
+# param_3 = obj.getRandom()
 
 
 if __name__ == '__main__':

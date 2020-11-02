@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-# 547 朋友圈总数 也可以使用dfs
+# 547 朋友圈总数 也可以使用dfs o(n^3)
 def find_circle_num(M):
     if not M or not M[0]:
         return 0
@@ -12,7 +12,7 @@ def find_circle_num(M):
     res = [n]
 
     def find(x):
-        while parent[x] != x:
+        while x != parent[x]:
             parent[x] = parent[parent[x]]  # 路径压缩 变为一半
             x = parent[x]
         return x
@@ -30,7 +30,7 @@ def find_circle_num(M):
         else:  # 相等时 合并后的rank+1
             parent[y] = x
             rank[x] += 1
-        res[0] -= 1  # 边数 + 连通图数 = 顶点数
+        res[0] -= 1  # 顶点数 = 边数 + 连通图数
         return False
 
     for i in range(n):
@@ -40,14 +40,14 @@ def find_circle_num(M):
     return res[0]
 
 
-# dfs 版
+# dfs 时间复杂度：O(n^2)
 def find_circle_num2(M):
     n = len(M)
     seen = set()
 
-    def dfs(node):
-        for i, v in enumerate(M[node]):
-            if v and i not in seen:
+    def dfs(i):
+        for j in range(n):
+            if j not in seen and M[i][j]:
                 seen.add(i)
                 dfs(i)
 

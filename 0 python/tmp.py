@@ -39,6 +39,7 @@ if __name__ == '__main__':
     nums.append(3)  # 增加一个数
     print(nums + [4])  # 生成一个新的变量
     change1(nums[1:])  # 切片和[:] 生成一个新的列表
+    print(nums[3:10:2])  # [star, end, step]
 
     print('\n字典')
     dic = {1: 3}

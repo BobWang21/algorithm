@@ -137,37 +137,6 @@ def search(nums, target):
     return -1
 
 
-def find_median_sorted_arrays(nums1, nums2):
-    m, n = len(nums1), len(nums2)
-    if m > n:
-        return find_median_sorted_arrays(nums2, nums1)
-
-    k = (m + n + 1) // 2  # 左中位数的个数
-    l, r = 0, m - 1
-    while l < r:
-        mid = l + (r - l + 1) // 2
-        if nums1[mid] <= nums2[k - mid - 1]:
-            l = mid
-        else:
-            r = mid - 1
-    l = l if nums1 and nums1[l] <= nums2[k - l - 1] else l - 1  # 需要补丁
-
-    x1, x2 = l, k - l - 2
-    v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
-             nums2[x2] if 0 <= x2 < n else -float('inf')
-             )
-
-    if (m + n) % 2:
-        return v1
-    
-    v2 = min(
-        nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
-        nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf')
-    )
-
-    return (v1 + v2) / 2
-
-
 # 162. 寻找峰值
 def find_peak_element(nums):
     l, r = 0, len(nums) - 1
@@ -315,7 +284,36 @@ def find_kth_number2(n, k):
     return prefix
 
 
+# 4. 寻找两个正序数组的中位数
+def find_median_sorted_arrays(nums1, nums2):
+    m, n = len(nums1), len(nums2)
+    if m > n:
+        return find_median_sorted_arrays(nums2, nums1)
 
+    k = (m + n + 1) // 2  # 左中位数的个数
+    l, r = 0, m - 1  # 取每个数字
+    while l < r:
+        mid = l + (r - l) // 2
+        if nums1[mid] <= nums2[k - mid - 1]:  # nums1[l-1] <= nums2[k-l]
+            l = mid + 1
+        else:
+            r = mid  # nums1[l] > nums2[k-l-1]
+    l = l + 1 if nums1 and nums1[l] <= nums2[k - l - 1] else l  # 需要补丁
+
+    x1, x2 = l - 1, k - l - 1
+    v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
+             nums2[x2] if 0 <= x2 < n else -float('inf')
+             )
+
+    if (m + n) % 2:
+        return v1
+
+    v2 = min(
+        nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
+        nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf')
+    )
+
+    return (v1 + v2) / 2
 
 
 if __name__ == '__main__':
@@ -345,11 +343,11 @@ if __name__ == '__main__':
     print('\n找出0-n之间缺少的一个数字')
     print(find_missed_value([0, 1, 3]))
 
-    print('\n中位数')
-    print(find_median_sorted_arrays([1, 2], [3, 4]))
-
     print('\n乘法表中第k小的数')
     print(find_kth_number1(3, 2, 6))
 
     print('\n字典序')
     print(find_kth_number2(13, 2))
+
+    print('\n中位数')
+    print(find_median_sorted_arrays([1, 2], [3, 4]))
