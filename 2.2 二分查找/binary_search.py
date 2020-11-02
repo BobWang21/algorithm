@@ -294,13 +294,13 @@ def find_median_sorted_arrays(nums1, nums2):
     l, r = 0, m - 1  # 取每个数字
     while l < r:
         mid = l + (r - l) // 2
-        if nums1[mid] <= nums2[k - mid - 1]:  # nums1[l-1] <= nums2[k-l]
+        if nums1[mid] <= nums2[k - mid - 1]:  # nums1[l-1] <= nums2[k-l] 此处必须是mid 不能是mid-1
             l = mid + 1
         else:
             r = mid  # nums1[l] > nums2[k-l-1]
     l = l + 1 if nums1 and nums1[l] <= nums2[k - l - 1] else l  # 需要补丁
 
-    x1, x2 = l - 1, k - l - 1
+    x1, x2 = l - 1, k - l - 1  # nums1[l-1] <= nums2[k-l]
     v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
              nums2[x2] if 0 <= x2 < n else -float('inf')
              )
