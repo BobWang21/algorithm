@@ -70,6 +70,7 @@ class LRUCache(object):
         del self.dic[key]
 
 
+# o(1) 删除数组元素
 class RandomizedSet(object):
     def __init__(self):
         self.array = []

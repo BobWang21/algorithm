@@ -230,18 +230,15 @@ def divide(dividend, divisor):
     dividend, divisor = abs(dividend), abs(divisor)
     om = (1 << 31) - 1 if sign > 0 else (1 << 31)
 
-    if divisor == 1:
-        return dividend * sign if dividend <= om else (1 << 31) - 1
-
     res = 0
     divisor_old = divisor
     while dividend >= divisor_old:
-        divisor = divisor_old
-        k = 1
-        while dividend >= divisor * k:
-            dividend -= divisor * k
+        divisor, k = divisor_old, 1
+        while dividend >= divisor:
+            dividend -= divisor
             res += k
-            k *= divisor
+            k <<= 1
+            divisor <<= 1
 
     return res * sign if res <= om else (1 << 31) - 1
 
