@@ -281,6 +281,16 @@ def next_permutation(nums):
     return nums
 
 
+# 66. 加一 [1, 2, 3] -> [1, 2, 4]
+def plus_one(digits):
+    if len(digits) == 1 and digits[0] == 9:  # base
+        return [1, 0]
+    if digits[-1] < 9:
+        digits[-1] += 1
+        return digits
+    return plus_one(digits[:-1]) + [0]
+
+
 if __name__ == '__main__':
     print('\n矩阵查找')
     matrix = [

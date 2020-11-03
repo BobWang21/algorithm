@@ -69,12 +69,12 @@ def common_greatest_divisor(a, b):
     return common_greatest_divisor(b, a % b)
 
 
+# 166. 分数到小数
 def fraction_to_decimal(numerator, denominator):
     if numerator == 0:
         return "0"
-    res = []
     # 首先判断结果正负, 异或作用就是 两个数不同 为 True 即 1 ^ 0 = 1 或者 0 ^ 1 = 1
-    if (numerator > 0) ^ (denominator > 0):  # 防止溢出 异号为负数
+    if (numerator > 0) ^ (denominator > 0):  # 防止溢出 不使用*,
         res = '-'
     else:
         res = ''
@@ -103,7 +103,7 @@ def fraction_to_decimal(numerator, denominator):
     return res
 
 
-# 计算素数个数
+# 204 计算小于n的素数个数
 def count_primes(n):
     if n < 2:
         return 0
@@ -125,10 +125,14 @@ def ten_2_binary(value):
     return stack
 
 
-# 123 -> 321 可以不用栈 123 进栈为[3, 2, 1]
+# 7. 整数反转 123->321
 def reverse(x):
     y, pre = abs(x), 0
-    om = (1 << 31) - 1 if x > 0 else 1 << 31  # out of memory (1 << 31)
+    # om 防止重复计算
+    if x >= 0:
+        om = (1 << 31) - 1  # 必须加()
+    else:
+        om = 1 << 31
     while y:
         pre = pre * 10 + y % 10  #
         if pre > om:
@@ -154,14 +158,25 @@ def reverse2(x):
     return res if res < 2 ** 31 else 0
 
 
-# [1, 2, 3] -> [1, 2, 4]
+# 66. 加一 [1, 2, 3] -> [1, 2, 4]
 def plus_one(digits):
+    if len(digits) == 1 and digits[0] == 9:  # base
+        return [1, 0]
     if digits[-1] < 9:
         digits[-1] += 1
         return digits
-    if len(digits) == 1 and digits[0] == 9:  # base
-        return [1, 0]
     return plus_one(digits[:-1]) + [0]
+
+
+def plus_one2(digits):
+    n = len(digits)
+    for i in range(n - 1, -1, -1):
+        if digits[i] < 9:
+            digits[i] += 1
+            return digits
+        digits[i] = 0
+        i -= 1
+    return digits if digits[0] else [1] + digits
 
 
 def my_atoi(str):
@@ -208,18 +223,27 @@ def is_power_of_two1(n):
 
 # 29 两个数相除 不用除法
 def divide(dividend, divisor):
-    sig = True if dividend * divisor > 0 else False  # 判断二者相除是正or负
-    dividend, divisor = abs(dividend), abs(divisor)  # 将被除数和除数都变成正数
-    res = 0  # 用来表示减去了多少个除数，也就是商为多少
-    while divisor <= dividend:  # 当被除数小于除数的时候终止循环
-        tmp_divisor, count = divisor, 1  # 倍增除数初始化
-        while tmp_divisor <= dividend:  # 当倍增后的除数大于被除数重新，变成最开始的除数
-            dividend -= tmp_divisor
-            res += count
-            count <<= 1  # *2
-            tmp_divisor <<= 1  # 更新除数(将除数扩大两倍)
-    res_value = res if sig else -res  # 给结果加上符号
-    return max(min(res_value, 2 ** 31 - 1), -2 ** 31)
+    sign = 1
+    if (dividend > 0) ^ (divisor > 0):
+        sign = -1
+
+    dividend, divisor = abs(dividend), abs(divisor)
+    om = (1 << 31) - 1 if sign > 0 else (1 << 31)
+
+    if divisor == 1:
+        return dividend * sign if dividend <= om else (1 << 31) - 1
+
+    res = 0
+    divisor_old = divisor
+    while dividend >= divisor_old:
+        divisor = divisor_old
+        k = 1
+        while dividend >= divisor * k:
+            dividend -= divisor * k
+            res += k
+            k *= divisor
+
+    return res * sign if res <= om else (1 << 31) - 1
 
 
 # Input: 19
@@ -280,9 +304,9 @@ def is_ugly2(num):
         return True
     if num % 2 == 0:
         return is_ugly2(num % 2)
-    elif num % 3 == 0:
+    if num % 3 == 0:
         return is_ugly2(num % 3)
-    elif num % 5 == 0:
+    if num % 5 == 0:
         return is_ugly2(num % 3)
     else:
         return False
@@ -339,7 +363,7 @@ def zero_nums(n):
 def hamming_weight(n):
     cnt = 0
     while n:
-        n &= n - 1
+        n &= n - 1  # 每次去除最后的1 [10, 01] [01, 00]
         cnt += 1
     return cnt
 
@@ -395,7 +419,7 @@ if __name__ == '__main__':
     print(count_primes(10))
 
     print('\n数字翻转')
-    print(reverse(123))
+    print(reverse(1463847412))
 
     print('\n丑数')
     print(nth_ugly_number(10))

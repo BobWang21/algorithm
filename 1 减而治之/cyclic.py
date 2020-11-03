@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# dic
 # 循环排序: 适合于数值区间在一定范围内的数组
 # 访问标记正负 适合于正数 数组可以修改
 # 快慢双指针 不修改列表
 # 异或操作
-# Hashmap
 # 二分查找
 
 
@@ -134,8 +134,7 @@ def rotate(nums, k):
         cnt += 1
 
 
-# 268 给定一个包含 0, 1, 2, ..., n 中 n 个数的序列，
-# 找出 0 .. n 中没有出现在序列中的那个数
+# 268 给定一个包含[0, n]中 n 个数的序列，找出没有出现在序列中的那个数
 def missing_number(nums):
     if not nums:
         return 0
