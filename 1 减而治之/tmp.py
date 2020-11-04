@@ -63,7 +63,8 @@ def top_k_frequent(nums, k):
                     return res[:k]
 
 
-# 560. 和为K的子数组 前缀和
+# 560. 和为K的子数组
+# 前缀和 如果两个数的前缀和相同，那么这两个节点之间的元素总和为零
 def subarray_sum(nums, k):
     res = 0
     total = 0

@@ -333,6 +333,7 @@ def nth_ugly_number(n):
     return res[-1]
 
 
+# 堆
 def nth_ugly_number2(k):
     s = set()
     heap = [1]

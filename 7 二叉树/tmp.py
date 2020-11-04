@@ -556,14 +556,16 @@ def width_of_tree(tree):
     return res
 
 
-# 双重递归
-def path_sum(root, sum):
+# 437 给定一个二叉树，它的每个结点都存放着一个整数值。
+# 找出路径和等于给定数值的路径总数。
+# 路径不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）
+def path_sum(root, target):
     res = [0]
 
-    def from_root(tree, total):  # 包含根节点
+    def from_root(tree, total):  # 包含当前节点
         if not tree:
             return
-        if tree.val + total == sum:
+        if tree.val + total == target:
             res[0] += 1
         from_root(tree.left, tree.val + total)
         from_root(tree.right, tree.val + total)
@@ -580,26 +582,55 @@ def path_sum(root, sum):
 
 
 # 前缀和
-def path_sum2(root, sum):
+def path_sum2(root, target):
+    if not root:
+        return 0
     res = [0]
+    dic = {0: 1}
 
-    def from_root(tree, total):  # 包含根节点
-        if not tree:
+    def helper(root, total):  # 包含根节点
+        if not root:
             return
-        if tree.val + total == sum:
-            res[0] += 1
-        from_root(tree.left, tree.val + total)
-        from_root(tree.right, tree.val + total)
 
-    def helper(tree):
-        if not tree:
-            return
-        from_root(tree, 0)
-        helper(tree.left)
-        helper(tree.right)
+        total += root.val
+        if total - target in dic:
+            res[0] += dic[total - target]
+        v = dic.get(total, 0)
+        dic[total] = v + 1
+        helper(root.left, total)
+        helper(root.right, total)
+        dic[total] = v  # 回溯
 
-    helper(root)
+    helper(root, 0)
+
     return res[0]
+
+
+# 子树的节点值 为target
+# 中序遍历 即可!
+def path_num3(root, target):
+    if not root:
+        return []
+
+    values = []
+
+    def in_ord(root):
+        if not root:
+            return []
+        values.append(root.val)
+        in_ord(root.left)
+        in_ord(root.right)
+
+    in_ord(root)
+    dic = {0: 1}
+    total = 0
+    res = 0
+    for v in values:
+        total += v
+        if total - target in dic:
+            res += dic[total - target]
+        dic[total] = dic.get(total, 0) + 1
+    return res
 
 
 if __name__ == '__main__':
