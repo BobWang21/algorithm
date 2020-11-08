@@ -284,6 +284,29 @@ def find_kth_number2(n, k):
     return prefix
 
 
+# 14. 最长公共前缀
+def longest_common_prefix2(strs):
+    if not strs or not strs[0]:
+        return ''
+
+    def lcp(l):
+        for i in range(l):
+            for s in strs[1:]:
+                if len(s) < i + 1 or s[i] != strs[0][i]:
+                    return False
+        return True
+
+    min_l = min([len(s) for s in strs])
+    l, r = 0, min_l
+    while l < r:
+        mid = l + (r - l + 1) // 2
+        if lcp(mid):
+            l = mid
+        else:
+            r = mid - 1
+    return strs[0][:l]
+
+
 # 4. 寻找两个正序数组的中位数
 def find_median_sorted_arrays(nums1, nums2):
     m, n = len(nums1), len(nums2)
