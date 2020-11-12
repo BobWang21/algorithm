@@ -60,7 +60,7 @@ if __name__ == '__main__':
     print([chr(ord('a') + i) for i in range(26)])
     lists = [c for c in s]  # split 是针对分隔符分割 默认空格
     print(lists)
-    s = '5'
+    print('/a'.split('/'))  # ['', 'a'] /的左右
 
     print('\n集合')
     nums = set([1, 2, 3])  # set(v) v 需要可迭代

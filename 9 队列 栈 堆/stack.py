@@ -291,6 +291,24 @@ class MinStack():
         return self.min[-1]
 
 
+# 71. 简化路径
+def simplify_path(path):
+    if not path:
+        return '/'
+    stack, res = [], '/'
+    string = path.split('/')
+    for c in string:
+        if not c or c == '.':
+            continue
+        if c == '..':
+            if stack:
+                stack.pop(-1)
+        else:
+            stack.append(c)
+    res += '/'.join(stack)
+    return res
+
+
 if __name__ == '__main__':
     print('\n十进制转二进制')
     print(ten_2_binary(10))

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
 # 78 子集问题
 # 时间复杂度：O(n * 2^n) 2^n种可能 每种可能需要O(n)构造子集
 def subset(nums):
@@ -524,7 +525,7 @@ def remove_invalid_parentheses(s):
 
     n, res = len(s), set()  # 因为可能存在重复值 所以使用set保存结果
 
-    def dfs(i, l, r, left, path):  # left 表示剩余的左括号
+    def dfs(i, l, r, left, path):  # left 表示未匹配的左括号
         if i == n and not l and not r and not left:
             res.add(path)
         if i == n:

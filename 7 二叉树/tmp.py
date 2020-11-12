@@ -562,7 +562,7 @@ def width_of_tree(tree):
 def path_sum(root, target):
     res = [0]
 
-    def from_root(tree, total):  # 包含当前节点
+    def from_root(tree, total):  # 尝试从当前节点出发 到任一子节点的路径
         if not tree:
             return
         if tree.val + total == target:
@@ -573,7 +573,8 @@ def path_sum(root, target):
     def helper(tree):
         if not tree:
             return
-        from_root(tree, 0)
+        # 每个节点都作为路径的起点
+        from_root(tree, 0)  # 当前节点作为路径起点
         helper(tree.left)
         helper(tree.right)
 
@@ -581,7 +582,7 @@ def path_sum(root, target):
     return res[0]
 
 
-# 前缀和
+# 考虑当前节点之前的路径，借鉴前缀和的思想
 def path_sum2(root, target):
     if not root:
         return 0
@@ -607,7 +608,7 @@ def path_sum2(root, target):
 
 
 # 子树的节点值 为target
-# 中序遍历 即可!
+# 中序遍历结果为任意子结构 即可!
 def path_num3(root, target):
     if not root:
         return []
