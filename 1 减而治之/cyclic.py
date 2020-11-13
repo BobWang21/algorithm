@@ -149,7 +149,7 @@ def missing_number(nums):
 
 
 # 287. 寻找重复数
-def findDuplicate(nums):
+def find_duplicate(nums):
     n = len(nums)
 
     def count(target):

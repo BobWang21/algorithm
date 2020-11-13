@@ -9,9 +9,6 @@ from collections import defaultdict
 
 def change1(nums):
     nums[0] = 100
-
-
-def change2(nums):
     nums = [1, 2]  # 按地址传递 只可以修改, 不可以更改
 
 
@@ -21,8 +18,7 @@ if __name__ == '__main__':
     nums = float('inf')
     math.isinf(nums)
     print(isinstance([], list))  # 判断类型
-    print(round(3.1, 1))
-    print(round(3.6, 1))
+    print(round(3.1, 1))  # 四舍五入
     print(int('001'))  # ✔️
     print(eval('1'))  # eval('001') ×
     print(divmod(6, 4))
@@ -38,7 +34,7 @@ if __name__ == '__main__':
     nums.sort(key=lambda x: x[1] - x[0])  # 排序
     nums.append(3)  # 增加一个数
     print(nums + [4])  # 生成一个新的变量
-    change1(nums[1:])  # 切片和[:] 生成一个新的列表
+    print(nums[1:])  # 切片和[:] 生成一个新的列表
     print(nums[3:10:2])  # [star, end, step]
 
     print('\n字典')
@@ -87,14 +83,12 @@ if __name__ == '__main__':
     heap = [3, 4, 1, 2]
     hq.heapify(heap)  # 改成堆
     hq.heappush(heap, 5)
-    print(heap)
     while heap:
         print(hq.heappop(heap))
 
     print('\ndefaultdict')
     dic = defaultdict(set)
     dic[1].add(2)
-    print(dic)
 
     dic = defaultdict(int)
     dic[1] += 5
@@ -103,5 +97,4 @@ if __name__ == '__main__':
     # 进制转换
     print('\n位操作')
     print(bin(8)[2:])  # bin(8) = '0b1000'
-    print(2 << 2 - 1)  # 位操作的优先级低于 +/-
-    print((2 << 2) - 1)  # 7
+    print((2 << 2) - 1)  # 位操作的优先级低于 +/-

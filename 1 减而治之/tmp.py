@@ -72,7 +72,7 @@ def subarray_sum(nums, k):
     dic[0] = 1  # 初始化 可能total = k
     for num in nums:
         total += num  # 以num为结尾的连续数组
-        if total - k in dic:  # total - k = pre_sum -> total - k in dic
+        if total - k in dic:  # pre_sum+k=total -> total-k in dic
             res += dic[total - k]
         dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
     return res
