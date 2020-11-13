@@ -99,7 +99,7 @@ def find_duplicate_num2(nums):
 # 要求 O(1)空间复杂度!!!  不能修改列表
 def find_duplicate_num3(nums):
     fast = slow = nums[0]
-    # 证明有环 快慢两个指针
+    # 证明有环
     while True:
         slow = nums[slow]
         fast = nums[nums[fast]]

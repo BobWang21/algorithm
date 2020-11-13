@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from collections import defaultdict, Counter
+from collections import defaultdict
 
 
 # 判断是否为回文
@@ -55,13 +55,13 @@ def rotate(nums, k):
     return nums
 
 
-# 72 最小覆盖子串 滑动窗口
+# 76 最小覆盖子串 滑动窗口
 def min_window(s, t):
-    dic1 = dict()
+    dic1 = defaultdict(int)
+    dic2 = defaultdict(int)
     for c in t:
-        dic1.setdefault(c, 0)
         dic1[c] += 1
-    dic2 = dict()
+
     l, r = 0, 0
     match = 0
     min_len = float('inf')
@@ -69,7 +69,6 @@ def min_window(s, t):
     while r < len(s):
         c = s[r]
         if c in dic1:
-            dic2.setdefault(c, 0)
             dic2[c] += 1
             if dic2[c] == dic1[c]:
                 match += 1  # 字母匹配数

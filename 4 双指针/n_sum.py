@@ -37,7 +37,6 @@ def two_sum2(nums, target):
     return res
 
 
-# 双指针
 def three_sum(nums, target):
     n = len(nums)
     if n < 3:

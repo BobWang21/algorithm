@@ -225,8 +225,9 @@ def permute2(nums):
     res = []
     n = len(nums)
     visited = [False] * n
+    path = []
 
-    def dfs(path):
+    def dfs():
         if len(path) == n:
             res.append(path[:])
 
@@ -235,11 +236,11 @@ def permute2(nums):
                 continue
             visited[i] = True
             path.append(nums[i])
-            dfs(path)
+            dfs()
             path.pop(-1)
             visited[i] = False
 
-    dfs([])
+    dfs()
     return res
 
 
@@ -281,7 +282,7 @@ def permute_unique2(nums):
         for i in range(n):
             if visited[i]:
                 continue
-            # nums[i-1] 和 nums[i] 不能在同一个位置
+            # nums[i-1] 和 nums[i] 不能在同一个位置 前面的数字未使用
             if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
                 continue
             visited[i] = True
@@ -421,8 +422,8 @@ def word_ladder(begin_word, end_word, word_list):
     if not word_list:
         return 0
     queue = [(begin_word, 0)]  # 记录层数
-    visited = {begin_word}  # 保存已经加入过队列的字符串 没有重复 可以使用集合
-    word_set = set(word_list)  # 已经访问过的数字会被重复访问
+    visited = {begin_word}  # 保存已加入过队列的字符串
+    word_set = set(word_list)
     while queue:
         word, l = queue.pop(0)
         if word == end_word:

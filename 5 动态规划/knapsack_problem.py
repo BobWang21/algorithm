@@ -3,23 +3,6 @@
 # 动态规划 matrix[i][j] 表示前 i 件物品恰放入一个容量为 j 的背包可以获得的最大价值
 
 
-# 0-1 背包问题 回溯法
-def knapsack_backtrack(cost, val, cap):
-    res = [-1]
-
-    def dfs(cap, idx, amount):
-        for i in range(idx, len(cost)):
-            if cap - cost[i] < 0:  # base 1 不能再装了
-                res[0] = max(res[0], amount)
-            elif cap - cost[i] == 0:  # base 2
-                res[0] = max(res[0], amount + val[i])
-            else:
-                dfs(cap - cost[i], i + 1, amount + val[i])
-
-    dfs(cap, 0, 0)
-    return res[0]
-
-
 # 0-1背包
 def knapsack(costs, values, capacity):
     rows, cols = len(costs) + 1, capacity + 1

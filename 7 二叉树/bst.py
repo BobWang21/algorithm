@@ -13,6 +13,7 @@ class BSTNode(object):
 
 
 # 判断二叉树是否为二叉搜索树
+# 中序遍历中判断是否递增
 def is_valid_bst(tree):
     if not tree:
         return True
@@ -158,18 +159,18 @@ def counter_smaller(nums):
     if not nums:
         return []
 
-    def insert(tree, v, cnt=0):
+    def insert(tree, v, cnt=0):  # cnt 从上到下记录
         if not tree:
             node = BSTNode(v)
             return node, cnt
         if tree.val == v:
             tree.cnt += 1
             return tree, cnt + tree.left_cnt
-        if tree.val < v:
+        if v > tree.val:
             right, cnt = insert(tree.right, v, cnt + tree.left_cnt + tree.cnt)
             tree.right = right
             return tree, cnt
-        if tree.val > v:
+        if v < tree.val:
             tree.left_cnt += 1
             left, cnt = insert(tree.left, v, cnt)
             tree.left = left
