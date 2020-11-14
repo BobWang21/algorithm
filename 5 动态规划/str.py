@@ -120,6 +120,39 @@ def word_break(s, word_dict):
     return dp[-1]
 
 
+# 10. 正则表达式匹配
+# '.' 匹配任意单个字符
+# '*' 匹配零个或多个前面的那一个元素
+def is_match(s, p):
+    if not s and not p:
+        return True
+
+    if not p:
+        return False
+
+    def match(i, j):
+        if j == 0:  # 不存在字符
+            return False
+        if p[i - 1] == '.':  # . 匹配任何字符
+            return True
+        return p[i - 1] == s[j - 1]
+
+    m, n = len(p), len(s)
+    dp = [[False] * (n + 1) for _ in range(m + 1)]
+    dp[0][0] = True
+
+    for i in range(1, m + 1):
+        for j in range(n + 1):
+            if p[i - 1] == '*':
+                dp[i][j] = dp[i - 2][j]  # 匹配0个
+                if match(i - 1, j):
+                    dp[i][j] |= dp[i][j - 1]  # 匹配一次
+            else:
+                if match(i, j):
+                    dp[i][j] = dp[i - 1][j - 1]
+    return dp[-1][-1]
+
+
 if __name__ == '__main__':
     print('\n最长公共子序列')
     print(LCS('abcbdab', 'bdcaba'))
