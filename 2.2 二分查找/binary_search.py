@@ -259,31 +259,6 @@ def kth_smallest(matrix, k):
     return l
 
 
-# 440 字典序 第k个数字 2.2 二分查找 十叉树
-def find_kth_number2(n, k):
-    def prefix_num(prefix):
-        cnt = 0
-        curr = prefix
-        nxt = prefix + 1
-        while curr <= n:
-            cnt += min(n + 1, nxt) - curr
-            curr *= 10
-            nxt *= 10
-        return cnt - 1  # 此节点的子节点
-
-    prefix = 1
-    rank = 1  # 当前的节点的序
-    while rank < k:
-        cnt = prefix_num(prefix)
-        if rank + cnt > k:  # 如何移动节点
-            rank += 1
-            prefix *= 10
-        else:
-            rank += cnt
-            prefix += 1
-    return prefix
-
-
 # 14. 最长公共前缀
 def longest_common_prefix2(strs):
     if not strs or not strs[0]:
@@ -337,6 +312,55 @@ def find_median_sorted_arrays(nums1, nums2):
     )
 
     return (v1 + v2) / 2
+
+
+# 440 字典序 第k个数字
+def find_kth_number2(n, k):
+    res = [k + 1]  # 多加一个0元素
+
+    def dfs(i):
+        if i > n:
+            return
+        if not res[0]:  # 已经找到了
+            return
+        res[0] -= 1
+        if not res[0]:
+            res.append(i)
+            return
+
+        if i == 0:  # 第一层 和 其他层不一样
+            for j in range(1, 10):
+                dfs(j)
+        else:
+            for j in range(10):
+                dfs(i * 10 + j)
+
+    dfs(0)
+    return res[1]
+
+
+# 十叉树的先序遍历
+def find_kth_number3(n, k):
+    def prefix_num(val):
+        cnt = 0
+        cur, nxt = val, val + 1
+        while cur <= n:
+            cnt += min(n + 1, nxt) - cur
+            cur *= 10
+            nxt *= 10
+        return cnt  # 此节点的子节点数
+
+    prefix = 1
+    i = 1  # 当前的节点的序
+    while i < k:
+        num = prefix_num(prefix)
+        if i + num > k:
+            i += 1
+            prefix *= 10
+        else:
+            i += num
+            prefix += 1
+    return prefix
 
 
 if __name__ == '__main__':
