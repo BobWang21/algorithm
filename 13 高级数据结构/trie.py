@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+# 前缀树
 class Trie(object):
     def __init__(self):
         self.dic = {}  # 嵌套字典
@@ -41,7 +42,7 @@ def find_words(board, words):
     trie = Trie()
     for word in words:
         trie.insert(word)
-
+    print(trie.dic)
     rows, cols = len(board), len(board[0])
 
     res = set()
@@ -62,11 +63,11 @@ def find_words(board, words):
         if trie.search(new_word):
             res.add(new_word)
 
-        ch = board[i][j]
+        char = board[i][j]
         board[i][j] = '.'
         for direction in directions:  # 四个方向独立
             helper(i + direction[0], j + direction[1], new_word)
-        board[i][j] = ch  # 无论如何都回溯
+        board[i][j] = char  # 无论如何都回溯
 
     for i in range(rows):
         for j in range(cols):
