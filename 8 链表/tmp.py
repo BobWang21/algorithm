@@ -484,6 +484,7 @@ def odd_even_list2(head):
 
 
 # 重复删除链表中连续和为0的节点 head = [1,2,3,-3,-2] -> [1]
+# 前缀和
 def remove_zero_sum_sublists(head):
     dummy = ListNode(0)
     dummy.next = head

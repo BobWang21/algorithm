@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
-# 547 朋友圈总数 也可以使用dfs o(n^3)
+# 547 朋友圈总数 o(n^3)
+# 访问整个矩阵一次，并查集操作需要最坏O(n)的时间。
 def find_circle_num(M):
     if not M or not M[0]:
         return 0
     n = len(M)
     parent = list(range(n))
     rank = [0] * n
-    res = [n]
+    res = [n]  # 连通图数
 
     def find(x):
         while x != parent[x]:
@@ -45,17 +46,20 @@ def find_circle_num2(M):
     n = len(M)
     seen = set()
 
-    def dfs(i):
+    def helper(i):
+        if i in seen:
+            return
+
+        seen.add(i)
         for j in range(n):
-            if j not in seen and M[i][j]:
-                seen.add(i)
-                dfs(i)
+            if M[i][j] and i != j:
+                helper(j)
 
     res = 0
     for i in range(n):
         if i not in seen:
-            dfs(i)
             res += 1
+            helper(i)
     return res
 
 
@@ -154,6 +158,7 @@ def are_sentences_similar_two(words1, words2, pairs):
     return True
 
 
+# 684. 冗余连接
 def find_redundant_connection(edges):
     if not edges:
         return

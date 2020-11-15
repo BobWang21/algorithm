@@ -81,7 +81,7 @@ def find_missed_value(nums):
     return l
 
 
-# 34. 在排序数组中查找元素的第一个和最后一个位置
+# 34. 在排序数组中查找元素出现的次数
 def get_number_of_k(nums, target):
     if not nums:
         return 0
@@ -314,7 +314,7 @@ def find_median_sorted_arrays(nums1, nums2):
     return (v1 + v2) / 2
 
 
-# 440 字典序 第k个数字
+# 440 字典序 第k个数字 o(k)
 def find_kth_number2(n, k):
     res = [k + 1]  # 多加一个0元素
 
@@ -329,7 +329,7 @@ def find_kth_number2(n, k):
             return
 
         if i == 0:  # 第一层 和 其他层不一样
-            for j in range(1, 10):
+            for j in range(1, 10):  # 1, 2, ..9
                 dfs(j)
         else:
             for j in range(10):
@@ -348,7 +348,7 @@ def find_kth_number3(n, k):
             cnt += min(n + 1, nxt) - cur
             cur *= 10
             nxt *= 10
-        return cnt  # 此节点的子节点数
+        return cnt  # 包含该节点的子节点数
 
     prefix = 1
     i = 1  # 当前的节点的序
@@ -364,7 +364,7 @@ def find_kth_number3(n, k):
 
 
 if __name__ == '__main__':
-    print('\n2.2 二分查找')
+    print('\n二分查找')
     nums = [1, 3, 5, 9, 10, 16, 17]
     print(binary_search1(nums, 3))
 

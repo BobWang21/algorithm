@@ -49,14 +49,14 @@ def find_words(board, words):
 
     directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]  # ← → ↑ ↓
 
-    def helper(i, j, path):
+    def helper(i, j, word):
         if i < 0 or j < 0 or i == rows or j == cols:
-            return False
+            return
 
         if board[i][j] == '.':  # 访问过
-            return False
+            return
 
-        new_word = path + board[i][j]
+        new_word = word + board[i][j]
         if not trie.starts_with(new_word):
             return
 

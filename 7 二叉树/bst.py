@@ -177,12 +177,10 @@ def counter_smaller(nums):
             return tree, cnt
 
     tree = BSTNode(float('inf'))
-    res = []
     n = len(nums)
+    res = [0] * n
     for i in range(n - 1, -1, -1):
-        res.append(insert(tree, nums[i])[1])
-
-    res.reverse()
+        res[i] = insert(tree, nums[i])[1]
     return res
 
 
