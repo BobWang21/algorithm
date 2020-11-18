@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pprint import pprint
 
 
-def diagnose_traverse(data):
-    rows, cols = len(data), len(data[0])
+def diagnose_traverse(matrix):
+    rows, cols = len(matrix), len(matrix[0])
     res = []
     # 上三角
     for i in range(cols):
         row = 0
         col = i
         while col >= 0:
-            res.append(data[row][col])
+            res.append(matrix[row][col])
             row += 1
             col -= 1
     # 下三角
@@ -18,59 +19,99 @@ def diagnose_traverse(data):
         row = i
         col = cols - 1
         while row < rows:
-            res.append(data[row][col])
+            res.append(matrix[row][col])
             row += 1
             col -= 1
     return res
 
 
-def clockwise_traverse(data):
-    cols, rows = len(data), len(data[0])
-    iteration = min(cols + 1, rows + 1) // 2
+# 54. 螺旋矩阵
+def spiral_order(matrix):
+    if not matrix:
+        return []
+    left, right, top, bottom = 0, len(matrix[0]) - 1, 0, len(matrix) - 1
     res = []
-    for i in range(iteration):
-        row, col = i, i
-        # left
-        while col < cols - i - 1:
-            res.append(data[row][col])
-            col += 1
-        # down
-        while row < rows - i - 1:
-            res.append(data[row][col])
-            row += 1
+    while True:
+        # left to right
+        for i in range(left, right + 1):
+            res.append(matrix[top][i])
+        top += 1
+        if top > bottom:
+            break
 
+        # top to bottom
+        for i in range(top, bottom + 1):
+            res.append(matrix[i][right])
+        right -= 1
+        if left > right:
+            break
+
+        # right to left
+        for i in range(right, left - 1, -1):
+            res.append(matrix[bottom][i])
+        bottom -= 1
+        if top > bottom:
+            break
+
+        # bottom to top
+        for i in range(bottom, top - 1, -1):
+            res.append(matrix[i][left])
+        left += 1
+        if left > right:
+            break
+    return res
+
+
+def spiral_order2(matrix):
+    if not matrix:
+        return
+
+    res = []
+    while matrix:
+        # top
+        res.extend(matrix.pop(0))
         # right
-        while col > i:
-            res.append(data[row][col])
-            col -= 1
-        # up
-        while row > i:
-            res.append(data[row][col])
-            row -= 1
+        if matrix:
+            for i in range(len(matrix)):
+                if matrix[i]:
+                    v = matrix[i].pop(-1)
+                    res.append(v)
+        # down
+        if matrix:
+            line = matrix.pop(-1)
+            line.reverse()
+            res.extend(line)
+
+        # left
+        if matrix:
+            for i in range(len(matrix) - 1, -1, -1):
+                if matrix[i]:
+                    v = matrix[i].pop(0)
+                    res.append(v)
     return res
 
 
 def generate_matrix(n):
-    l, r, t, b = 0, n - 1, 0, n - 1
+    left, right, top, bottom = 0, n - 1, 0, n - 1
     matrix = [[0] * n for _ in range(n)]
     num, tar = 1, n * n
     while num <= tar:
-        for i in range(l, r + 1):  # left to right
-            matrix[t][i] = num
+        for i in range(left, right + 1):  # left to right
+            matrix[top][i] = num
             num += 1
-        t += 1
-        for i in range(t, b + 1):  # top to bottom
-            matrix[i][r] = num
+        top += 1
+        for i in range(top, bottom + 1):  # top to bottom
+            matrix[i][right] = num
             num += 1
-        r -= 1
-        for i in range(r, l - 1, -1):  # right to left
-            matrix[b][i] = num
+        right -= 1
+        for i in range(right, left - 1, -1):  # right to left
+            matrix[bottom][i] = num
             num += 1
-        b -= 1
-        for i in range(b, t - 1, -1):  # bottom to top
-            matrix[i][l] = num
+        bottom -= 1
+        for i in range(bottom, top - 1, -1):  # bottom to top
+            matrix[i][left] = num
             num += 1
-        l += 1
+        left += 1
     return matrix
 
 
@@ -93,8 +134,45 @@ def rotate(matrix):
             matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
 
 
+# 73. 矩阵置零 如果一个元素为0，则将其所在行和列的所有元素都设为0。
+# 和使用负号标记 有异曲同工之妙
+def set_zeroes(matrix):
+    if not matrix or not matrix[0]:
+        return
+
+    rows, cols = len(matrix), len(matrix[0])
+    first_row_zero = first_col_zero = False
+
+    for j in range(cols):
+        if not matrix[0][j]:
+            first_row_zero = True
+            break
+
+    for i in range(rows):
+        if not matrix[i][0]:
+            first_col_zero = True
+            break
+
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if not matrix[i][j]:
+                matrix[i][0] = 0
+                matrix[0][j] = 0
+
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if not matrix[i][0] or not matrix[0][j]:
+                matrix[i][j] = 0
+
+    if first_row_zero:
+        matrix[0] = [0] * cols
+    if first_col_zero:
+        for i in range(rows):
+            matrix[i][0] = 0
+
+
 if __name__ == '__main__':
-    print('\n逆时针访问')
+    print('\n对角线访问')
     matrix = [[1, 10, 3, 8],
               [12, 2, 9, 6],
               [5, 7, 4, 11],
@@ -102,9 +180,9 @@ if __name__ == '__main__':
     print(diagnose_traverse(matrix))
 
     print('\n顺时针访问')
-    print(clockwise_traverse(matrix))
+    print(spiral_order(matrix))
 
-    print('\n 顺时针生成数组')
+    print('\n顺时针生成数组')
     print(generate_matrix(3))
 
     print('\n顺时针旋转90度')
@@ -114,3 +192,8 @@ if __name__ == '__main__':
               [13, 14, 15, 16]]
     rotate(matrix)
     print(matrix)
+
+    print('\n矩阵置0')
+    matrix = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
+    set_zeroes(matrix)
+    pprint(matrix)

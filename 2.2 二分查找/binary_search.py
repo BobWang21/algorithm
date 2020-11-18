@@ -122,18 +122,16 @@ def search(nums, target):
         mid = l + (r - l) // 2
         if nums[mid] == target:
             return mid
-        if nums[0] < nums[mid]:  # 此处小于等于
-            if nums[0] <= target < nums[mid]:
+        if nums[0] <= nums[mid]:  # 此处小于等于
+            if nums[0] <= target <= nums[mid]:
                 r = mid - 1
             else:
                 l = mid + 1  # 若等于nums[0]=nums[mid] 则l + 1
-        elif nums[mid] < nums[0]:
+        else:
             if nums[mid] < target <= nums[-1]:
                 l = mid + 1
             else:
                 r = mid - 1
-        else:
-            l += 1
     return -1
 
 

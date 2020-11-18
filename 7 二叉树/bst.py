@@ -129,28 +129,31 @@ def trimBST(tree, L, R):
     return tree
 
 
-# 删除二叉搜索树中的节点
-def delete_node(root, key):
-    if not root:
-        return
-    if root.val < key:
-        root.right = delete_node(root.right, key)
-        return root
-    if root.val > key:
-        root.left = delete_node(root.left, key)
-        return root
+# 450. 删除二叉搜索树中的节点
+def delete_node(node, key):
+    if not node:
+        return None
 
-    if not root.left:
-        return root.right
-    if not root.right:
-        return root.left
+    if node.val == key:
+        if not node.left:
+            return node.right
+        if not node.right:
+            return node.left
+        # 选择左子树最大点 作为根节点
+        tmp = node.left
+        while tmp.right:
+            tmp = tmp.right
+        node.val = tmp.val
+        node.left = delete_node(node.left, node.val)
+        return node
 
-    node = root.left
-    while node.right:
-        node = node.right
-    root.val = node.val
-    root.left = delete_node(root.left, node.val)
-    return root
+    if key < node.val:
+        node.left = delete_node(node.left, key)
+        return node
+
+    if key > node.val:
+        node.right = delete_node(node.right, key)
+        return node
 
 
 # 315. 计算右侧小于当前元素的个数

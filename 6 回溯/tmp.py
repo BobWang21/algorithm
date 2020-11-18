@@ -414,33 +414,6 @@ def restore_ip_addresses(s):
     return res
 
 
-# Input:
-# beginWord = "hit",
-# endWord = "cog",
-# wordList = ["hot","dot","dog","lot","log","cog"]
-def word_ladder(begin_word, end_word, word_list):
-    if not word_list:
-        return 0
-    queue = [(begin_word, 0)]  # 记录层数
-    visited = {begin_word}  # 保存已加入过队列的字符串
-    word_set = set(word_list)
-    while queue:
-        word, l = queue.pop(0)
-        if word == end_word:
-            return l + 1
-        for i in range(len(word)):
-            for j in range(26):  # 访问每个字符串的近邻
-                c = chr(ord('a') + j)
-                if word[i] == c:
-                    continue
-                new_word = word[:i] + c + word[i + 1:]
-                if new_word in word_set and new_word not in visited:
-                    visited.add(new_word)
-                    queue.append((new_word, l + 1))
-
-    return 0
-
-
 def nested_list_weight_sum(nums):
     if not nums:
         return 0
@@ -581,16 +554,6 @@ if __name__ == '__main__':
     print('\nLetter Case Permutation')
     print(letter_case_permutation("a1b2"))
 
-    print('\n Word Ladder')
-    a = "qa"
-    b = "sq"
-    c = ["si", "go", "se", "cm", "so", "ph", "mt", "db", "mb", "sb", "kr", "ln", "tm", "le", "av", "sm", "ar", "ci",
-         "ca", "br", "ti", "ba", "to", "ra", "fa", "yo", "ow", "sn", "ya", "cr", "po", "fe", "ho", "ma", "re", "or",
-         "rn", "au", "ur", "rh", "sr", "tc", "lt", "lo", "as", "fr", "nb", "yb", "if", "pb", "ge", "th", "pm", "rb",
-         "sh", "co", "ga", "li", "ha", "hz", "no", "bi", "di", "hi", "qa", "pi", "os", "uh", "wm", "an", "me", "mo",
-         "na", "la", "st", "er", "sc", "ne", "mn", "mi", "am", "ex", "pt", "io", "be", "fm", "ta", "tb", "ni", "mr",
-         "pa", "he", "lr", "sq", "ye"]
-    print(word_ladder(a, b, c))
     print("\nip恢复")
     print(restore_ip_addresses("010010"))
 
