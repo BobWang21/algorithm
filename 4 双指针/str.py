@@ -37,7 +37,7 @@ def reverse_string(s):
     return ''.join(lists)
 
 
-# 循环移动K
+# 189 循环移动K
 def rotate(nums, k):
     n = len(nums)
     k %= n

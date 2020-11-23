@@ -199,7 +199,7 @@ def majority_element(nums):
 def second_largest(nums):
     size = len(nums)
     if size < 2:
-        raise Exception('array length must be more than 2')
+        return
     first = second = -float('inf')
     for i in range(size):
         if nums[i] > first:

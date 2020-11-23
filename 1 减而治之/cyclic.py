@@ -32,7 +32,7 @@ def find_duplicate_num1(nums):
             nums[i], nums[j] = nums[j], nums[i]
 
 
-# 没有出现的最小的正整数
+# 41 没有出现的最小的正整数
 def first_missing_positive(nums):
     if not nums:
         return 1
@@ -114,26 +114,6 @@ def find_duplicate_num3(nums):
     return ptr1
 
 
-def rotate(nums, k):
-    n = len(nums)
-    k %= n
-    if not k:
-        return
-    curr = 0
-    tmp = nums[curr]
-    cnt = 0
-    while cnt < n:
-        nxt = (curr + k) % n
-        while nxt != curr:
-            nums[nxt], tmp = tmp, nums[nxt]
-            nxt = (nxt + k) % n
-            cnt += 1
-        nums[nxt] = tmp
-        curr += 1
-        tmp = nums[curr]
-        cnt += 1
-
-
 # 268 给定一个包含[0, n]中 n 个数的序列，找出没有出现在序列中的那个数
 def missing_number(nums):
     if not nums:
@@ -163,6 +143,27 @@ def find_duplicate(nums):
         else:
             r = mid
     return l
+
+
+# 189. 旋转数组
+def rotate(nums, k):
+    n = len(nums)
+    k %= n
+    if not k:
+        return
+    curr = 0
+    tmp = nums[curr]
+    i = 0
+    while i < n:
+        nxt = (curr + k) % n
+        while nxt != curr:
+            nums[nxt], tmp = tmp, nums[nxt]
+            nxt = (nxt + k) % n
+            i += 1
+        nums[nxt] = tmp
+        curr += 1
+        tmp = nums[curr]
+        i += 1
 
 
 if __name__ == '__main__':

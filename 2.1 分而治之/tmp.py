@@ -47,7 +47,7 @@ def find_magic_index(nums):
     def find(l, r):
         if l > r:
             return -1
-        mid = l + (r - l)
+        mid = l + (r - l) // 2
         left = find(l, mid - 1)
         if left != -1:
             return left
