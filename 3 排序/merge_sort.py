@@ -11,7 +11,7 @@ import heapq as hq
 def merge_sort(nums):
     n = len(nums)
     if n == 1:  # 递归基
-        return nums
+        return nums[0]
     mid = n // 2
     left = merge_sort(nums[:mid])
     right = merge_sort(nums[mid:])
@@ -108,7 +108,7 @@ def merge_k_sorted_nums2(nums):
 
 if __name__ == '__main__':
     print('\n归并排序')
-    print(merge_sort([1, 3, 2, 4]))
+    print(merge_sort([[1, 3, 2, 4], [10, 11]]))
 
     print('\n合并两个有序数组')
     print(merge1([1, 3], [2, 4]))
