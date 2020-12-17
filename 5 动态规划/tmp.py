@@ -236,20 +236,12 @@ def min_path_sum(matrix):
         return 0
 
     rows, cols = len(matrix) + 1, len(matrix[0]) + 1
-    dp = [[0] * cols for _ in range(rows)]
-
-    # 边界为无穷
-    for i in range(rows):
-        dp[i][0] = float('inf')
-
-    for j in range(cols):
-        dp[0][j] = float('inf')
-
+    dp = [[float('inf')] * cols for _ in range(rows)]
     dp[0][1] = 0  # 入口
 
     for i in range(1, rows):
         for j in range(1, cols):
-            dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + matrix[i - 1][j - 1]
+            dp[i][j] = matrix[i - 1][j - 1] + min(dp[i - 1][j], dp[i][j - 1])
     return dp[-1][-1]
 
 
