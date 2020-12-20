@@ -62,7 +62,7 @@ def is_balanced1(tree):
     return res[0]
 
 
-# 判断树是否平衡
+# 判断树是否平衡 特殊语义 -1
 def is_balanced2(tree):
     def helper(tree):
         if not tree:
@@ -193,7 +193,7 @@ def binary_tree_paths(tree):
     left = binary_tree_paths(tree.left)
     right = binary_tree_paths(tree.right)
     paths = left + right
-    if not paths:  # 叶节点 没有这个会输出空
+    if not paths:  # 叶节点!
         return [str(tree.val)]
     res = []
     for path in paths:
