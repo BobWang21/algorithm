@@ -229,7 +229,7 @@ def permute2(nums):
 
     def dfs():
         if len(path) == n:
-            res.append(path[:])
+            res.append(path[:]) # 复制
 
         for i in range(n):
             if visited[i]:

@@ -51,7 +51,7 @@ def preorder2(tree):
         # 右子树先进栈 
         if right:
             stack.append(right)  # 右子树先进栈
-        # 左子树进栈
+        # 左子树后进栈
         if left:
             stack.append(left)
     return res
@@ -62,7 +62,7 @@ def inorder_traversal(tree):
     if not tree:
         return
     res = []
-    node, stack = tree, []
+    stack, node = [], tree
     while node or stack:
         while node:  # 一直往左
             stack.append(node)
@@ -77,8 +77,7 @@ def inorder_traversal(tree):
 def level_traversal(tree):
     if not tree:
         return
-    queue = [tree]
-    res = []
+    queue, res = [tree], []
     while queue:
         node = queue.pop(0)
         res.append(node.val)
@@ -147,7 +146,7 @@ def serialize(tree):
 def deserialize(s):
     if not s:
         return
-    nums = s.split()
+    nums = s.split()  # 空格
     root = TreeNode(eval(nums.pop(0)))
     queue = [root]
     flag = 0
