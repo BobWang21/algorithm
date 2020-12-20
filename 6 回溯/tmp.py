@@ -229,7 +229,7 @@ def permute2(nums):
 
     def dfs():
         if len(path) == n:
-            res.append(path[:]) # 复制
+            res.append(path[:])  # 复制
 
         for i in range(n):
             if visited[i]:
@@ -479,6 +479,23 @@ def generate_parenthesis2(n):
             helper(path + ')', i - 1, left)
 
     helper('', 0, 0)
+    return res
+
+
+# 非递归版本
+def generate_parenthesis3(n):
+    stack, res = [('(', n - 1, 1)], []
+    while stack:
+        path, left, unmatched = stack.pop(-1)
+        if len(path) == 2 * n and not left and not unmatched:
+            res.append(path)
+        if unmatched:  # 当前路径有左括号
+            stack.append((path + ')', left, unmatched - 1))  # 加'('
+            if left:
+                stack.append((path + '(', left - 1, unmatched + 1))  # 加'('
+        elif left:
+            stack.append((path + '(', left - 1, unmatched + 1))  # 加'('
+
     return res
 
 

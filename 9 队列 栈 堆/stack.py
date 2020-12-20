@@ -309,23 +309,6 @@ def simplify_path(path):
     return res
 
 
-# 非递归版本
-def generate(n):
-    stack, res = [('(', n - 1, 1)], []
-    while stack:
-        path, left, unmatched = stack.pop(-1)
-        if len(path) == 2 * n and not left and not unmatched:
-            res.append(path)
-        if unmatched:  # 当前路径有左括号
-            stack.append((path + ')', left, unmatched - 1))  # 加'('
-            if left:
-                stack.append((path + '(', left - 1, unmatched + 1))  # 加'('
-        elif left:
-            stack.append((path + '(', left - 1, unmatched + 1))  # 加'('
-
-    return res
-
-
 if __name__ == '__main__':
     print('\n十进制转二进制')
     print(ten_2_binary(10))
