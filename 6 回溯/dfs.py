@@ -36,8 +36,7 @@ def max_gift(board):
     return res[0]
 
 
-# 200. 岛屿数量
-# 也可用 union and find
+# 200. 岛屿数量 也可用 union find
 def num_islands(grid):
     if not grid:
         return 0

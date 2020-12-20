@@ -312,7 +312,7 @@ def find_median_sorted_arrays(nums1, nums2):
     return (v1 + v2) / 2
 
 
-# 440 字典序 第k个数字 o(k)
+# 440 字典序 第k个数字 o(k) 先序遍历
 def find_kth_number2(n, k):
     res = [k + 1]  # 多加一个0元素
 

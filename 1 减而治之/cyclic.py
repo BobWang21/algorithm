@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# dic
-# 循环排序: 适合于数值区间在一定范围内的数组
-# 访问标记正负 适合于正数 数组可以修改
-# 快慢双指针 不修改列表
-# 异或操作
-# 二分查找
+"""
+重复和缺失值
+- dic
+- 循环排序: 适合于数值区间在一定范围内的数组
+- 访问标记正负 适合于正数 数组可以修改
+- 快慢双指针 不修改列表
+- 异或操作
+- 二分查找
+"""
 
 
 def cyclic_sort(nums):
@@ -22,6 +25,7 @@ def cyclic_sort(nums):
 
 
 # 0 ~ n-1之间的n个数 可能有多个数字重复 返回任意重复的数字
+# 使用列表模拟字典
 def find_duplicate_num1(nums):
     n = len(nums)
     for i in range(n):

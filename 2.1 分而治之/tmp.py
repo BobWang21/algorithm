@@ -8,7 +8,7 @@ def power(x, n):
 def merge_sort(nums):
     n = len(nums)
     if n == 1:  # 递归基
-        return nums
+        return nums[0]
     mid = n // 2
     left = merge_sort(nums[:mid])
     right = merge_sort(nums[mid:])
