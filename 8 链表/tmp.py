@@ -39,6 +39,29 @@ def reverse(head):
     return pre
 
 
+def reverse2(head):
+    if not head or not head.next:
+        return head, None
+    node = head.next
+    head.next = None
+    new_head, new_tail = reverse2(node)
+    if not new_tail:
+        new_head.next = head
+    else:
+        new_tail.next = head
+    return new_head, head
+
+
+def reverse3(head):
+    if not head or not head.next:
+        return head
+
+    new_head = reverse3(head.next)
+    head.next.next = head
+    head.next = None
+    return new_head
+
+
 # 24 1->2->3->4 转换成 2->1->4->3
 def swap_pairs(head):
     if not head:
@@ -637,6 +660,10 @@ if __name__ == '__main__':
     print('\n链表翻转')
     head = construct_list_node([1, 3, 5, 7])
     print_list_node(reverse(head))
+    head = construct_list_node([1, 3, 5, 7])
+    print_list_node(reverse2(head)[0])
+    head = construct_list_node([1, 3, 5, 7])
+    print_list_node(reverse3(head))
 
     print('\n链表倒数第K个节点')
     head = construct_list_node([1, 3, 5, 7])
