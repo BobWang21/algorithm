@@ -51,5 +51,33 @@ def permute(m, n, k):
     return res
 
 
+def permute2(n):
+    if not n:
+        return []
+    res, path = [], []
+    status = [2] * n
+
+    def helper():
+        if len(path) == 2 * n:
+            res.append(path[:])
+            return
+        for i in range(n):
+            if not status[i]:
+                continue
+            status[i] -= 1
+            if status[i] == 1:
+                path.append(chr(ord('A') + i) + '_0')
+            else:
+                path.append(chr(ord('A') + i) + '_1')
+
+            helper()
+            path.pop(-1)
+            status[i] += 1
+
+    helper()
+    return res
+
+
 if __name__ == '__main__':
     print(permute(3, 5, 2))
+    print(permute2(3))
