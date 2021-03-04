@@ -96,6 +96,51 @@ def criticalConnections(n, connections):
     return res
 
 
+def bipartite_graphs(left2right):
+    right2left = dict()
+    for left, adj in left2right.items():
+        for right, score in adj.items():
+            right2left.setdefault(right, dict())
+            right2left[right][left] = score
+
+    visit_left = dict()
+    visit_right = dict()
+    res = []
+
+    def helper(i, path):
+        if visit_left.get(i, False):
+            return
+        visit_left[i] = True
+        path[i] = left2right[i]
+        for j in left2right[i]:
+            if visit_right.get(i, False):
+                continue
+            visit_right[j] = True
+            for k in right2left[j]:
+                helper(k, path)
+
+        return
+
+    for i in left2right:
+        if visit_left.get(i, False):
+            continue
+        path = dict()
+        helper(i, path)
+        res.append(path)
+
+    return res
+
+
 if __name__ == '__main__':
     print('\n强连通分量')
     print(critical_connections(4, [[0, 1], [1, 2], [2, 0], [1, 3]]))
+
+    print('\n 二分图拆分连通图')
+    left2right = {
+        0: {0: 0.5},
+        1: {0: 1},
+        2: {1: 0.5, 2: 0.6},
+        3: {4: 0},
+        4: {3: 0},
+    }
+    print(bipartite_graphs(left2right))
