@@ -131,7 +131,7 @@ def bipartite_graphs(l2r):
     return res
 
 
-def hungarian(graph: object, m, n):
+def hungarian(graph, m, n):
     match = [False] * n
     visit_y = [False] * n
 
