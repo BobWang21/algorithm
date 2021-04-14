@@ -41,7 +41,7 @@ def find_circle_num(M):
     return res[0]
 
 
-# dfs 时间复杂度：O(n^2)
+# dfs 时间复杂度：O(edge)
 def find_circle_num2(M):
     n = len(M)
     seen = set()
