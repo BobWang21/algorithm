@@ -5,8 +5,8 @@ class Heap():
     def len(self):
         return len(self.__list)
 
-    def _parent(self, child):  # 父亲
-        return (child - 1) // 2  # 没有父亲返回-1
+    def _parent(self, child):  # 父亲, 没有父亲返回-1
+        return (child - 1) // 2
 
     def _children(self, i):  # 获取孩子, 可返回空
         left, right = 2 * i + 1, 2 * (i + 1)
@@ -26,17 +26,13 @@ class Heap():
                 min_idx = child
         return min_idx
 
-    def _validate(self, i):  # 是否为小顶堆
-        return True
-
     def _up(self, child):  # 上滤
-        parent = self._parent(child)
-        # print(parent)
-        while parent != -1:
-            if self.get(parent) <= self.get(child):
+        while True:
+            parent = self._parent(child)
+            if parent == -1 or self.get(parent) <= self.get(child):
                 break
             self._swap(parent, child)
-            child, parent = parent, self._parent(parent)
+            child = parent
         return
 
     def _down(self, parent):  # 下滤
@@ -49,7 +45,7 @@ class Heap():
             parent = min_idx
         return
 
-    def get(self, i):  # 取top
+    def get(self, i):  # 取值
         if self.__list:
             return self.__list[i]
 
@@ -58,7 +54,7 @@ class Heap():
         i = self.len() - 1  # 2 上滤
         self._up(i)
 
-    def pop(self):  # 删除堆顶元素
+    def pop(self):  # 删除堆顶元素 将队尾元素放入堆首, 下滤
         if not self.len():
             return
         if self.len() == 1:
@@ -69,7 +65,7 @@ class Heap():
         self._down(0)
         return v
 
-    def heapify(self, lists):  # 批量建堆, 自下而上的下滤
+    def heapify(self, lists):  # 批量建堆, 自下而上的下滤 o(n)
         self.__list = [v for v in lists]
         n = self.len() // 2 - 1
         for i in range(n, -1, -1):
@@ -82,12 +78,12 @@ if __name__ == '__main__':
     heap.push(2)
     heap.push(10)
     heap.push(-1)
-    print(heap.pop())
+    print(heap.pop(), end=',')
     heap.push(4)
-
     for i in range(4):
-        print(heap.pop(), sep=' ')
+        print(heap.pop(), end=',')
 
-    heap.heapify([7, 3, 2, 10, -1])
+    print()
+    heap.heapify([7, 2, 10, -1, 4])
     for i in range(5):
-        print(heap.pop(), sep=',')
+        print(heap.pop(), end=',')
