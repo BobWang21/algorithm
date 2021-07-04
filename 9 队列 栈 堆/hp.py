@@ -52,7 +52,7 @@ class Heap():
         if self.__list:
             return self.__list[i]
 
-    def push(self, v):
+    def push(self, v):  # 插入尾部 上滤
         self.__list.append(v)  # 1 插入尾部
         i = self.len() - 1  # 2 上滤
         self._up(i)
