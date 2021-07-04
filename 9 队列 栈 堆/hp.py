@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+结点的值总是不大于或不小于其父结点的值；
+堆总是一棵完全二叉树, 按层次遍历顺序存放在数组中
+"""
+
+
 class Heap():
     def __init__(self):
         self.__list = []
@@ -68,9 +74,9 @@ class Heap():
         self._down(0)
         return v
 
-    def heapify(self, lists):  # 批量建堆, 自下而上的下滤 o(n)
+    def heapify(self, lists):  # 批量建堆, 自下而上,自左而右 下滤 o(n)
         self.__list = [v for v in lists]
-        n = self.len() // 2 - 1
+        n = self.len() // 2 - 1  # 非叶子节点
         for i in range(n, -1, -1):
             self._down(i)
 
