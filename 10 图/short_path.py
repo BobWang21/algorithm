@@ -15,7 +15,7 @@ def get_vertex_from_q(distance, p):
     return min_vertex
 
 
-# graph = {a:{b:dist}} s: start, n: point num
+# graph:{a:{b:dist}}, s: start, n: point num
 def dijkstra(graph, s, n):
     p = {s}  # 永久集合
     res = [float('inf')] * n
