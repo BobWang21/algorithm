@@ -2,6 +2,8 @@
   <dictionary name="didi">
     <words>
       <w>dest</w>
+      <w>inqueue</w>
+      <w>spfa</w>
     </words>
   </dictionary>
 </component>
