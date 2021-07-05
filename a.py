@@ -78,6 +78,58 @@ def permute2(n):
     return res
 
 
+import heapq as hq
+
+
+def merge(intervals):
+    if not intervals or not intervals[0] or len(intervals) == 1:
+        return intervals
+
+    intervals.sort()
+
+    res = [intervals[0]]
+    hq.heapify(res)
+    for i in range(1, len(intervals)):
+        interval = intervals[i]
+        if res[0][1] < interval[0]:
+            hq.heappush(res, interval)
+        else:
+            top = hq.heappop(res)
+            left = min(top[0], interval[0])
+            right = max(top[1], interval[1])
+            hq.heappush(res, [left, right])
+
+    return res
+
+
+def jump(start, values):
+    if start == 0:
+        return False, 0
+    n = len(values)
+
+    values = [start] + values
+
+    res = [0] * (n + 1)
+    res[0] = start
+
+    def helper(i):
+        step = res[i]
+        for j in range(i + 1, i + step + 1):
+            if j > n:
+                return
+            new_v = res[i] - (j - i) + values[j]
+            if new_v > res[j]:
+                res[j] = new_v
+                helper(j)
+
+    helper(0)
+    print(res)
+    return res[-1]
+
+
 if __name__ == '__main__':
     print(permute(3, 5, 2))
     print(permute2(3))
+
+    print(merge([[1, 3], [2, 6], [8, 10], [15, 18]]))
+    print(jump(4, [-10, -10, 3, 10, -1, -1]))
