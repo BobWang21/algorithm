@@ -9,6 +9,7 @@ from collections import defaultdict
 
 def change1(nums):
     nums[0] = 100
+
     nums = [1, 2]  # 按地址传递 只可以修改, 不可以更改
 
 
