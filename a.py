@@ -127,9 +127,32 @@ def jump(start, values):
     return res[-1]
 
 
+def merge2(num1, num2):
+    i, j = 0, 0
+    res = []
+    m, n = len(num1), len(num2)
+    while True:
+        if i == len(num1) and j == len(num2):
+            return res
+        a = num1[i] if i < m else float('inf')
+        b = num2[j] if j < n else float('inf')
+        if a < b:
+            v = a
+            i += 1
+        else:
+            v = b
+            j += 1
+        if res and res[-1] == v:
+            continue
+        res.append(v)
+
+    return res
+
+
 if __name__ == '__main__':
     print(permute(3, 5, 2))
     print(permute2(3))
 
     print(merge([[1, 3], [2, 6], [8, 10], [15, 18]]))
     print(jump(4, [-10, -10, 3, 10, -1, -1]))
+    print(merge2([1, 2, 3, 4, 5, 5, 6, 6, 7], [2, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]))

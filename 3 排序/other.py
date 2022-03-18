@@ -1,6 +1,25 @@
 from collections import defaultdict
 
 
+# 计数排序 先统计个数 然后
+def count_sort(nums) :
+    max_value = -1
+    for v in nums:
+        max_value = max(max_value, v)
+
+    cnt = [0 for _ in range(max_value+1)]
+    for v in nums:
+        cnt[v] += 1
+
+    res = []
+    i = 0
+    for v, cnt in enumerate(cnt):
+        for _ in range(cnt):
+            res[i] = v
+            i += 1
+    return res
+
+
 # 原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列
 # 使用整数 0, 1 和 2 分别表示红色、白色和蓝色。
 def sort_colors(nums):
@@ -29,21 +48,18 @@ def top_k_frequent(nums, k):
 
     res = []
     for i in range(len(nums), 0, -1):  # 类似降序排列
-        if i in fre:
-            for v in fre[i]:
-                res.append(v)
-                if len(res) == k:
-                    return res[:k]
+        if i not in fre:
+            continue
+        for v in fre[i]:
+            res.append(v)
+            if len(res) == k:
+                return res[:k]
 
 
 def cyclic_sort(nums):
-    if not nums:
-        return []
     n = len(nums)
     for i in range(n):
         while nums[i] != i + 1:
             j = nums[i] - 1
-            if nums[j] == j + 1:  # 该位置已经排好
-                break
             nums[i], nums[j] = nums[j], nums[i]
     return nums

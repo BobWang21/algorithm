@@ -13,21 +13,21 @@ def binary_search1(nums, target):
             r = mid - 1  # nums[r+1]>target
         else:
             l = mid + 1  # nums[l-1]<target
-    # 跳出循环时l=r+1 nums[l]>target, nums[r]<target
+    # 跳出循环时l=r+1 nums[l-1]<target, nums[l]>target
     return -1
 
 
 # 递归版本 二分查找
 def binary_search2(nums, l, r, target):
-    if l <= r:
-        mid = l + (r - l) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[mid] > target:
-            return binary_search2(nums, l, mid - 1, target)
-        else:
-            return binary_search2(nums, mid + 1, r, target)
-    return -1
+    if r < l:
+        return -1
+    # l <= r
+    mid = l + (r - l) // 2
+    if nums[mid] == target:
+        return mid
+    if nums[mid] < target:
+        return binary_search2(nums, mid + 1, r, target)
+    return binary_search2(nums, l, mid - 1, target)
 
 
 # 有重复数字的非降序排序数组 返回第一个等于target
@@ -39,8 +39,7 @@ def search_first_pos(nums, target):
             l = mid + 1  # nums[l-1] < target
         else:
             r = mid  # nums[r] >= target
-    # return l
-    return nums[l] if nums[l] == target else -1  # 取不到 l=r 补丁!
+    return nums[l] if nums[l] == target else -1  # 取不到l=r, 需要补丁!
 
 
 # 有重复数字的非降序排序数组 返回最后一个等于target
@@ -165,6 +164,7 @@ def find_min(nums):
 
 
 # 441 排列硬币 潜在递增函数
+# 也可以直接数学求解
 def arrange_coins(n):
     def total_coins(n):
         return (1 + n) * n // 2
@@ -184,6 +184,7 @@ def arrange_coins(n):
 
 # 719 Find Kth Smallest Pair Distance
 # 双指针 + 二分查找 差值小于等于某个数的pair数 为递增函数!!!
+# 找到第一个cnt(x)等于K的值, x可能有多个取值
 def smallest_distance_pair_3(nums, k):
     nums.sort()
     n = len(nums)
@@ -197,7 +198,7 @@ def smallest_distance_pair_3(nums, k):
             res += j - i - 1
         return res
 
-    l, r = 0, nums[-1] - nums[0]
+    l, r = 0, nums[-1] - nums[0]  # 边界已知 类似topK频次
     while l < r:
         mid = (l + r) // 2
         count = nmt(mid)
@@ -396,3 +397,5 @@ if __name__ == '__main__':
 
     print('\n中位数')
     print(find_median_sorted_arrays([1, 2], [3, 4]))
+
+    print(smallest_distance_pair_3([1, 6, 1], 3))

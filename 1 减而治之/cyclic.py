@@ -11,6 +11,7 @@
 """
 
 
+# 不包含重复数字的循环排序
 def cyclic_sort(nums):
     if not nums:
         return []
@@ -18,8 +19,8 @@ def cyclic_sort(nums):
     for i in range(n):
         while nums[i] != i + 1:
             j = nums[i] - 1
-            if nums[j] == j + 1:  # 该位置已经排好
-                break
+            # if nums[j] == j + 1:  # 该位置已经排好
+            #     break
             nums[i], nums[j] = nums[j], nums[i]
     return nums
 
@@ -31,21 +32,21 @@ def find_duplicate_num1(nums):
     for i in range(n):
         while i != nums[i]:
             j = nums[i]
-            if j == nums[j]:  # 如果存在j == nums[j] 说明数字j重复了
+            if j == nums[j]:  # 说明数字j重复了
                 return j
             nums[i], nums[j] = nums[j], nums[i]
 
 
-# 41 没有出现的最小的正整数
+# 41 没有出现的最小的正整数, 可能含有重复数字
 def first_missing_positive(nums):
     if not nums:
         return 1
-    n = len(nums)
 
+    n = len(nums)
     for i in range(n):
         while 0 < nums[i] <= n and nums[i] != i + 1:
             j = nums[i] - 1
-            if nums[j] == j + 1:  # nums[j] == nums[i]
+            if nums[j] == j + 1:  # nums[j] == nums[i] 防止无限循环
                 break
             nums[i], nums[j] = nums[j], nums[i]
 
@@ -55,12 +56,12 @@ def first_missing_positive(nums):
     return n + 1  # 如果数组是[1, 2, 3] !!!
 
 
-# 使用负数标记 已存在的数
+# 448 使用负数标记 已存在的数
 def find_disappeared_numbers(nums):
     for i in range(len(nums)):
-        v = abs(nums[i]) - 1
-        if nums[v] > 0:
-            nums[v] = -nums[v]
+        j = abs(nums[i]) - 1
+        if nums[j] > 0:
+            nums[j] = -nums[j]
 
     res = []
     for i in range(len(nums)):
@@ -173,7 +174,7 @@ def rotate(nums, k):
 if __name__ == '__main__':
     print('\ncyclic sort')
     print(cyclic_sort([7, 5, 8, 1, 2, 9, 3, 4, 6, 10]))
-    print(cyclic_sort([2, 2, 1]))
+    print(cyclic_sort([2, 2, 1, 3, 2]))
 
     print('\n找到缺失的最小正数')
     print(first_missing_positive([3, 4, -1, 1]))

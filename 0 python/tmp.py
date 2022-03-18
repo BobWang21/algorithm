@@ -44,6 +44,7 @@ if __name__ == '__main__':
     for k, v in dic.items():
         print(k, v)
     print(type({}))  # {}表示字典
+    print(dic.setdefault(4, 3))  # 如果字典中包含有给定键，则返回该键对应的值，否则返回为该键设置的值。
 
     print('\n字符串')
     s = 'abc'

@@ -4,7 +4,7 @@ from collections import defaultdict
 
 '''
 TopK 问题的几种解法
-1 桶排序 
+1 桶排序
 2 堆排序
 3 二分查找 需要构造递增序列
 4 对于未排序的 使用partition
@@ -16,7 +16,7 @@ def search_matrix(matrix, target):
         return False
     rows, cols = len(matrix), len(matrix[0])
     i, j = 0, cols - 1
-    while i < rows and j >= 0:
+    while i < rows and 0 <= j:
         num = matrix[i][j]
         if num == target:
             return True
@@ -55,12 +55,36 @@ def top_k_frequent(nums, k):
         fre[v].add(k)
 
     res = []
-    for i in range(len(nums), 0, -1):  # 类似降序排列
-        if i in fre:
-            for v in fre[i]:
-                res.append(v)
-                if len(res) == k:
-                    return res[:k]
+    for i in range(len(nums), 0, -1):  # 计数次数已知
+        if i not in fre:
+            continue
+
+        for v in fre[i]:
+            res.append(v)
+            if len(res) == k:
+                return res[:k]
+
+
+# 128 无序数组 最长连续区间 也可以使用并查集
+# 类似字典按key 排序
+def longest_consecutive(nums):
+    if not nums:
+        return 0
+    dic = dict()
+    for v in nums:
+        dic[v] = False
+
+    res = 1
+    for v in dic.keys():
+        if v in dic:
+            continue
+        cnt = 1
+        while v + 1 in dic:  # 序
+            cnt += 1
+            v += 1
+        res = max(res, cnt)
+
+    return res
 
 
 # 560. 和为K的子数组
@@ -84,13 +108,13 @@ def subarray_sum(nums, k):
 def check_subarray_sum(nums, k):
     if len(nums) < 2:
         return False
-    dic, total = {0: -1}, 0  # 0
+    dic, total = {0: -1}, 0
     for i, num in enumerate(nums):
         total += num
         if k:
             total %= k
         j = dic.setdefault(total, i)
-        if i - j > 1:
+        if i - j >= 2:
             return True
     return False
 
@@ -111,24 +135,6 @@ def can_complete_circuit(gas, cost):
     if start == n:
         return -1
     return start
-
-
-# 无序数组 最长连续区间 也可以使用并查集
-def longest_consecutive(nums):
-    if not nums:
-        return 0
-    s = set(nums)
-    res = 1
-    for v in s:
-        if v - 1 in s:
-            continue
-        i = 1
-        while v + 1 in s:
-            i += 1
-            v += 1
-        res = max(res, i)
-
-    return res
 
 
 # 众数 超过一半的数
@@ -205,35 +211,30 @@ def second_largest(nums):
         if nums[i] > first:
             second = first
             first = nums[i]
-        elif nums[i] > second:
+            continue
+        if nums[i] > second:
             second = nums[i]
     return second
 
 
+# 581. 最短无序连续子数组
 def find_unsorted_subarray(nums):
-    if not nums or len(nums) == 1:
-        return 0
-    nums1 = nums[:]
-    nums1.sort()
     n = len(nums)
-    l1 = 0
+    max_v, min_v = -float('inf'), float('inf')
+    left, right = n - 1, 0
     for i in range(n):
-        if nums[i] == nums1[i]:
-            l1 += 1
-            continue
+        if nums[i] < max_v:
+            right = i
         else:
-            break
-    if l1 == n:
-        return 0
+            max_v = nums[i]
 
-    l2 = 0
-    for i in range(n - 1, -1, -1):
-        if nums[i] == nums1[i]:
-            l2 += 1
-            continue
+        if min_v < nums[n - 1 - i]:
+            left = n - 1 - i
         else:
-            break
-    return n - (l1 + l2)
+            min_v = nums[n - 1 - i]
+    if left == n - 1 and right == 0:
+        return 0
+    return right - left + 1
 
 
 # 区间合并
@@ -284,12 +285,27 @@ def next_permutation(nums):
 
 # 66. 加一 [1, 2, 3] -> [1, 2, 4]
 def plus_one(digits):
-    if len(digits) == 1 and digits[0] == 9:  # base
-        return [1, 0]
+    if not digits:  # base
+        return [1]
     if digits[-1] < 9:
         digits[-1] += 1
         return digits
     return plus_one(digits[:-1]) + [0]
+
+
+# 66. 加一 [1, 2, 3] -> [1, 2, 4]
+def plus_one2(digits):
+    carry = 1
+    n = len(digits)
+    for i in range(n - 1, -1, -1):
+        if digits[i] == 9 and carry == 1:
+            digits[i] = 0
+        else:
+            digits[i] = digits[i] + carry
+            carry = 0
+    if carry == 1:
+        digits = [1] + digits
+    return digits
 
 
 if __name__ == '__main__':
