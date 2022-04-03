@@ -150,25 +150,7 @@ def find_duplicate(nums):
     return l
 
 
-# 189. 旋转数组
-def rotate(nums, k):
-    n = len(nums)
-    k %= n
-    if not k:
-        return
-    curr = 0
-    tmp = nums[curr]
-    i = 0
-    while i < n:
-        nxt = (curr + k) % n
-        while nxt != curr:
-            nums[nxt], tmp = tmp, nums[nxt]
-            nxt = (nxt + k) % n
-            i += 1
-        nums[nxt] = tmp
-        curr += 1
-        tmp = nums[curr]
-        i += 1
+
 
 
 if __name__ == '__main__':

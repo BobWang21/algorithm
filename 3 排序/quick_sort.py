@@ -9,7 +9,7 @@ def partition1(nums, l, r):  # 原地修改
         while l < r and pivot <= nums[r]:  # 右
             r -= 1
         nums[l] = nums[r]  # 替换已保存的数据
-        while l < r and nums[l] <= pivot:  # 左 左右必须有一个包含等于号
+        while l < r and nums[l] <= pivot:  # 左右必须有一个包含等于号
             l += 1
         nums[r] = nums[l]  # 替换已保存的数据
     nums[l] = pivot
@@ -35,7 +35,7 @@ def partition2(nums, l, r):
             i += 1
         else:
             swap(mt, i)
-            mt -= 1  # 后边换过来的数 并不知道其数值 因此不移动i
+            mt -= 1  # 后边换过来的数 不知道其数值 因此不移动i
     return lt, mt
 
 
@@ -107,23 +107,24 @@ def get_top_k(nums, k):
 
 # 也可以计数排序
 def sort_colors(nums):
+    if not nums:
+        return []
+
     def swap(i, j):
         nums[i], nums[j] = nums[j], nums[i]
 
-    if not nums:
-        return []
     zero, two = 0, len(nums) - 1
     i = 0
     while i <= two:
         if nums[i] == 0:
             swap(i, zero)
-            i += 1  # 保证i前为0或1
+            i += 1  # nums[zero] = 0
             zero += 1
         elif nums[i] == 1:
             i += 1  # 保证i前为0或1
         else:
             swap(two, i)
-            two -= 1  # 后边缓过来的数 并不知道其数值 因此不移动i
+            two -= 1  # nums[two] = 2 后边换过来的数 并不知道其数值 因此不移动i
     return nums
 
 

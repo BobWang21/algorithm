@@ -218,20 +218,21 @@ def second_largest(nums):
 
 
 # 581. 最短无序连续子数组
+# 单调性
 def find_unsorted_subarray(nums):
     n = len(nums)
     max_v, min_v = -float('inf'), float('inf')
     left, right = n - 1, 0
     for i in range(n):
-        if nums[i] < max_v:
+        if nums[i] < max_v:  # 比左侧最大值小
             right = i
         else:
-            max_v = nums[i]
-
-        if min_v < nums[n - 1 - i]:
+            max_v = nums[i]  # 右侧递增
+        #
+        if min_v < nums[n - 1 - i]:  # 比右侧最小值大
             left = n - 1 - i
         else:
-            min_v = nums[n - 1 - i]
+            min_v = nums[n - 1 - i]  # 左侧递减
     if left == n - 1 and right == 0:
         return 0
     return right - left + 1
@@ -306,6 +307,26 @@ def plus_one2(digits):
     if carry == 1:
         digits = [1] + digits
     return digits
+
+
+# 14. 最长公共前缀
+def longest_common_prefix(strs):
+    if not strs:
+        return ""
+
+    def lcp(str1, str2):
+        length, index = min(len(str1), len(str2)), 0
+        while index < length and str1[index] == str2[index]:
+            index += 1
+        return str1[:index]
+
+    prefix, n = strs[0], len(strs)
+    for i in range(1, n):
+        prefix = lcp(prefix, strs[i])
+        if not prefix:
+            break
+
+    return prefix
 
 
 if __name__ == '__main__':

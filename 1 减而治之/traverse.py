@@ -115,8 +115,24 @@ def generate_matrix(n):
     return matrix
 
 
+# 189. 旋转数组
+def rotate1(nums, k):
+    def reverse(i, j):
+        left, right = i, j
+        while left < right:
+            nums[left], nums[right] = nums[right], nums[left]
+            left += 1
+            right -= 1
+
+    n = len(nums)
+    k %= n
+    reverse(0, n - 1)
+    reverse(0, k - 1)
+    reverse(k, n - 1)
+
+
 # 顺时针旋转90度
-def rotate(matrix):
+def rotate2(matrix):
     def reverse(l, h):
         while l < h:
             matrix[l], matrix[h] = matrix[h], matrix[l]
@@ -135,7 +151,7 @@ def rotate(matrix):
 
 
 # 73. 矩阵置零 如果一个元素为0，则将其所在行和列的所有元素都设为0。
-# 和使用负号标记 有异曲同工之妙
+# 使用数组做标记 和循环排序 使用负数标记 类似
 def set_zeroes(matrix):
     if not matrix or not matrix[0]:
         return
@@ -185,12 +201,17 @@ if __name__ == '__main__':
     print('\n顺时针生成数组')
     print(generate_matrix(3))
 
+    print('\n数组循环移动K位')
+    array = [1, 2, 3, 4, 5, 6]
+    rotate1(array, 3)
+    print(array)
+
     print('\n顺时针旋转90度')
     matrix = [[1, 2, 3, 4],
               [5, 6, 7, 8],
               [9, 10, 11, 12],
               [13, 14, 15, 16]]
-    rotate(matrix)
+    rotate2(matrix)
     print(matrix)
 
     print('\n矩阵置0')

@@ -21,14 +21,14 @@ def two_sum2(nums, target):
     l, r = 0, n - 1
     res = []
     while l < r:
-        s = nums[l] + nums[r]
-        if s < target:
+        total = nums[l] + nums[r]
+        if total < target:
             l += 1
-        elif s > target:
+        elif total > target:
             r -= 1
         else:
             res.append([nums[l], nums[r]])
-            while l < r and nums[l] == nums[l + 1]:  # 左边跳出相等部分即可
+            while l < r and nums[l] == nums[l + 1]:  # 左边界跳出相等部分即可
                 l += 1
             l += 1
             # while l < r and nums[r] == nums[r - 1]:
@@ -131,7 +131,7 @@ def three_sum_closet(nums, target):
     return closet_sum
 
 
-# 和为s的(连续)正数序列 至少两个数 滑动窗口
+# 和为s的连续正数序列 至少两个数 滑动窗口
 def find_continuous_sequence(target):
     if target < 3:
         return
@@ -169,25 +169,6 @@ def find_target_sum_ways(nums, S):
 
     helper(0, 0)
     return res[0]
-
-
-def find_target_sum_ways2(nums, S):
-    if not nums:
-        return 0
-    dic = {}
-    if nums[0] == 0:
-        dic[0] = 2
-    else:
-        dic[nums[0]] = 1
-        dic[-nums[0]] = 1
-
-    for num in nums[1:]:
-        new_dic = {}
-        for v in dic:
-            new_dic[v + num] = new_dic.get(v + num, 0) + dic[v]
-            new_dic[v - num] = new_dic.get(v - num, 0) + dic[v]
-        dic = new_dic
-    return dic.get(S, 0)
 
 
 # 排序数组中距离不大于target的pair数 O(N)

@@ -134,21 +134,30 @@ def search(nums, target):
     return -1
 
 
+
 # 162. 寻找峰值
-def find_peak_element(nums):
+def find_peak_element2(nums):
+    def get(i):
+        if i == -1 or i == len(nums):
+            return -float('inf')
+        return nums[i]
+
     l, r = 0, len(nums) - 1
     while l < r:
         mid = l + (r - l) // 2
-        if nums[mid] < nums[mid + 1]:  # 只有l=r=len(nums)-1, mid+1 才可能越界
-            l = mid + 1  # nums[l-1] < nums[l]
-        else:
-            r = mid  # nums[r] > nums[r+1]
-    # l=r 时  nums[l-1] < nums[l] = nums[r] > nums[r+1]
+        # 只有l=r=len(nums)-1, mid+1 才可能越界
+        if get(mid - 1) < get(mid) and get(mid + 1) < get(mid):
+            return mid
+        if get(mid) < get(mid + 1):  # get(l-1) < get(l)
+            l = mid + 1
+            continue
+        if get(mid - 1) > get(mid):  # get(r) > get(r+1)
+            r = mid - 1
     return l
 
 
 # 旋转数组中的最小值
-# [3 4 1 2] 为 [1 2 3 4]的旋转数组
+#  [1 2 3 4]的旋转数组[3 4 1 2]
 def find_min(nums):
     if nums[0] <= nums[-1]:
         return nums[0]
