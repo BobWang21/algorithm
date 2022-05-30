@@ -19,9 +19,9 @@ def is_palindrome(s):
 
         if s[l].lower() != s[r].lower():  # 转换成小写!!
             return False
-        else:
-            l += 1
-            r -= 1
+
+        l += 1
+        r -= 1
     return True
 
 
@@ -55,6 +55,20 @@ def rotate(nums, k):
     return nums
 
 
+# 最长非重复子串的长度 3
+def length_of_longest_substring(s):
+    l = 0  # 记录非重复开始
+    res = 0
+    dic = {}
+    for r, c in enumerate(s):
+        if c in dic and dic[c] >= l:  # 分开写
+            l = dic[c] + 1
+        res = max(res, r - l + 1)
+        dic[c] = r
+
+    return res
+
+
 # 76 最小覆盖子串 滑动窗口
 def min_window(s, t):
     dic1 = defaultdict(int)
@@ -63,6 +77,7 @@ def min_window(s, t):
         dic1[c] += 1
 
     l, r = 0, 0
+    res_l, res_r = 0, 0
     match = 0
     min_len = float('inf')
     res = ''
@@ -76,7 +91,7 @@ def min_window(s, t):
         while match == len(dic1):
             if r - l + 1 < min_len:
                 min_len = r - l + 1
-                res = s[l: r + 1]
+                res_l, res_r = l, r
             c = s[l]
             if c in dic1:
                 dic2[c] -= 1
@@ -84,7 +99,7 @@ def min_window(s, t):
                     match -= 1
             l += 1
         r += 1
-    return res
+    return '' if min_len == float('inf') else res[res_l:res_r + 1]
 
 
 # Given two strings s1 and s2,
@@ -115,20 +130,6 @@ def check_inclusion(s1, s2):
         if match == len(d1):
             return True
     return False
-
-
-# 最长非重复子串的长度 3
-def length_of_longest_substring(s):
-    l = 0  # 记录非重复开始
-    res = 0
-    dic = {}
-    for r, c in enumerate(s):
-        if c in dic and dic[c] >= l:  # 分开写
-            l = dic[c] + 1
-        res = max(res, r - l + 1)
-        dic[c] = r
-
-    return res
 
 
 # 包含k个不同字符的最大长度

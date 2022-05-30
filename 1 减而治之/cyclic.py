@@ -150,9 +150,6 @@ def find_duplicate(nums):
     return l
 
 
-
-
-
 if __name__ == '__main__':
     print('\ncyclic sort')
     print(cyclic_sort([7, 5, 8, 1, 2, 9, 3, 4, 6, 10]))

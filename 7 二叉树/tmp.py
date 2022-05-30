@@ -247,25 +247,21 @@ def have_path_sum(tree, target):
 # 113 打印所有路径
 # 路径的数目为 O(N)，并且每一条路径的节点个数也为 O(N)，
 # 因此要将这些路径全部添加进答案中，时间复杂度为 O(N^2)
-def path_sum2(root, target):
-    if not root:
-        return []
-
+def path_sumx(root, target):
     res = []
-    path = []
 
-    def dfs(root, val):
-        if not root:
+    def dfs(node, path, total):
+        if not node:
             return
-        if not root.left and not root.right and root.val == val:
-            res.append(path + [root.val])
+        if not node.left and not node.right and total + node.val == target:
+            res.append(path + [node.val])
             return
-        path.append(root.val)
-        dfs(root.left, val + root.val)
-        dfs(root.right, val + root.val)
+        path.append(node.val)
+        dfs(node.left, path, total + node.val)
+        dfs(node.right, path, total + node.val)
         path.pop(-1)
 
-    dfs(root, target)
+    dfs(root, [], 0)
     return res
 
 
@@ -583,7 +579,7 @@ def path_sum(root, target):
 
 
 # 考虑当前节点之前的路径，借鉴前缀和的思想
-def path_sum2(root, target):
+def path_sum3(root, target):
     if not root:
         return 0
     res = [0]
@@ -672,10 +668,10 @@ if __name__ == '__main__':
     print('\n是否存在和为某个数的路径')
     tree = create_full_binary_tree([i for i in range(7)])
     print(have_path_sum(tree, 4))
-    print(have_path_sum(tree, 9))
+    print(have_path_sum(tree, 8))
 
     print('\n路径和为某个数的路径')
-    print(path_sum2(tree, 8))
+    print(path_sumx(tree, 4))
 
     print('\n路径组成数字之和')
     print(sum_numbers(tree))

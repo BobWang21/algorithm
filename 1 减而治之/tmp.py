@@ -76,12 +76,14 @@ def longest_consecutive(nums):
 
     res = 1
     for v in dic.keys():
-        if v in dic:
+        if not dic[v]:
             continue
         cnt = 1
+        dic[v] = True
         while v + 1 in dic:  # 序
             cnt += 1
             v += 1
+            dic[v] = True
         res = max(res, cnt)
 
     return res

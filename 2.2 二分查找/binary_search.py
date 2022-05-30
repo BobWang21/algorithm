@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# 主要利用循环不变性
 
 # 非递归版本 标准二分查找
 def binary_search1(nums, target):

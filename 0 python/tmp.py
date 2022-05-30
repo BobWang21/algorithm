@@ -88,7 +88,7 @@ if __name__ == '__main__':
     while heap:
         print(hq.heappop(heap))
 
-    print('\ndefaultdict')
+    print('\n defaultdict')
     dic = defaultdict(set)
     dic[1].add(2)
 
