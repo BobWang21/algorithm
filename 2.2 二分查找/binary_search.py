@@ -11,10 +11,10 @@ def binary_search1(nums, target):
         if target == nums[mid]:
             return mid
         if target < nums[mid]:
-            r = mid - 1  # nums[r+1]>target
+            r = mid - 1  # nums[r+1] > target
         else:
-            l = mid + 1  # nums[l-1]<target
-    # 跳出循环时l=r+1 nums[l-1]<target, nums[l]>target
+            l = mid + 1  # nums[l-1] < target
+    # 跳出循环时l=r+1 nums[l-1] < target < nums[l]
     return -1
 
 
@@ -26,8 +26,10 @@ def binary_search2(nums, l, r, target):
     mid = l + (r - l) // 2
     if nums[mid] == target:
         return mid
+
     if nums[mid] < target:
         return binary_search2(nums, mid + 1, r, target)
+
     return binary_search2(nums, l, mid - 1, target)
 
 
@@ -49,7 +51,7 @@ def search_last_pos(nums, target):
     while l < r:
         mid = l + (r - l + 1) // 2  # 右中位数
         if nums[mid] <= target:
-            l = mid  # l == mid 需要考虑l,r=3,4这种无限循环的情况 nums[l] <= target
+            l = mid  # l == mid 需要考虑l,r=0,1这种无限循环的情况 nums[l] <= target
         else:
             r = mid - 1  # nums[r+1] > target
     return l if nums[l] == target else -1
@@ -133,7 +135,6 @@ def search(nums, target):
             else:
                 r = mid - 1
     return -1
-
 
 
 # 162. 寻找峰值

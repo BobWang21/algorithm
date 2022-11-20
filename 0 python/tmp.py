@@ -10,19 +10,37 @@ from collections import defaultdict
 def change1(nums):
     nums[0] = 100
 
-    nums = [1, 2]  # 按地址传递 只可以修改, 不可以更改
+    nums = [1, 2]  # 按地址传递 只可以修改引用的内容, 不可以更改引用的对象
 
 
 if __name__ == '__main__':
-    print('\n数字操作')
+    print('\n计算操作')
     print(4 / 2)  # 2.0,  2.0 = 2 索引必须是整数
     nums = float('inf')
-    math.isinf(nums)
+    print(math.isinf(nums))
     print(isinstance([], list))  # 判断类型
     print(round(3.1, 1))  # 四舍五入
     print(int('001'))  # ✔️
     print(eval('1'))  # eval('001') ×
     print(divmod(6, 4))
+    # 进制转换
+    print('\n位操作')
+    print(bin(8)[2:])  # bin(8) = '0b1000'
+    print((2 << 2) - 1)  # 位操作的优先级低于 +/-
+
+    print('\n字符串')
+    s = 'abc'
+    s.isalpha()  # 判断是否为字母
+    s.isdigit()  # 判断是否为数字
+    s.isalnum()  # 是否为数字或字母
+    s.isspace()  # 判断空格
+    ''.join(['a', 'b', 'c'])  # 列表转换成字符串 列表元素为字符串
+    print(chr(97))  # 数字转字符
+    print(ord('a'))  # 字母对应的数字
+    print([chr(ord('a') + i) for i in range(26)])
+    lists = [c for c in s]  # split 是针对分隔符分割 默认空格
+    print(lists)
+    print('/a'.split('/'))  # ['', 'a']
 
     print('\n列表')
     nums = [2, 3, 4, 5]
@@ -46,22 +64,8 @@ if __name__ == '__main__':
     print(type({}))  # {}表示字典
     print(dic.setdefault(4, 3))  # 如果字典中包含有给定键，则返回该键对应的值，否则返回为该键设置的值。
 
-    print('\n字符串')
-    s = 'abc'
-    s.isalpha()  # 判断是否为字母
-    s.isdigit()  # 判断是否为数字
-    s.isalnum()  # 是否为数字或字母
-    s.isspace()  # 判断空格
-    ''.join(['a', 'b', 'c'])  # 列表转换成字符串
-    print(chr(97))  # 数字转字符
-    print(ord('a'))  # 字母对应的数字
-    print([chr(ord('a') + i) for i in range(26)])
-    lists = [c for c in s]  # split 是针对分隔符分割 默认空格
-    print(lists)
-    print('/a'.split('/'))  # ['', 'a'] /的左右
-
     print('\n集合')
-    nums = set([1, 2, 3])  # set(v) v 需要可迭代
+    nums = {1, 2, 3}  # set(v) v 需要可迭代
     nums.remove(2)  # 移除元素
     nums.add(2)
     print(nums)
@@ -75,18 +79,18 @@ if __name__ == '__main__':
     G = A ^ B  # A与B的差集 {1, 2, 4, 5}
     print(E, F, G)
 
-    print('\n随机数')
-    print(random.random())  # 0-1
-    print(random.randint(0, 10))  # [0, 10]
-    print(random.shuffle([1, 2, 3]))
-    print(random.choice([1, 2, 3]))  # 随机抽取一个点
-
     print('\nheapq')
     heap = [3, 4, 1, 2]
     hq.heapify(heap)  # 改成堆
     hq.heappush(heap, 5)
     while heap:
         print(hq.heappop(heap))
+
+    print('\n随机数')
+    print(random.random())  # 0-1
+    print(random.randint(0, 10))  # [0, 10]
+    print(random.shuffle([1, 2, 3]))
+    print(random.choice([1, 2, 3]))  # 随机抽取一个点
 
     print('\n defaultdict')
     dic = defaultdict(set)
@@ -95,8 +99,3 @@ if __name__ == '__main__':
     dic = defaultdict(int)
     dic[1] += 5
     print(dic)
-
-    # 进制转换
-    print('\n位操作')
-    print(bin(8)[2:])  # bin(8) = '0b1000'
-    print((2 << 2) - 1)  # 位操作的优先级低于 +/-

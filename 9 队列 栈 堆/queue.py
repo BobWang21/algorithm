@@ -196,7 +196,7 @@ if __name__ == '__main__':
     print(max_sliding_window([9, 10, 9, -7, -4, -8, 2, -6], 5))
 
     print('\n 下一个比其大数值')
-    print(next_greater_element([2, 4], [1, 2, 3, 4]))
+    print(next_greater_element([4, 1, 2], [1, 3, 4, 2]))
 
     print('\n下一个天气比当前热')
     print(daily_temperatures([73, 74, 75, 71, 69, 72, 76, 73]))
