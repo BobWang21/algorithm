@@ -1,23 +1,38 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
-# 78 子集问题
-# 时间复杂度：O(n * 2^n) 2^n种可能 每种可能需要O(n)构造子集
+# 78 子集问题 不回溯
 def subset(nums):
     res = []
     n = len(nums)
 
-    def dfs(idx, path):  # 防止重复 所以顺序加入
-        res.append(path)  # 把路径全部记录下来
-        for i in range(idx, n):
-            dfs(i + 1, path + [nums[i]])  # 生成新的 不需要回溯
+    def dfs(i, path):
+        res.append(path)
+        for j in range(i, n):
+            dfs(j + 1, path + [nums[j]])  # 生成新的路径,不需回溯
 
     dfs(0, [])
     return res
 
 
-# 90. 子集 II 包含重复
+# 子集问题 回溯
+def subsets_2(nums):
+    n = len(nums)
+    res = []
+    path = []
+
+    def helper(idx):
+        res.append(path[:])
+        for i in range(idx, n):
+            path.append(nums[i])
+            helper(i + 1)
+            path.pop(-1)
+
+    helper(0)
+
+
+# 90. 子集包含重复
 def subsets_with_dup(nums):
     if not nums:
         return []
@@ -26,9 +41,8 @@ def subsets_with_dup(nums):
 
     def helper(idx=0):
         res.append(path[:])
-
         for i in range(idx, n):
-            if i > idx and nums[i - 1] == nums[i]:
+            if i > idx and nums[i - 1] == nums[i]:  # 相同数字不能出现在同一层 [1(idx), 2(i), 2(x)]; [2(idx), 2]
                 continue
             path.append(nums[i])
             helper(i + 1)
@@ -45,19 +59,19 @@ def n_sum1(nums, k, target):
     res = []
     n = len(nums)
 
-    def helper(idx, k, target, path):
-        if not k and not target:  # 满足条件 k个数的和为target
+    def helper(k, i, target, path):
+        if not i and not target:  # 满足条件 k个数的和为target
             res.append(path)
             return
-        if not k:  # 不满足条件
+        if not i:  # 不满足条件
             return
-        if k > n - idx:  # 后面的数不够K个
+        if i > n - i:  # 后面的数不够K个
             return
-        for i in range(idx, n):
-            if i > idx and nums[i] == nums[i - 1]:  # 去重
+        for j in range(i, n):
+            if j > i and nums[j] == nums[j - 1]:  # 去重
                 continue
             # path + [nums[i]] 生成一个新的列表 因此不需要回溯
-            helper(i + 1, k - 1, target - nums[i], path + [nums[i]])
+            helper(j + 1, i - 1, target - nums[j], path + [nums[j]])
 
     nums.sort()
     helper(0, k, target, [])
@@ -90,13 +104,14 @@ def n_sum2(nums, k, target):
     return res
 
 
-# 加减
-def find_target_sum_ways(nums, S):
+# 494 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数
+# 可以使用动态规划
+def find_target_sum_ways(nums, target):
     n = len(nums)
     res = [0]
 
     def helper(idx, total):
-        if idx == n and total == S:
+        if idx == n and total == target:
             res[0] = res[0] + 1
             return
         if idx == n:
@@ -107,46 +122,6 @@ def find_target_sum_ways(nums, S):
 
     helper(0, 0)
     return res[0]
-
-
-# 698 10000 > nums[i] > 0
-def can_partition_k_subsets(nums, k):
-    if len(nums) < k:
-        return False
-    total = sum(nums)
-    if total % k:  # 不可整除
-        return False
-    target = total // k
-
-    candidate = []
-    for v in nums:
-        if v > target:
-            return False
-        elif v == target:
-            k -= 1
-        else:
-            candidate.append(v)
-    n = len(candidate)
-    visited = [False] * n  # 已经使用过的数字 不能再次访问 如果没有重复数字可以使用set
-
-    def helper(idx, k, tar):
-        if k == 0:
-            return True
-        if not tar:
-            return helper(0, k - 1, target)  # 从0开始 从target开始
-        if tar < 0:
-            return False
-        for i in range(idx, n):
-            if visited[i]:
-                continue
-            visited[i] = True
-            if helper(i + 1, k, tar - candidate[i]):
-                return True
-            visited[i] = False  # 如果不满足条件回溯
-        return False
-
-    nums.sort()
-    return helper(0, k, target)
 
 
 # Given a set of candidate numbers (candidates) (without duplicates)
@@ -165,42 +140,17 @@ def combination_sum(nums, target):
     res = []
     n = len(nums)
 
-    def dfs(idx, target, path):
-        if not target:
+    def dfs(idx, total, path):
+        if total == target:
             res.append(path[:])
             return
-        if target < 0:  # 不满足条件
+        if target < total:  # 不满足条件
             return
         for i in range(idx, n):
             path.append(nums[i])
-            # 索引从 i 开始表示数字可以用多次!!!
-            dfs(i, target - nums[i], path)
+            # 索引不加1, 表示数字可以用多次!!!
+            dfs(i, target + nums[i], path)
             path.pop(-1)
-
-    nums.sort()
-    dfs(0, target, [])
-    return res
-
-
-# 有重复数字的组合 每个数字只能用一次
-def combination_sum2(nums, target):
-    if not nums or target < 0:
-        return
-
-    res = []
-    n = len(nums)
-
-    def dfs(idx, target, path):
-        if not target:
-            res.append(path)
-            return
-        if target < 0:
-            return
-        for i in range(idx, n):  # 保证顺序
-            if i > idx and nums[i] == nums[i - 1]:  # 排除相同的数字出现在同一层
-                continue
-            # 当前迭代索引为i 下一个迭代的索引为i+1
-            dfs(i + 1, target - nums[i], path + [nums[i]])
 
     nums.sort()
     dfs(0, target, [])
@@ -250,7 +200,7 @@ def permute2(nums):
         if len(path) == n:
             res.append(path[:])  # 复制
 
-        for i in range(n):
+        for i in range(n):  # 从头开始
             if visited[i]:
                 continue
             visited[i] = True
@@ -559,6 +509,78 @@ def remove_invalid_parentheses(s):
     return list(res)
 
 
+# 79 单词搜索
+def exist(board, word):
+    rows, cols = len(board), len(board[0])
+    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+    n = len(word)
+
+    def dfs(i, j, k):
+        if k == n:
+            return True
+
+        if i < 0 or i == rows or j < 0 or j == cols or board[i][j] == '.':
+            return False
+
+        if board[i][j] != word[k]:
+            return False
+
+        char = board[i][j]
+        board[i][j] = '.'
+        for d in directions:
+            row, col = i + d[0], j + d[1]
+            if dfs(row, col, k + 1):
+                return True
+        board[i][j] = char
+        return False
+
+    for i in range(rows):
+        for j in range(cols):
+            if dfs(i, j, 0):
+                return True
+    return False
+
+
+# 698 10000 > nums[i] > 0
+def can_partition_k_subsets(nums, k):
+    if len(nums) < k:
+        return False
+    total = sum(nums)
+    if total % k:  # 不可整除
+        return False
+    target = total // k
+
+    candidate = []
+    for v in nums:
+        if v > target:
+            return False
+        elif v == target:
+            k -= 1
+        else:
+            candidate.append(v)
+    n = len(candidate)
+    visited = [False] * n  # 已经使用过的数字 不能再次访问 如果没有重复数字可以使用set
+
+    def helper(idx, k, tar):
+        if k == 0:
+            return True
+        if not tar:
+            return helper(0, k - 1, target)  # 从0开始 从target开始
+        if tar < 0:
+            return False
+        for i in range(idx, n):
+            if visited[i]:
+                continue
+            visited[i] = True
+            if helper(i + 1, k, tar - candidate[i]):
+                return True
+            visited[i] = False  # 如果不满足条件回溯
+        return False
+
+    nums.sort()
+    return helper(0, k, target)
+
+
 if __name__ == '__main__':
     print('\n全集')
     print(subset([1, 2, 3]))
@@ -568,8 +590,6 @@ if __name__ == '__main__':
     print(n_sum1([1, 1, 2, 3, 4], 3, 6))
     print(n_sum2([1, 1, 2, 3, 4], 3, 6))
 
-    print(merge_k_sorted_array([[1, 10], [2, 9], [100, 200]], 3))
-
     print('\nk个和相等的子数组')
     nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
     print(can_partition_k_subsets(nums, 4))
@@ -578,7 +598,7 @@ if __name__ == '__main__':
     print(combination_sum([2, 3, 5], 8))
 
     print('\n数组中包含重复数字 一个数字只能用一次')
-    print(combination_sum2([1, 1, 2, 3, 4], 4))
+    print(combination_sum([1, 1, 2, 3, 4], 4))
 
     print('\n排列问题')
     print(permute1([1, 2, 3]))

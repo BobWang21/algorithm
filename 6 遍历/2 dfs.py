@@ -368,38 +368,6 @@ def rob(tree):
     return helper(tree)[1]
 
 
-# 单词搜索
-def exist(board, word):
-    rows, cols = len(board), len(board[0])
-    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-    n = len(word)
-
-    def dfs(i, j, k):
-        if k == n:
-            return True
-
-        if i < 0 or i == rows or j < 0 or j == cols or board[i][j] == '.':
-            return False
-
-        if board[i][j] != word[k]:
-            return False
-
-        char = board[i][j]
-        board[i][j] = '.'
-        for d in directions:
-            row, col = i + d[0], j + d[1]
-            if dfs(row, col, k + 1):
-                return True
-        board[i][j] = char
-        return False
-
-    for i in range(rows):
-        for j in range(cols):
-            if dfs(i, j, 0):
-                return True
-    return False
-
-
 if __name__ == '__main__':
     print('\n路径中捡到的最多钱')
     board = [100, 'o', 'o', 'o', 80]
