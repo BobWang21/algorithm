@@ -31,6 +31,7 @@ def fib2(n):
     return right
 
 
+# 198 打家劫舍
 # dp[i] = max(dp[i-1], dp[i-2] + nums[i])
 # 全为正数
 def rob1(nums):
@@ -74,17 +75,17 @@ def rob_with_cycle(nums):
     return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
 
 
-# 53 连续子序列 和最大
+# 53 连续子序列和最大
 def max_sub_array(nums):
     if not nums:
         return 0
-    inc = exc = -float('inf')  # 包含负数的最大值 初始值常用负无穷或
+    inc = exc = -float('inf')  # 包含负数求最大值时, 适用负无穷对初始化
     for num in nums:
         inc, exc = max(inc + num, num), max(inc, exc)
     return max(inc, exc)
 
 
-# 连续子序列 乘积最大
+# 152 连续子序列乘积最大
 def max_continuous_product(nums):
     res = inc_min = inc_max = nums[0]
     for val in nums[1:]:
@@ -119,20 +120,31 @@ def LIS2(nums):
 
     if not nums:
         return 0
-    res = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
+    dp = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
     for num in nums[1:]:
-        if num > res[-1]:
-            res.append(num)
+        if num > dp[-1]:
+            dp.append(num)
         else:
-            idx = binary_search(res, num)  # 第一个大于等于该数的位置
-            res[idx] = num
-    return len(res)
+            idx = binary_search(dp, num)  # 第一个大于等于该数的位置
+            dp[idx] = num
+    return len(dp)
 
 
-# 换硬币 最少硬币数 如果不能请返回-1。
+# 322 换硬币 最少硬币数 如果不能返回-1
+# 复杂度高
+def coin_change1(coins, amount):
+    dp = [float('inf')] * (amount + 1)
+    dp[0] = 0
+    for i in range(1, amount + 1):
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+    return dp[-1] if dp[-1] != float('inf') else -1
+
+
 def coin_change(coins, amount):
     dp = [float('inf')] * (amount + 1)
-    dp[0] = 0  # 当coin = amount 时使用
+    dp[0] = 0  # base coin=amount时使用
     for coin in coins:
         for i in range(coin, amount + 1):
             dp[i] = min(dp[i], dp[i - coin] + 1)
@@ -148,8 +160,8 @@ def coin_change2(coins, amount):
     dp[0] = 1
 
     for coin in coins:  # 保证coin 之前没用过!
-        for v in range(coin, amount + 1):
-            dp[v] += dp[v - coin]
+        for j in range(coin, amount + 1):
+            dp[j] += dp[j - coin]
     return dp[-1]
 
 
@@ -192,7 +204,7 @@ def combination_sum(coins, target):
 # 279. Perfect Squares 12 = 4 + 4 + 4
 def num_squares(n):
     dp = [float('inf')] * (n + 1)
-    dp[0] = 0  # 当coin = amount 时使用
+    dp[0] = 0  # coin=amount时使用
     for i in range(1, n + 1):
         for coin in range(1, int(n ** 0.5) + 1):
             square = coin ** 2
@@ -481,9 +493,6 @@ def super_egg_drop2(K, N):
         return res
 
     return dp(K, N)
-
-
-# 区间dp
 
 
 if __name__ == '__main__':

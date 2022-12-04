@@ -1,13 +1,16 @@
 from collections import defaultdict
+import heapq as hq
 
 
-# 计数排序 先统计个数 然后
-def count_sort(nums) :
+# 计数排序  再统计个数 然后
+def count_sort(nums):
     max_value = -1
+    # 元素取值范围
     for v in nums:
         max_value = max(max_value, v)
 
-    cnt = [0 for _ in range(max_value+1)]
+    # 计数
+    cnt = [0 for _ in range(max_value + 1)]
     for v in nums:
         cnt[v] += 1
 
@@ -42,8 +45,9 @@ def top_k_frequent(nums, k):
     for v in nums:
         dic[v] += 1
 
+    # 将出现次数相同的数字放在一个列表中 类似链表
     fre = defaultdict(set)
-    for k, v in dic.items():  # 将出现次数相同的数字放在一个列表中 类似链表
+    for k, v in dic.items():
         fre[v].add(k)
 
     res = []

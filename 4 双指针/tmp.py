@@ -22,6 +22,28 @@ def sorted_squares(nums):
     return res
 
 
+# 三个指针
+def partition2(nums, l, r):
+    def swap(i, j):
+        nums[i], nums[j] = nums[j], nums[i]
+
+    if not nums:
+        return []
+    lt, mt, i = l, r, l
+    pivot = nums[l]
+    while i <= mt:
+        if nums[i] < pivot:
+            swap(i, lt)
+            i += 1
+            lt += 1
+        elif nums[i] == pivot:  # nums[i-1] <= pivot!
+            i += 1
+        else:
+            swap(mt, i)
+            mt -= 1  # 后边换过来的数 不知道其数值 因此不移动i
+    return lt, mt
+
+
 # 26 原地删除升序数组中的重复数字 并返回非重复数组的长度
 # nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
 def remove_duplicates1(nums):
@@ -43,7 +65,7 @@ def remove_duplicates2(nums):
     # 假设 nums[0...i] 符合要求
     j = 1  # 记录最后一个满足要求的位置
     for i in range(2, len(nums)):
-        if nums[i] != nums[i - 1] or nums[i] != nums[j - 1]:
+        if nums[i] != nums[j] or nums[i] != nums[j - 1]:
             j += 1
             nums[j] = nums[i]
 
@@ -87,6 +109,7 @@ def move_zeros(nums):
 def find_pairs(nums, k):
     if len(nums) < 2:
         return 0
+
     nums.sort()
 
     if nums[-1] - nums[0] < k:
@@ -124,10 +147,10 @@ def find_pairs2(nums, k):
 
 # 11. 盛最多水的容器
 # 无论是移动短板或者长板，我们都只关注移动后的新短板会不会变长
-# 如向内移动长板，对于新的木板：1.比原短板短，则新短板更短
-# 如果与原短板相等或者比原短板长，则新短板不变。
-# 所以，向内移动长板，一定不能使新短板变长
-# 因此消去状态的面积都 < S(i, j)
+# 向内移动短板大于等于当前面积
+# 向内移动长板小于等于当前面积
+# 消去状态的面积都小于 S(i, j)
+# 因此我们选择向内移动短板
 def max_area(height):
     res = 0
     l, r = 0, len(height) - 1
@@ -141,25 +164,6 @@ def max_area(height):
     return res
 
 
-# 取值为正数的数组 和大于等于s 最小数组
-def min_sub_array_len(nums, s):
-    if not nums or min(nums) > s:
-        return 0
-    if max(nums) >= s:
-        return 1
-    n = len(nums)
-    i = 0
-    total = 0
-    res = float('inf')
-    for j in range(n):
-        total += nums[j]
-        while total >= s:
-            res = min(res, j - i + 1)  # 注意这个位置!!!
-            total -= nums[i]
-            i += 1
-    return res if res < float('inf') else 0
-
-
 if __name__ == '__main__':
     print('\n平方排序')
     print(sorted_squares([-7, -3, 2, 3, 11]))
@@ -169,7 +173,7 @@ if __name__ == '__main__':
     print(remove_duplicates2([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
     print(remove_duplicates3([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
 
-    print('\n移动 0至数组尾部')
+    print('\n移动0至数组尾部')
     print(move_zeros([0, -7, 0, 2, 3, 11]))
 
     print('\n相差为K的pair数目')

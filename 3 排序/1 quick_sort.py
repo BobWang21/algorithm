@@ -4,29 +4,30 @@ import random
 
 
 def partition1(nums, l, r):  # 原地修改
-    pivot = nums[l]  # 可以随机选择pivot
+    pivot = nums[l]  # pivot可以随机选择
     while l < r:
-        while l < r and pivot <= nums[r]:  # 右
+        # 从右向左遍历
+        while l < r and nums[r] >= pivot:
             r -= 1
-        nums[l] = nums[r]  # 替换已保存的数据
+        nums[l] = nums[r]  # 替换已保存nums[l]
+        # 从左向右遍历
         while l < r and nums[l] <= pivot:  # 左右必须有一个包含等于号
             l += 1
-        nums[r] = nums[l]  # 替换已保存的数据
-    nums[l] = pivot
+        nums[r] = nums[l]  # 替换已保存nums[l]
+    nums[l] = pivot  # nums[l]<= pivot<= nums[r]
     return l
 
 
-# 三个指针 partition
+# 三个指针
 def partition2(nums, l, r):
     def swap(i, j):
         nums[i], nums[j] = nums[j], nums[i]
 
     if not nums:
         return []
-    lt, mt = l, r
-    i = l
+    lt, mt, i = l, r, l
     pivot = nums[l]
-    while i <= mt:  # !!!
+    while i <= mt:
         if nums[i] < pivot:
             swap(i, lt)
             i += 1
@@ -34,13 +35,13 @@ def partition2(nums, l, r):
         elif nums[i] == pivot:  # nums[i-1] <= pivot!
             i += 1
         else:
-            swap(mt, i)
+            swap(i, mt)
             mt -= 1  # 后边换过来的数 不知道其数值 因此不移动i
     return lt, mt
 
 
 def quick_sort1(nums, l, r):
-    if l < r:  # 长度为1不用排序
+    if l < r:  # 长度为1不用排序, 两侧向中间靠
         mid = partition1(nums, l, r)
         quick_sort1(nums, l, mid - 1)
         quick_sort1(nums, mid + 1, r)
@@ -88,7 +89,6 @@ def get_top_k(nums, k):
 
             while l < r and nums[l] <= pivot:
                 l += 1
-
             nums[r] = nums[l]
         nums[l] = pivot
         return l
@@ -133,19 +133,19 @@ def largest_number(nums):
     if not nums:
         return ''
 
-    def bigger(s1, s2):
+    def is_bigger(s1, s2):
         return s1 + s2 > s2 + s1
 
     def partition(l, r):
         pivot = nums[l]
         while l < r:
-            while l < r and bigger(pivot, nums[r]):
+            while l < r and is_bigger(pivot, nums[r]):
                 r -= 1
             nums[l] = nums[r]
 
-            while l < r and not bigger(pivot, nums[l]):  # 此处需要not
+            while l < r and not is_bigger(pivot, nums[l]):  # 此处需要not
                 l += 1
-            nums[l], nums[r] = nums[r], nums[l]
+            nums[r] = nums[l]
         nums[l] = pivot
         return l
 
@@ -181,3 +181,5 @@ if __name__ == '__main__':
 
     print('\n颜色排序')
     print(sort_colors([2, 0, 2, 1, 1, 0]))
+
+    print(partition1([5, 2, 10, 4], 0, 3))

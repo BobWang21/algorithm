@@ -1,21 +1,61 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Jul 29 12:59:56 2017
-
-@author: wangbao
-"""
 import heapq as hq
 
+'''
+幂
+归并排序
+'''
 
+
+def power(x, n):
+    if n == 1:  # 递归基
+        return x
+    v = power(x, n // 2)
+    return v * v * x ** (n % 2)
+
+
+# 魔术索引 递增数组(含有重复值)
+# 找到 nums[i] == i 的最小索引
+def find_magic_index(nums):
+    if not nums:
+        return -1
+
+    def find(l, r):
+        # 终止条件
+        if l > r:
+            return -1
+        mid = l + (r - l) // 2
+        left = find(l, mid - 1)
+        # 先左侧
+        if left != -1:
+            return left
+        if nums[mid] == mid:
+            return mid
+        right = find(mid + 1, r)
+        return right if right != -1 else -1
+
+    return find(0, len(nums) - 1)
+
+
+# 归并排序
 def merge_sort(nums):
     n = len(nums)
     if n == 1:  # 递归基
-        return nums[0]
+        return nums
     mid = n // 2
     left = merge_sort(nums[:mid])
     right = merge_sort(nums[mid:])
     return merge1(left, right)
+
+
+def merge_k_sorted_nums1(nums):
+    if not nums:
+        return
+    if len(nums) == 1:  # base
+        return nums[0]
+    mid = len(nums) // 2
+    a = merge_k_sorted_nums1(nums[:mid])
+    b = merge_k_sorted_nums1(nums[mid:])
+    return merge3(a, b)
 
 
 # 合并两个有序数组
@@ -78,17 +118,6 @@ def merge3(a, b):
     return res
 
 
-def merge_k_sorted_nums1(nums):
-    if not nums:
-        return
-    if len(nums) == 1:
-        return nums[0]
-    mid = len(nums) // 2
-    a = merge_k_sorted_nums1(nums[:mid])
-    b = merge_k_sorted_nums1(nums[mid:])
-    return merge3(a, b)
-
-
 def merge_k_sorted_nums2(nums):
     if not nums or not nums[0]:
         return []
@@ -107,8 +136,9 @@ def merge_k_sorted_nums2(nums):
 
 
 if __name__ == '__main__':
+    print(find_magic_index([2, 3, 4, 4, 5, 5, 5]))
     print('\n归并排序')
-    print(merge_sort([[1, 3, 2, 4], [10, 11]]))
+    print(merge_sort([1, 3, 2, 4]))
 
     print('\n合并两个有序数组')
     print(merge1([1, 3], [2, 4]))

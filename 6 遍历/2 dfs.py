@@ -3,40 +3,7 @@
 from pprint import pprint
 
 
-# 回溯过程
-def max_gift(board):
-    if not board:
-        return 0
-
-    cols = len(board)
-    res = [-float('inf')]
-
-    def helper(i, total):
-        if i < 0 or i == cols:
-            return
-
-        if board[i] == 'x':  # 访问过
-            return
-
-        if isinstance(board[i], int):
-            total = total + board[i]
-            res[0] = max(res[0], total)
-
-        c = board[i]
-        board[i] = 'x'
-        print('+', board)
-        for direction in [-1, 1]:
-            helper(i + direction, total)  # 1 此处没return 因此2处可回溯
-
-        board[i] = c  # 2 回溯
-        print('-', board)
-
-    print('.', board)
-    helper(2, 0)
-    return res[0]
-
-
-# 200. 岛屿数量 也可用 union find
+# 200 岛屿数量 也可用union-find
 def num_islands(grid):
     if not grid:
         return 0
@@ -63,8 +30,31 @@ def num_islands(grid):
     return num
 
 
-# 从某一位置出发,判断是否连通 不回溯
-def maze_can_reach(maze, start, destination):
+# 695 岛屿的最大面积
+def max_area_of_island(grid):
+    rows, cols = len(grid), len(grid[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    water, land = 0, 1
+    res = 0
+
+    def helper(i, j):
+        if i < 0 or j < 0 or i == rows or j == cols or grid[i][j] == water:
+            return 0
+        grid[i][j] = water
+        res = 1
+        for d_i, d_j in directions:
+            res += helper(i + d_i, j + d_j)
+        return res
+
+    for i in range(rows):
+        for j in range(cols):
+            if grid[i][j] == land:
+                res = max(res, helper(i, j))
+    return res
+
+
+# 从某一位置出发, 判断是否连通 不回溯
+def has_path(maze, start, destination):
     if not maze or not maze[0]:
         return False
     rows, cols = len(maze), len(maze[0])
@@ -99,7 +89,7 @@ def maze_can_reach(maze, start, destination):
 
 
 # 从某一位置出发 判断是否连通 回溯 不改变maze
-def maze_can_reach2(maze, start, destination):
+def has_path2(maze, start, destination):
     if not maze or not maze[0]:
         return False
     rows, cols = len(maze), len(maze[0])
@@ -114,7 +104,7 @@ def maze_can_reach2(maze, start, destination):
             return False
 
         # 到达目的地
-        if [i, j] == destination[1]:
+        if [i, j] == destination:
             return True
 
         # 标记已经访问的点
@@ -133,6 +123,33 @@ def maze_can_reach2(maze, start, destination):
     print('after')
     pprint(maze)
     return res
+
+
+# 490 小球是否能在目的地停留
+def has_path_3(maze, start, destination):
+    rows, cols = len(maze), len(maze[0])
+    directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+
+    def dfs(x, y):
+        maze[x][y] = -1  # 不能用wall标记
+        if [x, y] == destination:
+            return True
+
+        i, j = x, y
+        for dx, dy in directions:
+            x, y = i, j
+            while 0 <= x + dx < rows and 0 <= y + dy < cols \
+                    and maze[x + dx][y + dy] != 1:
+                x = x + dx
+                y = y + dy
+
+            if maze[x][y] != -1:  # 如果该点的值不为-1，即未遍历过
+                if dfs(x, y):
+                    return True
+
+        return False
+
+    return dfs(start[0], start[1])
 
 
 # 130 将围住的'O'变成'X' 任何边界上的'O'都不会被填充为'X'
@@ -168,7 +185,7 @@ def surrounded_regions1(board):
     return board
 
 
-# 回溯思想
+# 130 回溯思想
 def surrounded_regions2(board):
     if not board:
         return
@@ -229,6 +246,38 @@ def surrounded_regions_wrong(board):
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+# 回溯过程
+def max_gift(board):
+    if not board:
+        return 0
+
+    cols = len(board)
+    res = [-float('inf')]
+
+    def helper(i, total):
+        if i < 0 or i == cols:
+            return
+
+        if board[i] == 'x':  # 访问过
+            return
+
+        if isinstance(board[i], int):
+            total = total + board[i]
+            res[0] = max(res[0], total)
+
+        c = board[i]
+        board[i] = 'x'
+        print('+', board)
+        for direction in [-1, 1]:
+            helper(i + direction, total)  # 1 此处没return 因此2处可回溯
+
+        board[i] = c  # 2 回溯
+        print('-', board)
+
+    print('.', board)
+    helper(2, 0)
+    return res[0]
+
 
 # 1254 封闭岛屿的数量
 # 逆向思维
@@ -243,8 +292,7 @@ def closed_island(grid):
             return
         grid[i][j] = 1
         for direction in directions:
-            r, c = i + direction[0], j + direction[1]  # 联通!!!
-            dfs(r, c)
+            dfs(i + direction[0], j + direction[1])
 
     for row in range(rows):
         dfs(row, 0)
@@ -266,26 +314,25 @@ def closed_island(grid):
 # 329. 矩阵中的最长递增路径
 # dfs + 记忆 dp[i][j] = max(dp[x][y]) + 1
 def longest_increasing_path(matrix):
-    if not matrix or not matrix[0]:
-        return 0
-
-    dic = {}
+    visited = {}
     rows, cols = len(matrix), len(matrix[0])
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     def helper(i, j):
-        if (i, j) in dic:
-            return dic[(i, j)]
+        if (i, j) in visited:
+            return visited[(i, j)]
+
         res = 0
         for direction in directions:
-            row, col = i + direction[0], j + direction[1]
-            if row < 0 or row == rows or col < 0 or col == cols:
+            next_i, next_j = i + direction[0], j + direction[1]
+            if next_i < 0 or next_j < 0 or next_i == rows or next_j == cols:
                 continue
-            if matrix[i][j] > matrix[row][col]:  # 递增可以保证路径点不重复访问
-                res = max(res, helper(row, col))
+            if matrix[i][j] < matrix[next_i][next_j]:
+                continue
+            res = max(res, helper(next_i, next_j))
 
         res += 1
-        dic[(i, j)] = res
+        visited[(i, j)] = res
         return res
 
     res = 1
@@ -365,7 +412,7 @@ if __name__ == '__main__':
 
     start = [0, 2]
     destination = [2, 0]
-    print(maze_can_reach(maze, start, destination))
+    print(has_path(maze, start, destination))
 
     print('\n岛屿数')
     grid = [['1', '1', '0', '0', '0'],

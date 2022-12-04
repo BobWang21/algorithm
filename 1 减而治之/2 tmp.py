@@ -4,30 +4,15 @@ from collections import defaultdict
 
 '''
 TopK 问题的几种解法
-1 桶排序
-2 堆排序
+1 堆排序
+2 对于未排序的 使用partition
 3 二分查找 需要构造递增序列
-4 对于未排序的 使用partition
+4 桶排序
 '''
 
 
-def search_matrix(matrix, target):
-    if not matrix or not matrix[0]:
-        return False
-    rows, cols = len(matrix), len(matrix[0])
-    i, j = 0, cols - 1
-    while i < rows and 0 <= j:
-        num = matrix[i][j]
-        if num == target:
-            return True
-        elif num < target:
-            i += 1
-        else:
-            j -= 1
-    return False
-
-
-# 计数排序 给定一个包含红色、白色和蓝色，n个元素的数组，
+# 计数排序
+# 给定一个包含红色、白色和蓝色，n个元素的数组，
 # 原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列
 # 使用整数 0, 1 和 2 分别表示红色、白色和蓝色。
 def sort_colors(nums):
@@ -50,6 +35,7 @@ def top_k_frequent(nums, k):
     for v in nums:
         dic[v] += 1
 
+    # 反向链表
     fre = defaultdict(set)
     for k, v in dic.items():  # 将出现次数相同的数字放在一个列表中 类似链表
         fre[v].add(k)
@@ -89,8 +75,8 @@ def longest_consecutive(nums):
     return res
 
 
-# 560. 和为K的子数组
-# 前缀和 如果两个数的前缀和相同，那么这两个节点之间的元素总和为零
+# 560. 前缀和
+# 和为K的子数组
 def subarray_sum(nums, k):
     res = 0
     total = 0
@@ -106,7 +92,7 @@ def subarray_sum(nums, k):
 
 # 523 给定一个包含 非负数 的数组和一个目标 整数k，
 # 编写一个函数来判断该数组是否含有连续的子数组，其大小至少为 2，
-# 且总和为 k 的倍数，即总和为 n*k，其中 n 也是一个整数。
+# 且总和为k的倍数，即总和为 n*k，其中 n 也是一个整数。
 def check_subarray_sum(nums, k):
     if len(nums) < 2:
         return False
@@ -219,27 +205,6 @@ def second_largest(nums):
     return second
 
 
-# 581. 最短无序连续子数组
-# 单调性
-def find_unsorted_subarray(nums):
-    n = len(nums)
-    max_v, min_v = -float('inf'), float('inf')
-    left, right = n - 1, 0
-    for i in range(n):
-        if nums[i] < max_v:  # 比左侧最大值小
-            right = i
-        else:
-            max_v = nums[i]  # 右侧递增
-        #
-        if min_v < nums[n - 1 - i]:  # 比右侧最小值大
-            left = n - 1 - i
-        else:
-            min_v = nums[n - 1 - i]  # 左侧递减
-    if left == n - 1 and right == 0:
-        return 0
-    return right - left + 1
-
-
 # 区间合并
 def merge(intervals):
     if not intervals or not intervals[0]:
@@ -311,34 +276,95 @@ def plus_one2(digits):
     return digits
 
 
-# 14. 最长公共前缀
-def longest_common_prefix(strs):
-    if not strs:
-        return ""
+# num1 = "123", num2 = "456" 输出: "56088"
+def add(num1, num2):
+    m, n = len(num1), len(num2)
+    i, j = m - 1, n - 1
+    carry = 0
+    s = ''
+    while i >= 0 or j >= 0:
+        v1 = int(num1[i]) if i >= 0 else 0
+        v2 = int(num2[j]) if j >= 0 else 0
+        v = v1 + v2 + carry
+        s = str(v % 10) + s
+        carry = v // 10
+        i -= 1
+        j -= 1
+    if carry:
+        s = str(carry) + s
+    return s
 
-    def lcp(str1, str2):
-        length, index = min(len(str1), len(str2)), 0
-        while index < length and str1[index] == str2[index]:
-            index += 1
-        return str1[:index]
 
-    prefix, n = strs[0], len(strs)
-    for i in range(1, n):
-        prefix = lcp(prefix, strs[i])
-        if not prefix:
-            break
+def multiply(num1, num2):
+    if not num1 or not num2:
+        return
+    m, n = len(num1), len(num2)
 
-    return prefix
+    res = '0'
+
+    for i in range(m - 1, -1, -1):
+        s = ''
+        v1 = int(num1[i])
+        carry = 0
+        for j in range(n - 1, -1, -1):
+            v2 = int(num2[j])
+            v = v1 * v2 + carry
+            s = str(v % 10) + s
+            carry = v // 10
+        if carry:
+            s = str(carry) + s
+        s += '0' * (m - 1 - i)  # 补0
+        res = add(s, res)
+    return res
+
+
+def multiply2(num1, num2):
+    if num1 == '0' or num2 == '0':
+        return '0'
+
+    m, n = len(num1), len(num2)
+    res = [0] * (m + n)
+    for i in range(m - 1, -1, -1):
+        v1 = int(num1[i])
+        for j in range(n - 1, -1, -1):
+            v2 = int(num2[j])
+            v = res[i + j + 1] + v1 * v2
+            res[i + j + 1] = v % 10
+            res[i + j] += v // 10
+
+    s = ''
+    for i in range(m + n):
+        if i == 0 and res[i] == 0:
+            continue
+        s += str(res[i])
+    return s
+
+
+# 581. 单调性 也可用单调栈
+# 最短无序连续子数组
+def find_unsorted_subarray(nums):
+    n = len(nums)
+    max_v, min_v = -float('inf'), float('inf')
+    left, right = n - 1, 0
+    # 从左向右遍历, 获取右边界
+    for i in range(n):
+        if nums[i] >= max_v:  # 比左侧最大值大
+            max_v = nums[i]  # 左侧递增
+        else:
+            right = i  # right右侧的数都比左侧最大值大
+    # 从右向左遍历, 获取左边界
+    for i in range(n):
+        if nums[n - 1 - i] <= min_v:  # 比右侧最小值大
+            min_v = nums[n - 1 - i]  # 左侧递减
+        else:
+            left = n - 1 - i  # left左侧的数都比右侧最小值小
+
+    if left == n - 1 and right == 0:
+        return 0
+    return right - left + 1
 
 
 if __name__ == '__main__':
-    print('\n矩阵查找')
-    matrix = [
-        [1, 3, 5, 7],
-        [10, 11, 16, 20],
-        [23, 30, 34, 50]
-    ]
-    print(search_matrix(matrix, 16))
     print('\n众数')
     print(most_data([1, 3, 3, 3, 9]))
 
@@ -360,11 +386,16 @@ if __name__ == '__main__':
     print('\n下一个排列')
     print(next_permutation([1, 1, 3]))
 
-    print('\n找到未排序的部分')
-    print(find_unsorted_subarray([2, 6, 4, 8, 10, 9, 15]))
-
-    print('\n连续数组和为K')
+    print('\n数组连续和为K')
     print(subarray_sum([1, 2, 3, -3, 4], 0))
 
     print('\n加油站问题')
     print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
+
+    print('\n未排序区间长度')
+    print(find_unsorted_subarray([2, 6, 4, 8, 10, 9, 15]))
+
+    print('字符串相乘')
+    print(add('123', '999'))
+
+    print(multiply2('123', '456'))

@@ -7,21 +7,19 @@ def diagnose_traverse(matrix):
     rows, cols = len(matrix), len(matrix[0])
     res = []
     # 上三角
-    for i in range(cols):
-        row = 0
-        col = i
-        while col >= 0:
-            res.append(matrix[row][col])
-            row += 1
-            col -= 1
+    for j in range(cols):
+        i = 0
+        while j >= 0:
+            res.append(matrix[i][j])
+            i += 1
+            j -= 1
     # 下三角
     for i in range(1, rows):
-        row = i
-        col = cols - 1
-        while row < rows:
-            res.append(matrix[row][col])
-            row += 1
-            col -= 1
+        j = cols - 1
+        while i < rows:
+            res.append(matrix[i][j])
+            i += 1  # 不影响外层i的遍历
+            j -= 1
     return res
 
 
@@ -29,36 +27,93 @@ def diagnose_traverse(matrix):
 def spiral_order(matrix):
     if not matrix:
         return []
-    left, right, top, bottom = 0, len(matrix[0]) - 1, 0, len(matrix) - 1
+    left, right, top, down = 0, len(matrix[0]) - 1, 0, len(matrix) - 1
     res = []
     while True:
         # left to right, [left, right+1)
         for i in range(left, right + 1):
             res.append(matrix[top][i])
+        # 每行访问完后+1
         top += 1
-        if top > bottom:
+        print(left, right, top, down)
+        if top > down:
             break
 
-        # top to bottom
-        for i in range(top, bottom + 1):
+        # top to down
+        for i in range(top, down + 1):
             res.append(matrix[i][right])
         right -= 1
+        print(left, right, top, down)
         if left > right:
             break
 
         # right to left
         for i in range(right, left - 1, -1):
-            res.append(matrix[bottom][i])
-        bottom -= 1
-        if top > bottom:
+            res.append(matrix[down][i])
+        down -= 1
+        print(left, right, top, down)
+        if top > down:
             break
 
         # bottom to top
-        for i in range(bottom, top - 1, -1):
+        for i in range(down, top - 1, -1):
             res.append(matrix[i][left])
         left += 1
+        print(left, right, top, down)
         if left > right:
             break
+    return res
+
+
+# 错误写法
+def spiral_order_wrong(matrix):
+    if not matrix or not len(matrix[0]):
+        return
+    res = []
+    left, right, top, down = 0, len(matrix) - 1, 0, len(matrix[0]) - 1
+    i, j = 0, 0
+    while True:
+        # 从左到右
+        while j < right:
+            res.append(matrix[i][j])
+            j += 1
+        top += 1
+        # print(res)
+        print(left, right, top, down)
+        # 未访问完 top > down
+        if top > down:
+            break
+
+        # 从上到下
+        while i < down:
+            res.append(matrix[i][j])
+            i += 1
+        right -= 1
+        # print(res)
+        print(left, right, top, down)
+        if left > right:
+            break
+
+        # 从右到左
+        while j > left:
+            res.append(matrix[i][j])
+            j -= 1
+        down -= 1
+        # print(res)
+        print(left, right, top, down)
+        if top > down:
+            break
+
+        # 从下往上
+        while i > top:
+            res.append(matrix[i][j])
+            i -= 1
+        left += 1
+        # print(res)
+        print(left, right, top, down)
+        if left > right:
+            break
+
     return res
 
 
@@ -92,7 +147,7 @@ def spiral_order2(matrix):
 
 
 def generate_matrix(n):
-    left, right, top, bottom = 0, n - 1, 0, n - 1
+    left, right, top, down = 0, n - 1, 0, n - 1
     matrix = [[0] * n for _ in range(n)]
     num, tar = 1, n * n
     while num <= tar:
@@ -100,15 +155,15 @@ def generate_matrix(n):
             matrix[top][i] = num
             num += 1
         top += 1
-        for i in range(top, bottom + 1):  # top to bottom
+        for i in range(top, down + 1):  # top to bottom
             matrix[i][right] = num
             num += 1
         right -= 1
         for i in range(right, left - 1, -1):  # right to left
-            matrix[bottom][i] = num
+            matrix[down][i] = num
             num += 1
-        bottom -= 1
-        for i in range(bottom, top - 1, -1):  # bottom to top
+        down -= 1
+        for i in range(down, top - 1, -1):  # bottom to top
             matrix[i][left] = num
             num += 1
         left += 1
@@ -189,14 +244,15 @@ def set_zeroes(matrix):
 
 if __name__ == '__main__':
     print('\n对角线访问')
-    matrix = [[1, 10, 3, 8],
-              [12, 2, 9, 6],
-              [5, 7, 4, 11],
-              [3, 7, 16, 5]]
+    matrix = [[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9]]
     print(diagnose_traverse(matrix))
 
     print('\n顺时针访问')
-    print(spiral_order(matrix))
+    spiral_order(matrix)
+    print('-' * 10)
+    spiral_order_wrong(matrix)
 
     print('\n顺时针生成数组')
     print(generate_matrix(3))

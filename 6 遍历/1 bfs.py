@@ -19,22 +19,19 @@ def maze_short_path(maze, start, destination):
             if 0 <= x < rows and 0 <= y < cols and maze[x][y] == empty:  # 先判断是否安全
                 if [x, y] == destination:
                     return layer + 1
-
-                maze[x][y] = wall  # 标记已经访问过的点
                 queue.append((x, y, layer + 1))
+                maze[x][y] = wall  # 标记经访问过的点
     return -1
 
 
 # 286 多向BFS
 # 时间复杂度: O(mn) 空间: O(mn)
-# 首先考虑只有一个门的情况，bfs最多只需要mn步就能到达所有的房间，所以时间复杂度是 O(mn)。如果从k个门呢？
-# 一旦我们到达了一个房间，并记录下它的距离时，这意味着我们也标记了这个房间已经被访问过了，这意味着每个房间最多会被访问一次。
-# 因此，时间复杂度与门的数量无关，所以时间复杂度为 O(mn)
 def walls_and_gates(rooms):
     if not rooms or not rooms[0]:
         return
     rows, cols = len(rooms), len(rooms[0])
     inf, queue, = 2147483647, []
+    # 加入多个源
     for i in range(rows):
         for j in range(cols):
             if not rooms[i][j]:
@@ -52,7 +49,7 @@ def walls_and_gates(rooms):
                 queue.append((i, j, layer + 1))
 
 
-# Input:
+# 127 Input:
 # beginWord = "hit",
 # endWord = "cog",
 # wordList = ["hot","dot","dog","lot","log","cog"]

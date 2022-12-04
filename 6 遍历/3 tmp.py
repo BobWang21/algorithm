@@ -90,6 +90,25 @@ def n_sum2(nums, k, target):
     return res
 
 
+# 加减
+def find_target_sum_ways(nums, S):
+    n = len(nums)
+    res = [0]
+
+    def helper(idx, total):
+        if idx == n and total == S:
+            res[0] = res[0] + 1
+            return
+        if idx == n:
+            return
+
+        helper(idx + 1, total + nums[idx])
+        helper(idx + 1, total - nums[idx])
+
+    helper(0, 0)
+    return res[0]
+
+
 # 698 10000 > nums[i] > 0
 def can_partition_k_subsets(nums, k):
     if len(nums) < k:
@@ -333,16 +352,18 @@ def knapsack(costs, values, capacity):
     return res[0]
 
 
+"""
+W=<90, 80, 40, 30, 20, 12, 10> c1 =152, c2 =130
+有n个集装箱，需要装上两艘载重分别为 c1 和 c2 的轮船。
+wi 为第i个集装箱的重量，且 w1+w2+...+wn ≤ c1+c2。
+问是否存在一种合理的装载方 案把这n个集装箱装上船? 如果有，给出一种方案。
+算法思想: 令第一艘船的载入量为W1
+1. 用回溯法求使得c1 -W1 达到最小的装载方案
+2. 若满足 w1+w2+...+wn -W1 ≤ c2
+"""
+
+
 def pack(candidates, c1, c2):
-    """
-    # W=<90, 80, 40, 30, 20, 12, 10> c1 =152, c2 =130
-    # 有n个集装箱，需要装上两艘载重分别为 c1 和 c2 的轮船。
-    # wi 为第i个集装箱的重量，且 w1+w2+...+wn ≤ c1+c2。
-    # 问是否存在一种合理的装载方 案把这n个集装箱装上船? 如果有，给出一种方案。
-    # 算法思想: 令第一艘船的载入量为W1
-    # 1. 用回溯法求使得c1 -W1 达到最小的装载方案
-    # 2. 若满足 w1+w2+...+wn -W1 ≤ c2
-    """
     candidates.sort()
     res = []
 
@@ -546,6 +567,8 @@ if __name__ == '__main__':
     print('\nn sum 回溯版')
     print(n_sum1([1, 1, 2, 3, 4], 3, 6))
     print(n_sum2([1, 1, 2, 3, 4], 3, 6))
+
+    print(merge_k_sorted_array([[1, 10], [2, 9], [100, 200]], 3))
 
     print('\nk个和相等的子数组')
     nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
