@@ -22,11 +22,11 @@ def subsets_2(nums):
     res = []
     path = []
 
-    def helper(idx):
+    def helper(i):
         res.append(path[:])
-        for i in range(idx, n):
-            path.append(nums[i])
-            helper(i + 1)
+        for j in range(i, n):  # i==n时跳出
+            path.append(nums[j])
+            helper(j + 1)
             path.pop(-1)
 
     helper(0)
@@ -39,13 +39,13 @@ def subsets_with_dup(nums):
 
     n, res, path = len(nums), [], []
 
-    def helper(idx=0):
+    def helper(i=0):
         res.append(path[:])
-        for i in range(idx, n):
-            if i > idx and nums[i - 1] == nums[i]:  # 相同数字不能出现在同一层 [1(idx), 2(i), 2(x)]; [2(idx), 2]
+        for j in range(i, n):
+            if j > i and nums[j - 1] == nums[j]:  # 相同数字不能出现在同一层 [1(idx), 2(i), 2(x)]; [2(idx), 2]
                 continue
-            path.append(nums[i])
-            helper(i + 1)
+            path.append(nums[j])
+            helper(j + 1)
             path.pop(-1)
 
     nums.sort()
@@ -56,51 +56,26 @@ def subsets_with_dup(nums):
 def n_sum1(nums, k, target):
     if not nums or len(nums) < k or target < 0:
         return []
-    res = []
+    res, path = [], []
     n = len(nums)
 
-    def helper(k, i, target, path):
-        if not i and not target:  # 满足条件 k个数的和为target
-            res.append(path)
+    def helper(idx, total):
+        if len(path) == k and total == target:  # 满足条件 k个数的和为target
+            res.append(path[:])
             return
-        if not i:  # 不满足条件
+        if len(path) == k:  # 不满足条件
             return
-        if i > n - i:  # 后面的数不够K个
+        if total > target:  # 后面的数不够K个
             return
-        for j in range(i, n):
-            if j > i and nums[j] == nums[j - 1]:  # 去重
+        for j in range(idx, n):
+            if j > idx and nums[j] == nums[j - 1]:  # 去重
                 continue
-            # path + [nums[i]] 生成一个新的列表 因此不需要回溯
-            helper(j + 1, i - 1, target - nums[j], path + [nums[j]])
-
-    nums.sort()
-    helper(0, k, target, [])
-    return res
-
-
-def n_sum2(nums, k, target):
-    if not nums or len(nums) < k or target < 0:
-        return []
-    res = []
-    n = len(nums)
-
-    def helper(idx, k, target, path):
-        if not k and not target:  # 满足条件 k个数的和为target
-            res.append(path[:])  # 复制新的结果 !!!
-            return
-        if not k:  # 不满足条件
-            return
-        if k > n - idx:  # 后面的数不够K个
-            return
-        for i in range(idx, n):
-            if i > idx and nums[i] == nums[i - 1]:  # 去重
-                continue
-            path.append(nums[i])
-            helper(i + 1, k - 1, target - nums[i], path)
+            path.append(nums[j])
+            helper(j + 1, total + nums[j])  # total不需回溯
             path.pop(-1)
 
     nums.sort()
-    helper(0, k, target, [])
+    helper(0, 0)
     return res
 
 
@@ -140,16 +115,16 @@ def combination_sum(nums, target):
     res = []
     n = len(nums)
 
-    def dfs(idx, total, path):
+    def dfs(i, total, path):
         if total == target:
             res.append(path[:])
             return
         if target < total:  # 不满足条件
             return
-        for i in range(idx, n):
-            path.append(nums[i])
+        for j in range(i, n):
+            path.append(nums[j])
             # 索引不加1, 表示数字可以用多次!!!
-            dfs(i, target + nums[i], path)
+            dfs(j, target + nums[j], path)
             path.pop(-1)
 
     nums.sort()
@@ -265,6 +240,36 @@ def permute_unique2(nums):
     return res
 
 
+def permute_seq(n):
+    if not n:
+        return []
+    res, path = [], []
+    status = [2] * n
+
+    def helper():
+        if len(path) == 2 * n:
+            res.append(path[:])
+            return
+
+        for i in range(n):
+            if not status[i]:
+                continue
+
+            if status[i] == 2:
+                path.append(str(i) + '_B')
+            else:
+                path.append(str(i) + '_C')
+            status[i] -= 1
+
+            helper()
+
+            path.pop(-1)
+            status[i] += 1
+
+    helper()
+    return res
+
+
 # 递增子序列
 def find_sub_sequences(nums):
     if not nums:
@@ -358,11 +363,8 @@ def restore_ip_addresses(s):
         return []
 
     def valid(s):
-        if s[0] == '0':  # 0 开头
-            if len(s) < 2:
-                return True
-            else:
-                return False
+        if len(s) > 2 and s[0] == '0':  # 0 开头
+            return False
         return int(s) <= 255
 
     res = []
@@ -586,16 +588,15 @@ if __name__ == '__main__':
     print(subset([1, 2, 3]))
     print(subsets_with_dup([1, 2, 2, 3]))
 
-    print('\nn sum 回溯版')
+    print('\ncombination sum')
     print(n_sum1([1, 1, 2, 3, 4], 3, 6))
-    print(n_sum2([1, 1, 2, 3, 4], 3, 6))
+
+    print('\n数组中不包含重复数字 一个数字可以用无数次')
+    print(combination_sum([2, 3, 5], 8))
 
     print('\nk个和相等的子数组')
     nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
     print(can_partition_k_subsets(nums, 4))
-
-    print('\n数组中不包含重复数字 一个数字可以用无数次')
-    print(combination_sum([2, 3, 5], 8))
 
     print('\n数组中包含重复数字 一个数字只能用一次')
     print(combination_sum([1, 1, 2, 3, 4], 4))

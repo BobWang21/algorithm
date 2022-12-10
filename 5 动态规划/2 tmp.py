@@ -18,8 +18,7 @@ def fib1(n):
 
 
 # bottom up
-# 可以记录所有状态
-# 但当前状态只和最近前两个状态有关 因此只存最近两个状态
+# 可以记录所有状态 但当前状态只与最近前两个状态有关 可只存两个状态
 def fib2(n):
     if n == 1:
         return 1
@@ -75,17 +74,17 @@ def rob_with_cycle(nums):
     return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
 
 
-# 53 连续子序列和最大
+# 53 最大连续子序列和
 def max_sub_array(nums):
     if not nums:
         return 0
-    inc = exc = -float('inf')  # 包含负数求最大值时, 适用负无穷对初始化
+    inc = exc = -float('inf')  # 负无穷适用与目标值最大时的初始化
     for num in nums:
         inc, exc = max(inc + num, num), max(inc, exc)
     return max(inc, exc)
 
 
-# 152 连续子序列乘积最大
+# 152 最大连续子序列乘积
 def max_continuous_product(nums):
     res = inc_min = inc_max = nums[0]
     for val in nums[1:]:
@@ -108,24 +107,27 @@ def LIS(nums):
 
 # res[i] 保存长度为i+1的子串的最小值 nlog(n)
 def LIS2(nums):
-    def binary_search(nums, target):
-        l, r = 0, len(nums) - 1
+    if not nums:
+        return 0
+    dp = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
+    n = len(nums)
+
+    def binary_search(target):
+        l, r = 0, len(dp) - 1
         while l < r:
             mid = l + (r - l) // 2
-            if nums[mid] < target:
+            if dp[mid] < target:
                 l = mid + 1
             else:
                 r = mid
         return l
 
-    if not nums:
-        return 0
-    dp = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
-    for num in nums[1:]:
+    for i in range(1, n):
+        num = nums[i]
         if num > dp[-1]:
             dp.append(num)
         else:
-            idx = binary_search(dp, num)  # 第一个大于等于该数的位置
+            idx = binary_search(num)  # 大于等于该数的第一个数位置
             dp[idx] = num
     return len(dp)
 
@@ -137,14 +139,14 @@ def coin_change1(coins, amount):
     dp[0] = 0
     for i in range(1, amount + 1):
         for coin in coins:
-            if coin <= i:
+            if i >= coin:
                 dp[i] = min(dp[i], dp[i - coin] + 1)
     return dp[-1] if dp[-1] != float('inf') else -1
 
 
 def coin_change(coins, amount):
-    dp = [float('inf')] * (amount + 1)
-    dp[0] = 0  # base coin=amount时使用
+    dp = [float('inf')] * (amount + 1)  # 初始状态
+    dp[0] = 0  # 初始状态 coin=amount时使用
     for coin in coins:
         for i in range(coin, amount + 1):
             dp[i] = min(dp[i], dp[i - coin] + 1)
@@ -223,10 +225,10 @@ def max_product_after_cutting(m):
         return 2
     res = [0, 1, 2, 3]  # 0为了占位
     for i in range(4, m + 1):
-        max_num = -1
+        max_product = -1
         for j in range(1, i // 2 + 1):
-            max_num = max(max_num, res[j] * res[i - j])
-        res.append(max_num)
+            max_product = max(max_product, res[j] * res[i - j])
+        res.append(max_product)
     return res[-1]
 
 
@@ -242,14 +244,14 @@ def max_gift(matrix):
     return res[-1][-1]
 
 
-# 带权最小路径和
+# 最小带权路径和
 def min_path_sum(matrix):
     if not matrix or not matrix[0]:
         return 0
 
     rows, cols = len(matrix) + 1, len(matrix[0]) + 1
     dp = [[float('inf')] * cols for _ in range(rows)]
-    dp[0][1] = 0  # 入口
+    dp[0][1] = 0  # 初始状态
 
     for i in range(1, rows):
         for j in range(1, cols):
@@ -257,6 +259,7 @@ def min_path_sum(matrix):
     return dp[-1][-1]
 
 
+# 120 三角形 自上至下路径和最小值
 def minimum_total(nums):
     if not nums or not nums[0]:
         return 0
@@ -321,6 +324,7 @@ def longest_arith_seq_length2(nums):
     return res
 
 
+# 62. 不同路径
 # 二维矩阵中 0为空地 1为障碍物 是否可以从左上角到达右下角
 # 求到达的路径数
 def unique_paths_with_obstacles(grid):
@@ -338,28 +342,30 @@ def unique_paths_with_obstacles(grid):
     return dp[-1][-1]
 
 
-# 股票买卖 最佳时机
-def max_profit1(nums):
-    n = len(nums)
-    if n < 2:
-        return 0
-    i = 0
-    balance = 0
-    for j in range(1, n):
-        if nums[j] - nums[i] > balance:
-            balance = nums[j] - nums[i]
-            continue
-        if nums[j] < nums[i]:
-            i = j
-    return balance
-
-
-# 股票买卖 含冷冻期
-def max_profit2(prices):
+# 121 股票买卖 最佳时机
+# 类似滑动窗口
+def max_profit1(prices):
     n = len(prices)
-    if n < 2:
-        return 0
-    hold, sold, rest = -float('inf'), 0, 0  # 因为不能出现hold 所以收益为负无穷
+    min_price = float('inf')
+    max_profit = 0
+    for j in range(n):
+        max_profit = max(max_profit, prices[j] - min_price)
+        min_price = min(prices[j], min_price)
+    return max_profit
+
+
+# 122 股票可以交易多次
+def max_Profit2(prices):
+    hold, sold = -float('inf'), 0
+    for price in prices:
+        hold, sold = max(sold - price, hold), max(hold + price, sold)
+    return max(hold, sold)
+
+
+# 309 交易后有冷冻期
+def max_profit3(prices):
+    n = len(prices)
+    hold, sold, rest = -float('inf'), 0, 0  # 第一次不能出现hold, hold初始状态为负无穷
     for price in prices:
         hold, sold, rest = max(rest - price, hold), hold + price, max(rest, sold)
 
@@ -367,7 +373,7 @@ def max_profit2(prices):
 
 
 # 最多交易两次
-def max_profit3(prices):
+def max_profit4(prices):
     if not prices or len(prices) < 2:
         return 0
     n = len(prices)
@@ -416,23 +422,6 @@ def trap1(height):
     for i in range(n):
         res += min(l[i], r[i]) - height[i]
     return res
-
-
-# 238. 除自身以外数组的乘积 左右各扫描一遍
-def product_except_self(nums):
-    n = len(nums)
-
-    l = [1] * n
-
-    for i in range(1, n):
-        l[i] = l[i - 1] * nums[i - 1]
-
-    r = 1
-    for i in range(n - 1, -1, -1):
-        l[i] *= r
-        r = r * nums[i]
-
-    return l
 
 
 # 鸡蛋
@@ -557,13 +546,10 @@ if __name__ == '__main__':
     print(max_profit1([5, 10, 15, 1, 20]))
 
     print('包含冷冻期')
-    print(max_profit2([1, 2, 3, 0, 2]))
+    print(max_profit3([1, 2, 3, 0, 2]))
 
     print('有交易次数限制')
-    print(max_profit3([3, 3, 5, 0, 0, 3, 1, 4]))
-
-    print('\n不包含自身的乘积')
-    print(product_except_self([1, 2, 3, 4]))
+    print(max_profit4([3, 3, 5, 0, 0, 3, 1, 4]))
 
     print('\n扔鸡蛋')
     print(super_egg_drop(3, 14))

@@ -164,11 +164,10 @@ def largest_number(nums):
 if __name__ == '__main__':
     print('\n快排')
     nums = [4, 3, 1, 3, 9]
-    # nums = [1, 1, 1, 1, 1]
     quick_sort1(nums, 0, 4)
     print(nums)
 
-    print('\n三路partition')
+    print('\n三路快排')
     nums = [4, 3, 1, 3, 9]
     quick_sort2(nums, 0, 4)
     print(nums)

@@ -21,21 +21,23 @@ def create_full_binary_tree(nums):
         if not parent.left:
             node = TreeNode(val)
             parent.left = node
-            queue.append(node)
-        elif not parent.right:
+            queue.append(node)  # 进队列
+        else:
             node = TreeNode(val)
             parent.right = node
-            queue.append(node)
+            queue.append(node)  # 进队列
             queue.pop(0)  # 出队列
     return tree
 
 
 # 先序遍历(递归)
 def preorder_traversal(tree):
+    res = []
     if tree:
-        print(tree.val, end=' ')
+        res.append(tree.val)
         preorder_traversal(tree.left)
         preorder_traversal(tree.right)
+    return res
 
 
 # 先序遍历(非递归) dfs
@@ -50,7 +52,7 @@ def preorder2(tree):
         left, right = node.left, node.right
         # 右子树先进栈 
         if right:
-            stack.append(right)  # 右子树先进栈
+            stack.append(right)
         # 左子树后进栈
         if left:
             stack.append(left)
@@ -62,7 +64,7 @@ def inorder_traversal(tree):
     if not tree:
         return
     res = []
-    stack, node = [], tree
+    node, stack = tree, []
     while node or stack:
         while node:  # 一直往左
             stack.append(node)
@@ -89,7 +91,7 @@ def level_traversal(tree):
     return res
 
 
-# 层次遍历2 使用2个queue
+# 层次遍历使用2个queue
 def level_traversal2(root):
     if not root:
         return []
@@ -149,26 +151,26 @@ def deserialize(s):
     nums = s.split()  # 空格
     root = TreeNode(eval(nums.pop(0)))
     queue = [root]
-    flag = 0
+    is_set_left = False
     while nums:
         node = queue[0]
         val = nums.pop(0)
         if val == '#':
-            if not flag:
-                flag += 1
+            if not is_set_left:
+                is_set_left = True
             else:
                 queue.pop(0)
-                flag = 0
+                is_set_left = False
         else:
             child = TreeNode(eval(val))
             queue.append(child)
-            if not flag:
+            if not is_set_left:
                 node.left = child
-                flag += 1
+                is_set_left = True
             else:
                 node.right = child
                 queue.pop(0)
-                flag = 0
+                is_set_left = False
     return root
 
 

@@ -15,12 +15,12 @@ def maze_short_path(maze, start, destination):
     while queue:
         i, j, layer = queue.pop(0)
         for d in directions:
-            x, y = i + d[0], j + d[1]
-            if 0 <= x < rows and 0 <= y < cols and maze[x][y] == empty:  # 先判断是否安全
-                if [x, y] == destination:
+            next_i, next_j = i + d[0], j + d[1]
+            if 0 <= next_i < rows and 0 <= next_j < cols and maze[next_i][next_j] == empty:  # 先判断是否安全
+                if [next_i, next_j] == destination:
                     return layer + 1
-                queue.append((x, y, layer + 1))
-                maze[x][y] = wall  # 标记经访问过的点
+                queue.append((next_i, next_j, layer + 1))
+                maze[next_i][next_j] = wall  # 标记经访问过的点
     return -1
 
 

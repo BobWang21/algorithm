@@ -2,22 +2,25 @@
 # -*- coding: utf-8 -*-
 # 动态规划 matrix[i][j] 表示前i件物品恰放入一个容量为j的背包可以获得的最大价值
 
+# 0-1背包
+# 无穷背包
+# 约束背包
 
 # 0-1背包
 def knapsack(costs, values, capacity):
-    rows, cols = len(costs) + 1, capacity + 1  # 行列加1 作为base
+    rows, cols = len(costs) + 1, capacity + 1  # 行列加1 作为base 初始状态都为0
     dp = [[0] * cols for _ in range(rows)]
-    for i in range(1, rows):
+    for i in range(1, rows):  # 所有状态
         cost = costs[i - 1]
         value = values[i - 1]
-        for j in range(1, cols):
-            dp[i][j] = dp[i - 1][j]  # 不装物品i
-            if j - cost >= 0:  # 这里从i-1开始
+        for j in range(1, cols):  # 所有状态
+            dp[i][j] = dp[i - 1][j]  # 状态转移1 不装物品i
+            if j - cost >= 0:  # 状态转移2 这里从i-1开始
                 dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - cost] + value)
     return dp[-1][-1]
 
 
-# 完全背包问题 借鉴0-1背包 这种方式可以解决有件数约束的背包问题
+# 完全背包问题 借鉴0-1背包
 def unbounded_knapsack1(costs, val, capacity):
     if not costs or not val or len(costs) != len(val):
         return
@@ -28,10 +31,8 @@ def unbounded_knapsack1(costs, val, capacity):
         value = val[i - 1]
         for j in range(1, cols):
             dp[i][j] = dp[i - 1][j]
-            k = 1
-            while cost * k <= j:  # 从i - 1开始
-                dp[i][j] = max(dp[i][j], dp[i - 1][j - cost * k] + value * k)
-                k += 1
+            k = j // cost  # 最多可以装的件数
+            dp[i][j] = max(dp[i][j], dp[i - 1][j - cost * k] + value * k)
 
     return dp[-1][-1]
 
@@ -58,6 +59,23 @@ def unbounded_knapsack3(costs, values, capacity):
             if i >= cost:
                 dp[i] = max(dp[i], dp[i - cost] + values[j])
     return dp[-1]
+
+
+# 约束背包问题
+def bounded_knapsack(costs, val, nums, capacity):
+    if not costs or not val or len(costs) != len(val):
+        return
+    rows, cols = len(costs) + 1, capacity + 1
+    dp = [[0] * cols for _ in range(rows)]
+    for i in range(1, rows):
+        cost = costs[i - 1]
+        value = val[i - 1]
+        for j in range(1, cols):
+            dp[i][j] = dp[i - 1][j]
+            k = min(j // cost, nums[i - 1])  # 物品件数约束
+            dp[i][j] = max(dp[i][j], dp[i - 1][j - cost * k] + value * k)
+
+    return dp[-1][-1]
 
 
 # 分组背包问题

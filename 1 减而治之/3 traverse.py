@@ -35,7 +35,6 @@ def spiral_order(matrix):
             res.append(matrix[top][i])
         # 每行访问完后+1
         top += 1
-        print(left, right, top, down)
         if top > down:
             break
 
@@ -43,7 +42,6 @@ def spiral_order(matrix):
         for i in range(top, down + 1):
             res.append(matrix[i][right])
         right -= 1
-        print(left, right, top, down)
         if left > right:
             break
 
@@ -51,7 +49,6 @@ def spiral_order(matrix):
         for i in range(right, left - 1, -1):
             res.append(matrix[down][i])
         down -= 1
-        print(left, right, top, down)
         if top > down:
             break
 
@@ -59,13 +56,12 @@ def spiral_order(matrix):
         for i in range(down, top - 1, -1):
             res.append(matrix[i][left])
         left += 1
-        print(left, right, top, down)
         if left > right:
             break
     return res
 
 
-# 错误写法
+# 错误写法!!
 def spiral_order_wrong(matrix):
     if not matrix or not len(matrix[0]):
         return
@@ -170,22 +166,6 @@ def generate_matrix(n):
     return matrix
 
 
-# 189. 旋转数组
-def rotate1(nums, k):
-    def reverse(i, j):
-        left, right = i, j
-        while left < right:
-            nums[left], nums[right] = nums[right], nums[left]
-            left += 1
-            right -= 1
-
-    n = len(nums)
-    k %= n
-    reverse(0, n - 1)
-    reverse(0, k - 1)
-    reverse(k, n - 1)
-
-
 # 顺时针旋转90度
 def rotate2(matrix):
     def reverse(l, h):
@@ -256,11 +236,6 @@ if __name__ == '__main__':
 
     print('\n顺时针生成数组')
     print(generate_matrix(3))
-
-    print('\n数组循环移动K位')
-    array = [1, 2, 3, 4, 5, 6]
-    rotate1(array, 3)
-    print(array)
 
     print('\n顺时针旋转90度')
     matrix = [[1, 2, 3, 4],

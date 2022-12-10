@@ -1,53 +1,46 @@
-def permute(m, n, k):
-    # m个车 n个人
-    if n < m:
-        return
+from pprint import pprint
 
-    block = [k] * m
-    seen = [False] * n
-    res, path = set(), [[] for _ in range(m)]
+
+# m个人 n个车 每车最多k个人 需要对结果去重
+def permute(m, n, k):
+    visited = [False] * m
+    capacity = [k] * n
+    res, path = [], [[] for _ in range(n)]
 
     def check():
-        for v in block:
-            if v == k:
+        for v in visited:
+            if not v:
                 return False
         return True
 
-    def sort_str(lists):
-        res = []
-        for v in lists:
-            v1 = v[:]
-            v1.sort()
-            res.append(v1)
-        return str(res)
+    def copy():
+        return [vs[:] for vs in path]
 
-    def helper(x):
-        if x == n and check():
-            res.add(sort_str(path))
+    def helper():
+        # print(path)
+        if check():
+            # print(path)
+            res.append(copy())
             return
-
-        if x == n:
-            return
-        for i in range(n):
-            if seen[i]:
+        for i in range(m):
+            if visited[i]:
                 continue
-            seen[i] = True
-            for j in range(m):
-                if not block[j]:
+
+            visited[i] = True
+            for j in range(n):
+                if not capacity[j]:
                     continue
-                block[j] -= 1
+                capacity[j] -= 1
                 path[j].append(i)
 
-                helper(x + 1)
+                helper()
 
-                block[j] += 1
+                capacity[j] += 1
                 path[j].pop(-1)
 
-            seen[i] = False
+            visited[i] = False
 
-    helper(0)
-    res = list(res)
-    res.sort()
+    helper()
     return res
 
 
@@ -61,16 +54,19 @@ def permute2(n):
         if len(path) == 2 * n:
             res.append(path[:])
             return
+
         for i in range(n):
             if not status[i]:
                 continue
-            status[i] -= 1
-            if status[i] == 1:
-                path.append(chr(ord('A') + i) + '_0')
+
+            if status[i] == 2:
+                path.append(str(i) + '_B')
             else:
-                path.append(chr(ord('A') + i) + '_1')
+                path.append(str(i) + '_C')
+            status[i] -= 1
 
             helper()
+
             path.pop(-1)
             status[i] += 1
 
@@ -404,9 +400,42 @@ def longestIncreasingPath(matrix):
     return res
 
 
+def preorder2(tree):
+    if not tree:
+        return []
+    res = []
+    stack = [tree]
+    while stack:
+        node = stack.pop(-1)
+        res.append(node.val)
+        left, right = node.left, node.right
+        if right:
+            stack.append(right)
+        if left:
+            stack.append(left)
+    return res
+
+
+def inorder_traversal(tree):
+    if not tree:
+        return []
+    node, stack = None, [tree]
+    res = []
+    while node or stack:
+        if not node:
+            node = stack.pop(-1)
+        left, right = node.left, node.right
+        if right:
+            stack.append(node.right)
+        if not left:
+            res.append(node.val)
+        node = node.left
+    return res
+
+
 if __name__ == '__main__':
-    # print(permute(3, 5, 2))
-    # print(permute2(3))
+    pprint(permute(2, 2, 2))
+    pprint(permute2(2))
     #
     # print(merge([[1, 3], [2, 6], [8, 10], [15, 18]]))
     # print(jump(4, [-10, -10, 3, 10, -1, -1]))

@@ -55,7 +55,7 @@ def rotate(nums, k):
     return nums
 
 
-# 392 是否为子序列 O(Max(m, n))
+# 392 s是否为t子序列 O(Max(m, n))
 def is_subsequence(s, t):
     if not s:
         return True
@@ -66,11 +66,9 @@ def is_subsequence(s, t):
         if s[i] == t[j]:
             i += 1
             j += 1
-            if i == m:
-                return True
         else:  # 下一个字符
             j += 1
-    return False
+    return i == m
 
 
 # 最长前缀后缀
@@ -113,26 +111,6 @@ def kmp(s, t):
         else:
             i += 1  # 没有匹配
     return -1
-
-
-# 14. 最长公共前缀
-def longest_common_prefix(strs):
-    if not strs:
-        return ""
-
-    def lcp(str1, str2):
-        length, index = min(len(str1), len(str2)), 0
-        while index < length and str1[index] == str2[index]:
-            index += 1
-        return str1[:index]
-
-    prefix, n = strs[0], len(strs)
-    for i in range(1, n):
-        prefix = lcp(prefix, strs[i])
-        if not prefix:
-            break
-
-    return prefix
 
 
 # 适合判断多个s是否在t中

@@ -63,11 +63,6 @@ def critical_connections(n, connections):
 
 
 def criticalConnections(n, connections):
-    """
-    :type n: int
-    :type connections: List[List[int]]
-    :rtype: List[List[int]]
-    """
     rank, less = [0] * n, [float('inf')] * n
 
     dic = defaultdict(list)

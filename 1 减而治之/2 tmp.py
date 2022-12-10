@@ -51,6 +51,47 @@ def top_k_frequent(nums, k):
                 return res[:k]
 
 
+# 238. 除自身以外数组的乘积 左右各扫描一遍
+def product_except_self(nums):
+    n = len(nums)
+
+    l = [1] * n
+
+    for i in range(1, n):
+        l[i] = l[i - 1] * nums[i - 1]
+
+    r = 1
+    for i in range(n - 1, -1, -1):
+        l[i] *= r
+        r = r * nums[i]
+
+    return l
+
+
+# 581. 单调性 也可用单调栈
+# 最短无序连续子数组
+def find_unsorted_subarray(nums):
+    n = len(nums)
+    max_v, min_v = -float('inf'), float('inf')
+    left, right = n - 1, 0
+    # 从左向右遍历, 获取右边界
+    for i in range(n):
+        if nums[i] >= max_v:  # 比左侧最大值大
+            max_v = nums[i]  # 左侧递增
+        else:
+            right = i  # right右侧的数都比左侧最大值大
+    # 从右向左遍历, 获取左边界
+    for i in range(n):
+        if nums[n - 1 - i] <= min_v:  # 比右侧最小值大
+            min_v = nums[n - 1 - i]  # 左侧递减
+        else:
+            left = n - 1 - i  # left左侧的数都比右侧最小值小
+
+    if left == n - 1 and right == 0:
+        return 0
+    return right - left + 1
+
+
 # 128 无序数组 最长连续区间 也可以使用并查集
 # 类似字典按key 排序
 def longest_consecutive(nums):
@@ -76,7 +117,6 @@ def longest_consecutive(nums):
 
 
 # 560. 前缀和
-# 和为K的子数组
 def subarray_sum(nums, k):
     res = 0
     total = 0
@@ -253,12 +293,12 @@ def next_permutation(nums):
 
 # 66. 加一 [1, 2, 3] -> [1, 2, 4]
 def plus_one(digits):
-    if not digits:  # base
+    if not digits:  # 0
         return [1]
-    if digits[-1] < 9:
+    if digits[-1] < 9:  # 1-8
         digits[-1] += 1
         return digits
-    return plus_one(digits[:-1]) + [0]
+    return plus_one(digits[:-1]) + [0]  # 9
 
 
 # 66. 加一 [1, 2, 3] -> [1, 2, 4]
@@ -340,28 +380,24 @@ def multiply2(num1, num2):
     return s
 
 
-# 581. 单调性 也可用单调栈
-# 最短无序连续子数组
-def find_unsorted_subarray(nums):
-    n = len(nums)
-    max_v, min_v = -float('inf'), float('inf')
-    left, right = n - 1, 0
-    # 从左向右遍历, 获取右边界
-    for i in range(n):
-        if nums[i] >= max_v:  # 比左侧最大值大
-            max_v = nums[i]  # 左侧递增
-        else:
-            right = i  # right右侧的数都比左侧最大值大
-    # 从右向左遍历, 获取左边界
-    for i in range(n):
-        if nums[n - 1 - i] <= min_v:  # 比右侧最小值大
-            min_v = nums[n - 1 - i]  # 左侧递减
-        else:
-            left = n - 1 - i  # left左侧的数都比右侧最小值小
+# 14. 多个数组最长公共前缀
+def longest_common_prefix(strs):
+    if not strs:
+        return ""
 
-    if left == n - 1 and right == 0:
-        return 0
-    return right - left + 1
+    def lcp(str1, str2):
+        length, i = min(len(str1), len(str2)), 0
+        while i < length and str1[i] == str2[i]:
+            i += 1
+        return str1[:i]
+
+    prefix, n = strs[0], len(strs)
+    for i in range(1, n):
+        prefix = lcp(prefix, strs[i])
+        if not prefix:
+            break
+
+    return prefix
 
 
 if __name__ == '__main__':
@@ -399,3 +435,6 @@ if __name__ == '__main__':
     print(add('123', '999'))
 
     print(multiply2('123', '456'))
+
+    print('\n不包含自身的乘积')
+    print(product_except_self([1, 2, 3, 4]))
