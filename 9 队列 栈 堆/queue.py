@@ -7,20 +7,19 @@
 # Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
 # Output: [-1, 3, -1]
 def next_greater_element(nums1, nums2):
-    if not nums1 or not nums2:
-        return
     dic = dict()
-
-    for i, v in enumerate(nums1):
-        dic[v] = i
-    res = [-1] * len(nums1)
     stack = []
-    for v in nums2:
+
+    for i, v in enumerate(nums2):
         while stack and stack[-1] < v:
-            tail = stack.pop(-1)
-            if tail in dic:
-                res[dic[tail]] = v
+            v1 = stack.pop(-1)
+            dic[v1] = v
         stack.append(v)
+
+    res = [-1] * len(nums1)
+    for i, v in enumerate(nums1):
+        if v in dic:
+            res[i] = dic[v]
     return res
 
 
@@ -38,6 +37,8 @@ def daily_temperatures(t):
     return res
 
 
+# 面试题59 - II.
+# 队列的最大值
 # 可以返回最大值的队列
 class MaxQueue():
     def __init__(self):

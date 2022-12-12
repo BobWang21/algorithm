@@ -75,46 +75,33 @@ def top_k_frequent(words, k):
 
 # 295 partition
 class MedianFinder(object):
-
     def __init__(self):
         """
         initialize your data structure here.
         """
-        self.large = []
+        self.big = []
         self.small = []
 
-    def add_num(self, target):
-        if not self.large:
-            hq.heappush(self.large, -target)
-            return
-        if target <= -self.large[0]:
-            hq.heappush(self.large, -target)
+    def add_num(self, num):  # 大顶堆多一个
+        if not self.big or num <= -self.big[0]:
+            hq.heappush(self.big, -num)
         else:
-            hq.heappush(self.small, target)
+            hq.heappush(self.small, num)
 
-        m = len(self.large)
+        m = len(self.big)
         n = len(self.small)
+        # 0 <= m - n <= 1
         if m - n > 1:
-            v = -hq.heappop(self.large)
-            hq.heappush(self.small, v)
-        if n - m > 1:
-            v = hq.heappop(self.small)
-            hq.heappush(self.large, -v)
+            hq.heappush(self.small, -hq.heappop(self.big))
+        if n - m > 0:
+            hq.heappush(self.big, -hq.heappop(self.small))
 
     def find_median(self):
-        m = len(self.large)
+        m = len(self.big)
         n = len(self.small)
-        if m + n == 1:
-            return -self.large[0]
-        print(m, n)
-        if (m + n) % 2:
-            print('v')
-            if m > n:
-                return -self.large[0]
-            else:
-                return self.small[0]
-        else:
-            return (-self.large[0] + self.small[0]) / 2.0
+        if m > n:
+            return -self.big[0]
+        return (-self.big[0] + self.small[0]) / 2.0
 
 
 def check():

@@ -130,7 +130,7 @@ def spiral_order2(matrix):
         # down
         if matrix:
             line = matrix.pop(-1)
-            line.reverse()
+            line.reverse1()
             res.extend(line)
 
         # left

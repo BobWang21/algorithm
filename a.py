@@ -433,6 +433,16 @@ def inorder_traversal(tree):
     return res
 
 
+def re(head):
+    pre = None
+    while head:
+        nxt = head.next
+        head.next = pre
+        pre = head
+        head = nxt
+    return pre
+
+
 if __name__ == '__main__':
     pprint(permute(2, 2, 2))
     pprint(permute2(2))

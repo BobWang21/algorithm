@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+
 def ten_2_binary(value):
     stack = []
     while value:

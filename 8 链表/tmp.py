@@ -8,12 +8,19 @@ class ListNode():
         self.next = None
 
 
+class Node:
+    def __init__(self, x, next=None, random=None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+
+
 def construct_list_node(nums):
     head = ListNode(nums[0])
-    current = head
+    cur = head
     for i in range(1, len(nums)):
-        current.next = ListNode(nums[i])
-        current = current.next
+        cur.next = ListNode(nums[i])
+        cur = cur.next
     return head
 
 
@@ -26,10 +33,8 @@ def print_list_node(head):
     print(res)
 
 
-# 链表翻转
-def reverse(head):
-    if not head:
-        return
+# 链表翻转 递推关系 假设之前的满足要去
+def reverse1(head):
     pre = None
     while head:
         cur = head.next
@@ -39,34 +44,35 @@ def reverse(head):
     return pre
 
 
+# 递归1
 def reverse2(head):
-    if not head or not head.next:
-        return head, None
-    node = head.next
-    head.next = None
-    new_head, new_tail = reverse2(node)
-    if not new_tail:
-        new_head.next = head
-    else:
-        new_tail.next = head
-    return new_head, head
-
-
-def reverse3(head):
     if not head or not head.next:
         return head
 
-    new_head = reverse3(head.next)
-    head.next.next = head
+    new_head = reverse2(head.next)
+    head.next.next = head  # head还连接着next, head.next为new_head反转后的尾结点
     head.next = None
     return new_head
 
 
+# 递归2
+def reverse3(head):
+    if not head or not head.next:
+        return head, head
+    node = head.next
+    head.next = None
+    new_head, new_tail = reverse3(node)
+    # if not new_tail:
+    #     new_head.next = head
+    # else:
+    #     new_tail.next = head
+    new_tail.next = head
+    return new_head, head
+
+
 # 24 1->2->3->4 转换成 2->1->4->3
-def swap_pairs(head):
-    if not head:
-        return
-    if not head.next:
+def swap_pairs1(head):
+    if not head or head.next:
         return head
     dummy = pre = ListNode(None)
     while head and head.next:
@@ -76,36 +82,52 @@ def swap_pairs(head):
         pre = pre.next.next
         # pre.next = None
         head = curr
-    pre.next = head  # head 可能为空 也可能为最后一个节点 最后被覆盖 所以1可以省略
+    pre.next = head  # head可能为空, 也可能不
     return dummy.next
 
 
-# 25
+# 递归
+def swap_pairs2(head):
+    if not head or not head.next:
+        return head
+    new_head = head.next
+    head.next = swap_pairs2(new_head.next)
+    new_head.next = head
+    return new_head
+
+
+# 25 每K个元素反转
 def reverse_k_group(head, k):
     def reverse(head):
         pre = None
-        tail = head
         while head:
             nxt = head.next
             head.next = pre
             pre = head
             head = nxt
-        return pre, tail
+        return pre
 
     i = 1
-    fast = head
-    while i < k and fast:  # i = 1 包含k个节点
-        fast = fast.next
+    cur = head
+    while i < k and cur:  # i = 1 包含k个节点
         i += 1
+        cur = cur.next
 
-    if not fast:
+    if not cur:  # 下面用到cur.next 需要判断cur是否为空
         return head
 
-    curr = fast.next
-    fast.next = None  # 切断
-    new_head, tail = reverse(head)
-    tail.next = reverse_k_group(curr, k)
+    nxt = cur.next  #
+    cur.next = None  # 切断
+    new_head = reverse(head)
+    head.next = reverse_k_group(nxt, k)
     return new_head
+
+
+# 删除节点 可以修改链表val
+# 非第一个节点 和 最后一个节点
+def delete_node(node):
+    node.val = node.next.val
+    node.next = node.next.next
 
 
 # 83 例如链表1->2->3->3->4->4->5 处理后为 1->2-3->5
@@ -114,35 +136,30 @@ def remove_duplicates(head):
         return
     dummy = pre = ListNode(None)
     while head:
-        if head.val == pre.val:
-            head = head.next
-        else:
+        if head.val != pre.val:  # 向前看
             pre.next = head
-            head = head.next
             pre = pre.next
-            pre.next = None  # 防止尾部有重复
+        head = head.next
+    pre.next = None  # 最后截尾
     return dummy.next
 
 
 # 82 例如链表1->2->3->3->4->4->5 处理后为1->2->5
 def remove_duplicates2(head):
-    if not head:
-        return
-    if not head.next:
+    if not head or not head.next:
         return head
 
-    dummy = pre = ListNode(-1)
+    dummy = pre = ListNode(-101)
 
     while head and head.next:
-        if head.val != head.next.val:
+        if head.val != head.next.val:  # 向后看
             pre.next = head
             pre = pre.next
-            head = head.next
-        else:  # 和2sum 类似
+        else:  # 类似数组去重
             while head and head.next and head.val == head.next.val:
                 head = head.next
-            head = head.next  # 每次移动一步 head.next为空 或者 head.val != head.next.val
-    pre.next = head  # head 可能为空 也可能为尾结点
+        head = head.next
+    pre.next = head  # head 可能为空 也可能为不相同的尾结点
     return dummy.next
 
 
@@ -175,15 +192,14 @@ def middle_node(head):
     return slow.val
 
 
-# 前后指针
+# 19 前后指针
 def remove_nth_from_end(head, n):
     if not head:
         return
-    fast = head
+    slow = fast = head
     while n > 0:
         fast = fast.next
         n -= 1
-    slow = head
     pre = None
     while fast:
         fast = fast.next
@@ -191,11 +207,11 @@ def remove_nth_from_end(head, n):
         slow = slow.next
     if not pre:
         return head.next
-    pre.next = slow.next  # 赋值前需要判断
+    pre.next = slow.next  # pre赋值前需要判断
     return head
 
 
-# 链表排序 148
+# 148 链表排序
 def sort_list(head):
     def merge(l1, l2):
         if not l1:
@@ -211,9 +227,7 @@ def sort_list(head):
         head.next = merge(l1, l2)
         return head
 
-    if not head:
-        return
-    if not head.next:
+    if not head or not head.next:
         return head
     fast = slow = head
     pre_slow = None
@@ -222,17 +236,15 @@ def sort_list(head):
         pre_slow = slow
         slow = slow.next
 
-    l1 = head
-    l2 = slow
     pre_slow.next = None
 
-    l1 = sort_list(l1)
-    l2 = sort_list(l2)
+    l1 = sort_list(head)
+    l2 = sort_list(slow)
 
     return merge(l1, l2)
 
 
-# 合并连个排序链表 归并
+# 合并连个排序链表 归并 o(min(m, n))
 def merge_two_sorted_lists1(l1, l2):
     if not l1:
         return l2
@@ -254,6 +266,7 @@ def merge_two_sorted_lists1(l1, l2):
     return dummy.next
 
 
+# o(m+n)
 def merge_two_sorted_lists2(l1, l2):
     if not l1:
         return l2
@@ -396,12 +409,12 @@ def detect_cycle2(head):
     return slow.val
 
 
-# 回文
+# 链表是否为回文
 def is_palindrome(head):
     if not head or not head.next:
         return True
 
-    fast = slow = head
+    slow = fast = head
     pre_slow = None
     while fast and fast.next:
         fast = fast.next.next
@@ -412,7 +425,7 @@ def is_palindrome(head):
     if fast:  # 奇数
         slow = slow.next
 
-    slow = reverse(slow)
+    slow = reverse1(slow)
     while head and slow:
         if slow.val != head.val:
             return False
@@ -433,7 +446,7 @@ def reorder_list(head):
         slow = slow.next
     pre.next = None
 
-    second = reverse(slow)
+    second = reverse1(slow)
     first = head
     dummy = pre = ListNode(-1)
     while first:
@@ -446,27 +459,28 @@ def reorder_list(head):
     return dummy.next
 
 
+# 86. 分隔链表
 def partition(head, x):
     if not head:
         return
-    head1 = pre1 = ListNode(-1)
-    head2 = pre2 = ListNode(-1)
+    dummy1 = small = ListNode(-1)
+    dummy2 = big = ListNode(-1)
     while head:
         if head.val < x:
-            pre1.next = head
-            pre1 = pre1.next
-            head = head.next
-            pre1.next = None  # 可以省略
+            small.next = head
+            small = small.next
         else:
-            pre2.next = head
-            pre2 = pre2.next
-            head = head.next
-            pre2.next = None  # 不可以省略
-    pre1.next = head2.next
-    return head1.next
+            big.next = head
+            big = big.next
+        head = head.next
+    if big:
+        big.next = None  # 截尾
+    small.next = dummy2.next
+
+    return dummy1.next
 
 
-# 链表奇偶分离
+# 328 链表奇偶分离
 def odd_even_list(head):
     if not head:
         return head
@@ -489,19 +503,18 @@ def odd_even_list2(head):
 
     head1 = odd = ListNode(None)
     head2 = even = ListNode(None)
-
     i = 1
     while head:
-        curr = head.next
-        head.next = None
         if i % 2:
             odd.next = head
             odd = odd.next
         else:
             even.next = head
             even = even.next
-        head = curr
+        head = head.next
         i += 1
+    if even:  # 截尾
+        even.next = None
     odd.next = head2.next
     return head1.next
 
@@ -567,19 +580,12 @@ def plus_one(head):
     return dummy if dummy.val else dummy.next
 
 
-class Node:
-    def __init__(self, x, next=None, random=None):
-        self.val = int(x)
-        self.next = next
-        self.random = random
-
-
 # 138. 复制带随机指针的链表
 def copy_random_list(head):
     if not head:
         return
     node = head
-    while node:  # 老新交替 代替dic
+    while node:  # 老新交替链表 代替dic
         new_node = Node(node.val)
         new_node.next = node.next
         node.next = new_node
@@ -600,12 +606,6 @@ def copy_random_list(head):
         node = node.next
 
     return dummy.next
-
-
-# 删除节点 非第一个节点 和 最后一个节点
-def delete_node(node):
-    node.val = node.next.val
-    node.next = node.next.next
 
 
 def rotate_right(head, k):
@@ -659,9 +659,11 @@ def reverse_between(head, m, n):
 if __name__ == '__main__':
     print('\n链表翻转')
     head = construct_list_node([1, 3, 5, 7])
-    print_list_node(reverse(head))
-    head = construct_list_node([1, 3, 5, 7])
+    print_list_node(reverse1(head))
+
+    head = construct_list_node([1, 3, 5])
     print_list_node(reverse2(head)[0])
+
     head = construct_list_node([1, 3, 5, 7])
     print_list_node(reverse3(head))
 
@@ -675,7 +677,7 @@ if __name__ == '__main__':
 
     print('\n链表对翻转')
     head = construct_list_node([1, 3, 5, 7])
-    print_list_node(swap_pairs(head))
+    print_list_node(swap_pairs1(head))
 
     print('\nreverse k group')
     head = construct_list_node(list(range(10)))

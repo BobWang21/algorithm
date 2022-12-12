@@ -122,7 +122,6 @@ class RandomizedSet(object):
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
 
-
 if __name__ == '__main__':
     cache = LRUCache(2)
 

@@ -274,7 +274,7 @@ def next_permutation(nums):
     while r > 0 and nums[r - 1] >= nums[r]:
         r -= 1
     if not r:
-        nums.reverse()
+        nums.reverse1()
         return nums
     k = r - 1
     while r < n and nums[r] > nums[k]:  # 找到第一个小于等于该数的位置
