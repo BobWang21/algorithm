@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from pprint import pprint
 
 
@@ -443,6 +446,41 @@ def re(head):
     return pre
 
 
+# 227. 基本计算器 II
+# 1- 2 / 50*4-9+45
+# 1 + 2 * 3
+def calculate1(s):
+    if not s:
+        return 0
+    s += '+'
+    sign, num, stack = '+', 0, []
+
+    for ch in s:
+        if ch.isspace():  # 排除空格
+            continue
+        if ch.isdigit():
+            num = num * 10 + int(ch)
+            continue
+        # 上一个符号
+        if sign == '+':
+            stack.append(num)
+        elif sign == '-':
+            stack.append(-num)
+        elif sign == '*':
+            v = stack.pop(-1)
+            stack.append(v * num)
+        else:
+            v = stack.pop(-1)
+            if v < 0:
+                stack.append(-((-v) // num))  # 注意负数的优先级
+            else:
+                stack.append(v // num)
+        num = 0
+        sign = ch
+
+    return sum(stack)
+
+
 if __name__ == '__main__':
     pprint(permute(2, 2, 2))
     pprint(permute2(2))
@@ -469,3 +507,4 @@ if __name__ == '__main__':
 
     matrix = [[3, 4, 5], [3, 2, 6], [2, 2, 1]]
     print(longestIncreasingPath(matrix))
+    print(calculate1('1+2*3'))

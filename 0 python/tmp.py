@@ -4,7 +4,7 @@
 import math
 import random
 import heapq as hq
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 # 列表作为函数参数，按地址传递。
@@ -65,6 +65,17 @@ if __name__ == '__main__':
     print(nums + [4])  # 生成一个新的变量
     print(nums[1:])  # 切片和[:] 生成一个新列表
     print(nums[3:10:2])  # [star, end, step]
+
+    # 双端队列
+    # Python’s deque is a low-level and highly optimized double-ended queue
+    # list-like container with fast appends and pops on either end
+    print('\n双端队列')
+    queue = deque()
+    queue.append(1)
+    queue.append(3)
+    print(queue)
+    queue.popleft()  # o(1) vs list o(n)
+    print(queue)
 
     print('\n字典')
     dic = {1: 3}

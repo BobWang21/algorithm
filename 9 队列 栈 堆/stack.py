@@ -1,6 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# 单调栈 适用于结果和数组当前值的前后缀相关的问题
 
+# 496. 下一个更大元素 I
+# Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
+# Output: [-1, 3, -1]
+def next_greater_element(nums1, nums2):
+    dic = dict()
+    stack = []
+
+    for i, v in enumerate(nums2):
+        while stack and stack[-1] < v:
+            v1 = stack.pop(-1)
+            dic[v1] = v
+        stack.append(v)
+
+    res = [-1] * len(nums1)
+    for i, v in enumerate(nums1):
+        if v in dic:
+            res[i] = dic[v]
+    return res
+
+
+# 739 需要多少天 气温会升高
+def daily_temperatures(t):
+    if not t:
+        return
+    res = [0] * len(t)
+    stack = []
+    for i, v in enumerate(t):
+        while stack and t[stack[-1]] < v:
+            j = stack.pop(-1)
+            res[j] = i - j
+        stack.append(i)
+    return res
 
 
 def ten_2_binary(value):
@@ -46,7 +79,7 @@ def remove_duplicates(S):
     return ''.join(stack)
 
 
-# 判断括号是否合法 只含有() 计数法 摩尔投票法？
+# 判断括号是否合法 只含有()
 def is_balanced_parentheses(s):
     balance = 0
     for char in s:
@@ -74,21 +107,23 @@ def useless_parentheses(s):
     return l, r
 
 
+# 20 有效的括号
 def valid_parentheses(s):
-    pair_dic = {']': '[', '}': '{', ')': '('}
+    pair_dic = {']': '[',
+                '}': '{',
+                ')': '('}
     stack = []
     for c in s:
-        if c in pair_dic:
-            if stack and stack.pop(-1) == pair_dic[c]:
-                continue
-            else:
-                return False
-        else:
+        if c not in pair_dic:
             stack.append(c)
-    return True if not stack else False
+        elif stack and stack[-1] == pair_dic[c]:
+            stack.pop(-1)
+        else:
+            return False
+    return not stack
 
 
-# 移除无效括号
+# 1249 移除无效括号
 def min_remove_to_make_valid(s):
     if not s:
         return
@@ -114,56 +149,55 @@ def min_remove_to_make_valid(s):
     return res
 
 
-# 波兰表达式
+# 150 波兰表达式
 def eval_RPN(tokens):
     stack = []
     for c in tokens:
         if c not in {'+', '-', '*', '/'}:
             stack.append(int(c))
+            continue
+        c2 = stack.pop(-1)
+        c1 = stack.pop(-1)
+        if c == '+':
+            s = c1 + c2
+        elif c == '-':
+            s = c1 - c2
+        elif c == '*':
+            s = c1 * c2
         else:
-            c2 = stack.pop(-1)
-            c1 = stack.pop(-1)
-            if c == '+':
-                s = c1 + c2
-            elif c == '-':
-                s = c1 - c2
-            elif c == '*':
-                s = int(c1 * c2)
-            else:
-                s = int(c1 / c2)
-            stack.append(s)
+            s = int(c1 / c2)
+        stack.append(s)
     return stack[-1]
 
 
-# 1- 2 / 50*4-9+45
-# 1 + 2 - 3
+# 227. 基本计算器 II
+# # 5-6*3 = 5+(-6)*3
 def calculate1(s):
     if not s:
         return 0
+
+    pre_sign, num, stack = '+', 0, []  # stack[-1](a) pre_sign(*) num(b) 保留了上一个操作
     s += '+'
-    sign, num, stack = '+', 0, []
 
     for ch in s:
         if ch.isspace():  # 排除空格
             continue
-        if ch.isdigit():
+        if ch.isdigit():  # 可能大于10
             num = num * 10 + int(ch)
-        else:  # '+-*/'
-            if sign == '+':
-                stack.append(num)
-            elif sign == '-':
-                stack.append(-num)
-            elif sign == '*':
-                v = stack.pop(-1)
-                stack.append(v * num)
-            else:
-                v = stack.pop(-1)
-                if v < 0:
-                    stack.append(-((-v) // num))  # 注意负数的优先级
-                else:
-                    stack.append(v // num)
-            num = 0
-            sign = ch
+            continue
+        if pre_sign == '+':
+            stack.append(num)
+        elif pre_sign == '-':
+            stack.append(-num)
+        elif pre_sign == '*':
+            v = stack.pop(-1)
+            stack.append(v * num)
+        else:
+            v = stack.pop(-1)
+            stack.append(int(v/num))  # 注意负数的优先级
+
+        num = 0
+        pre_sign = ch
 
     return sum(stack)
 
@@ -238,7 +272,7 @@ def calculate3(s):
     return helper(queue)
 
 
-# 判断一个路径是否为出栈路径
+# 946 验证栈序列
 def validate_stack_sequences(pushed, popped):
     stack = []
     while pushed:
@@ -249,10 +283,11 @@ def validate_stack_sequences(pushed, popped):
     return False if stack else True
 
 
-# 剑指 Offer 09. 用两个栈实现队列
+# 剑指Offer 09. 用两个栈实现队列
 class CQueue:
     def __init__(self):
-        self.A, self.B = [], []
+        self.A = []
+        self.B = []
 
     def appendTail(self, value):
         self.A.append(value)
@@ -311,6 +346,12 @@ def simplify_path(path):
 
 
 if __name__ == '__main__':
+    print('\n下一个比其大数值')
+    print(next_greater_element([4, 1, 2], [1, 3, 4, 2]))
+
+    print('\n下一个天气比当前热')
+    print(daily_temperatures([73, 74, 75, 71, 69, 72, 76, 73]))
+
     print('\n十进制转二进制')
     print(ten_2_binary(10))
 
@@ -330,12 +371,12 @@ if __name__ == '__main__':
     print(validate_stack_sequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]))
 
     print('\n两个栈实现队列')
-    queue = CQueue()
-    queue.push(3)
-    queue.push(4)
-    queue.push(5)
-
-    queue.pop()
-    queue.push(6)
-    for _ in range(3):
-        print(queue.pop())
+    # queue = CQueue()
+    # queue.push(3)
+    # queue.push(4)
+    # queue.push(5)
+    #
+    # queue.pop()
+    # queue.push(6)
+    # for _ in range(3):
+    #     print(queue.pop())

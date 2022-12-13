@@ -1,91 +1,69 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# 单调栈适用于结果和数组当前值的前后缀相关的问题
+
+# 单调队列 满足单调性的双端队列(可以同时弹出队首和队尾的元素的队列)
+from collections import deque
+import heapq as hq
 
 
-# 496. 下一个更大元素 I
-# Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
-# Output: [-1, 3, -1]
-def next_greater_element(nums1, nums2):
-    dic = dict()
-    stack = []
-
-    for i, v in enumerate(nums2):
-        while stack and stack[-1] < v:
-            v1 = stack.pop(-1)
-            dic[v1] = v
-        stack.append(v)
-
-    res = [-1] * len(nums1)
-    for i, v in enumerate(nums1):
-        if v in dic:
-            res[i] = dic[v]
-    return res
-
-
-# 739 需要多少天 气温会升高
-def daily_temperatures(t):
-    if not t:
-        return
-    res = [0] * len(t)
-    stack = []
-    for i, v in enumerate(t):
-        while stack and t[stack[-1]] < v:
-            j = stack.pop(-1)
-            res[j] = i - j
-        stack.append(i)
-    return res
-
-
-# 面试题59 - II.
-# 队列的最大值
-# 可以返回最大值的队列
+# 面试题59 队列的最大值
+# 单调队列
 class MaxQueue():
     def __init__(self):
-        self.queue1 = []
-        self.queue2 = []
+        self.enqueue = deque()
+        self.dequeue = deque()
 
-    def enqueue(self, v):
-        self.queue1.append(v)
-        while self.queue2 and self.queue2[-1] < v:
-            self.queue2.pop(-1)
-        self.queue2.append(v)
+    def en(self, v):
+        self.enqueue.append(v)
+        while self.dequeue and self.dequeue[-1] < v:  # 此处为严格的小于号
+            self.dequeue.pop()
+        self.dequeue.append(v)  # <=
 
-    def dequeue(self):
-        v = self.queue1.pop(0)
-        if self.queue2[0] == v:
-            self.queue2.pop(0)
+    def de(self):
+        v = self.enqueue.popleft()
+        if self.dequeue[0] == v:  # popleft
+            self.dequeue.popleft()
 
     def get_max(self):
-        return self.queue2[0]
+        return self.dequeue[0]
 
 
-# 滑动窗口的最大值 数值由前后决定
-def max_sliding_window(nums, k):
-    def enqueue(queue, i):  #
-        # 防止第一个划出窗口
+# 239. 滑动窗口最大值
+def max_sliding_window1(nums, k):
+    n = len(nums)
+    res = []
+    queue = deque()
+
+    def enqueue(i):  #
+        # 长度超过K 第一个值划出窗口
         if queue and i - queue[0] == k:
-            queue.pop(0)
+            queue.popleft()  # o(1)
         # 比当前小的数字 都不可能是窗口中的最大值
         while queue and nums[queue[-1]] < nums[i]:
-            queue.pop(-1)
+            queue.pop()
         queue.append(i)
 
-    n = len(nums)
-    if n * k == 0:
-        return nums
-    res = []
-    max_idx = 0
-    queue = []
-    for i in range(1, k):
-        enqueue(queue, i)
-        if nums[i] > nums[max_idx]:
-            max_idx = i
-    res.append(nums[max_idx])
-
-    for i in range(k, n):
-        enqueue(queue, i)
+    for i in range(n):
+        enqueue(i)
+        if i + 1 < k:  # 未填满窗口, 不计算最值
+            continue
         res.append(nums[queue[0]])
+    return res
+
+
+# 0(nlogn)
+def max_sliding_window2(nums, k):
+    n = len(nums)
+    heap, res = [], []
+    hq.heapify(heap)
+
+    for i in range(n):
+        hq.heappush(heap, (-nums[i], i))
+        if i + 1 < k:
+            continue
+        while i - heap[0][1] >= k:  # 移除不满足的数值
+            hq.heappop(heap)
+        res.append(nums[heap[0][1]])
     return res
 
 
@@ -188,19 +166,13 @@ if __name__ == '__main__':
     print('最大值值队列')
     maxQueue = MaxQueue()
     for i in range(10):
-        maxQueue.enqueue(i)
-    maxQueue.dequeue()
-    maxQueue.enqueue(11)
+        maxQueue.en(i)
+        maxQueue.de()
+        maxQueue.en(i)
     print(maxQueue.get_max())
 
     print('\n滑动窗口的最大值')
-    print(max_sliding_window([9, 10, 9, -7, -4, -8, 2, -6], 5))
-
-    print('\n 下一个比其大数值')
-    print(next_greater_element([4, 1, 2], [1, 3, 4, 2]))
-
-    print('\n下一个天气比当前热')
-    print(daily_temperatures([73, 74, 75, 71, 69, 72, 76, 73]))
+    print(max_sliding_window1([9, 10, 9, -7, -4, -8, 2, -6], 5))
 
     print('\n柱状图最大矩形')
     print((largest_rectangle_area2([2, 1, 5, 6, 2, 3])))
