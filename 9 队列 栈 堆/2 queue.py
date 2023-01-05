@@ -35,7 +35,7 @@ def max_sliding_window1(nums, k):
     queue = deque()
 
     def enqueue(i):  #
-        # 长度超过K 第一个值划出窗口
+        # 长度超过K, 窗口划出第一个值
         if queue and i - queue[0] == k:
             queue.popleft()  # o(1)
         # 比当前小的数字 都不可能是窗口中的最大值

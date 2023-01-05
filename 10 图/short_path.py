@@ -5,7 +5,7 @@ class Edge():
         self.w = w
 
 
-# graph:{a:{b:w}}, s: start, n: point num
+# graph:{a:{b: w}}, s: start, n: point num
 def dijkstra(graph, s, n):
     p = [False] * n
     p[0] = True

@@ -1,16 +1,49 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-
-# 547 朋友圈总数 o(n^3)
-# 访问整个矩阵一次，并查集操作需要最坏O(n)的时间。
-def find_circle_num(M):
+# 是否存在环
+def check_circle(M):
     if not M or not M[0]:
         return 0
     n = len(M)
     parent = list(range(n))
     rank = [0] * n
-    res = [n]  # 连通图数
+
+    def find(x):
+        while x != parent[x]:
+            parent[x] = parent[parent[x]]  # 路径减半
+            x = parent[x]
+        return x
+
+    def union(x, y):
+        x = find(x)
+        y = find(y)
+        if x == y:
+            return True
+        if rank[x] < rank[y]:
+            parent[x] = y
+        elif rank[x] > rank[y]:
+            parent[y] = x
+        else:
+            parent[y] = x
+            rank[x] += 1
+        return False
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if M[i][j] and union(i, j):
+                return True
+    return False
+
+
+# 547 朋友圈总数 o(n^3)
+# 访问矩阵一次，并查集操作需要最坏O(n)的时间。
+def find_circle_num(M):
+    if not M or not M[0]:
+        return 0
+    n = len(M)
+    parent = list(range(n))  # 初始状态，父节点为自己
+    rank = [0] * n
+    res = [n]  # 连通图数 = 顶点数
 
     def find(x):
         while x != parent[x]:
@@ -22,7 +55,7 @@ def find_circle_num(M):
         x = find(x)
         y = find(y)
         if x == y:
-            return True  # 已经在同一个集合中 再加一条边 说明存在环
+            return True  # 已经在同一个集合中 再加一条边 形成环
         # 减少计算 合并时rank小的树合并到rank大的树上 合并后的rank不变
         if rank[x] < rank[y]:
             parent[x] = y
@@ -31,7 +64,7 @@ def find_circle_num(M):
         else:  # 相等时 合并后的rank+1
             parent[y] = x
             rank[x] += 1
-        res[0] -= 1  # 顶点数 = 边数 + 连通图数
+        res[0] -= 1  # 连通图数 = 顶点数 - 边数
         return False
 
     for i in range(n):
@@ -61,41 +94,6 @@ def find_circle_num2(M):
             res += 1
             helper(i)
     return res
-
-
-# 是否存在环
-def check_circle(M):
-    if not M or not M[0]:
-        return 0
-    n = len(M)
-    parent = list(range(n))
-    rank = [0] * n
-
-    def find(x):
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]  # 路径减半
-            x = parent[x]
-        return x
-
-    def union(x, y):
-        x = find(x)
-        y = find(y)
-        if x == y:
-            return True
-        if rank[x] < rank[y]:
-            parent[x] = y
-        elif rank[x] > rank[y]:
-            parent[y] = x
-        else:
-            parent[y] = x
-            rank[x] += 1
-        return False
-
-    for i in range(n):
-        for j in range(i + 1, n):
-            if M[i][j] and union(i, j):
-                return True
-    return False
 
 
 def are_sentences_similar_two(words1, words2, pairs):
@@ -204,7 +202,7 @@ def longest_consecutive(nums):
         rank[num] = 1  # 连通图最大顶点数
 
     def find(i):
-        while parent[i] != i:
+        while i != parent[i]:
             parent[i] = parent[parent[i]]
             i = parent[i]
         return i

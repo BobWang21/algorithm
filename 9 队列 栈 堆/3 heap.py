@@ -3,7 +3,7 @@
 
 """
 结点的值总是不大于或不小于其父结点的值；
-堆总是一棵完全二叉树, 按层次遍历顺序存放在数组中
+堆逻辑上一棵完全二叉树, 物理上按层次遍历顺序存放在数组中
 """
 
 
@@ -24,7 +24,7 @@ class Heap():
     def _swap(self, i, j):
         self.__list[i], self.__list[j] = self.__list[j], self.__list[i]
 
-    # 从父节点和孩子中选择最小值
+    # 在父节点和孩子中选择最小值
     def _get_min(self, parent, children):
         min_v = self.get(parent)
         min_idx = parent
@@ -58,9 +58,9 @@ class Heap():
         if self.__list:
             return self.__list[i]
 
-    def push(self, v):  # 插入尾部 上滤
-        self.__list.append(v)  # 1 插入尾部
-        i = self.len() - 1  # 2 上滤
+    def push(self, v):  # 插入尾部，上滤
+        self.__list.append(v)
+        i = self.len() - 1
         self._up(i)
 
     def pop(self):  # 删除堆顶元素 将队尾元素放入堆首, 下滤
@@ -74,7 +74,8 @@ class Heap():
         self._down(0)
         return v
 
-    def heapify(self, lists):  # 批量建堆, 自下而上,自左而右 下滤 o(n)
+    # o(n)
+    def heapify(self, lists):  # 批量建堆, 自下而上, 自左而右, 下滤 o(n) 假设字节点满足要求
         self.__list = [v for v in lists]
         n = self.len() // 2 - 1  # 非叶子节点
         for i in range(n, -1, -1):

@@ -79,29 +79,29 @@ class MedianFinder(object):
         """
         initialize your data structure here.
         """
-        self.big = []
-        self.small = []
+        self.left = []  # 左半部分 大顶堆
+        self.right = []  # 右半部分 小顶堆
 
     def add_num(self, num):  # 大顶堆多一个
-        if not self.big or num <= -self.big[0]:
-            hq.heappush(self.big, -num)
+        if not self.right or num >= self.right[0]:
+            hq.heappush(self.right, num)
         else:
-            hq.heappush(self.small, num)
+            hq.heappush(self.left, -num)
 
-        m = len(self.big)
-        n = len(self.small)
+        m = len(self.right)
+        n = len(self.left)
         # 0 <= m - n <= 1
         if m - n > 1:
-            hq.heappush(self.small, -hq.heappop(self.big))
+            hq.heappush(self.left, -hq.heappop(self.right))
         if n - m > 0:
-            hq.heappush(self.big, -hq.heappop(self.small))
+            hq.heappush(self.right, -hq.heappop(self.left))
 
     def find_median(self):
-        m = len(self.big)
-        n = len(self.small)
+        m = len(self.right)
+        n = len(self.left)
         if m > n:
-            return -self.big[0]
-        return (-self.big[0] + self.small[0]) / 2.0
+            return self.right[0]
+        return (self.right[0] - self.left[0]) / 2.0
 
 
 def check():
@@ -162,6 +162,8 @@ if __name__ == '__main__':
     obj = MedianFinder()
     obj.add_num(1)
     obj.add_num(2)
+    print(obj.find_median())
+    obj.add_num(3)
     print(obj.find_median())
 
     check()

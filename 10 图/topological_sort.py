@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 # 207. 课程表
 def can_finish(num_courses, prerequisites):
-    dic = defaultdict(set)  # v -> u 原来你就是邻接表!!!
+    dic = defaultdict(set)  # v -> u 邻接表
     indegree = [0] * num_courses  # 入度
     for u, v in prerequisites:
         dic[v].add(u)
         indegree[u] += 1
 
-    queue = []  # 可能存在多个没有入度的节点 bfs
+    queue = deque()  # 多向bfs
     for i in range(num_courses):
         if not indegree[i]:
             queue.append(i)
 
     while queue:
-        u = queue.pop(-1)
+        u = queue.popleft()
         for v in dic[u]:
             indegree[v] -= 1
             if not indegree[v]:
@@ -34,14 +34,14 @@ def find_order(num_courses, prerequisites):
         dic[v].add(u)
         indegree[u] += 1
 
-    queue = []
+    queue = deque()
     for i in range(num_courses):
         if not indegree[i]:
             queue.append(i)
 
     res = []
     while queue:
-        u = queue.pop(-1)
+        u = queue.popleft()
         res.append(u)
         for v in dic[u]:
             indegree[v] -= 1

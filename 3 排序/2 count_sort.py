@@ -2,7 +2,8 @@ from collections import defaultdict
 import heapq as hq
 
 
-# 计数排序  再统计个数 然后
+# 计数排序 适合大数据小范围的数据
+# 再统计个数 然后
 def count_sort(nums):
     max_value = -1
     # 元素取值范围

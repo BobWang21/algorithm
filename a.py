@@ -481,6 +481,8 @@ def calculate1(s):
     return sum(stack)
 
 
+
+
 if __name__ == '__main__':
     pprint(permute(2, 2, 2))
     pprint(permute2(2))

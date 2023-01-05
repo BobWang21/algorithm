@@ -18,20 +18,18 @@ class Trie(object):
     def search(self, word):
         dic = self.dic
         for c in word:
-            if c in dic:
-                dic = dic[c]
-            else:
+            if c not in dic:
                 return False
+            dic = dic[c]
         return '#' in dic
 
     # 是否为树的某段
     def starts_with(self, prefix):
         dic = self.dic
         for c in prefix:
-            if c in dic:
-                dic = dic[c]
-            else:
+            if c not in dic:
                 return False
+            dic = dic[c]
         return True
 
 
@@ -43,10 +41,9 @@ def find_words(board, words):
     for word in words:
         trie.insert(word)
     print(trie.dic)
-    rows, cols = len(board), len(board[0])
 
     res = set()
-
+    rows, cols = len(board), len(board[0])
     directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]  # ← → ↑ ↓
 
     def helper(i, j, word):
@@ -67,7 +64,7 @@ def find_words(board, words):
         board[i][j] = '.'
         for direction in directions:  # 四个方向独立
             helper(i + direction[0], j + direction[1], new_word)
-        board[i][j] = char  # 无论如何都回溯
+        board[i][j] = char  # 回溯
 
     for i in range(rows):
         for j in range(cols):

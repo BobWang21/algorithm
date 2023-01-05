@@ -1,6 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+
+# 进制转换
+# 括号匹配
 # 单调栈 适用于结果和数组当前值的前后缀相关的问题
+
+
+def ten_2_binary(value):
+    stack = []
+    while value:
+        remainder = value % 2
+        stack.append(remainder)
+        value = value >> 1
+    stack.reverse()
+    return stack
+
+
+# 数字reverse 123 -> 321
+def reverse(x):
+    if x < 0:
+        return -reverse(-x)
+    stack = []
+    while x > 0:
+        re = x % 10
+        stack.append(re)
+        x = x // 10
+    res = 0
+    k = 1
+    while stack:
+        v = stack.pop(-1)
+        res += v * k
+        k *= 10
+    return res if res < 2 ** 31 else 0
+
 
 # 496. 下一个更大元素 I
 # Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
@@ -36,36 +69,53 @@ def daily_temperatures(t):
     return res
 
 
-def ten_2_binary(value):
-    stack = []
-    while value:
-        remainder = value % 2
-        stack.append(remainder)
-        value = value >> 1
-    stack.reverse()
-    return stack
+# 剑指Offer 09. 用两个栈实现队列
+class CQueue:
+    def __init__(self):
+        self.A = []
+        self.B = []
+
+    def appendTail(self, value):
+        self.A.append(value)
+
+    def deleteHead(self):
+        if self.B:
+            return self.B.pop()
+        if not self.A:
+            return -1
+        while self.A:
+            self.B.append(self.A.pop())
+        return self.B.pop()
 
 
-# 数字reverse 123 -> 321
-def reverse(x):
-    if x < 0:
-        return -reverse(-x)
-    stack = []
-    while x > 0:
-        re = x % 10
-        stack.append(re)
-        x = x // 10
-    res = 0
-    k = 1
-    while stack:
-        v = stack.pop(-1)
-        res += v * k
-        k *= 10
-    return res if res < 2 ** 31 else 0
+# 用两个栈实现最小栈
+class MinStack():
+    def __init__(self):
+        self.stack = []
+        self.min = []
+
+    def push(self, v):
+        self.stack.append(v)
+        if self.min:
+            if self.min[-1] <= v:
+                self.min.append(self.min[-1])
+            else:
+                self.min.append(v)
+        else:
+            self.min.append(v)
+
+    def pop(self):
+        if self.stack and self.min:
+            self.stack.pop(-1)
+            self.min.pop(-1)
+
+    def get_min(self):
+        return self.min[-1]
 
 
 # 循环删除字符串中的连续重复字母
 # 类似俄罗斯方块的消去
+# 相当于指针 用到了stack最后一个数
 def remove_duplicates(S):
     if not S:
         return S
@@ -149,6 +199,24 @@ def min_remove_to_make_valid(s):
     return res
 
 
+# 71. 简化路径
+def simplify_path(path):
+    if not path:
+        return '/'
+    stack, res = [], '/'
+    string = path.split('/')
+    for c in string:
+        if not c or c == '.':
+            continue
+        if c == '..':
+            if stack:
+                stack.pop(-1)
+        else:
+            stack.append(c)
+    res += '/'.join(stack)
+    return res
+
+
 # 150 波兰表达式
 def eval_RPN(tokens):
     stack = []
@@ -171,7 +239,7 @@ def eval_RPN(tokens):
 
 
 # 227. 基本计算器 II
-# # 5-6*3 = 5+(-6)*3
+# 5-6*3 = 5+(-6)*3
 def calculate1(s):
     if not s:
         return 0
@@ -194,7 +262,7 @@ def calculate1(s):
             stack.append(v * num)
         else:
             v = stack.pop(-1)
-            stack.append(int(v/num))  # 注意负数的优先级
+            stack.append(int(v / num))  # 注意负数的优先级
 
         num = 0
         pre_sign = ch
@@ -281,68 +349,6 @@ def validate_stack_sequences(pushed, popped):
             stack.pop(-1)
             popped.pop(0)
     return False if stack else True
-
-
-# 剑指Offer 09. 用两个栈实现队列
-class CQueue:
-    def __init__(self):
-        self.A = []
-        self.B = []
-
-    def appendTail(self, value):
-        self.A.append(value)
-
-    def deleteHead(self):
-        if self.B:
-            return self.B.pop()
-        if not self.A:
-            return -1
-        while self.A:
-            self.B.append(self.A.pop())
-        return self.B.pop()
-
-
-# 用两个栈实现最小栈
-class MinStack():
-    def __init__(self):
-        self.stack = []
-        self.min = []
-
-    def push(self, v):
-        self.stack.append(v)
-        if self.min:
-            if self.min[-1] <= v:
-                self.min.append(self.min[-1])
-            else:
-                self.min.append(v)
-        else:
-            self.min.append(v)
-
-    def pop(self):
-        if self.stack and self.min:
-            self.stack.pop(-1)
-            self.min.pop(-1)
-
-    def get_min(self):
-        return self.min[-1]
-
-
-# 71. 简化路径
-def simplify_path(path):
-    if not path:
-        return '/'
-    stack, res = [], '/'
-    string = path.split('/')
-    for c in string:
-        if not c or c == '.':
-            continue
-        if c == '..':
-            if stack:
-                stack.pop(-1)
-        else:
-            stack.append(c)
-    res += '/'.join(stack)
-    return res
 
 
 if __name__ == '__main__':
