@@ -4,7 +4,7 @@
 from collections import defaultdict, deque
 
 
-# 207. 课程表 广度优先遍历
+# 207. 课程表 广度优先
 def can_finish(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u 邻接表
     indegree = [0] * num_courses  # 入度
@@ -27,7 +27,7 @@ def can_finish(num_courses, prerequisites):
     return False if dic else True
 
 
-# 207. 课程表 广度优先遍历
+# 深度优先
 def can_finish2(num_courses, prerequisites):
     edges = defaultdict(list)
     visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过子节点
@@ -50,6 +50,7 @@ def can_finish2(num_courses, prerequisites):
             if visited[v] == 1:
                 valid = False
                 return
+            # visited=2 如果访问过，忽略
         # 已访问
         visited[u] = 2
         result.append(u)
