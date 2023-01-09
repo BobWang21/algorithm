@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 from pprint import pprint
 
+from collections import deque
+
 
 # 1表示墙壁 0表示空地
 def maze_short_path(maze, start, destination):
@@ -11,9 +13,10 @@ def maze_short_path(maze, start, destination):
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     wall, empty = 1, 0
 
-    queue = [(start[0], start[1], 0)]
+    queue = deque()
+    queue.append((start[0], start[1], 0))
     while queue:
-        i, j, layer = queue.pop(0)
+        i, j, layer = queue.popleft()
         for d in directions:
             next_i, next_j = i + d[0], j + d[1]
             if 0 <= next_i < rows and 0 <= next_j < cols and maze[next_i][next_j] == empty:  # 先判断是否安全
@@ -30,7 +33,7 @@ def walls_and_gates(rooms):
     if not rooms or not rooms[0]:
         return
     rows, cols = len(rooms), len(rooms[0])
-    inf, queue, = 2147483647, []
+    inf, queue, = 2147483647, deque()
     # 加入多个源
     for i in range(rows):
         for j in range(cols):
@@ -39,7 +42,7 @@ def walls_and_gates(rooms):
 
     directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
     while queue:
-        row, col, layer = queue.pop(0)
+        row, col, layer = queue.popleft()
         for direction in directions:
             i, j = row + direction[0], col + direction[1]
             if i < 0 or i == rows or j < 0 or j == cols:
@@ -56,7 +59,8 @@ def walls_and_gates(rooms):
 def word_ladder(begin_word, end_word, word_list):
     if not word_list:
         return 0
-    queue = [(begin_word, 0)]  # 记录层数
+    queue = deque()
+    queue.append((begin_word, 0))  # 记录层数
     visited = {begin_word}  # 保存已加入过队列的字符串
     word_set = set(word_list)
     if end_word not in word_set:
