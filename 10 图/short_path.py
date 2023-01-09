@@ -1,3 +1,7 @@
+from collections import defaultdict
+from heapq import *
+
+
 class Edge():
     def __init__(self, u, v, w=0):
         self.u = u
@@ -19,6 +23,7 @@ def dijkstra(graph, s, n):
     def get_vertex_from_q():
         min_vertex = -1
         min_w = float("inf")
+        # 可使用堆
         for i, w in enumerate(res):
             if p[i]:
                 continue
@@ -42,11 +47,44 @@ def dijkstra(graph, s, n):
     return res
 
 
+def dijkstra2(edges, f, t):
+    graph = defaultdict(list)
+    for edge in edges:
+        graph[edge.u].append((edge.v, edge.w))
+        graph[edge.v].append((edge.u, edge.w))
+
+    if t not in edges:
+        return float("inf"), None
+
+    queue, seen, res = [(0, f, ())], set(), {f: 0}
+    while queue:
+        cost1, v1, path = heappop(queue)
+        if v1 in seen:
+            continue
+        seen.add(v1)
+        path = (path, v1)  # 记录路径
+        if v1 == t:
+            return cost1, path
+
+        for v2, cost2 in graph[v1]:
+            if v2 in seen:
+                continue
+            # 松弛
+            prev = res.get(v2, float('inf'))
+            next = cost1 + cost2
+            if next < prev:
+                res[v2] = next
+                heappush(queue, (next, v2, path))
+
+    return
+
+
 # 从边出发 O(VE) 
 def bellman_ford(edges, s, node_num):
     # 初始化dist
     dist = [float('inf')] * node_num
     dist[0] = 0
+    edges_num = len(edges)
     # ac < ab + bc
     for edge in edges:
         if edge.u == s:
@@ -57,8 +95,7 @@ def bellman_ford(edges, s, node_num):
         if dist[v] > dist[u] + weight:
             dist[v] = dist[u] + weight
 
-    # |v-1|次松弛, 每次有1个点得到松弛
-    edges_num = len(edges)
+    # v-1次松弛, 每次有1个点得到松弛
     for i in range(node_num - 1):
         for j in range(edges_num):
             relax(edges[j].u, edges[j].v, edges[j].w)
