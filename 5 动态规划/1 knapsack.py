@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # 动态规划 matrix[i][j] 表示前i件物品恰放入一个容量为j的背包可以获得的最大价值
-
-# 0-1背包
-# 无穷背包
+# 一维背包
 # 约束背包
+## 0-1背包
+## 无穷背包
+# 无约束背包
 
 # 0-1背包
 def knapsack(costs, values, capacity):

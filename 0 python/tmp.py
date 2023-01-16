@@ -45,7 +45,7 @@ if __name__ == '__main__':
     s.isalnum()  # 是否为数字或字母
     s.isspace()  # 判断空格
     ''.join(['a', 'b', 'c'])  # 列表转换成字符串 列表元素为字符串
-    print(ord('a'))  # 字母对应的数字序
+    print(ord('a'))  # ordinary字母对应的数字序
     print(chr(97))  # 数字转字符
     print([chr(ord('a') + i) for i in range(26)])
     lists = [c for c in s]  # split 是针对分隔符分割 默认空格

@@ -132,8 +132,8 @@ def LIS2(nums):
     return len(dp)
 
 
-# 322 换硬币 最少硬币数 如果不能返回-1
-# 复杂度高
+# 322 换硬币 最少硬币数表示金额 如果不能返回-1
+# 复杂度高 cutting stock problem
 def coin_change1(coins, amount):
     dp = [float('inf')] * (amount + 1)
     dp[0] = 0
@@ -153,11 +153,8 @@ def coin_change(coins, amount):
     return dp[-1] if dp[-1] != float('inf') else -1
 
 
-# 多少种硬币换法
+# 518 多少种硬币换法
 def coin_change2(coins, amount):
-    if amount < 0:
-        return 0
-
     dp = [0] * (amount + 1)
     dp[0] = 1
 
@@ -167,7 +164,7 @@ def coin_change2(coins, amount):
     return dp[-1]
 
 
-# 注意这两种区别
+# 先遍历金额 会重复计数
 # def coin_change3(coins, amount):
 #     if amount < 0:
 #         return 0
@@ -244,7 +241,7 @@ def max_gift(matrix):
     return res[-1][-1]
 
 
-# 最小带权路径和
+# 最小带权路径和 对比viterbi
 def min_path_sum(matrix):
     if not matrix or not matrix[0]:
         return 0

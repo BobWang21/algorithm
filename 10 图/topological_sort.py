@@ -4,6 +4,37 @@
 from collections import defaultdict, deque
 
 
+# 深度优先
+def can_finish2(num_courses, prerequisites):
+    edges = defaultdict(list)
+    visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过子节点
+    valid = [True]
+
+    for info in prerequisites:
+        edges[info[1]].append(info[0])
+
+    def dfs(u):
+        visited[u] = 1
+        for v in edges[u]:
+            if visited[v] == 0:
+                dfs(v)
+                if not valid[0]:
+                    return
+            # 正在访问，存在环
+            elif visited[v] == 1:
+                valid[0] = False
+                return
+            # visited=2 如果访问过，忽略
+        # 已访问
+        visited[u] = 2
+
+    for i in range(num_courses):
+        if valid[0] and not visited[i]:
+            dfs(i)
+
+    return valid[0]
+
+
 # 207. 课程表 广度优先
 def can_finish(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u 邻接表
@@ -25,41 +56,6 @@ def can_finish(num_courses, prerequisites):
                 queue.append(v)
         del dic[u]
     return False if dic else True
-
-
-# 深度优先
-def can_finish2(num_courses, prerequisites):
-    edges = defaultdict(list)
-    visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过子节点
-    result = list()
-    valid = True
-
-    for info in prerequisites:
-        edges[info[1]].append(info[0])
-
-    def dfs(u):
-        nonlocal valid
-        visited[u] = 1
-        for v in edges[u]:
-            if visited[v] == 0:
-                dfs(v)
-                if not valid:
-                    return
-                continue
-            # 正在访问，存在环
-            if visited[v] == 1:
-                valid = False
-                return
-            # visited=2 如果访问过，忽略
-        # 已访问
-        visited[u] = 2
-        result.append(u)
-
-    for i in range(num_courses):
-        if valid and not visited[i]:
-            dfs(i)
-
-    return valid
 
 
 def find_order(num_courses, prerequisites):

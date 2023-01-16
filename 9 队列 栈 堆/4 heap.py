@@ -129,24 +129,6 @@ def check():
     print(res)  # 返回顺序为[2, 1, -10] 不是 [-10, 1, 2]
 
 
-# 253. 会议室 II
-def min_meeting_rooms(intervals):
-    if not intervals:
-        return 0
-
-    intervals.sort()
-    heap = [intervals[0][1]]
-
-    for s, e in intervals[1:]:
-        if heap[0] <= s:
-            hq.heappop(heap)
-            hq.heappush(heap, e)
-        else:
-            hq.heappush(heap, e)
-
-    return len(heap)
-
-
 if __name__ == '__main__':
     print('\n合并K个有序数组')
     print(merge([[1, 1, 1, 1], [2, 2, 2, 2], [3, 4, 5, 6]]))

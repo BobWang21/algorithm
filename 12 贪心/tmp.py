@@ -5,6 +5,24 @@ import heapq as hq
 from collections import defaultdict
 
 
+# 253. 会议室 II
+def min_meeting_rooms(intervals):
+    if not intervals:
+        return 0
+
+    intervals.sort()  # 根据结束时间排序
+    heap = [intervals[0][1]]
+
+    for s, e in intervals[1:]:
+        if heap[0] <= s:
+            hq.heappop(heap)
+            hq.heappush(heap, e)
+        else:
+            hq.heappush(heap, e)
+
+    return len(heap)
+
+
 # 发饼干 求最大满足的小孩的数目
 def find_content_children(g, s):
     g.sort()  # 常排序
@@ -33,7 +51,7 @@ def two_city_sched_cost(costs):
 
 
 # 木头连接 费用为两根木头的长度和
-# 哈夫曼数
+# 哈夫曼数 典型的贪心
 def connect_sticks(sticks):
     hq.heapify(sticks)
     total = 0
