@@ -64,12 +64,12 @@ def rob_with_cycle(nums):
         return max(nums)
 
     def helper(nums, lo, hi):
-        include, exclude = 0, 0
+        inc, exc = 0, 0
         for i in range(lo, hi + 1):
-            new_include = exclude + nums[i]
-            exclude = max(include, exclude)
-            include = new_include
-        return max(include, exclude)
+            new_include = exc + nums[i]
+            exc = max(inc, exc)
+            inc = new_include
+        return max(inc, exc)
 
     return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
 
@@ -91,45 +91,6 @@ def max_continuous_product(nums):
         inc_min, inc_max = min(val, val * inc_max, val * inc_min), max(val, val * inc_max, val * inc_min)
         res = max(inc_max, res)
     return res
-
-
-# 最长上升子序列
-def LIS(nums):
-    dp = [1] * len(nums)
-    res = 1
-    for i, val in enumerate(nums):
-        for j in range(i):
-            if nums[j] < val:
-                dp[i] = max(dp[j] + 1, dp[i])
-        res = max(res, dp[i])
-    return res
-
-
-# res[i] 保存长度为i+1的子串的最小值 nlog(n)
-def LIS2(nums):
-    if not nums:
-        return 0
-    dp = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
-    n = len(nums)
-
-    def binary_search(target):
-        l, r = 0, len(dp) - 1
-        while l < r:
-            mid = l + (r - l) // 2
-            if dp[mid] < target:
-                l = mid + 1
-            else:
-                r = mid
-        return l
-
-    for i in range(1, n):
-        num = nums[i]
-        if num > dp[-1]:
-            dp.append(num)
-        else:
-            idx = binary_search(num)  # 大于等于该数的第一个数位置
-            dp[idx] = num
-    return len(dp)
 
 
 # 322 换硬币 最少硬币数表示金额 如果不能返回-1
@@ -158,7 +119,7 @@ def coin_change2(coins, amount):
     dp = [0] * (amount + 1)
     dp[0] = 1
 
-    for coin in coins:  # 保证coin 之前没用过!
+    for coin in coins:  # 保证coin之前没用过!
         for j in range(coin, amount + 1):
             dp[j] += dp[j - coin]
     return dp[-1]
@@ -198,6 +159,99 @@ def combination_sum(coins, target):
             if i >= v:
                 res[i] += res[i - v]
     return res[-1]
+
+
+# 12 只能买卖一次 滑动窗口
+def max_profit1(prices):
+    n = len(prices)
+    min_price = float('inf')
+    max_profit = 0
+    for j in range(n):
+        max_profit = max(max_profit, prices[j] - min_price)
+        min_price = min(prices[j], min_price)
+    return max_profit
+
+
+# 122 股票可以交易多次
+# 你在任何时候 最多 只能持有 一股 股票。你也可以先购买，然后在 同一天 出售。
+def max_Profit2(prices):
+    hold, sold = -float('inf'), 0
+    for price in prices:
+        hold, sold = max(sold - price, hold), max(hold + price, sold)
+    return max(hold, sold)
+
+
+# 309 交易后有冷冻期
+def max_profit3(prices):
+    hold, sold, rest = -float('inf'), 0, 0  # 第一次不能出现hold, hold初始状态为负无穷
+    for price in prices:
+        hold, sold, rest = max(rest - price, hold), hold + price, max(rest, sold)
+
+    return max(sold, rest)
+
+
+# 最多交易两次
+def max_profit4(prices):
+    if not prices or len(prices) < 2:
+        return 0
+    n = len(prices)
+    k = 2
+    dp = [[[0, 0] for _ in range(k + 1)] for _ in range(n + 1)]
+
+    # 处理base: -1 及 不可能状态的赋值
+    for i in range(n + 1):  # 每天交易次数为0时
+        dp[i][0][1] = -float('inf')
+        dp[i][0][0] = 0
+
+    for j in range(k + 1):  # 第0天
+        dp[0][j][0] = 0
+        dp[0][j][1] = -float('inf')
+
+    for i in range(1, n + 1):
+        for j in range(k, 0, -1):  # 倒序更新
+            dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i - 1])
+            dp[i][j][1] = max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i - 1])  # j-1
+
+    return dp[-1][-1][0]
+
+
+# 最长上升子序列
+def LIS(nums):
+    dp = [1] * len(nums)
+    res = 1
+    for i, val in enumerate(nums):
+        for j in range(i):
+            if nums[j] < val:
+                dp[i] = max(dp[j] + 1, dp[i])
+        res = max(res, dp[i])
+    return res
+
+
+# res[i] 保存长度为i+1的子串的最小值 nlog(n)
+def LIS2(nums):
+    if not nums:
+        return 0
+    dp = [nums[0]]  # nums[i]表示长度为i+1上升子串结尾的最小值
+    n = len(nums)
+
+    def binary_search(target):
+        l, r = 0, len(dp) - 1
+        while l < r:
+            mid = l + (r - l) // 2
+            if dp[mid] < target:
+                l = mid + 1
+            else:
+                r = mid
+        return l
+
+    for i in range(1, n):
+        num = nums[i]
+        if num > dp[-1]:
+            dp.append(num)
+        else:
+            idx = binary_search(num)  # 大于等于该数的第一个数位置
+            dp[idx] = num
+    return len(dp)
 
 
 # 279. Perfect Squares 12 = 4 + 4 + 4
@@ -337,61 +391,6 @@ def unique_paths_with_obstacles(grid):
             if not grid[i - 1][j - 1]:
                 dp[i][j] = dp[i - 1][j] + dp[i][j - 1]  # dp[1][1] = dp[0][1] + dp[1][0] 因此把 dp[0][1]设为1
     return dp[-1][-1]
-
-
-# 121 股票买卖 最佳时机
-# 类似滑动窗口
-def max_profit1(prices):
-    n = len(prices)
-    min_price = float('inf')
-    max_profit = 0
-    for j in range(n):
-        max_profit = max(max_profit, prices[j] - min_price)
-        min_price = min(prices[j], min_price)
-    return max_profit
-
-
-# 122 股票可以交易多次
-def max_Profit2(prices):
-    hold, sold = -float('inf'), 0
-    for price in prices:
-        hold, sold = max(sold - price, hold), max(hold + price, sold)
-    return max(hold, sold)
-
-
-# 309 交易后有冷冻期
-def max_profit3(prices):
-    n = len(prices)
-    hold, sold, rest = -float('inf'), 0, 0  # 第一次不能出现hold, hold初始状态为负无穷
-    for price in prices:
-        hold, sold, rest = max(rest - price, hold), hold + price, max(rest, sold)
-
-    return max(sold, rest)
-
-
-# 最多交易两次
-def max_profit4(prices):
-    if not prices or len(prices) < 2:
-        return 0
-    n = len(prices)
-    k = 2
-    dp = [[[0, 0] for _ in range(k + 1)] for _ in range(n + 1)]
-
-    # 处理base: -1 及 不可能状态的赋值
-    for i in range(n + 1):  # 每天交易次数为0时
-        dp[i][0][1] = -float('inf')
-        dp[i][0][0] = 0
-
-    for j in range(k + 1):  # 第0天
-        dp[0][j][0] = 0
-        dp[0][j][1] = -float('inf')
-
-    for i in range(1, n + 1):
-        for j in range(k, 0, -1):  # 倒序更新
-            dp[i][j][0] = max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i - 1])
-            dp[i][j][1] = max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i - 1])  # j-1
-
-    return dp[-1][-1][0]
 
 
 # 最大前缀 后缀
