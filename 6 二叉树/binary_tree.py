@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from collections import deque
+
 
 class TreeNode():
     def __init__(self, x):
@@ -13,10 +15,12 @@ class TreeNode():
 def create_full_binary_tree(nums):
     if not nums:
         return
-    tree = TreeNode(nums.pop(0))
-    queue = [tree]
-    while nums:
-        val = nums.pop(0)
+    root = TreeNode(nums[0])
+    queue = deque([root])
+    i, n = 1, len(nums)
+    while i < n:
+        val = nums[i]
+        i += 1
         parent = queue[0]
         if not parent.left:
             node = TreeNode(val)
@@ -26,8 +30,8 @@ def create_full_binary_tree(nums):
             node = TreeNode(val)
             parent.right = node
             queue.append(node)  # 进队列
-            queue.pop(0)  # 出队列
-    return tree
+            queue.popleft()  # 出队列
+    return root
 
 
 # 先序遍历(递归)
@@ -40,12 +44,13 @@ def preorder_traversal(tree):
     return res
 
 
-# 先序遍历(非递归) dfs
+# 先序遍历(非递归)
 def preorder2(tree):
     if not tree:
         return
-    stack = [tree]
+
     res = []
+    stack = [tree]
     while stack:
         node = stack.pop(-1)
         res.append(node.val)
@@ -79,9 +84,9 @@ def inorder_traversal(tree):
 def level_traversal(tree):
     if not tree:
         return
-    queue, res = [tree], []
+    queue, res = deque([tree]), []
     while queue:
-        node = queue.pop(0)
+        node = queue.popleft()
         res.append(node.val)
         left, right = node.left, node.right
         if left:

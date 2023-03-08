@@ -11,7 +11,7 @@
 def knapsack(costs, values, capacity):
     rows, cols = len(costs) + 1, capacity + 1  # 行列加1
     dp = [[0] * cols for _ in range(rows)]  # 作为base 初始状态都为0
-    for i in range(1, rows):  # 计算所有状态
+    for i in range(1, rows):  # 更新所有状态
         cost = costs[i - 1]
         value = values[i - 1]
         for j in range(1, cols):  # 所有状态
@@ -21,7 +21,7 @@ def knapsack(costs, values, capacity):
     return dp[-1][-1]
 
 
-# 无穷背包 借鉴0-1背包
+# 无穷背包1 借鉴0-1背包
 def unbounded_knapsack1(costs, val, capacity):
     if not costs or not val or len(costs) != len(val):
         return
@@ -33,13 +33,13 @@ def unbounded_knapsack1(costs, val, capacity):
         for j in range(1, cols):
             dp[i][j] = dp[i - 1][j]
             k = 1
-            while cost * k <= j:  # 从i - 1开始
+            while cost * k <= j:  # 从i - 1开始, 此处速度慢
                 dp[i][j] = max(dp[i][j], dp[i - 1][j - cost * k] + value * k)
                 k += 1
     return dp[-1][-1]
 
 
-# 无穷背包
+# 无穷背包2
 def unbounded_knapsack2(costs, values, capacity):
     rows, cols = len(costs) + 1, capacity + 1
     dp = [[0] * cols for _ in range(rows)]
@@ -53,7 +53,7 @@ def unbounded_knapsack2(costs, values, capacity):
     return dp[-1][-1]
 
 
-# 无穷背包 状态压缩 使用1维数组表示
+# 无穷背包3 状态压缩 使用1维数组表示
 def unbounded_knapsack3(costs, values, capacity):
     dp = [0] * (capacity + 1)
     for i in range(1, capacity + 1):

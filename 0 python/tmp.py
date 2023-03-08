@@ -44,7 +44,7 @@ if __name__ == '__main__':
     s.isdigit()  # 判断是否为数字
     s.isalnum()  # 是否为数字或字母
     s.isspace()  # 判断空格
-    ''.join(['a', 'b', 'c'])  # 列表转换成字符串 列表元素为字符串
+    ''.join(['a', 'b', 'c'])  # 列表转换成字符串 列表元素为字符
     print(ord('a'))  # ordinary字母对应的数字序
     print(chr(97))  # 数字转字符
     print([chr(ord('a') + i) for i in range(26)])
@@ -55,13 +55,13 @@ if __name__ == '__main__':
     print('\n列表')
     nums = [2, 3, 4, 5]
     nums.remove(2)  # 移除数值
-    tail = nums.pop()  # 按位置移除, 默认为尾部, 并返回尾部数值
+    nums.append(2)  # 增加一个数
+    tail = nums.pop()  # 按位置移除, pop(0) -> o(n)
     print('list pop: ', tail)
-    print('list.index', nums.index(3))  # 查找数据在列表中的索引, 返回第一个
+    print('list.index', nums.index(3))  # 查找数据在列表中索引, 返回第一个
     nums.reverse()  # 反转
     nums = [[1, 3], [2, 2], [3, 6]]
     nums.sort(key=lambda x: x[1] - x[0])  # 排序
-    nums.append(3)  # 增加一个数
     print(nums + [4])  # 生成一个新的变量
     print(nums[1:])  # 切片和[:] 生成一个新列表
     print(nums[3:10:2])  # [star, end, step]
@@ -79,22 +79,28 @@ if __name__ == '__main__':
 
     print('\n字典')
     dic = {1: 3}
-    print(dic.get(3, 0))  # default value
+    print(dic.get(3, -1))  # default value
     for k, v in dic.items():
         print(k, v)
-    print(dic.setdefault(4, 3))  # 如果字典中包含有给定键，则返回该键对应的值，否则返回为该键设置的值。
+    print(dic.setdefault(1, 0))  # 如果字典中包含key，返回对应value，否则返回为设置value。
 
-    print('\n defaultdict')
+    print('\ndefaultdict')
     dic = defaultdict(set)
     dic[1].add(2)
     dic = defaultdict(int)
     dic[1] += 5
 
+    print('\nheapq')
+    heap = [3, 4, 1, 2]
+    hq.heapify(heap)  # 改成堆, 默认小顶堆
+    hq.heappush(heap, 5)
+    while heap:
+        print(hq.heappop(heap))
+
     print('\n集合')
     nums = {1, 2, 3}  # set(v) v 需要可迭代
     nums.add(2)
     nums.remove(2)  # 移除元素
-
     print(nums)
     A = {1, 2, 3}
     B = {3, 4, 5}
@@ -103,15 +109,7 @@ if __name__ == '__main__':
     E = A ^ B  # A与B的差集 {1, 2, 4, 5}
     F = A - B  # B在A的补集 {1, 2}
     G = B - A  # A在B的补集 {4, 5}
-
     print(E, F, G)
-
-    print('\nheapq')
-    heap = [3, 4, 1, 2]
-    hq.heapify(heap)  # 改成堆
-    hq.heappush(heap, 5)
-    while heap:
-        print(hq.heappop(heap))
 
     print(isinstance([], list))  # 判断类型
     print(type({}))  # {}表示字典

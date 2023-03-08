@@ -37,10 +37,10 @@ def print_list_node(head):
 def reverse1(head):
     pre = None
     while head:
-        cur = head.next
+        nxt = head.next
         head.next = pre
         pre = head
-        head = cur
+        head = nxt
     return pre
 
 
@@ -50,7 +50,7 @@ def reverse2(head):
         return head
 
     new_head = reverse2(head.next)
-    head.next.next = head  # head还连接着next, head.next为new_head反转后的尾结点
+    head.next.next = head  # head还连接着next, head.next为反转后的尾结点
     head.next = None
     return new_head
 
@@ -76,12 +76,12 @@ def swap_pairs1(head):
         return head
     dummy = pre = ListNode(None)
     while head and head.next:
-        curr = head.next.next  # 每次移动两步
+        nxt = head.next.next  # 每次移动两步
         pre.next = head.next
         head.next.next = head
         pre = pre.next.next
         # pre.next = None
-        head = curr
+        head = nxt
     pre.next = head  # head可能为空, 也可能不
     return dummy.next
 

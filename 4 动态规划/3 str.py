@@ -31,7 +31,7 @@ def longest_common_str(s1, s2):
 
 
 # 516 最长回文子序列 top down
-def longest_palindrome_subsequence(s):
+def longest_palindrome_subsequence1(s):
     if not s:
         return s
     n = len(s)
@@ -54,6 +54,19 @@ def longest_palindrome_subsequence(s):
         return dic[(l, r)]
 
     return helper(0, n - 1)
+
+
+def longest_palindrome_subsequence2(s):
+    n = len(s)
+    dp = [[0] * n for _ in range(n)]
+    for i in range(n - 1, -1, -1):
+        dp[i][i] = 1
+        for j in range(i + 1, n):
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+    return dp[0][n - 1]
 
 
 # 409 最长回文子串
@@ -90,12 +103,11 @@ def edit_distance(word1, word2):
         return len(word2)
     if not word2:
         return len(word1)
+
     rows, cols = len(word1) + 1, len(word2) + 1
     dp = [[0] * cols for _ in range(rows)]
-
     for i in range(rows):  # base
         dp[i][0] = i
-
     for j in range(cols):  # base
         dp[0][j] = j
 
@@ -103,7 +115,7 @@ def edit_distance(word1, word2):
         for j in range(1, cols):
             if word1[i - 1] == word2[j - 1]:
                 dp[i][j] = dp[i - 1][j - 1]
-            else:  # dp[i][j - 1], dp[i - 1][j] delete ;  dp[i - 1][j - 1]  replace
+            else:  # delete dp[i][j - 1], dp[i - 1][j]  ;  dp[i - 1][j - 1]  replace
                 dp[i][j] = min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1]) + 1
     return dp[-1][-1]
 
@@ -161,7 +173,7 @@ if __name__ == '__main__':
     print(longest_common_str([0, 1, 1, 1, 1], [1, 0, 1, 0, 1]))
 
     print('\n最长回文子序列')
-    print(longest_palindrome_subsequence('babadada'))
+    print(longest_palindrome_subsequence1('babadada'))
 
     print('\n最长回文子串')
     print(longest_palindrome('babadada'))

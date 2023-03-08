@@ -11,6 +11,32 @@ TopK 问题的几种解法
 '''
 
 
+# 魔术索引
+# 有序数组, 可能含有重复值，找到nums[i]==i的最小索引
+# 时间复杂度可能退化成o(n), 对比二分很好的例子
+def find_magic_index(nums):
+    if not nums:
+        return -1
+
+    def find(l, r):
+        # 终止条件
+        if l > r:
+            return -1
+        mid = l + (r - l) // 2
+        # 先左侧
+        left = find(l, mid - 1)
+        if left != -1:
+            return left
+        # 中间
+        if nums[mid] == mid:
+            return mid
+        # 右侧
+        right = find(mid + 1, r)
+        return right if right != -1 else -1
+
+    return find(0, len(nums) - 1)
+
+
 # 计数排序
 # 给定一个包含红色、白色和蓝色，n个元素的数组，
 # 原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列
@@ -35,7 +61,7 @@ def top_k_frequent(nums, k):
     for v in nums:
         dic[v] += 1
 
-    # 反向链表
+    # 反向索引
     fre = defaultdict(set)
     for k, v in dic.items():  # 将出现次数相同的数字放在一个列表中 类似链表
         fre[v].add(k)
@@ -68,8 +94,9 @@ def product_except_self(nums):
     return l
 
 
-# 581. 单调性 也可用单调栈
-# 最短无序连续子数组
+# 581. 最短无序连续子数组 [2, 6, 4, 8, 10, 9, 15]
+# 找到数组中需要排序的最小连续部分，对该部分排序后整个数组升序。
+# 单调性 也可用单调栈
 def find_unsorted_subarray(nums):
     n = len(nums)
     max_v, min_v = -float('inf'), float('inf')
@@ -77,15 +104,15 @@ def find_unsorted_subarray(nums):
     # 从左向右遍历, 获取右边界
     for i in range(n):
         if nums[i] >= max_v:  # 比左侧最大值大
-            max_v = nums[i]  # 左侧递增
+            max_v = nums[i]
         else:
-            right = i  # right右侧的数都比左侧最大值大
+            right = i  # right右侧的数都比左侧最大值大(递增)
     # 从右向左遍历, 获取左边界
-    for i in range(n):
-        if nums[n - 1 - i] <= min_v:  # 比右侧最小值大
-            min_v = nums[n - 1 - i]  # 左侧递减
+    for i in range(n - 1, -1, -1):
+        if nums[i] <= min_v:  # 比右侧最小值大
+            min_v = nums[i]
         else:
-            left = n - 1 - i  # left左侧的数都比右侧最小值小
+            left = i  # left左侧数数都比右侧最小值小
 
     if left == n - 1 and right == 0:
         return 0
@@ -93,7 +120,8 @@ def find_unsorted_subarray(nums):
 
 
 # 128 无序数组 最长连续区间 也可以使用并查集
-# 类似字典按key 排序
+# 类似字典按key 排序，
+# 把数字的相邻关系抽象为连通, 最大连通图问题
 def longest_consecutive(nums):
     if not nums:
         return 0
@@ -293,16 +321,6 @@ def next_permutation(nums):
 
 # 66. 加一 [1, 2, 3] -> [1, 2, 4]
 def plus_one(digits):
-    if not digits:  # 0
-        return [1]
-    if digits[-1] < 9:  # 1-8
-        digits[-1] += 1
-        return digits
-    return plus_one(digits[:-1]) + [0]  # 9
-
-
-# 66. 加一 [1, 2, 3] -> [1, 2, 4]
-def plus_one2(digits):
     carry = 1
     n = len(digits)
     for i in range(n - 1, -1, -1):
@@ -314,6 +332,16 @@ def plus_one2(digits):
     if carry == 1:
         digits = [1] + digits
     return digits
+
+
+# 66. 加一 [1, 2, 3] -> [1, 2, 4]
+def plus_one2(digits):
+    if not digits:  # 0
+        return [1]
+    if digits[-1] < 9:  # 1-8
+        digits[-1] += 1
+        return digits
+    return plus_one(digits[:-1]) + [0]  # 9
 
 
 # num1 = "123", num2 = "456" 输出: "56088"
@@ -401,6 +429,9 @@ def longest_common_prefix(strs):
 
 
 if __name__ == '__main__':
+    print('\nmagic index')
+    print(find_magic_index([2, 3, 4, 4, 5, 5, 5]))
+
     print('\n众数')
     print(most_data([1, 3, 3, 3, 9]))
 

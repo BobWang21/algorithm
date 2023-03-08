@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import random
 
 
 def partition1(nums, l, r):  # 原地修改
@@ -14,7 +13,7 @@ def partition1(nums, l, r):  # 原地修改
         while l < r and nums[l] <= pivot:  # 左右必须有一个包含等于号
             l += 1
         nums[r] = nums[l]  # 替换已保存nums[l]
-    nums[l] = pivot  # nums[l]<= pivot<= nums[r]
+    nums[l] = pivot  # 1 nums[l]已经复制到其他位置
     return l
 
 

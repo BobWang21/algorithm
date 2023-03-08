@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 
-# 记忆化的 top down
+# top down + 记忆
 def fib1(n):
     dic = {1: 1, 2: 2}
 
@@ -39,17 +39,17 @@ def rob1(nums):
     n = len(nums)
     if n <= 2:
         return max(nums)
-    res = [0] * n
-    res[0] = nums[0]
-    res[1] = max(nums[:2])
+    dp = [0] * n
+    dp[0] = nums[0]
+    dp[1] = max(nums[:2])
     for i in range(2, n):
-        res[i] = max(res[i - 2] + nums[i], res[i - 1])
-    return res[-1]
+        dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
+    return dp[-1]
 
 
 # 滚动数组
 def rob2(nums):
-    inc = exc = 0
+    inc = exc = 0  # 是否包括当前值
     for num in nums:
         inc, exc = exc + num, max(exc, inc)
     return max(inc, exc)
@@ -65,13 +65,12 @@ def rob_with_cycle(nums):
 
     def helper(nums, lo, hi):
         inc, exc = 0, 0
-        for i in range(lo, hi + 1):
-            new_include = exc + nums[i]
-            exc = max(inc, exc)
-            inc = new_include
+        for i in range(lo, hi):
+            inc, exc = exc + nums[i], max(exc, inc)
         return max(inc, exc)
 
-    return max(helper(nums, 0, n - 2), helper(nums, 1, n - 1))
+    # 约束的处理
+    return max(helper(nums, 0, n - 1), helper(nums, 1, n))
 
 
 # 53 最大连续子序列和
@@ -326,13 +325,13 @@ def minimum_total(nums):
     return min(nums[-1])
 
 
-# 最大正方形面积
+# 最大正方形面积 1277
 def maximal_square(matrix):
     if not matrix or not matrix[0]:
         return 0
-    rows, cols = len(matrix) + 1, len(matrix[0]) + 1
 
-    dp = [[0] * (cols) for _ in range(rows)]
+    rows, cols = len(matrix) + 1, len(matrix[0]) + 1
+    dp = [[0] * cols for _ in range(rows)]  # 我们用f[i][j]表示以(i, j)为右下角的正方形的最大边长
 
     res = 0
     for i in range(1, rows):

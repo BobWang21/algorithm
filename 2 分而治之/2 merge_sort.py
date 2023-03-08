@@ -7,33 +7,10 @@ import heapq as hq
 
 
 def power(x, n):
-    if n == 1:  # 递归基
-        return x
+    if n == 0:  # 递归基
+        return 1
     v = power(x, n // 2)
     return v * v * x ** (n % 2)
-
-
-# 魔术索引 递增数组(含有重复值)
-# 找到 nums[i] == i 的最小索引
-def find_magic_index(nums):
-    if not nums:
-        return -1
-
-    def find(l, r):
-        # 终止条件
-        if l > r:
-            return -1
-        mid = l + (r - l) // 2
-        left = find(l, mid - 1)
-        # 先左侧
-        if left != -1:
-            return left
-        if nums[mid] == mid:
-            return mid
-        right = find(mid + 1, r)
-        return right if right != -1 else -1
-
-    return find(0, len(nums) - 1)
 
 
 # 归并排序
@@ -136,7 +113,9 @@ def merge_k_sorted_nums2(nums):
 
 
 if __name__ == '__main__':
-    print(find_magic_index([2, 3, 4, 4, 5, 5, 5]))
+    print('\n快速幂')
+    print(power(3, 1))
+
     print('\n归并排序')
     print(merge_sort([1, 3, 2, 4]))
 

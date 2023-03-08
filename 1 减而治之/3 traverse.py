@@ -33,8 +33,9 @@ def spiral_order(matrix):
         # left to right, [left, right+1)
         for i in range(left, right + 1):
             res.append(matrix[top][i])
-        # 每行访问完后+1
+        # 该行访问完后, 行index+1
         top += 1
+        # corner case
         if top > down:
             break
 
@@ -61,7 +62,7 @@ def spiral_order(matrix):
     return res
 
 
-# 错误写法!!
+# 错误写法!!!
 def spiral_order_wrong(matrix):
     if not matrix or not len(matrix[0]):
         return
@@ -193,7 +194,7 @@ def set_zeroes(matrix):
 
     rows, cols = len(matrix), len(matrix[0])
     first_row_zero = first_col_zero = False
-
+    # 将于改变 必先保存
     for j in range(cols):
         if not matrix[0][j]:
             first_row_zero = True

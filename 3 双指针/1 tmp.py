@@ -28,7 +28,7 @@ def two_sum2(nums, target):
             r -= 1
         else:
             res.append([nums[l], nums[r]])
-            while l < r and nums[l] == nums[l + 1]:  # 左边界跳出相等部分即可
+            while l < r and nums[l] == nums[l + 1]:  # 跳出相等部分
                 l += 1
             l += 1
     return res
@@ -112,10 +112,10 @@ def sorted_squares(nums):
     l, r = 0, n - 1
     while l < r:
         if abs(nums[l]) <= abs(nums[r]):
-            res[i] = (nums[r]) ** 2
+            res[i] = nums[r] ** 2
             r -= 1
         else:
-            res[i] = (nums[l]) ** 2
+            res[i] = nums[l] ** 2
             l += 1
         i -= 1
     return res
@@ -246,10 +246,9 @@ def find_pairs2(nums, k):
 
 
 # 11. 盛最多水的容器
-# 无论是移动短板或者长板，我们都只关注移动后的新短板会不会变长
-# 向内移动短板大于等于当前面积
-# 向内移动长板小于等于当前面积
-# 消去状态的面积都小于 S(i, j)
+# s = min(hl, hr) * (r-l)
+# 关注移动后的短板会不会变长
+# 向内移动长板小于等于当前面积 向内移动短板大于等于当前面积
 # 因此我们选择向内移动短板
 def max_area(height):
     res = 0

@@ -4,6 +4,8 @@
 from collections import defaultdict
 
 
+# 字符串不能原处更改
+
 # 判断是否为回文
 def is_palindrome(s):
     if not s:
@@ -16,10 +18,8 @@ def is_palindrome(s):
         if not s[r].isalnum():
             r -= 1
             continue
-
         if s[l].lower() != s[r].lower():  # 转换成小写!!
             return False
-
         l += 1
         r -= 1
     return True
@@ -89,7 +89,8 @@ def get_nxt(s):
     return nxt
 
 
-# 判断是否为子串 在s字符串中找出t字符串出现的第一个位置
+# 判断是否为子串
+# 在s字符串中找出t字符串出现的第一个位置
 # 如果不存在返回-1。时间复杂度为O(M+N)
 def kmp(s, t):
     m = len(s)
@@ -103,13 +104,13 @@ def kmp(s, t):
     while i < m:
         if s[i] == t[j]:
             i += 1
-            j += 1  # j 最多右移动M次 时间复杂度为O(M)
+            j += 1  # j最多右移动m次 时间复杂度为O(m)
             if j == n:
                 return i - n
-        elif j > 0:
-            j = nxt[j - 1]  # 最多左移M次
+        elif j > 0:  # s和t目前有匹配
+            j = nxt[j - 1]  # 最多左移m次
         else:
-            i += 1  # 没有匹配
+            i += 1  # s和t未匹配
     return -1
 
 
@@ -148,7 +149,7 @@ if __name__ == '__main__':
     print(rotate([1, 2, 3, 4], 2))
 
     print('\n最长前缀后缀长度')
-    print(get_nxt('abcabca'))
+    print(get_nxt('abcab'))
 
     print('\nKMP')
     print(kmp('hello', 'll'))

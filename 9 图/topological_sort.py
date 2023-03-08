@@ -7,7 +7,7 @@ from collections import defaultdict, deque
 # 深度优先
 def can_finish2(num_courses, prerequisites):
     edges = defaultdict(list)
-    visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过子节点
+    visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过节点及子节点
     valid = [True]
 
     for info in prerequisites:

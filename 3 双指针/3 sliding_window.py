@@ -45,7 +45,7 @@ def length_of_longest_substring_k_distinct(s, k):
     dic = defaultdict(int)
     res, n = 0, len(s)
     l, r = 0, 0
-    while r < n:
+    for r in range(len(s)):
         c = s[r]
         dic[c] += 1
         # left滑出窗口
@@ -55,8 +55,8 @@ def length_of_longest_substring_k_distinct(s, k):
             if not dic[c]:
                 del dic[c]
             l += 1
+        # len(dic) <= k
         res = max(res, r - l + 1)
-        r += 1
 
     return res
 
@@ -69,9 +69,9 @@ def min_window(s, t):
         dic1[c] += 1
 
     l, r = 0, 0
-    res_l, res_r = 0, len(s)
+    start, end = 0, len(s)
     match = 0
-    while r < len(s):
+    for r in range(len(s)):
         c = s[r]
         if c in dic1:
             dic2[c] += 1
@@ -79,8 +79,8 @@ def min_window(s, t):
                 match += 1  # 字母匹配数
 
         while match == len(dic1):
-            if r - l < res_r - res_l:
-                res_l, res_r = l, r
+            if r - l < end - start:
+                start, end = l, r
             c = s[l]
             if c in dic1:
                 dic2[c] -= 1
@@ -88,7 +88,7 @@ def min_window(s, t):
                     match -= 1
             l += 1
         r += 1
-    return '' if res_r == len(s) else s[res_l:res_r + 1]
+    return '' if end == len(s) else s[start:end + 1]
 
 
 # 567 s1的全排列之一是s2的子串
@@ -112,10 +112,12 @@ def check_inclusion(s1, s2):
         # 左侧滑出窗口, 保持长度
         if i >= m:
             c = s2[i - m]
-            if c in d1 and d1[c] == d2[c]:  # 只有以前match 现在不match 才减去1
-                match -= 1
-            d2[c] -= 1
-        if match == len(d1):
+            if c in d1:
+                if d1[c] == d2[c]:  # 只有以前match 现在不match 才减去1
+                    match -= 1
+                d2[c] -= 1
+        # 保证长度为m
+        if len(d1) == match:
             return True
     return False
 
@@ -153,7 +155,7 @@ def find_continuous_sequence(target):
     return res
 
 
-# 取值为正数的数组 和大于等于s的最小数组
+# 取值为正数的数组 和大于等于s的最短数组
 def min_sub_array_len(nums, s):
     if not nums or min(nums) > s:
         return 0
@@ -162,14 +164,14 @@ def min_sub_array_len(nums, s):
     n = len(nums)
     i = 0
     total = 0
-    res = float('inf')
+    res = n + 1
     for j in range(n):
         total += nums[j]
         while total >= s:
             res = min(res, j - i + 1)  # 注意这个位置!!!
             total -= nums[i]
             i += 1
-    return res if res < float('inf') else 0
+    return res if res == n + 1 else 0
 
 
 if __name__ == '__main__':

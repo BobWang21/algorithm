@@ -1,25 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# 利用循环不变性! 适用于排序或部分排序的数组
-# 递推的思想
-# 非递归版本
+# 适用于排序或部分排序的数组
+# 递推思想，可使用循环不变性证明其正确性!
+
+# 标准-非递归版本
 def binary_search1(nums, target):
     l, r = 0, len(nums) - 1
     while l <= r:
         mid = l + (r - l) // 2
         if target == nums[mid]:
             return mid
-        if target < nums[mid]:
-            r = mid - 1  # nums[r+1] > target
-        else:
+        if nums[mid] < target:
             l = mid + 1  # nums[l-1] < target
+        else:
+            r = mid - 1  # nums[r+1] > target
     # 跳出循环时, l=r+1 nums[l-1] < target < nums[l]
     return -1
 
 
-# 递归版本
-def binary_search2(nums, l, r, target):
+# 标准-递归版本
+def binary_search2(nums, target, l, r):
     if l > r:
         return -1
     # l <= r
@@ -28,12 +29,11 @@ def binary_search2(nums, l, r, target):
         return mid
 
     if nums[mid] < target:
-        return binary_search2(nums, mid + 1, r, target)
+        return binary_search2(nums, target, mid + 1, r)
+    return binary_search2(nums, target, l, mid - 1)
 
-    return binary_search2(nums, l, mid - 1, target)
 
-
-# 非降序排序数组, 有重复数字, 返回第一个等于target
+# 非标准-非降序排序数组, 有重复数字, 返回第一个等于target
 def search_first_pos(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:  # 取不到l=r, 需要补丁!
@@ -42,6 +42,7 @@ def search_first_pos(nums, target):
             l = mid + 1  # nums[l-1] < target
         else:
             r = mid  # nums[r] >= target
+    # 在l < r时， nums[l-1] < target nums[r] >= target
     return l if nums[l] == target else -1
 
 
@@ -51,7 +52,7 @@ def search_last_pos(nums, target):
     while l < r:
         mid = l + (r - l + 1) // 2  # 右中位数
         if nums[mid] <= target:
-            l = mid  # todo l == mid 需要考虑l,r=0,1这种无限循环的情况 nums[l] <= target
+            l = mid  # l==mid & mid取左节点时, l,r=0,1会无限循环
         else:
             r = mid - 1  # nums[r+1] > target
     return l if nums[l] == target else -1
@@ -68,40 +69,19 @@ def search_first_large(nums, target):
     return l if nums[l] > target else -1
 
 
-# 0 - n-1 n 个数中 缺少一个数
+# 0 ~n-1的n个有序数组中，缺少一个数
 def find_missed_value(nums):
-    n = len(nums)
+    n = len(nums) - 1
     if n == 1:
         return 1 - nums[0]
     l, r = 0, n
     while l <= r:
         mid = l + (r - l) // 2
         if nums[mid] == mid:
-            l = mid + 1
+            l = mid + 1  # nums[l-1]==mid
         else:
-            r = mid - 1
+            r = mid - 1  # nums[r+1]>mid
     return l
-
-
-# 矩阵具有如下特性：每行中的整数从左到右按升序排列；
-# 每行的第一个整数大于前一行的最后一个整数。
-def search_matrix(matrix, target):
-    if not matrix or not len(matrix[0]):
-        return False
-
-    rows, cols = len(matrix), len(matrix[0])
-    l, r = 0, rows * cols - 1
-    while l <= r:
-        mid = l + (r - l) // 2
-        val = matrix[mid / cols][mid % cols]
-        if val == target:
-            return True
-        if val < target:
-            l = mid + 1
-            continue
-        if val > target:
-            r = mid - 1
-    return -1
 
 
 # 34. 在排序数组中查找元素出现的次数
@@ -135,10 +115,10 @@ def get_number_of_k(nums, target):
     return right - left + 1
 
 
-# 旋转数组中的最小值
-#  [1 2 3 4]的旋转数组[3 4 1 2]
-# 最小值特点 num[l-1] > nums[0] < nums[l]
-def find_min(nums):
+# 153 旋转数组中的最小值
+# [1 2 3 4]的旋转数组[3 4 1 2], [1 2 3 4]
+# 和队首比 num[l-1]>=nums[0], nums[l]<nums[0]
+def find_min1(nums):
     if nums[0] <= nums[-1]:
         return nums[0]
 
@@ -152,8 +132,21 @@ def find_min(nums):
     return nums[l]
 
 
+# 和队尾比
+# num[l-1]>=nums[-1] && nums[l]<nums[-1]
+def find_min2(nums):
+    l, r = 0, len(nums) - 1
+    while l < r:
+        mid = l + (r - l) // 2
+        if nums[mid] >= nums[-1]:  # nums[l-1] >= nums[-1], 左侧虚拟边界(哨兵)无穷大，数组越界时，仍成立
+            l = mid + 1
+        else:
+            r = mid  # nums[l] < nums[-1]
+    return nums[l]
+
+
 # 33.旋转排序数组查找target
-#  [1 2 3 4]的旋转数组[3 4 1 2]
+# [1 2 3 4]的旋转数组[3 4 1 2]
 def search(nums, target):
     if not nums:
         return -1
@@ -163,37 +156,36 @@ def search(nums, target):
         mid = l + (r - l) // 2
         if nums[mid] == target:
             return mid
-        if nums[0] <= nums[mid]:  # 此处小于等于 在左侧
-            if nums[0] <= target < nums[mid]:
+        # 二分思想核心为减枝
+        if nums[mid] >= nums[0]:  # mid左侧有序
+            if nums[0] <= target < nums[mid]:  # 位于有序序列中
                 r = mid - 1
             else:
                 l = mid + 1  # 若等于nums[0]=nums[mid] 则l + 1
-        else:
-            if nums[mid] < target <= nums[-1]:
+        else:  # mid右侧有序
+            if nums[mid] < target <= nums[-1]:  # 位于有序序列中
                 l = mid + 1
             else:
                 r = mid - 1
     return -1
 
 
-# 162. 寻找峰值
+# 162.寻找峰值
 def find_peak_element2(nums):
-    def get(i):
-        if i == -1 or i == len(nums):
-            return -float('inf')
-        return nums[i]
+    n = len(nums)
 
-    l, r = 0, len(nums) - 1
+    def get(i):
+        if 0 <= i <= n:
+            return nums[i]
+        return -float('inf')
+
+    l, r = 0, n - 1
     while l < r:
         mid = l + (r - l) // 2
-        # 只有l=r=len(nums)-1, mid+1 才可能越界
-        if get(mid - 1) < get(mid) and get(mid + 1) < get(mid):
-            return mid
         if get(mid) < get(mid + 1):  # get(l-1) < get(l)
             l = mid + 1
-            continue
-        if get(mid - 1) > get(mid):  # get(r) > get(r+1)
-            r = mid - 1
+        else:  # get(r) > get(r+1)
+            r = mid
     return l
 
 
@@ -218,25 +210,25 @@ def arrange_coins(n):
 # 双指针 + 二分查找 差值小于等于某个数的pair数 为递增函数!!!
 # 找到第一个cnt(x)等于K的值, x可能有多个取值
 def smallest_distance_pair_3(nums, k):
-    def nmt(target):
+    def no_more_than(gap):
         j = 1
-        res = 0
+        cnt = 0
         n = len(nums)
         for i in range(n - 1):
-            while j < n and nums[j] - nums[i] <= target:
+            while j < n and nums[j] - nums[i] <= gap:
                 j += 1
-            res += j - i - 1
-        return res
+            cnt += j - i - 1
+        return cnt
 
     nums.sort()
+
     l, r = 0, nums[-1] - nums[0]  # 边界已知 类似topK频次
     while l < r:
         mid = (l + r) // 2
-        count = nmt(mid)
-        if count >= k:
-            r = mid
-        else:
+        if no_more_than(mid) < k:
             l = mid + 1
+        else:
+            r = mid
     return l
 
 
@@ -259,6 +251,28 @@ def find_kth_number1(m, n, k):
     return l  # 一定满足条件 所以不用补丁
 
 
+# 矩阵具有如下特性：
+# 每行中的整数从左到右按升序排列
+# 每行的第一个整数大于前一行的最后一个整数
+def search_matrix(matrix, target):
+    if not matrix or not len(matrix[0]):
+        return False
+
+    rows, cols = len(matrix), len(matrix[0])
+    l, r = 0, rows * cols - 1
+    while l <= r:
+        mid = l + (r - l) // 2
+        val = matrix[mid // cols][mid % cols]
+        if val == target:
+            return True
+        if val < target:
+            l = mid + 1
+            continue
+        if val > target:
+            r = mid - 1
+    return -1
+
+
 # 378. 有序矩阵中第K小的元素
 # 给定一n x n矩阵，其中每行和每列元素均按升序排序，找到矩阵中第 k 小的元素。
 # 示例：matrix = [[ 1,  5,  9],
@@ -268,16 +282,16 @@ def find_kth_number1(m, n, k):
 def kth_smallest(matrix, k):
     n = len(matrix)
 
-    def count(v):
-        res = 0
-        i, j = n - 1, 0
+    def count(mid):
+        num = 0
+        i, j = n - 1, 0  # 初始位置即左下角
         while i >= 0 and j < n:
-            if matrix[i][j] <= v:
-                res += i + 1
-                j += 1
+            if matrix[i][j] <= mid:
+                num += i + 1  # 当前列不大于mid的值
+                j += 1  # 并向右移动，否则向上移动；
             else:
                 i -= 1
-        return res
+        return num
 
     l, r = matrix[0][0], matrix[-1][-1]
     while l < r:
@@ -368,28 +382,27 @@ def find_median_sorted_arrays(nums1, nums2):
     if m > n:
         return find_median_sorted_arrays(nums2, nums1)
 
-    k = (m + n + 1) // 2  # 左中位数的个数
-    l, r = 0, m - 1  # 取每个数字
+    k = (m + n + 1) // 2  # 左侧数个数
+    l, r = 0, m  # m表示nums1可取的长度
     while l < r:
-        mid = l + (r - l) // 2
-        if nums1[mid] <= nums2[k - mid - 1]:  # nums1[l-1] <= nums2[k-l] 此处必须是mid 不能是mid-1
-            l = mid + 1
+        i = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
+        j = k - i  # 数组2左侧的数字个数
+        if nums1[i - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
+            l = i
         else:
-            r = mid  # nums1[l] > nums2[k-l-1]
-    l = l + 1 if nums1 and nums1[l] <= nums2[k - l - 1] else l  # 需要补丁
+            r = i - 1  # nums1[l] > nums2[k-l-1]
 
-    x1, x2 = l - 1, k - l - 1  # nums1[l-1] <= nums2[k-l]
+    x1, x2 = l - 1, k - l - 1  # nums1[l-1] <= nums2[k-l] and nums1[l] > nums2[k-l-1]
+    # 分割线左侧的最大值
     v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
-             nums2[x2] if 0 <= x2 < n else -float('inf')
-             )
+             nums2[x2] if 0 <= x2 < n else -float('inf'))
 
     if (m + n) % 2:
         return v1
 
-    v2 = min(
-        nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
-        nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf')
-    )
+    # 分割线右侧的最小值
+    v2 = min(nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
+             nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf'))
 
     return (v1 + v2) / 2
 
@@ -421,7 +434,7 @@ if __name__ == '__main__':
     print(get_number_of_k(nums, -1))
 
     print('\n旋转数组中的最小值')
-    print(find_min([5, 4, 3]))
+    print(find_min1([5, 4, 3]))
 
     print('\n旋转数组查找')
     print(search([3, 1], 1))
@@ -436,6 +449,7 @@ if __name__ == '__main__':
     print(find_kth_number2(13, 2))
 
     print('\n中位数')
-    print(find_median_sorted_arrays([1, 2], [3, 4]))
+    print(find_median_sorted_arrays([1, 2], [3, 4, 5]))
 
+    print('\n最小距离')
     print(smallest_distance_pair_3([1, 6, 1], 3))
