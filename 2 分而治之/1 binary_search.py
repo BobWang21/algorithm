@@ -382,7 +382,7 @@ def find_median_sorted_arrays(nums1, nums2):
     if m > n:
         return find_median_sorted_arrays(nums2, nums1)
 
-    k = (m + n + 1) // 2  # 左侧数个数
+    k = (m + n + 1) // 2  # 取左中位数
     l, r = 0, m  # m表示nums1可取的长度
     while l < r:
         i = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m

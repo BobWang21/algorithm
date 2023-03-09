@@ -33,7 +33,7 @@ def print_list_node(head):
     print(res)
 
 
-# 链表翻转 递推关系 假设之前的满足要去
+# 链表翻转 递推思想(假设之前的满足要求)
 def reverse1(head):
     pre = None
     while head:
@@ -140,7 +140,7 @@ def remove_duplicates(head):
             pre.next = head
             pre = pre.next
         head = head.next
-    pre.next = None  # 最后截尾
+    pre.next = None  # 截尾
     return dummy.next
 
 

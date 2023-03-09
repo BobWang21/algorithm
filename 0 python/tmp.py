@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     print('\n字典')
     dic = {1: 3}
-    print(dic.get(3, -1))  # default value
+    print(dic.get(3, -1))  # -1 default value
     for k, v in dic.items():
         print(k, v)
     print(dic.setdefault(1, 0))  # 如果字典中包含key，返回对应value，否则返回为设置value。
