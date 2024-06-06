@@ -15,14 +15,13 @@ def change1(nums):
     nums = [1, 2]
 
 
+
 if __name__ == '__main__':
     print('\n计算操作')
     print(4 / 2)  # 2.0,  2.0 = 2, 列表索引必须是整数
     nums = float('inf')
     print(math.isinf(nums))
     print(round(3.1, 1))  # 四舍五入
-    print(int('001'))  # ✔️
-    print(eval('1'))  # eval('001') ×
     print(divmod(6, 4))
 
     print('\n随机数')
@@ -38,7 +37,6 @@ if __name__ == '__main__':
     print(bin(8)[2:])  # bin(8) = '0b1000'
     print((2 << 2) - 1)  # 位操作的优先级低于 + -
 
-    print('\n字符串')
     s = 'abc'
     s.isalpha()  # 判断是否为字母
     s.isdigit()  # 判断是否为数字
@@ -51,6 +49,8 @@ if __name__ == '__main__':
     lists = [c for c in s]  # split 是针对分隔符分割 默认空格
     print(lists)
     print('/a'.split('/'))  # ['', 'a']
+    print(int('001'))  # ✔️
+    print(eval('1'))  # eval('001') ×
 
     print('\n列表')
     nums = [2, 3, 4, 5]
@@ -75,6 +75,7 @@ if __name__ == '__main__':
     queue.append(3)
     print(queue)
     queue.popleft()  # o(1) vs list o(n)
+    queue.pop()  # o(1)
     print(queue)
 
     print('\n字典')
@@ -92,7 +93,7 @@ if __name__ == '__main__':
 
     print('\nheapq')
     heap = [3, 4, 1, 2]
-    hq.heapify(heap)  # 改成堆, 默认小顶堆
+    hq.heapify(heap)  # 改成堆, 默认小顶堆 原地修改
     hq.heappush(heap, 5)
     while heap:
         print(hq.heappop(heap))
