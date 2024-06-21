@@ -94,7 +94,7 @@ def product_except_self(nums):
     return l
 
 
-# 581. 最短无序连续子数组 [2, 6, 4, 8, 10, 9, 15]
+# 581. 最短无序连续子数组 [2, 4, 8, |10, 7, 9|, 15, 20]
 # 找到数组中需要排序的最小连续部分，对该部分排序后整个数组升序。
 # 单调性 也可用单调栈
 def find_unsorted_subarray(nums):
@@ -119,9 +119,9 @@ def find_unsorted_subarray(nums):
     return right - left + 1
 
 
-# 128 无序数组 最长连续区间 也可以使用并查集
-# 类似字典按key 排序，
-# 把数字的相邻关系抽象为连通, 最大连通图问题
+# 128 无序数组 最长连续区间
+# 把数字及关系抽象为图
+# 最大连通图问题 也可以使用并查集
 def longest_consecutive(nums):
     if not nums:
         return 0
@@ -144,7 +144,7 @@ def longest_consecutive(nums):
     return res
 
 
-# 560. 前缀和
+# 560. 和为K的子数组 前缀和
 def subarray_sum(nums, k):
     res = 0
     total = 0

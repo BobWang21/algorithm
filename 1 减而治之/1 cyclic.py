@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 """
 数组重复和缺失值
-- dic
-- 循环排序 适合于数值区间在一定范围内的数组
-- 数组可以看成index为key的特殊字典 标记正负 适合于正数
-- 快慢双指针 不修改列表
-- 异或操作
-- 二分查找
+1 dic
+2 修改列表
+ - 循环排序 适合于数值区间在一定范围内的数组
+ - 数组看成index为key的特殊字典 标记正负 适合于正数
+3 不修改列表
+ - 二分查找
+ - 快慢双指针 数组关系抽象为链表
+ - 异或操作
 """
 
 
@@ -100,8 +102,28 @@ def find_duplicate_num2(nums):
             return j
 
 
+# 287. 寻找重复数
+def find_duplicate(nums):
+    n = len(nums)
+
+    def count(target):
+        return sum([1 if v <= target else 0 for v in nums])
+
+    l, r = 0, n - 1
+    while l < r:
+        mid = l + (r - l) // 2
+        if count(mid) <= mid:
+            l = mid + 1
+        else:
+            r = mid
+    return l
+
+
+# 287
 # 1 - n 的 n + 1 个数中 只有一个数字重复 数字重复一次或多次
-# 要求 O(1)空间复杂度!!!  不能修改列表
+# 要求 O(1)空间复杂度!!!
+# 不能修改列表
+# Floyd 判圈算法
 def find_duplicate_num3(nums):
     fast = slow = nums[0]
     # 证明有环
@@ -132,23 +154,6 @@ def missing_number(nums):
         miss_value ^= nums[i] ^ i
 
     return miss_value
-
-
-# 287. 寻找重复数
-def find_duplicate(nums):
-    n = len(nums)
-
-    def count(target):
-        return sum([1 if v <= target else 0 for v in nums])
-
-    l, r = 0, n - 1
-    while l < r:
-        mid = l + (r - l) // 2
-        if count(mid) <= mid:
-            l = mid + 1
-        else:
-            r = mid
-    return l
 
 
 if __name__ == '__main__':
