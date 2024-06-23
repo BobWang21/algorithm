@@ -102,7 +102,7 @@ def four_sum_count(A, B, C, D):
     return res
 
 
-# 左右指针
+# 左右指针 977
 def sorted_squares(nums):
     if not nums:
         return []
@@ -110,7 +110,7 @@ def sorted_squares(nums):
     res = [0] * n
     i = n - 1
     l, r = 0, n - 1
-    while l < r:
+    while l <= r:
         if abs(nums[l]) <= abs(nums[r]):
             res[i] = nums[r] ** 2
             r -= 1
@@ -275,7 +275,7 @@ if __name__ == '__main__':
     print(three_sum_closet([-1, 2, 1, -4], 1))
 
     print('\n平方排序')
-    print(sorted_squares([-7, -3, 2, 3, 11]))
+    print(sorted_squares([-7, -3, 3, 11]))
 
     print('\n删除排查数组中的重复数值')
     print(remove_duplicates1([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
