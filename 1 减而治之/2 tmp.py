@@ -149,7 +149,7 @@ def subarray_sum(nums, k):
     res = 0
     total = 0
     dic = dict()
-    dic[0] = 1  # 初始化 可能total = k
+    dic[0] = 1  # 初始化 可能nums[0] = k
     for num in nums:
         total += num  # 以num为结尾的连续数组
         if total - k in dic:  # pre_sum+k=total -> total-k in dic

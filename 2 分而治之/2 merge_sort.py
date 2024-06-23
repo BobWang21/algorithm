@@ -1,7 +1,7 @@
 import heapq as hq
 
 '''
-幂
+快速幂
 归并排序
 '''
 

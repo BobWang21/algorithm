@@ -481,9 +481,80 @@ def calculate1(s):
     return sum(stack)
 
 
+import heapq as hq
+
+
+def merge_k(nums):
+    heap = []
+    hq.heapify(heap)
+
+    for i, line in enumerate(nums):
+        hq.heappush(heap, (line[0], i, 0))
+
+    res = []
+    while heap:
+        value, i, j = hq.heappop(heap)
+        res.append(value)
+        if j + 1 < len(nums[i]):
+            hq.heappush(heap, (nums[i][j + 1], i, j + 1))
+    return res
+
+
+def merge_k2(nums):
+    if len(nums) == 1:
+        return nums[0]
+
+    n = len(nums)
+    mid = n // 2
+    a = merge_k(nums[:mid])
+    b = merge_k(nums[mid:])
+
+    return merge1(a, b)
+
+
+def merge1(nums1, nums2):
+    if not nums1:
+        return nums2
+    if not nums1:
+        return nums2
+    m, n = len(nums1), len(nums2)
+    i, j = 0, 0
+    res = []
+    while i < m or j < n:
+        a = nums1[i] if i < m else float('inf')
+        b = nums2[j] if j < n else float('inf')
+        if a <= b:
+            res.append(a)
+            i += 1
+        else:
+            res.append(b)
+            j += 1
+    return res
+
+
+def quick_sort2(nums, l, r):
+    def get_pivot(nums, l, r):
+        pivot = nums[l]
+        while l < r:
+            while l < r and nums[r] >= pivot:
+                r -= 1
+            nums[l] = nums[r]
+
+            while l < r and nums[l] <= pivot:
+                l += 1
+            nums[r] = nums[l]
+        nums[l] = pivot
+        return l
+
+    if l < r:
+        mid = get_pivot(nums, l, r)
+        quick_sort2(nums, l, mid - 1)
+        quick_sort2(nums, mid + 1, r)
+    return
 
 
 if __name__ == '__main__':
+    print(merge_k2([[1, 2], [3, 4], [2, 4]]))
     pprint(permute(2, 2, 2))
     pprint(permute2(2))
     #
@@ -494,8 +565,10 @@ if __name__ == '__main__':
     # print(find_long([100, 4, 200, 1, 3, 2]))
     print(find_magic_num([2, 3, 4, 4, 5, 5, 5]))
     nums = [100, 4, 200, 1, 3, 2]
-    quick_sort(nums, 0, 5)
+    quick_sort2(nums, 0, 5)
     print(nums)
+
+
 
     print(remove_duplicates1([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
 

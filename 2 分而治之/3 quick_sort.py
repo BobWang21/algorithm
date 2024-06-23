@@ -5,7 +5,7 @@
 def partition1(nums, l, r):  # 原地修改
     pivot = nums[l]  # pivot可以随机选择
     while l < r:
-        # 从右向左遍历
+        # 先保存了左端点，从右向左遍历
         while l < r and nums[r] >= pivot:
             r -= 1
         nums[l] = nums[r]  # 替换已保存nums[l]
@@ -13,7 +13,7 @@ def partition1(nums, l, r):  # 原地修改
         while l < r and nums[l] <= pivot:  # 左右必须有一个包含等于号
             l += 1
         nums[r] = nums[l]  # 替换已保存nums[l]
-    nums[l] = pivot  # 1 nums[l]已经复制到其他位置
+    nums[l] = pivot  # 1 nums[l]已经复制到其他位置 nums[l-1]<pivot  nums[r+1] >= pivot
     return l
 
 
@@ -24,18 +24,19 @@ def partition2(nums, l, r):
 
     if not nums:
         return []
-    lt, mt, i = l, r, l
+    i, lt, mt = l, l, r  # less-than more-than
     pivot = nums[l]
     while i <= mt:
         if nums[i] < pivot:
             swap(i, lt)
             i += 1
-            lt += 1
-        elif nums[i] == pivot:  # nums[i-1] <= pivot!
+            lt += 1  # nums[lt-1] < pivot!
+        elif nums[i] == pivot:
             i += 1
         else:
             swap(i, mt)
-            mt -= 1  # 后边换过来的数 不知道其数值 因此不移动i
+            mt -= 1  # # nums[mt+1] > pivot!
+            # 后边换过来的数 不知道其数值 因此不移动i
     return lt, mt
 
 
