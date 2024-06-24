@@ -121,26 +121,26 @@ def sorted_squares(nums):
     return res
 
 
-# 三个指针 递推关系 假设之前的都满足
+# 三个指针 递推关系
 def partition2(nums, l, r):
     def swap(i, j):
         nums[i], nums[j] = nums[j], nums[i]
 
     if not nums:
         return []
-    lt, mt = l, r
-    i = l
+    i, lt, mt = l, l, r  # less-than more-than 假设[0-1, n+1]之前的都满足
     pivot = nums[l]
     while i <= mt:
         if nums[i] < pivot:
             swap(i, lt)
             i += 1
-            lt += 1
-        elif nums[i] == pivot:  # nums[i-1] <= pivot!
+            lt += 1  # nums[lt-1] < pivot!
+        elif nums[i] == pivot:
             i += 1
         else:
-            swap(mt, i)
-            mt -= 1  # 后边换过来的数 不知道其数值 因此不移动i
+            swap(i, mt)
+            mt -= 1  # # nums[mt+1] > pivot!
+            # 后边换过来的数 不知道其数值 因此不移动i
     return lt, mt
 
 
@@ -158,18 +158,19 @@ def remove_duplicates1(nums):
     return i
 
 
+# 80
 # 数组中每个数字最多出现2次 返回删除重复数字后的长度
 def remove_duplicates2(nums):
-    if len(nums) <= 2:
+    if len(nums) < 3:
         return len(nums)
-    # 假设 nums[0...i] 符合要求
-    i = 1  # 记录最后一个满足要求的位置
-    for j in range(2, len(nums)):
-        if nums[j] != nums[i] or nums[j] != nums[i - 1]:
-            i += 1
-            nums[i] = nums[j]
 
-    return i + 1
+    l, r = 2, 2
+    while r < len(nums):
+        if nums[r] != nums[l - 2]:
+            nums[l] = nums[r]
+            l += 1
+        r += 1
+    return l
 
 
 def remove_duplicates3(nums):
@@ -205,7 +206,7 @@ def move_zeros(nums):
     return nums
 
 
-# 相差为K的pair
+# 532 相差为K的pair
 def find_pairs(nums, k):
     if len(nums) < 2:
         return 0
@@ -217,23 +218,22 @@ def find_pairs(nums, k):
 
     n = len(nums)
     l, r = 0, 1
-    num = 0
-    while r < n and l < n:
-        if l == r:
+    res = 0
+    while r < n:
+        if l == r:  # 可能相遇
             r += 1
             continue
-        s = nums[r] - nums[l]
-        if s < k:
+        gap = nums[r] - nums[l]
+        if gap < k:
             r += 1
-        elif s > k:
+        elif gap > k:
             l += 1
         else:
-            num += 1
-            while l + 1 < n and nums[l] == nums[l + 1]:
-                l += 1
-            l += 1
-            r = max(l + 1, r + 1)
-    return num
+            res += 1
+            while r + 1 < n and nums[r] == nums[r + 1]:
+                r += 1
+            r += 1
+    return res
 
 
 def find_pairs2(nums, k):

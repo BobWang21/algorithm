@@ -15,7 +15,6 @@ def change1(nums):
     nums = [1, 2]
 
 
-
 if __name__ == '__main__':
     print('\n计算操作')
     print(4 / 2)  # 2.0,  2.0 = 2, 列表索引必须是整数

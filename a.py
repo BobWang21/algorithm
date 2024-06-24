@@ -553,7 +553,30 @@ def quick_sort2(nums, l, r):
     return
 
 
+def get_pivot(nums, l, r):
+    def swap(i, j):
+        nums[i], nums[j] = nums[j], nums[i]
+
+    lt, mt = l, r
+    i = l
+    pivot = nums[0]
+    while i <= mt:
+        if nums[i] < pivot:
+            swap(i, lt)
+            lt += 1
+            i += 1
+        elif nums[i] == pivot:
+            i += 1
+        else:
+            swap(i, mt)
+            mt -= 1
+    return lt, mt
+
+
 if __name__ == '__main__':
+    nums = [7, 1, 2, 8, 10, 4, 12, 7]
+    print(get_pivot(nums, 0, len(nums) - 1))
+    print(nums)
     print(merge_k2([[1, 2], [3, 4], [2, 4]]))
     pprint(permute(2, 2, 2))
     pprint(permute2(2))
@@ -567,8 +590,6 @@ if __name__ == '__main__':
     nums = [100, 4, 200, 1, 3, 2]
     quick_sort2(nums, 0, 5)
     print(nums)
-
-
 
     print(remove_duplicates1([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
 
