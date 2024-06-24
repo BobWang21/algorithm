@@ -37,7 +37,7 @@ def length_of_longest_substring2(s):
     return res
 
 
-# 包含k个不同字符的最大长度
+# 340 包含k个不同字符的最大长度
 def length_of_longest_substring_k_distinct(s, k):
     if not s or len(s) <= k:
         return len(s)
@@ -68,7 +68,7 @@ def min_window(s, t):
     for c in t:
         dic1[c] += 1
 
-    l, r = 0, 0
+    l = 0
     start, end = 0, len(s)
     match = 0
     for r in range(len(s)):
@@ -77,7 +77,7 @@ def min_window(s, t):
             dic2[c] += 1
             if dic2[c] == dic1[c]:
                 match += 1  # 字母匹配数
-
+        # 左侧出窗
         while match == len(dic1):
             if r - l < end - start:
                 start, end = l, r
@@ -87,7 +87,6 @@ def min_window(s, t):
                 if dic2[c] < dic1[c]:
                     match -= 1
             l += 1
-        r += 1
     return '' if end == len(s) else s[start:end + 1]
 
 

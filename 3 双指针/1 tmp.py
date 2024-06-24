@@ -246,19 +246,18 @@ def find_pairs2(nums, k):
 
 
 # 11. 盛最多水的容器
-# s = min(hl, hr) * (r-l)
+# s = min(h[l], h[r]) * (r-l)
 # 关注移动后的短板会不会变长
-# 向内移动长板小于等于当前面积 向内移动短板大于等于当前面积
+# 向内移动短板大于等于当前面积; 向内移动长板小于等于当前面积
 # 因此我们选择向内移动短板
 def max_area(height):
     res = 0
     l, r = 0, len(height) - 1
     while l < r:
+        res = max(res, min(height[l], height[r]) * (r - l))
         if height[l] < height[r]:
-            res = max(res, (r - l) * height[l])
             l += 1
         else:
-            res = max(res, (r - l) * height[r])
             r -= 1
     return res
 
