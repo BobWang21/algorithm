@@ -573,7 +573,27 @@ def get_pivot(nums, l, r):
     return lt, mt
 
 
+def no_more_than(nums, target):
+    if len(nums) < 2:
+        return 0
+    l, n = 0, len(nums)
+    r = 1
+    res = 0
+    while r < n:
+        while r < n and nums[r] - nums[l] <= target:
+            r += 1
+            res += 1
+        l += 1
+        if l == r:
+            r = r + 1
+    return res
+
+
 if __name__ == '__main__':
+    print('\n差不大于k')
+    nums = [1, 7, 8, 9, 12]
+    print(no_more_than(nums, 1))
+
     nums = [7, 1, 2, 8, 10, 4, 12, 7]
     print(get_pivot(nums, 0, len(nums) - 1))
     print(nums)

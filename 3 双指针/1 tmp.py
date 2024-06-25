@@ -110,7 +110,7 @@ def sorted_squares(nums):
     res = [0] * n
     i = n - 1
     l, r = 0, n - 1
-    while l <= r:
+    while l <= r:  # 此处为等号
         if abs(nums[l]) <= abs(nums[r]):
             res[i] = nums[r] ** 2
             r -= 1
@@ -236,6 +236,19 @@ def find_pairs(nums, k):
     return res
 
 
+# 前后指针
+# 排序数组中距离不大于target的pair数 O(N)
+def no_more_than(nums, target):
+    n = len(nums)
+    right = 1
+    res = 0
+    for left in range(n - 1):
+        while right < n and nums[right] - nums[left] <= target:
+            right += 1
+        res += right - left - 1
+    return res
+
+
 def find_pairs2(nums, k):
     res = 0
     c = Counter(nums)
@@ -248,7 +261,8 @@ def find_pairs2(nums, k):
 # 11. 盛最多水的容器
 # s = min(h[l], h[r]) * (r-l)
 # 关注移动后的短板会不会变长
-# 向内移动短板大于等于当前面积; 向内移动长板小于等于当前面积
+# 向内移动短板大于等于当前面积;
+# 向内移动长板小于当前面积 这部分可以减枝
 # 因此我们选择向内移动短板
 def max_area(height):
     res = 0

@@ -77,7 +77,7 @@ def min_window(s, t):
             dic2[c] += 1
             if dic2[c] == dic1[c]:
                 match += 1  # 字母匹配数
-        # 左侧出窗
+        # left滑出窗口
         while match == len(dic1):
             if r - l < end - start:
                 start, end = l, r
@@ -121,15 +121,16 @@ def check_inclusion(s1, s2):
     return False
 
 
+# 前后指针
 # 排序数组中距离不大于target的pair数 O(N)
 def no_more_than(nums, target):
     n = len(nums)
-    j = 1
+    right = 1
     res = 0
-    for i in range(n - 1):
-        while j < n and nums[j] - nums[i] <= target:
-            j += 1
-        res += j - i - 1
+    for left in range(n - 1):
+        while right < n and nums[right] - nums[left] <= target:
+            right += 1
+        res += right - left - 1
     return res
 
 
@@ -186,7 +187,8 @@ if __name__ == '__main__':
     print('\n和为S的连续子序列')
     print(find_continuous_sequence(15))
 
-    nums = []
+    print('\n差不大于k')
+    nums = [1, 7, 8, 9, 12]
     print(no_more_than(nums, 1))
 
     print('\n一个字符串是否包含另外一个字符串的任一全排列')

@@ -60,15 +60,14 @@ def is_subsequence(s, t):
     if not s:
         return True
 
-    m, n = len(s), len(t)
     i = j = 0
-    while i < m and j < n:
+    while i < len(s) and j < len(t):
         if s[i] == t[j]:
             i += 1
             j += 1
         else:  # 下一个字符
             j += 1
-    return i == m
+    return i == len(s)
 
 
 # 最长前缀后缀
