@@ -3,6 +3,7 @@
 from collections import Counter, defaultdict
 
 
+#########################首尾指针#########################################
 # 未排序数组 解唯一 O(N)空间复杂度
 def two_sum1(nums, target):
     dic = dict()
@@ -28,7 +29,7 @@ def two_sum2(nums, target):
             r -= 1
         else:
             res.append([nums[l], nums[r]])
-            while l < r and nums[l] == nums[l + 1]:  # 跳出相等部分
+            while l < r and nums[l] == nums[l + 1]:  # 跳出重复值
                 l += 1
             l += 1
     return res
@@ -84,66 +85,7 @@ def three_sum_closet(nums, target):
     return closet_sum
 
 
-# 四个数组 每个数组中选一个数字 要求四个数和为0 返回和为0的数组个数
-def four_sum_count(A, B, C, D):
-    dic = defaultdict(int)
-    n = len(A)
-    for i in range(n):
-        for j in range(n):
-            s = A[i] + B[j]
-            dic[s] += 1
-
-    res = 0
-    for i in range(n):
-        for j in range(n):
-            s = C[i] + D[j]
-            if -s in dic:
-                res += dic[-s]
-    return res
-
-
-# 左右指针 977
-def sorted_squares(nums):
-    if not nums:
-        return []
-    n = len(nums)
-    res = [0] * n
-    i = n - 1
-    l, r = 0, n - 1
-    while l <= r:  # 此处为等号
-        if abs(nums[l]) <= abs(nums[r]):
-            res[i] = nums[r] ** 2
-            r -= 1
-        else:
-            res[i] = nums[l] ** 2
-            l += 1
-        i -= 1
-    return res
-
-
-# 三个指针 递推关系
-def partition2(nums, l, r):
-    def swap(i, j):
-        nums[i], nums[j] = nums[j], nums[i]
-
-    if not nums:
-        return []
-    i, lt, mt = l, l, r  # less-than more-than 假设[0-1, n+1]之前的都满足
-    pivot = nums[l]
-    while i <= mt:
-        if nums[i] < pivot:
-            swap(i, lt)
-            i += 1
-            lt += 1  # nums[lt-1] < pivot!
-        elif nums[i] == pivot:
-            i += 1
-        else:
-            swap(i, mt)
-            mt -= 1  # # nums[mt+1] > pivot!
-            # 后边换过来的数 不知道其数值 因此不移动i
-    return lt, mt
-
-
+##############################前后指针####################################
 # 26 原地删除升序数组中的重复数字 并返回非重复数组的长度
 # nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
 def remove_duplicates1(nums):
@@ -206,74 +148,54 @@ def move_zeros(nums):
     return nums
 
 
-# 532 相差为K的pair
-def find_pairs(nums, k):
-    if len(nums) < 2:
-        return 0
+###############################################################
+def partition(nums, left, right):
+    def swap(i, j):
+        nums[i], nums[j] = nums[j], nums[i]
 
-    nums.sort()
-
-    if nums[-1] - nums[0] < k:
-        return 0
-
-    n = len(nums)
-    l, r = 0, 1
-    res = 0
-    while r < n:
-        if l == r:  # 可能相遇
-            r += 1
-            continue
-        gap = nums[r] - nums[l]
-        if gap < k:
-            r += 1
-        elif gap > k:
-            l += 1
-        else:
-            res += 1
-            while r + 1 < n and nums[r] == nums[r + 1]:
-                r += 1
-            r += 1
-    return res
-
-
-# 前后指针
-# 排序数组中距离不大于target的pair数 O(N)
-def no_more_than(nums, target):
-    n = len(nums)
-    right = 1
-    res = 0
-    for left in range(n - 1):
-        while right < n and nums[right] - nums[left] <= target:
-            right += 1
-        res += right - left - 1
-    return res
-
-
-def find_pairs2(nums, k):
-    res = 0
-    c = Counter(nums)
-    for i in c:
-        if (k > 0 and i + k in c) or (k == 0 and c[i] > 1):
-            res += 1
-    return res
-
-
-# 11. 盛最多水的容器
-# s = min(h[l], h[r]) * (r-l)
-# 关注移动后的短板会不会变长
-# 向内移动短板大于等于当前面积;
-# 向内移动长板小于当前面积 这部分可以减枝
-# 因此我们选择向内移动短板
-def max_area(height):
-    res = 0
-    l, r = 0, len(height) - 1
+    l, r = left, right
+    pivot = nums[l]
     while l < r:
-        res = max(res, min(height[l], height[r]) * (r - l))
-        if height[l] < height[r]:
-            l += 1
-        else:
+        # 找到
+        while l < r and nums[r] >= pivot:
             r -= 1
-    return res
+        while l < r and nums[l] < pivot:
+            l += 1
+        if l < r:
+            swap(l, r)
+
+    return nums
+
+
+# 奇数在左边 偶数在右边
+def sort_array_by_parity(nums):
+    n = len(nums)
+    if n < 2:
+        return nums
+    l, r = 0, n - 1
+    while l < r:
+        while l < r and not nums[r] % 2:
+            r -= 1
+        while l < r and nums[l] % 2:
+            l += 1
+        if l < r:
+            nums[l], nums[r] = nums[r], nums[l]
+    return nums
+
+
+# 922.按奇偶排序数组
+def sort_array_by_parity2(nums):
+    n = len(nums)
+
+    left, right = 0, 1
+    while left < n and right < n:
+        while left < n and nums[left] % 2 == 0:
+            left += 2
+        while right < n and nums[right] % 2 == 1:
+            right += 2
+        if right < n and left < n:
+            nums[left], nums[right] = nums[right], nums[left]
+    return nums
 
 
 if __name__ == '__main__':
@@ -287,9 +209,6 @@ if __name__ == '__main__':
     print('\n3 sum closet')
     print(three_sum_closet([-1, 2, 1, -4], 1))
 
-    print('\n平方排序')
-    print(sorted_squares([-7, -3, 3, 11]))
-
     print('\n删除排查数组中的重复数值')
     print(remove_duplicates1([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
     print(remove_duplicates2([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]))
@@ -297,10 +216,6 @@ if __name__ == '__main__':
 
     print('\n移动0至数组尾部')
     print(move_zeros([0, -7, 0, 2, 3, 11]))
-
-    print('\n相差为K的pair数目')
-    print(find_pairs([1, 3, 1, 5, 4], 0))
-    print(find_pairs2([1, 3, 1, 5, 4], 0))
 
     print('\n差值小于等于target的对数')
     nums = [1, 3, 5, 7]

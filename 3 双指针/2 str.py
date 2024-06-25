@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 
 # 字符串不能原处更改
@@ -25,6 +25,25 @@ def is_palindrome(s):
     return True
 
 
+# 左右指针 977
+def sorted_squares(nums):
+    if not nums:
+        return []
+    n = len(nums)
+    res = [0] * n
+    i = n - 1
+    l, r = 0, n - 1
+    while l <= r:  # 此处为等号
+        if abs(nums[l]) <= abs(nums[r]):
+            res[i] = nums[r] ** 2
+            r -= 1
+        else:
+            res[i] = nums[l] ** 2
+            l += 1
+        i -= 1
+    return res
+
+
 def reverse_string(s):
     if len(s) < 2:
         return s
@@ -35,24 +54,6 @@ def reverse_string(s):
         l += 1
         r -= 1
     return ''.join(lists)
-
-
-# 189 循环移动K
-def rotate(nums, k):
-    n = len(nums)
-    k %= n
-
-    def reverse(nums, l, r):
-        while l < r:
-            nums[l], nums[r] = nums[r], nums[l]
-            l += 1
-            r -= 1
-
-    reverse(nums, 0, n - 1)
-    reverse(nums, 0, k - 1)
-    reverse(nums, k, n - 1)
-
-    return nums
 
 
 # 392 s是否为t子序列 O(Max(m, n))
@@ -113,42 +114,33 @@ def kmp(s, t):
     return -1
 
 
-# 适合判断多个s是否在t中
-def is_subsequence2(s, t):
-    dic = defaultdict(list)
-    for i, c in enumerate(t):
-        dic[c].append(i)
+# 189 循环移动K
+def rotate(nums, k):
+    n = len(nums)
+    k %= n
 
-    # print(dic)
-    def binary_search(nums, target):
-        l, r = 0, len(nums) - 1
+    def reverse(nums, l, r):
         while l < r:
-            mid = (l + r) // 2
-            if nums[mid] <= target:
-                l = mid + 1
-            else:
-                r = mid
-        return nums[l] if nums[l] > target else -1
+            nums[l], nums[r] = nums[r], nums[l]
+            l += 1
+            r -= 1
 
-    t = -1
-    for c in s:
-        if c in dic:
-            idx = binary_search(dic[c], t)
-            # print(dic[c], c, idx)
-            if idx == -1:
-                return False
-            t = idx
-        else:
-            return False
-    return True
+    reverse(nums, 0, n - 1)
+    reverse(nums, 0, k - 1)
+    reverse(nums, k, n - 1)
+
+    return nums
 
 
 if __name__ == '__main__':
-    print('\n数组循环移动K位')
-    print(rotate([1, 2, 3, 4], 2))
+    print('\n平方排序')
+    print(sorted_squares([-7, -3, 3, 11]))
 
     print('\n最长前缀后缀长度')
     print(get_nxt('abcab'))
 
     print('\nKMP')
     print(kmp('hello', 'll'))
+
+    print('\n数组循环移动K位')
+    print(rotate([1, 2, 3, 4], 2))

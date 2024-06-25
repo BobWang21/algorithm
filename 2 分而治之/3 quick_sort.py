@@ -17,8 +17,23 @@ def partition1(nums, l, r):  # 原地修改
     return l
 
 
-# 三个指针
 def partition2(nums, l, r):
+    pivot = nums[l]  # pivot可以随机选择
+    while l < r:
+        # 从右侧找到小于pivot的位置
+        while l < r and nums[r] >= pivot:
+            r -= 1
+        # 从左侧找到大于pivot的位置
+        while l < r and nums[l] < pivot:  # 左右必须有一个包含等于号
+            l += 1
+        # 交换
+        if l < r:
+            nums[l], nums[r] = nums[r], nums[l]  # 替换已保存nums[l]
+    return l
+
+
+# 三个指针
+def partition3(nums, l, r):
     def swap(i, j):
         nums[i], nums[j] = nums[j], nums[i]
 
@@ -48,19 +63,27 @@ def quick_sort1(nums, l, r):
 
 
 def quick_sort2(nums, l, r):
+    if l < r:  # 长度为1不用排序, 两侧向中间靠
+        mid = partition2(nums, l, r)
+        quick_sort2(nums, l, mid)  # 因为mid为排序 需要包含mid
+        quick_sort2(nums, mid + 1, r)
+
+
+def quick_sort3(nums, l, r):
     if l < r:  # 长度为1不用排序
-        lt, mt = partition2(nums, l, r)
-        quick_sort2(nums, l, lt - 1)
-        quick_sort2(nums, mt + 1, r)
+        lt, mt = partition3(nums, l, r)
+        quick_sort3(nums, l, lt - 1)
+        quick_sort3(nums, mt + 1, r)
 
 
 # 奇数在左边 偶数在右边
-def sort_array_by_parity(nums):
+def sort_array_by_parity1(nums):
     n = len(nums)
     if n < 2:
         return nums
+
     l, r = 0, n - 1
-    pivot = nums[0]
+    pivot = nums[l]
     while l < r:
         while l < r and not nums[r] % 2:
             r -= 1
@@ -69,6 +92,23 @@ def sort_array_by_parity(nums):
             l += 1
         nums[r] = nums[l]
     nums[l] = pivot
+    return nums
+
+
+# 奇数在左边 偶数在右边
+def sort_array_by_parity2(nums):
+    n = len(nums)
+    if n < 2:
+        return nums
+
+    l, r = 0, n - 1
+    while l < r:
+        while l < r and not nums[r] % 2:
+            r -= 1
+        while l < r and nums[l] % 2:
+            l += 1
+        if l < r:
+            nums[l], nums[r] = nums[r], nums[l]
     return nums
 
 
@@ -162,23 +202,31 @@ def largest_number(nums):
 
 
 if __name__ == '__main__':
-    print('\n快排')
-    nums = [4, 3, 1, 3, 9]
-    quick_sort1(nums, 0, 4)
+    print('\npartition2')
+    print(partition2([5, 2, 1, 10, 4], 0, 4))
+
+    print('\n快排1')
+    nums = [4, 3, 1, 3, 9, 10]
+    quick_sort1(nums, 0, 5)
     print(nums)
 
-    print('\n三路快排')
-    nums = [4, 3, 1, 3, 9]
-    quick_sort2(nums, 0, 4)
+    print('\n快排2')
+    nums = [4, 3, 1, 3, 9, 10]
+    quick_sort2(nums, 0, 5)
+    print(nums)
+
+    print('\n快排3')
+    nums = [4, 3, 1, 3, 9, 10]
+    quick_sort3(nums, 0, 5)
     print(nums)
 
     print('\n奇偶分离')
-    print(sort_array_by_parity(nums))
+    nums = [4, 3, 1, 3, 9, 10]
+    print(sort_array_by_parity1(nums))
+    # print(sort_array_by_parity2(nums))
 
     print('\n无序数组的前K个数')
     print(get_top_k([10, 9, 8, 9, 1, 2, 0], 5))
 
     print('\n颜色排序')
     print(sort_colors([2, 0, 2, 1, 1, 0]))
-
-    print(partition1([5, 2, 10, 4], 0, 3))

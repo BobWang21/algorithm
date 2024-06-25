@@ -589,7 +589,21 @@ def no_more_than(nums, target):
     return res
 
 
+def sort_array_by_parity(nums):
+    l, r = 0, len(nums) - 1
+    while l < r:
+        while l < r and nums[r] % 2 == 0:
+            r -= 1
+        while l < r and nums[l] % 2 == 1:
+            l += 1
+        if l < r:
+            nums[l], nums[r] = nums[r], nums[l]
+
+
 if __name__ == '__main__':
+    nums = [1, 2, 3, 4]
+    sort_array_by_parity(nums)
+    print(nums)
     print('\n差不大于k')
     nums = [1, 7, 8, 9, 12]
     print(no_more_than(nums, 1))

@@ -1,5 +1,6 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from collections import defaultdict
 
 
 # 78 子集问题 不回溯
@@ -76,6 +77,24 @@ def n_sum1(nums, k, target):
 
     nums.sort()
     helper(0, 0)
+    return res
+
+
+# 四个数组 每个数组中选一个数字 要求四个数和为0 返回和为0的数组个数
+def four_sum_count(A, B, C, D):
+    dic = defaultdict(int)
+    n = len(A)
+    for i in range(n):
+        for j in range(n):
+            s = A[i] + B[j]
+            dic[s] += 1
+
+    res = 0
+    for i in range(n):
+        for j in range(n):
+            s = C[i] + D[j]
+            if -s in dic:
+                res += dic[-s]
     return res
 
 
