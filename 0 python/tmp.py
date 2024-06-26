@@ -4,7 +4,7 @@
 import math
 import random
 import heapq as hq
-from collections import defaultdict, deque
+from collections import defaultdict, deque, Counter
 
 
 # 列表作为函数参数，按地址传递。
@@ -36,6 +36,7 @@ if __name__ == '__main__':
     print(bin(8)[2:])  # bin(8) = '0b1000'
     print((2 << 2) - 1)  # 位操作的优先级低于 + -
 
+    print('\n字符串')
     s = 'abc'
     s.isalpha()  # 判断是否为字母
     s.isdigit()  # 判断是否为数字
@@ -65,37 +66,12 @@ if __name__ == '__main__':
     print(nums[1:])  # 切片和[:] 生成一个新列表
     print(nums[3:10:2])  # [star, end, step]
 
-    # 双端队列
-    # Python’s deque is a low-level and highly optimized double-ended queue
-    # list-like container with fast appends and pops on either end
-    print('\n双端队列')
-    queue = deque()
-    queue.append(1)
-    queue.append(3)
-    print(queue)
-    queue.popleft()  # o(1) vs list o(n)
-    queue.pop()  # o(1)
-    print(queue)
-
     print('\n字典')
     dic = {1: 3}
     print(dic.get(3, -1))  # -1 default value
     for k, v in dic.items():
         print(k, v)
     print(dic.setdefault(1, 0))  # 如果字典中包含key，返回对应value，否则返回为设置value。
-
-    print('\ndefaultdict')
-    dic = defaultdict(set)
-    dic[1].add(2)
-    dic = defaultdict(int)
-    dic[1] += 5
-
-    print('\nheapq')
-    heap = [3, 4, 1, 2]
-    hq.heapify(heap)  # 改成堆, 默认小顶堆 原地修改
-    hq.heappush(heap, 5)
-    while heap:
-        print(hq.heappop(heap))
 
     print('\n集合')
     nums = {1, 2, 3}  # set(v) v 需要可迭代
@@ -113,3 +89,34 @@ if __name__ == '__main__':
 
     print(isinstance([], list))  # 判断类型
     print(type({}))  # {}表示字典
+
+    print('\ndefaultdict')
+    dic = defaultdict(set)
+    dic[1].add(2)
+    dic = defaultdict(int)
+    dic[1] += 5
+
+    print('\nCounter')
+    # Counter 是一个字典子类，用于计数可哈希对象
+    nums = [2, 3, 3, 5]
+    dic = Counter(nums)
+    print(dic)
+
+    # 双端队列
+    # Python’s deque is a low-level and highly optimized double-ended queue
+    # list-like container with fast appends and pops on either end
+    print('\n双端队列')
+    queue = deque()
+    queue.append(1)
+    queue.append(3)
+    print(queue)
+    queue.popleft()  # o(1) vs list o(n)
+    queue.pop()  # o(1)
+    print(queue)
+
+    print('\nheapq')
+    heap = [3, 4, 1, 2]
+    hq.heapify(heap)  # 改成堆, 默认小顶堆 原地修改
+    hq.heappush(heap, 5)
+    while heap:
+        print(hq.heappop(heap))
