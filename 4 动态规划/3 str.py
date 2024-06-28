@@ -58,15 +58,17 @@ def longest_palindrome_subsequence1(s):
 
 def longest_palindrome_subsequence2(s):
     n = len(s)
-    dp = [[0] * n for _ in range(n)]
-    for i in range(n - 1, -1, -1):
-        dp[i][i] = 1
-        for j in range(i + 1, n):
-            if s[i] == s[j]:
-                dp[i][j] = dp[i + 1][j - 1] + 2
+    dp = [[0] * (n + 1) for i in range(n + 1)]
+    ss = s[::-1]
+
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if s[i - 1] == ss[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
             else:
-                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
-    return dp[0][n - 1]
+                dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
+
+    return dp[n][n]
 
 
 # 409 最长回文子串
