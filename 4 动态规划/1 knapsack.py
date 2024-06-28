@@ -15,7 +15,7 @@ def knapsack(costs, values, capacity):
         cost = costs[i - 1]
         value = values[i - 1]
         for j in range(1, cols):  # 所有状态
-            dp[i][j] = dp[i - 1][j]  # 状态转移1 不装物品i
+            dp[i][j] = dp[i - 1][j]  # 初始化为相同负载不装该物品
             if j - cost >= 0:  # 状态转移2 这里从i-1开始
                 dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - cost] + value)
     return dp[-1][-1]
@@ -82,28 +82,55 @@ def bounded_knapsack(costs, val, nums, capacity):
 
 
 # 分组背包
-# 每一组你至多选择一个物品(也可以不选) , 每个物品都有自己的体积和价值，
-# 现在给你一个容里为M的背包，让你用这个背包装物品，使得物品价值总和最大
-def mckp1(costs, weights, capacity):
+# 每一组至多选择一个物品(也可以不选)，每个物品有体积和价值，
+# 容里为M的背包，用这个背包装物品，使得物品价值总和最大
+def mckp1(costs, values, capacity):
     rows, cols = len(costs) + 1, capacity + 1
     dp = [[0] * cols for _ in range(rows)]
 
-    for i in range(1, rows):  # 容量
-        for j in range(1, cols):  # 分组
+    for i in range(1, rows):  # 分组
+        for j in range(1, cols):  # 容量
             dp[i][j] = dp[i - 1][j]
             for k, cost in enumerate(costs[i - 1]):
                 if j >= cost:
-                    dp[i][j] = max(dp[i][j], dp[i - 1][j - cost] + weights[i - 1][k])
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j - cost] + values[i - 1][k])
     return dp[-1][-1]
 
 
 def mckp2(costs, weights, capacity):
     dp = [0] * (capacity + 1)
     for i in range(len(costs)):
-        for cap in range(1, 1 + capacity):
+        print(dp)
+        for k in range(1, 1 + capacity):
             for j in range(len(costs[i])):
-                if cap >= costs[i][j]:
-                    dp[cap] = max(dp[cap], dp[cap - costs[i][j]] + weights[i][j])
+                if k >= costs[i][j]:
+                    dp[k] = max(dp[k], dp[k - costs[i][j]] + weights[i][j])
+    return dp[-1]
+
+
+def group_knapsack(groups, capacity):
+    # groups 是一个二维列表，其中每个子列表代表一个组，子列表中的元素是 (volume, value) 对
+    # capacity 是背包的容量
+
+    # dp[i] 表示容量为 i 的背包能装下的最大价值
+    dp = [0] * (capacity + 1)
+
+    # 遍历每个组
+    for group in groups:
+        # 临时数组用于记录当前组选择不同物品时的最大价值
+        temp_dp = dp.copy()
+
+        # 遍历当前组的每个物品
+        for value, volume in group:
+            # 逆序遍历容量，因为每个物品只能使用一次
+            for i in range(capacity, volume - 1, -1):
+                # 更新当前容量下的最大价值
+                temp_dp[i] = max(temp_dp[i], temp_dp[i - volume] + value)
+
+                # 更新 dp 数组为当前组的最大价值
+        dp = temp_dp
+
+        # dp[-1] 就是容量为 capacity 的背包能装下的最大价值
     return dp[-1]
 
 
@@ -144,11 +171,16 @@ if __name__ == '__main__':
     print(unbounded_knapsack3([5, 10, 15], [10, 30, 20], 100))
 
     print('\n分组背包问题')
-    costs = [[5, 6], [6, 5]]
-    weights = [[6, 5], [6, 5]]
-    capacity = 11
-    print(mckp1(costs, weights, capacity))
-    print(mckp2(costs, weights, capacity))
+    values = [[6, 5, 11], [6, 5, 12]]
+    costs = [[2, 1, 4], [3, 1, 5]]
+
+    capacity = 5
+    print(mckp1(costs, values, capacity))
+    print(mckp2(costs, values, capacity))
+
+    groups = [[(6, 2), (5, 1), (11, 4)],
+              [(6, 3), (5, 1), (12, 5)]]
+    print(group_knapsack(groups, capacity))
 
     print('\n找到子序列和相等的两个分区')
     print(can_partition([3, 1, 5, 9, 12]))
