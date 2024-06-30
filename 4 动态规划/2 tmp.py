@@ -104,7 +104,7 @@ def coin_change1(coins, amount):
     return dp[-1] if dp[-1] != float('inf') else -1
 
 
-def coin_change(coins, amount):
+def coin_change1(coins, amount):
     dp = [float('inf')] * (amount + 1)  # 初始状态
     dp[0] = 0  # 初始状态 coin=amount时使用
     for coin in coins:
@@ -501,7 +501,7 @@ if __name__ == '__main__':
     print(LIS([2, 5, 3, 4, 1, 7, 6]))
 
     print('\n换硬币')
-    print(coin_change([1, 2, 5, 10], 11))
+    print(coin_change1([1, 2, 5, 10], 11))
     print(coin_change2([1, 2, 5], 5))
     print(combination_sum([1, 2, 5], 5))
 
