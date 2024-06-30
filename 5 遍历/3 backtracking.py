@@ -412,33 +412,7 @@ def nested_list_weight_sum(nums):
 
 
 # 22. 括号生成
-def generate_parenthesis1(n):
-    if n < 0:
-        return []
-    res = []
-
-    def helper(i, j, path, stack):
-        if not i and not j and not stack:
-            res.append(path)
-            return
-        if i < 0 or j < 0:
-            return
-        for c in '()':
-            if not stack:
-                helper(i - 1, j, path + '(', ['('])
-                break
-            if c == ')' and stack[-1] == '(':
-                stack.pop(-1)
-                helper(i, j - 1, path + ')', stack)
-                continue
-            if c == '(':
-                helper(i - 1, j, path + '(', stack + ['('])
-
-    helper(n, n, '', [])
-    return res
-
-
-def generate_parenthesis2(n):
+def generate_parenthesis(n):
     path, res = [], []
 
     def helper(left=n, right=n):
@@ -608,7 +582,7 @@ if __name__ == '__main__':
     print(nested_list_weight_sum([1, [4, [6]]]))
 
     print('\n生成括号')
-    print(generate_parenthesis1(2))
+    print(generate_parenthesis(2))
 
     print('\n删除无效的括号')
     print(remove_invalid_parentheses("(a)())()"))
