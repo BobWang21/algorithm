@@ -12,18 +12,13 @@ from binary_tree import *
 def lowest_common_ancestor(tree, p, q):
     if not tree:
         return None
-    if tree.val == p or tree.val == q:
-        return tree.val
+    if tree == p or tree == q:
+        return tree
     left = lowest_common_ancestor(tree.left, p, q)
     right = lowest_common_ancestor(tree.right, p, q)
     if left and right:
-        return tree.val
-
-    if left:
-        return left
-
-    if right:
-        return right
+        return tree
+    return left or right
 
 
 # 序列化
@@ -38,15 +33,15 @@ def serialize(tree):
 def deserialize(s):
     if not s:
         return
-    lists = [c for c in s]
+    nums = deque(s.split())
 
     def helper():
-        if not lists:
+        if not nums:
             return
-        val = lists.pop(0)
+        val = nums.popleft()
         if val == '#':
-            return
-        root = TreeNode(val)
+            return None
+        root = TreeNode(int(val))
         root.left = helper()
         root.right = helper()
         return root
@@ -207,11 +202,11 @@ def diameter_of_binary_tree(root):
 
 
 # 257. 二叉树的所有路径
-def binary_tree_paths(root):
+def binary_tree_paths1(root):
     if not root:
         return []
-    left = binary_tree_paths(root.left)
-    right = binary_tree_paths(root.right)
+    left = binary_tree_paths1(root.left)
+    right = binary_tree_paths1(root.right)
     paths = left + right  # 数组相加
     if not paths:  # 叶节点!
         return [str(root.val)]
@@ -221,24 +216,23 @@ def binary_tree_paths(root):
     return res
 
 
-# 257 回溯
+# 回溯
 def binary_tree_paths2(root):
-    path, res = [], []
+    res = []
 
-    def helper(node):
-        # 结束为叶节点
-        l, r = node.left, node.right
+    def helper(path, node):
+        if not node.left and not node.right:
+            res.append('->'.join(path + [str(node.val)]))
+
         path.append(str(node.val))
-        if not l and not r:
-            res.append('->'.join(path))
-            # 此处不能return 需要回溯
-        if l:
-            helper(l)
-        if r:
-            helper(r)
-        path.pop(-1)
+        if node.left:
+            helper(path, node.left)
 
-    helper(root)
+        if node.right:
+            helper(path, node.right)
+        path.pop()
+
+    helper([], root)
     return res
 
 
@@ -246,9 +240,9 @@ def binary_tree_paths2(root):
 # 是否存在路径和为某个target
 # 二叉树可能为空
 def have_path_sum(root, target):
-    if not root:  # 递归基为空节点
+    if not root:  # 递归基1 节点为空节点
         return False
-    if not root.left and not root.right:  # 递归基
+    if not root.left and not root.right:  # 递归基 叶节点
         return root.val == target
     # 如果left满足 提前返回
     return have_path_sum(root.left, target - root.val) or have_path_sum(root.right, target - root.val)
@@ -603,6 +597,15 @@ if __name__ == '__main__':
     tree = create_full_binary_tree([i for i in range(7)])
     print(lowest_common_ancestor(tree, 1, 5))
 
+    print('\n二叉树序列化')
+    tree = create_full_binary_tree([1, 2, 3])
+    string = serialize(tree)
+    print(string)
+
+    print('\n二叉树反序列化')
+    tree = deserialize(string)
+    print(level_traversal(tree))
+
     print('\n判断树是否平衡')
     unbalanced_tree = TreeNode(3)
     a = TreeNode(10)
@@ -624,7 +627,7 @@ if __name__ == '__main__':
 
     print('\n打印根节点到叶节点路径')
     tree = create_full_binary_tree([2, 1, 3, 2])
-    print(binary_tree_paths(tree))
+    print(binary_tree_paths1(tree))
     print(binary_tree_paths2(tree))
 
     print('\n是否存在和为某个数的路径')
@@ -640,15 +643,6 @@ if __name__ == '__main__':
     print('\n子树最大路径之和')
     tree = create_full_binary_tree([-10, 9, 20, 0, 0, 15, 7])
     print(max_sum_path(tree))
-
-    print('\n二叉树序列化')
-    tree = create_full_binary_tree([1, 2, 3])
-    string = serialize(tree)
-    print(string)
-
-    print('\n二叉树反序列化')
-    tree = deserialize(string)
-    print(level_traversal(tree))
 
     print('\n中序遍历的下一个节点')
     tree = construct_parent()[3]

@@ -19,9 +19,9 @@ def create_full_binary_tree(nums):
     queue = deque([root])
     i, n = 1, len(nums)
     while i < n:
-        i += 1
         parent = queue[0]
         node = TreeNode(nums[i])
+        i += 1
         if not parent.left:
             parent.left = node
             queue.append(node)  # 进队列
@@ -29,6 +29,7 @@ def create_full_binary_tree(nums):
             parent.right = node
             queue.append(node)  # 进队列
             queue.popleft()  # 出队列
+
     return root
 
 
@@ -224,5 +225,6 @@ if __name__ == '__main__':
     print('\n序列化反序列化')
     tree = create_full_binary_tree([i for i in range(7)])
     s = serialize(tree)
+    print(s)
     tree = deserialize(s)
     print(level_traversal(tree))

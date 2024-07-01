@@ -629,6 +629,26 @@ def construct_full_binary_tree(nums):
     return root
 
 
+def unseries(s):
+    if not s:
+        return None
+    nums = s.split(',')
+    root = Node(nums.pop(0))
+
+    def find():
+        v = nums.pop(0)
+        if v == '#':
+            return None
+        node = Node(v)
+        node.left = find()
+        node.right = find()
+        return node
+
+    root.left = find()
+    root.right = find()
+    return root
+
+
 if __name__ == '__main__':
     nums = [1, 2, 3, 4]
     sort_array_by_parity(nums)
