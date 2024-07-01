@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from collections import defaultdict
+from functools import lru_cache
+
+
+@lru_cache(maxsize=None)  # maxsize=None 表示缓存可以无限制地增长
+def fib1(n):
+    if n <= 2:
+        return 1  # 注意：斐波那契数列的前两个数字通常定义为1，但根据具体定义，可能需要稍作调整
+    return fib1(n - 1) + fib1(n - 2)
 
 
 # top down + 记忆
-def fib1(n):
+def fib2(n):
     dic = {1: 1, 2: 2}
 
     def helper(n):
@@ -19,7 +27,7 @@ def fib1(n):
 
 # bottom up
 # 可以记录所有状态 但当前状态只与最近前两个状态有关 可只存两个状态
-def fib2(n):
+def fib3(n):
     if n == 1:
         return 1
     if n == 2:
@@ -124,6 +132,18 @@ def coin_change2(coins, amount):
     return dp[-1]
 
 
+# 279. Perfect Squares 12 = 4 + 4 + 4
+def num_squares(n):
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # coin=amount时使用
+
+    for coin in range(1, int(n ** 0.5) + 1):
+        square = coin ** 2
+        for i in range(square, n + 1):
+            dp[i] = min(dp[i], dp[i - square] + 1)
+    return dp[n]
+
+
 # 先遍历金额 会重复计数
 # def coin_change3(coins, amount):
 #     if amount < 0:
@@ -173,20 +193,31 @@ def max_profit1(prices):
 
 # 122 股票可以交易多次
 # 你在任何时候 最多 只能持有 一股 股票。你也可以先购买，然后在 同一天 出售。
-def max_Profit2(prices):
-    hold, sold = -float('inf'), 0
+def max_profit2(prices):
+    n = len(prices)
+    dp = [[0, 0] for _ in range(n)]
+    dp[0][1] = -prices[0]
+
+    for i in range(1, n):
+        dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i])
+        dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
+    return dp[-1][0]
+
+
+# 状态只和前一天相关
+def max_profit2_1(prices):
+    hold, empty = -float('inf'), 0
     for price in prices:
-        hold, sold = max(sold - price, hold), max(hold + price, sold)
-    return max(hold, sold)
+        hold, empty = max(empty - price, hold), max(hold + price, empty)
+    return max(hold, empty)
 
 
 # 309 交易后有冷冻期
 def max_profit3(prices):
-    hold, sold, rest = -float('inf'), 0, 0  # 第一次不能出现hold, hold初始状态为负无穷
+    hold, empty_not, empty_can = -float('inf'), 0, 0  # 第一次不能出现hold, hold初始状态为负无穷
     for price in prices:
-        hold, sold, rest = max(rest - price, hold), hold + price, max(rest, sold)
-
-    return max(sold, rest)
+        hold, empty_not, empty_can = max(hold, empty_can - price), hold + price, max(empty_can, empty_not)
+    return max(empty_not, empty_can)
 
 
 # 最多交易两次
@@ -419,10 +450,9 @@ def trap1(height):
     return res
 
 
-# 鸡蛋
-# 动态规划算法的时间复杂度就是子问题个数 × 函数本身的复杂度
-# 函数本身的复杂度就是忽略递归部分的复杂度，这里 dp 函数中有一个 for 循环，
-# 所以函数本身的复杂度是 O(N) 所以算法的总时间复杂度是 O(K*N^2)
+# 扔鸡蛋
+# 给你k 枚相同的鸡蛋，并可以使用一栋从第 1 层到第 n 层共有 n 层楼的建筑。
+# 已知存在楼层f，满足0 <=f<=n ，任何从高于f的楼层落下的鸡蛋都会碎，从f楼层或比它低的楼层落下的鸡蛋都不会破。
 def super_egg_drop(K, N):
     memo = dict()
 
