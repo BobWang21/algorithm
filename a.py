@@ -600,6 +600,35 @@ def sort_array_by_parity(nums):
             nums[l], nums[r] = nums[r], nums[l]
 
 
+class Node():
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+from collections import deque
+
+
+def construct_full_binary_tree(nums):
+    if not nums:
+        return None
+    root = Node(nums[0])
+    queue = deque([root])
+    for i in range(1, len(nums)):
+        pre = queue[0]
+        node = Node(nums[i])
+        if not pre.left:
+            pre.left = node
+            queue.append(node)
+        else:
+            pre.right = node
+            queue.append(node)
+            queue.popleft()
+
+    return root
+
+
 if __name__ == '__main__':
     nums = [1, 2, 3, 4]
     sort_array_by_parity(nums)

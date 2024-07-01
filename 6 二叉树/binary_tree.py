@@ -19,15 +19,13 @@ def create_full_binary_tree(nums):
     queue = deque([root])
     i, n = 1, len(nums)
     while i < n:
-        val = nums[i]
         i += 1
         parent = queue[0]
+        node = TreeNode(nums[i])
         if not parent.left:
-            node = TreeNode(val)
             parent.left = node
             queue.append(node)  # 进队列
         else:
-            node = TreeNode(val)
             parent.right = node
             queue.append(node)  # 进队列
             queue.popleft()  # 出队列
@@ -77,6 +75,28 @@ def inorder_traversal(tree):
         node = stack.pop(-1)
         res.append(node.val)
         node = node.right
+    return res
+
+
+# 145 后序遍历
+def postorder_traversal(tree):
+    if not tree:
+        return
+    res = []
+    node, stack = tree, []
+    pre = None
+    while node or stack:
+        while node:  # 一直往左
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        if not node.right or node.right == pre:
+            res.append(node.val)
+            pre = node
+            node = None
+        else:
+            stack.append(node)
+            node = node.right
     return res
 
 
@@ -186,6 +206,9 @@ if __name__ == '__main__':
 
     print('\n中序遍历')
     print(inorder_traversal(tree))
+
+    print('\n后序遍历')
+    print(postorder_traversal(tree))
 
     print('\n层次遍历')
     print(level_traversal(tree))
