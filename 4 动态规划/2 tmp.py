@@ -4,6 +4,7 @@ from collections import defaultdict
 from functools import lru_cache
 
 
+# 记忆化的递归
 @lru_cache(maxsize=None)  # maxsize=None 表示缓存可以无限制地增长
 def fib1(n):
     if n <= 2:
@@ -103,16 +104,6 @@ def max_continuous_product(nums):
 # 322 换硬币 最少硬币数表示金额 如果不能返回-1
 # 复杂度高 cutting stock problem
 def coin_change1(coins, amount):
-    dp = [float('inf')] * (amount + 1)
-    dp[0] = 0
-    for i in range(1, amount + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = min(dp[i], dp[i - coin] + 1)
-    return dp[-1] if dp[-1] != float('inf') else -1
-
-
-def coin_change1(coins, amount):
     dp = [float('inf')] * (amount + 1)  # 初始状态
     dp[0] = 0  # 初始状态 coin=amount时使用
     for coin in coins:
@@ -121,7 +112,8 @@ def coin_change1(coins, amount):
     return dp[-1] if dp[-1] != float('inf') else -1
 
 
-# 518 多少种硬币换法
+# 518 多少种硬币换法 硬币可以使用多次
+# 无穷背包问题的次数
 def coin_change2(coins, amount):
     dp = [0] * (amount + 1)
     dp[0] = 1
@@ -129,6 +121,25 @@ def coin_change2(coins, amount):
     for coin in coins:  # 保证coin之前没用过!
         for j in range(coin, amount + 1):
             dp[j] += dp[j - coin]
+    return dp[-1]
+
+
+# 494 给你一个非负整数数组 nums 和一个整数 target 。
+# 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个表达式
+# 0-1背包问题的次数
+def find_target_sum_ways(nums, target):
+    total = sum(nums)
+    diff = total - target
+    if diff % 2 != 0 or diff < 0:
+        return 0
+
+    capacity = (total - target) // 2
+    dp = [0] * (capacity + 1)
+    dp[0] = 1
+    for num in nums:
+        # 逆序遍历 每个数字只能使用一遍
+        for j in range(capacity, num - 1, -1):
+            dp[j] += dp[j - num]
     return dp[-1]
 
 

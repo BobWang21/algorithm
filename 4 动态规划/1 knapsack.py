@@ -12,8 +12,7 @@ def knapsack(volumes, values, capacity):
     rows, cols = len(volumes) + 1, capacity + 1  # 行列加1
     dp = [[0] * cols for _ in range(rows)]  # 作为base 初始状态都为0
     for i in range(1, rows):  # 更新所有状态
-        volume = volumes[i - 1]
-        value = values[i - 1]
+        volume, value = volumes[i - 1], values[i - 1]
         for j in range(1, cols):  # 所有状态
             dp[i][j] = dp[i - 1][j]  # 初始化为相同负载不装该物品
             if j - volume >= 0:  # 状态转移2 这里从i-1开始
@@ -105,7 +104,7 @@ def mckp2(volumes, weights, capacity):
         print(dp)
         for k in range(1, 1 + capacity):
             for j in range(len(volumes[i])):
-                if k >= volumes[i][j]:
+                if k >= volumes[i][j]: # 一个分组中的物品可能被用多次
                     dp[k] = max(dp[k], dp[k - volumes[i][j]] + weights[i][j])
     return dp[-1]
 '''
@@ -125,7 +124,7 @@ def mckp2(groups, capacity):
         # 遍历当前组的每个物品
         for value, volume in group:
             for i in range(volume, capacity + 1):
-                # 每个物品依赖于上一分组结果 不依赖本组结果
+                # 每个物品依赖于上一个分组结果 不依赖本组结果
                 temp_dp[i] = max(dp[i], dp[i - volume] + value)
 
             # 更新 dp 数组为当前组的最大价值
@@ -136,6 +135,7 @@ def mckp2(groups, capacity):
     return dp[-1]
 
 
+# 最优版本分组背包
 def mckp3(groups, capacity):
     # groups 是一个二维列表，其中每个子列表代表一个组，子列表中的元素是 (volume, value) 对
     # capacity 是背包的容量

@@ -10,6 +10,7 @@ def subset(nums):
 
     def dfs(i, path):
         res.append(path)
+
         for j in range(i, n):
             dfs(j + 1, path + [nums[j]])  # 生成新的路径,不需回溯
 
@@ -100,7 +101,7 @@ def four_sum_count(A, B, C, D):
 
 
 # 494 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数
-# 可以使用动态规划
+# 最优解使用动态规划
 def find_target_sum_ways(nums, target):
     n = len(nums)
     res = [0]
@@ -119,6 +120,7 @@ def find_target_sum_ways(nums, target):
     return res[0]
 
 
+# 39
 # Given a set of candidate numbers (candidates) (without duplicates)
 # and a target number (target), find all unique combinations in candidates
 # where the candidate numbers sums to target.
