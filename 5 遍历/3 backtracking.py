@@ -25,6 +25,7 @@ def subsets_2(nums):
 
     def helper(i):
         res.append(path[:])
+
         for j in range(i, n):  # i==n时跳出
             path.append(nums[j])
             helper(j + 1)
@@ -135,11 +136,12 @@ def combination_sum(nums, target):
     n = len(nums)
 
     def dfs(i, total, path):
+        if total > target:  # 不满足条件
+            return
         if total == target:
             res.append(path[:])
             return
-        if target < total:  # 不满足条件
-            return
+
         for j in range(i, n):
             path.append(nums[j])
             # 索引不加1, 表示数字可以用多次!!!
@@ -181,6 +183,7 @@ def permute1(nums):
     return res
 
 
+# 46
 def permute2(nums):
     if not nums:
         return []
@@ -209,27 +212,6 @@ def permute2(nums):
 
 # 47. 全排列 输入数组中含重复数字
 def permute_unique1(nums):
-    if not nums:
-        return []
-
-    res = []
-
-    def dfs(candidates, path):
-        if not candidates:
-            res.append(path)
-            return
-        for i in candidates:
-            if i > 0 and candidates[i] == candidates[i - 1]:  # 不可出现在同一层
-                continue
-            # 候选集中去除访问过的元素
-            dfs(candidates[:i] + candidates[i + 1:], path + [candidates[i]])
-
-    nums.sort()
-    dfs(nums, [])
-    return res
-
-
-def permute_unique2(nums):
     nums.sort()
 
     n = len(nums)
@@ -245,7 +227,8 @@ def permute_unique2(nums):
         for i in range(n):
             if visited[i]:
                 continue
-            # nums[i-1] 和 nums[i] 不能在同一个位置 前面的数字未使用
+            # 前面的数字未使用时，nums[i-1] 和 nums[i] 不能用 [1, 2_1, 2_2, 3]
+            # [1, 2_1, 2_2, ] 可以 [1, 2_2, 2_1, ]不可以
             if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
                 continue
             visited[i] = True
@@ -378,30 +361,33 @@ def letter_case_permutation(s):
 
 # 93. 复原IP地址 '010010' 恢复ip
 def restore_ip_addresses(s):
-    if not s or len(s) > 12:
-        return []
-
-    def valid(s):
-        if len(s) > 2 and s[0] == '0':  # 0 开头
+    def valid(string):
+        if len(string) < 2:
+            return True
+        if string[0] == '0':
             return False
-        return int(s) <= 255
+        return int(string) <= 255
 
-    res = []
     n = len(s)
+    path = []
+    res = []
 
-    def dfs(idx, path):
-        if idx == n and len(path) == 4:
+    def helper(idx):
+        if len(path) == 4 and idx == n:
             res.append('.'.join(path))
-            return
-        if idx == n or len(path) == 4:
-            return
-        for i in range(1, 4):  # 每次加 1-3 个数
-            if idx + i <= n:
-                string = s[idx: idx + i]
-                if valid(string):
-                    dfs(idx + i, path + [string])
 
-    dfs(0, [])
+        for i in range(1, 4):
+            end = idx + i
+            if end > n:
+                continue
+            sub_string = s[idx:end]
+            if not valid(sub_string):
+                continue
+            path.append(sub_string)
+            helper(end)
+            path.pop(-1)
+
+    helper(0)
 
     return res
 
@@ -426,68 +412,22 @@ def nested_list_weight_sum(nums):
 
 # 22. 括号生成
 def generate_parenthesis(n):
-    if n < 0:
-        return []
-    res = []
+    path, res = [], []
 
-    def helper(i, j, path, stack):
-        if not i and not j and not stack:
-            res.append(path)
+    def helper(left=n, right=n):
+        if len(path) == 2 * n:
+            res.append(''.join(path))
             return
-        if i < 0 or j < 0:
-            return
-        for c in '()':
-            if not stack:
-                helper(i - 1, j, path + '(', ['('])
-                break
-            if c == ')' and stack[-1] == '(':
-                stack.pop(-1)
-                helper(i, j - 1, path + ')', stack)
-                continue
-            if c == '(':
-                helper(i - 1, j, path + '(', stack + ['('])
+        if left > 0:
+            path.append('(')
+            helper(left - 1, right)
+            path.pop(-1)
+        if right > left:
+            path.append(')')
+            helper(left, right - 1)
+            path.pop(-1)
 
-    helper(n, n, '', [])
-    return res
-
-
-def generate_parenthesis2(n):
-    if not n:
-        return []
-
-    res = []
-
-    def helper(path, i, left):  # i:未匹配的左括号 left:左括号数
-        if not i and left == n:
-            res.append(path)
-            return
-
-        if not i:
-            helper(path + '(', 1, left + 1)
-        elif left < n:
-            helper(path + '(', i + 1, left + 1)
-            helper(path + ')', i - 1, left)
-        else:
-            helper(path + ')', i - 1, left)
-
-    helper('', 0, 0)
-    return res
-
-
-# 非递归版本
-def generate_parenthesis3(n):
-    stack, res = [('(', n - 1, 1)], []
-    while stack:
-        path, left, unmatched = stack.pop(-1)
-        if len(path) == 2 * n and not left and not unmatched:
-            res.append(path)
-        if unmatched:  # 当前路径有左括号
-            stack.append((path + ')', left, unmatched - 1))  # 加'('
-            if left:
-                stack.append((path + '(', left - 1, unmatched + 1))  # 加'('
-        elif left:
-            stack.append((path + '(', left - 1, unmatched + 1))  # 加'('
-
+    helper()
     return res
 
 

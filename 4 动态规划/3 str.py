@@ -117,7 +117,7 @@ def edit_distance(word1, word2):
         for j in range(1, cols):
             if word1[i - 1] == word2[j - 1]:
                 dp[i][j] = dp[i - 1][j - 1]
-            else:  # delete dp[i][j - 1], dp[i - 1][j]  ;  dp[i - 1][j - 1]  replace
+            else:  # 新增 dp[i][j - 1], 删除 dp[i - 1][j]; dp[i - 1][j - 1]  replace
                 dp[i][j] = min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1]) + 1
     return dp[-1][-1]
 

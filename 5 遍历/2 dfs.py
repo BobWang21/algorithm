@@ -42,8 +42,8 @@ def max_area_of_island(grid):
             return 0
         grid[i][j] = water
         res = 1
-        for d_i, d_j in directions:
-            res += helper(i + d_i, j + d_j)
+        for di, dj in directions:
+            res += helper(i + di, j + dj)
         return res
 
     for i in range(rows):
@@ -75,8 +75,8 @@ def has_path(maze, start, destination):
         # 标记访问的点
         maze[i][j] = wall
 
-        for direction in directions:
-            if dfs(i + direction[0], j + direction[1]):
+        for di, dj in directions:
+            if dfs(i + di, j + dj):
                 return True
         return False
 
@@ -110,8 +110,8 @@ def has_path2(maze, start, destination):
         # 标记已经访问的点
         maze[i][j] = wall
 
-        for direction in directions:
-            if dfs(i + direction[0], j + direction[1]):
+        for di, dj in directions:
+            if dfs(i + di, j + dj):
                 maze[i][j] = empty  # 回溯 不改变数组
                 return True
         maze[i][j] = empty  # 回溯
@@ -125,7 +125,7 @@ def has_path2(maze, start, destination):
     return res
 
 
-# 490 小球是否能在目的地停留
+# 490 小球是否能在目的地停留 你可以假定迷宫的边缘都是墙壁(参考示例)
 def has_path_3(maze, start, destination):
     rows, cols = len(maze), len(maze[0])
     directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
@@ -135,16 +135,15 @@ def has_path_3(maze, start, destination):
         if [x, y] == destination:
             return True
 
-        i, j = x, y
         for dx, dy in directions:
-            x, y = i, j
-            while 0 <= x + dx < rows and 0 <= y + dy < cols \
-                    and maze[x + dx][y + dy] != 1:
-                x = x + dx
-                y = y + dy
+            temp_x, temp_y = x, y
+            while 0 <= temp_x + dx < rows and 0 <= temp_y + dy < cols \
+                    and maze[temp_y + dx][temp_y + dy] != 1:
+                temp_x = x + dx
+                temp_y = y + dy
 
-            if maze[x][y] != -1:  # 如果该点的值不为-1，即未遍历过
-                if dfs(x, y):
+            if maze[temp_x][temp_y] != -1:  # 如果该点的值不为-1，即未遍历过
+                if dfs(temp_x, temp_y):
                     return True
 
         return False
@@ -152,7 +151,8 @@ def has_path_3(maze, start, destination):
     return dfs(start[0], start[1])
 
 
-# 130 将围住的'O'变成'X' 任何边界上的'O'都不会被填充为'X'
+# 130 捕获 所有 被围绕的区域
+# 将围住的'O'变成'X' 任何边界上的'O'都不会被填充为'X'
 # 逆向思维
 def surrounded_regions1(board):
     if not board:
@@ -312,26 +312,29 @@ def closed_island(grid):
 
 
 # 329. 矩阵中的最长递增路径
-# dfs + 记忆 dp[i][j] = max(dp[x][y]) + 1
+# dfs + 记忆 dp[i][j]
+# max(dp[x][y]) + 1
 def longest_increasing_path(matrix):
     visited = {}
     rows, cols = len(matrix), len(matrix[0])
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     def helper(i, j):
+        # 递归开始满足约束，此处约束放在了下面
         if (i, j) in visited:
             return visited[(i, j)]
 
         res = 0
         for direction in directions:
-            next_i, next_j = i + direction[0], j + direction[1]
-            if next_i < 0 or next_j < 0 or next_i == rows or next_j == cols:
+            dx, dy = i + direction[0], j + direction[1]
+            # 将约束放在这
+            if dx < 0 or dy < 0 or dx == rows or dy == cols:
                 continue
-            if matrix[i][j] < matrix[next_i][next_j]:
+            if matrix[i][j] <= matrix[dx][dy]:
                 continue
-            res = max(res, helper(next_i, next_j))
+            res = max(res, helper(dx, dy))
 
-        res += 1
+        res += 1  # 本身
         visited[(i, j)] = res
         return res
 
