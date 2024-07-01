@@ -135,7 +135,7 @@ def inorder_tra_next_node(node):
 
 
 # 110 返回是否平衡 已经树的高度
-def is_balanced(tree):
+def is_balanced1(tree):
     def helper(root):
         if not root:
             return True, 0
@@ -152,7 +152,7 @@ def is_balanced(tree):
 
 
 # 不平衡, 就退出遍历
-def is_balanced1(tree):
+def is_balanced2(tree):
     res = [True]  # 是否平衡
 
     def helper(tree):  # 返回树的高度
@@ -171,7 +171,7 @@ def is_balanced1(tree):
 
 
 # 返回值具体不同语义
-def is_balanced2(tree):
+def is_balanced3(tree):
     def helper(tree):
         if not tree:
             return 0
@@ -221,7 +221,9 @@ def binary_tree_paths2(root):
     res = []
 
     def helper(path, node):
-        if not node.left and not node.right:
+        # if not node:
+        #    return path 会返回两次!!
+        if not node.left and not node.right:  # 递归基 叶节点
             res.append('->'.join(path + [str(node.val)]))
 
         path.append(str(node.val))
@@ -262,6 +264,7 @@ def path_sum1(root, target):
         if not l and not r and node.val == val:
             res.append(path + [node.val])  # 新生成一个路径 不改变path
             return
+
         path.append(node.val)
         dfs(l, val - node.val)
         dfs(r, val - node.val)
@@ -271,8 +274,7 @@ def path_sum1(root, target):
     return res
 
 
-# 437-1 找出路径和等于给定数值的路径总数。
-# 路径不需要从根节点开始，也不需要在叶子节点结束，
+# 437 找出路径和等于给定数值的路径总数。路径不需要从根节点开始，也不需要在叶子节点结束，
 # 但是路径方向必须是向下的（只能从父节点到子节点）
 def path_sum2(root, target):
     res = [0]
@@ -298,7 +300,7 @@ def path_sum2(root, target):
     return res[0]
 
 
-# 437-2
+# 437
 # 解法一中存在重复计算。可以使用前缀和思想
 # 我们定义节点的前缀和为：由根结点到当前结点的路径上所有节点的和。
 def path_sum3(root, target):
@@ -530,9 +532,9 @@ def is_subtree(s, t):
             return True
         if not s or not t:
             return False
-        if s.val == t.val:
-            return helper(s.left, t.left) and helper(s.right, t.right)
-        return False
+        if s.val != t.val:
+            return False
+        return helper(s.left, t.left) and helper(s.right, t.right)
 
     # 也需要判断 因为语句2
     if not s and not t:
@@ -612,7 +614,7 @@ if __name__ == '__main__':
     b = TreeNode(5)
     unbalanced_tree.left = a
     a.left = b
-    print(is_balanced(unbalanced_tree))
+    print(is_balanced1(unbalanced_tree))
     print(is_balanced2(unbalanced_tree))
 
     print('\n右侧观察树')
