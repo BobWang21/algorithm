@@ -308,20 +308,24 @@ def num_squares(n):
 
 
 # 割绳子
-def max_product_after_cutting(m):
-    if m == 1:
-        return
-    if m == 2:
-        return 1
-    if m == 3:
-        return 2
-    res = [0, 1, 2, 3]  # 0为了占位
-    for i in range(4, m + 1):
-        max_product = -1
-        for j in range(1, i // 2 + 1):
-            max_product = max(max_product, res[j] * res[i - j])
-        res.append(max_product)
-    return res[-1]
+def integer_break1(n):
+    dp = [0] * (n + 1)
+    for i in range(2, n + 1):
+        for j in range(i):
+            dp[i] = max(dp[i], j * (i - j), j * dp[i - j])
+    return dp[n]
+
+
+def integer_break2(n):
+    if n <= 3:
+        return n - 1
+
+    dp = [0] * (n + 1)
+    dp[2] = 1
+    for i in range(3, n + 1):
+        dp[i] = max(2 * (i - 2), 2 * dp[i - 2], 3 * (i - 3), 3 * dp[i - 3])
+
+    return dp[n]
 
 
 # 从格子中选出礼物的最大值
@@ -550,7 +554,7 @@ if __name__ == '__main__':
     print(num_squares(13))
 
     print('\n割绳子')
-    print(max_product_after_cutting(8))
+    print(integer_break1(8))
 
     print('\n最大礼物')
     matrix = [[1, 10, 3, 8],
