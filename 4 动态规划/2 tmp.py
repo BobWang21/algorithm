@@ -307,7 +307,7 @@ def num_squares(n):
     return dp[n]
 
 
-# 割绳子
+# 整数拆分 343
 def integer_break1(n):
     dp = [0] * (n + 1)
     for i in range(2, n + 1):
