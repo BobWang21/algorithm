@@ -553,7 +553,7 @@ if __name__ == '__main__':
     print('\n数字由平方组合')
     print(num_squares(13))
 
-    print('\n割绳子')
+    print('\n整数拆分')
     print(integer_break1(8))
 
     print('\n最大礼物')
