@@ -110,7 +110,8 @@ def build_tree(preorder, inorder):
     return root
 
 
-# 中序遍历, 节点的后继
+# 中序遍历节点的后继
+# 含有父节点 node含有父节点
 def inorder_tra_next_node(node):
     if not node:
         return
@@ -132,6 +133,27 @@ def inorder_tra_next_node(node):
             return node.parent.val
         node = node.parent
     return
+
+
+# https://leetcode.cn/problems/successor-lcci/description/
+def inorder_successor(root, p):
+    if not root:
+        return None
+    if p.right:
+        node = p.right
+        while node.left:
+            node = node.left
+        return node
+
+    node = root
+    pre = None
+    while node:
+        if node.val > p.val:
+            pre = node
+            node = node.left
+        else:
+            node = node.right
+    return pre
 
 
 # 110 返回是否平衡 已经树的高度

@@ -90,13 +90,13 @@ def postorder_traversal(tree):
         while node:  # 一直往左
             stack.append(node)
             node = node.left
-        node = stack.pop()
+        node = stack[-1]
         if not node.right or node.right == pre:
+            node = stack.pop(-1)
             res.append(node.val)
             pre = node
             node = None
         else:
-            stack.append(node)
             node = node.right
     return res
 
@@ -176,7 +176,7 @@ def deserialize(s):
         return
     nums = s.split()  # 空格
     root = TreeNode(eval(nums.pop(0)))
-    queue = [root]
+    queue = deque([root])
     is_set_left = False
     while nums:
         node = queue[0]
@@ -185,7 +185,7 @@ def deserialize(s):
             if not is_set_left:
                 is_set_left = True
             else:
-                queue.pop(0)
+                queue.popleft()
                 is_set_left = False
         else:
             child = TreeNode(eval(val))
@@ -195,7 +195,7 @@ def deserialize(s):
                 is_set_left = True
             else:
                 node.right = child
-                queue.pop(0)
+                queue.popleft()
                 is_set_left = False
     return root
 
