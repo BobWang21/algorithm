@@ -590,6 +590,92 @@ def substructure(s, t):
     return is_subtree(s.left, t) or is_subtree(s.right, t)
 
 
+# 863 到target 长度为k的节点
+def distance_k1(root, target, k):
+    res = []
+    dic = dict()
+    if not root:
+        return res
+    if k == 0:
+        return [target.val]
+
+    def find_parent(node, pre=None):
+        if not node:
+            return
+        if pre:
+            dic[node.val] = pre
+        find_parent(node.left, node)
+        find_parent(node.right, node)
+
+    find_parent(root)
+
+    def from_node(node, n):
+        if not node:
+            return
+        if n == 0:
+            res.append(node.val)
+
+        from_node(node.left, n - 1)
+        from_node(node.right, n - 1)
+
+    # 向下访问
+    from_node(target, k)
+
+    # 向上访问 + 访问兄弟节点
+    print(target.val)
+    while target.val in dic:
+        print(target.val)
+        parent = dic[target.val]
+        if k == 1:
+            res.append(parent.val)
+            return res
+        k -= 1
+        if parent.left == target:
+            # 直接到走两步到兄弟节点
+            from_node(parent.right, k - 1)
+        else:
+            from_node(parent.left, k - 1)
+        target = parent
+    return res
+
+
+def distance_k2(root, target, k):
+    res = []
+    dic = dict()
+    if not root:
+        return res
+    if k == 0:
+        return [target.val]
+
+    def find_parent(node, pre=None):
+        if not node:
+            return
+        if pre:
+            dic[node.val] = pre
+        find_parent(node.left, node)
+        find_parent(node.right, node)
+
+    find_parent(root)
+
+    def find_target(node, pre_node, n):
+        if not node:
+            return
+        if n == 0:
+            res.append(node.val)
+            return
+        # 向下访问
+        if node.left != pre_node:
+            find_target(node.left, node, n - 1)
+        if node.right != pre_node:
+            find_target(node.right, node, n - 1)
+        # 向上访问
+        if node.val in dic and dic[node.val] != pre_node:
+            find_target(dic[node.val], node, n - 1)
+
+    find_target(target, None, k)
+    return res
+
+
 def construct_parent():
     a = TreeNode(10)
     b = TreeNode(5)
