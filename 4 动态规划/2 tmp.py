@@ -101,96 +101,6 @@ def max_continuous_product(nums):
     return res
 
 
-# 322 换硬币 最少硬币数表示金额 如果不能返回-1
-# 复杂度高 cutting stock problem
-def coin_change1(coins, amount):
-    dp = [float('inf')] * (amount + 1)  # 初始状态
-    dp[0] = 0  # 初始状态 coin=amount时使用
-    for coin in coins:
-        for i in range(coin, amount + 1):
-            dp[i] = min(dp[i], dp[i - coin] + 1)
-    return dp[-1] if dp[-1] != float('inf') else -1
-
-
-# 518 多少种硬币换法 硬币可以使用多次
-# 无穷背包问题的次数
-def coin_change2(coins, amount):
-    dp = [0] * (amount + 1)
-    dp[0] = 1
-
-    for coin in coins:  # 保证coin之前没用过!
-        for j in range(coin, amount + 1):
-            dp[j] += dp[j - coin]
-    return dp[-1]
-
-
-# 494 给你一个非负整数数组 nums 和一个整数 target 。
-# 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个表达式
-# 0-1背包问题的次数
-def find_target_sum_ways(nums, target):
-    total = sum(nums)
-    diff = total - target
-    if diff % 2 != 0 or diff < 0:
-        return 0
-
-    capacity = (total - target) // 2
-    dp = [0] * (capacity + 1)
-    dp[0] = 1
-    for num in nums:
-        # 逆序遍历 每个数字只能使用一遍
-        for j in range(capacity, num - 1, -1):
-            dp[j] += dp[j - num]
-    return dp[-1]
-
-
-# 279. Perfect Squares 12 = 4 + 4 + 4
-def num_squares(n):
-    dp = [float('inf')] * (n + 1)
-    dp[0] = 0  # coin=amount时使用
-
-    for coin in range(1, int(n ** 0.5) + 1):
-        square = coin ** 2
-        for i in range(square, n + 1):
-            dp[i] = min(dp[i], dp[i - square] + 1)
-    return dp[n]
-
-
-# 先遍历金额 会重复计数
-# def coin_change3(coins, amount):
-#     if amount < 0:
-#         return 0
-#     dp = [0] * (amount + 1)
-#     dp[0] = 1
-#
-#     for v in range(amount + 1):
-#         for coin in coins:
-#             if v >= coin:
-#                 dp[v] += dp[v - coin]
-#     return dp[-1]
-
-
-# 给定一个正整数数组 求和为target的所有组合数
-def combination_sum(coins, target):
-    '''
-    NUMS = [1，2，3]
-    目标 = 4种的一种可能的组合方式有：
-    （1，1，1，1）
-    （1，1, 2）
-    （1，2, 1）
-    （1, 3）
-    （2, 1，1）
-    （2，2）
-    （3，1）
-    '''
-    res = [0] * (target + 1)
-    res[0] = 1
-    for i in range(target + 1):  # 包含重复组合
-        for v in coins:
-            if i >= v:
-                res[i] += res[i - v]
-    return res[-1]
-
-
 # 12 只能买卖一次 滑动窗口
 def max_profit1(prices):
     n = len(prices)
@@ -545,10 +455,7 @@ if __name__ == '__main__':
     print('\n最长上升子序列')
     print(LIS([2, 5, 3, 4, 1, 7, 6]))
 
-    print('\n换硬币')
-    print(coin_change1([1, 2, 5, 10], 11))
-    print(coin_change2([1, 2, 5], 5))
-    print(combination_sum([1, 2, 5], 5))
+
 
     print('\n数字由平方组合')
     print(num_squares(13))
