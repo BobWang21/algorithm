@@ -6,6 +6,7 @@
 - 最大价值/金额
 - 最小组合数
 - 多少种组合
+- 能否组成金额
 变量类型
 - 0-1背包
 - 无穷背包
@@ -173,33 +174,6 @@ def mckp3(groups, capacity):
     return dp[-1]
 
 
-# 416. Partition Equal Subset Sum
-# 0-1背包, 背包的容量为整体重量的1/2
-def can_partition(nums):
-    total = sum(nums)
-    if total % 2:
-        return False
-    capacity = total // 2
-
-    coins = []
-    for val in nums:
-        if val < capacity:
-            coins.append(val)
-        elif val == capacity:
-            return True
-        else:
-            return False
-
-    res = [[0] * (capacity + 1) for _ in range(len(coins) + 1)]
-    for i in range(1, len(coins) + 1):
-        v = coins[i - 1]
-        for j in range(1, capacity + 1):
-            res[i][j] = res[i - 1][j]
-            if j >= v:
-                res[i][j] = max(res[i][j], res[i - 1][j - v] + v)
-    return res[-1][-1] == capacity
-
-
 # 322 换硬币 最少硬币数表示金额 如果不能返回-1
 # 复杂度高 cutting stock problem
 def coin_change1(coins, amount):
@@ -223,6 +197,18 @@ def coin_change2(coins, amount):
     return dp[-1]
 
 
+# 279. Perfect Squares 12 = 4 + 4 + 4
+def num_squares(n):
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # coin=amount时使用
+
+    for coin in range(1, int(n ** 0.5) + 1):
+        square = coin ** 2
+        for i in range(square, n + 1):
+            dp[i] = min(dp[i], dp[i - square] + 1)
+    return dp[n]
+
+
 # 494 给你一个非负整数数组 nums 和一个整数 target 。
 # 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个表达式
 # 0-1背包问题的次数
@@ -242,16 +228,33 @@ def find_target_sum_ways(nums, target):
     return dp[-1]
 
 
-# 279. Perfect Squares 12 = 4 + 4 + 4
-def num_squares(n):
-    dp = [float('inf')] * (n + 1)
-    dp[0] = 0  # coin=amount时使用
+# 416. Partition Equal Subset Sum
+# 0-1背包, 背包的容量为整体重量的1/2
+# 集合的子集能组成固定数
+def can_partition(nums):
+    """
+    :type nums: List[int]
+    :rtype: bool
+    """
+    total = sum(nums)
+    if total % 2 == 1:
+        return False
+    capacity = total // 2
+    values = []
+    for v in nums:
+        if v < capacity:
+            values.append(v)
+        elif v == capacity:
+            return True
+        else:
+            return False
 
-    for coin in range(1, int(n ** 0.5) + 1):
-        square = coin ** 2
-        for i in range(square, n + 1):
-            dp[i] = min(dp[i], dp[i - square] + 1)
-    return dp[n]
+    dp = [0] * (capacity + 1)
+    for value in values:
+        for j in range(capacity, value - 1, -1):
+            dp[j] = max(dp[j], dp[j - value] + value)
+    # print(dp)
+    return dp[-1] == capacity
 
 
 # 先遍历金额 会重复计数
@@ -266,28 +269,6 @@ def num_squares(n):
 #             if v >= coin:
 #                 dp[v] += dp[v - coin]
 #     return dp[-1]
-
-
-# 给定一个正整数数组 求和为target的所有组合数
-def combination_sum(coins, target):
-    '''
-    NUMS = [1，2，3]
-    目标 = 4种的一种可能的组合方式有：
-    （1，1，1，1）
-    （1，1, 2）
-    （1，2, 1）
-    （1, 3）
-    （2, 1，1）
-    （2，2）
-    （3，1）
-    '''
-    res = [0] * (target + 1)
-    res[0] = 1
-    for i in range(target + 1):  # 包含重复组合
-        for v in coins:
-            if i >= v:
-                res[i] += res[i - v]
-    return res[-1]
 
 
 if __name__ == '__main__':
@@ -314,10 +295,8 @@ if __name__ == '__main__':
     print(mckp2(groups, capacity))
     print(mckp3(groups, capacity))
 
-    print('\n找到子序列和相等的两个分区')
-    print(can_partition([3, 1, 5, 9, 12]))
-
     print('\n换硬币')
     print(coin_change1([1, 2, 5, 10], 11))
     print(coin_change2([1, 2, 5], 5))
-    print(combination_sum([1, 2, 5], 5))
+    print('\n找到子序列和相等的两个分区')
+    print(can_partition([3, 1, 5, 9, 12]))
