@@ -298,6 +298,7 @@ def path_sum1(root, target):
 
 # 437 找出路径和等于给定数值的路径总数。路径不需要从根节点开始，也不需要在叶子节点结束，
 # 但是路径方向必须是向下的（只能从父节点到子节点）
+# 时间复杂度：O(N2)
 def path_sum2(root, target):
     res = [0]
 
@@ -451,7 +452,7 @@ def rob2(tree):
 def max_sum_path(tree):
     res = [-float('inf')]
 
-    def helper(tree):  # 包含当前节点向下的路径!!
+    def helper(tree):  # 当前节点向下的路径!!
         if not tree:
             return -float('inf'), -float('inf')  # 路径可能含有负数, 使用负无穷初始化
         left = helper(tree.left)

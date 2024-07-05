@@ -30,10 +30,8 @@ def knapsack1(values, weights, capacity):
 
 # 0-1背包 一维数组 最优解
 def knapsack2(values, weights, capacity):
-    rows = len(weights)
     dp = [0] * (capacity + 1)
-    for i in range(0, rows):
-        value, weight = values[i], weights[i],
+    for value, weight in zip(values, weights):
         # 每个物品只能用一次 防止物品使用多次 逆序排列
         for j in range(capacity, weight - 1, -1):
             dp[j] = max(dp[j], dp[j - weight] + value)

@@ -45,7 +45,7 @@ def subsets_with_dup(nums):
     def helper(i=0):
         res.append(path[:])
         for j in range(i, n):
-            if j > i and nums[j - 1] == nums[j]:  # 相同数字不能出现在同一层 [1(idx), 2(i), 2(x)]; [2(idx), 2]
+            if j > i and nums[j] == nums[j - 1]:  # 相同数字不能出现在同一层
                 continue
             path.append(nums[j])
             helper(j + 1)

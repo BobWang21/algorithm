@@ -649,7 +649,28 @@ def unseries(s):
     return root
 
 
+def subset(nums):
+    if not nums:
+        return [[]]
+
+    n = len(nums)
+    res = []
+    path = []
+
+    def helper(idx):
+        res.append(path[:])
+
+        for i in range(idx, n):
+            path.append(nums[i])
+            helper(i + 1)
+            path.pop()
+
+    helper(0)
+    return res
+
+
 if __name__ == '__main__':
+    print(subset([1, 2, 3]))
     nums = [1, 2, 3, 4]
     sort_array_by_parity(nums)
     print(nums)
