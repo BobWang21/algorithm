@@ -172,8 +172,9 @@ def mckp3(groups, capacity):
     return dp[-1]
 
 
-# 322 换硬币 最少硬币数表示金额 如果不能返回-1
-# 复杂度高 cutting stock problem
+# 322 最少硬币数表示金额 如果不能返回-1
+# cutting stock problem
+# 无穷背包
 def coin_change1(coins, amount):
     dp = [float('inf')] * (amount + 1)  # 初始状态
     dp[0] = 0  # 初始状态 coin=amount时使用
@@ -192,6 +193,17 @@ def coin_change2(coins, amount):
     for coin in coins:  # 保证coin之前没用过!
         for j in range(coin, amount + 1):
             dp[j] += dp[j - coin]
+    return dp[-1]
+
+
+# 能否组成amount
+# 0-1背包
+def coin_change3(coins, amount):
+    dp = [False] * (amount + 1)  # 初始状态
+    dp[0] = True  # 初始状态 coin=amount时使用
+    for coin in coins:
+        for i in range(amount, coin - 1, -1):
+            dp[i] = dp[i] or dp[i - coin]
     return dp[-1]
 
 
@@ -296,5 +308,6 @@ if __name__ == '__main__':
     print('\n换硬币')
     print(coin_change1([1, 2, 5, 10], 11))
     print(coin_change2([1, 2, 5], 5))
+    print(coin_change3([2, 3, 2, 5], 9))
     print('\n找到子序列和相等的两个分区')
     print(can_partition([3, 1, 5, 9, 12]))
