@@ -33,7 +33,7 @@ def print_list_node(head):
     print(res)
 
 
-# 链表翻转 递推思想(假设之前的满足要求)
+# 206 链表翻转 递推思想(假设之前的满足要求)
 def reverse1(head):
     pre = None
     while head:
@@ -48,7 +48,6 @@ def reverse1(head):
 def reverse2(head):
     if not head or not head.next:
         return head
-
     new_head = reverse2(head.next)
     head.next.next = head  # head还连接着next, head.next为反转后的尾结点
     head.next = None
@@ -80,9 +79,8 @@ def swap_pairs1(head):
         pre.next = head.next
         head.next.next = head
         pre = pre.next.next
-        # pre.next = None
         head = nxt
-    pre.next = head  # head可能为空, 也可能不
+    pre.next = head  # head可能为空或尾结点
     return dummy.next
 
 
@@ -155,15 +153,16 @@ def remove_duplicates2(head):
         if head.val != head.next.val:  # 向后看
             pre.next = head
             pre = pre.next
-        else:  # 类似数组去重
+        else:  # 类似数组去重 移动到下一个节点
             while head and head.next and head.val == head.next.val:
                 head = head.next
         head = head.next
-    pre.next = head  # head 可能为空 也可能为不相同的尾结点
+    pre.next = head  # head 可能为空或不相同的尾结点
     return dummy.next
 
 
 # 链表倒数第N个元素
+# 前后指针
 def tail(head, k):
     if not head:
         return
@@ -180,6 +179,27 @@ def tail(head, k):
     return slow.val
 
 
+# 19 前后指针
+def remove_nth_from_end(head, n):
+    if not head:
+        return
+    slow = fast = head
+    while n > 0:
+        fast = fast.next
+        n -= 1
+
+    pre = None
+    while fast:
+        fast = fast.next
+        pre = slow
+        slow = slow.next
+
+    if not pre:
+        return head.next
+    pre.next = slow.next  # pre赋值前需要判断
+    return head
+
+
 # 链表中间的元素 快慢指针
 def middle_node(head):
     if not head:
@@ -190,25 +210,6 @@ def middle_node(head):
         fast = fast.next.next
         slow = slow.next
     return slow.val
-
-
-# 19 前后指针
-def remove_nth_from_end(head, n):
-    if not head:
-        return
-    slow = fast = head
-    while n > 0:
-        fast = fast.next
-        n -= 1
-    pre = None
-    while fast:
-        fast = fast.next
-        pre = slow
-        slow = slow.next
-    if not pre:
-        return head.next
-    pre.next = slow.next  # pre赋值前需要判断
-    return head
 
 
 # 148 链表排序
@@ -338,7 +339,7 @@ def add_two_nums2(l1, l2):
     return nxt
 
 
-# 合并连个排序链表 归并
+# 23 合并连个排序链表 归并
 def merge_k_sorted_lists1(lists):
     if not lists:
         return
@@ -351,6 +352,7 @@ def merge_k_sorted_lists1(lists):
     return merge_two_sorted_lists1(a, b)
 
 
+# 23
 def merge_k_sorted_lists2(lists):
     if not lists:
         return
@@ -365,10 +367,8 @@ def merge_k_sorted_lists2(lists):
         v, node = hq.heappop(heap)
         curr.next = node
         curr = curr.next
-        node = node.next
-        curr.next = None
-        if node:
-            hq.heappush(heap, (node.val, node))
+        if node.next:
+            hq.heappush(heap, (node.next.val, node.next))
     return dummy.next
 
 
@@ -486,7 +486,7 @@ def odd_even_list(head):
         return head
 
     odd = head
-    even = even_head = head.next
+    even_head = even = head.next
     while even and even.next:
         odd.next = even.next
         odd = odd.next

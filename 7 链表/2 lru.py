@@ -2,23 +2,100 @@ import random as rd
 
 
 class Node():
-    def __init__(self, key, val):
+    def __init__(self, key=None, val=None, pre=None, next=None):
         self.key = key
         self.val = val
-        self.pre = None
+        self.pre = pre
+        self.next = next
+
+
+# 707 双向链表
+class ListNode:
+
+    def __init__(self, x):
+        self.val = x
         self.next = None
+        self.prev = None
 
 
+class MyLinkedList:
+
+    def __init__(self):
+        self.size = 0
+        self.head = ListNode(0)
+        self.tail = ListNode(0)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def get(self, index):
+        if index < 0 or index >= self.size:
+            return -1
+        # 从前向后扫描
+        if index + 1 < self.size - index:
+            curr = self.head
+            for _ in range(index + 1):
+                curr = curr.next
+        # 从后向前扫描
+        else:
+            curr = self.tail
+            for _ in range(self.size - index):
+                curr = curr.prev
+        return curr.val
+
+    def addAtHead(self, val):
+        self.addAtIndex(0, val)
+
+    def addAtTail(self, val):
+        self.addAtIndex(self.size, val)
+
+    def addAtIndex(self, index, val):
+        if index > self.size:
+            return
+        index = max(0, index)
+        if index < self.size - index:
+            pred = self.head
+            for _ in range(index):
+                pred = pred.next
+            succ = pred.next
+        else:
+            succ = self.tail
+            for _ in range(self.size - index):
+                succ = succ.prev
+            pred = succ.prev
+        self.size += 1
+        to_add = ListNode(val)
+        to_add.prev = pred
+        to_add.next = succ
+        pred.next = to_add
+        succ.prev = to_add
+
+    def deleteAtIndex(self, index):
+        if index < 0 or index >= self.size:
+            return
+        if index < self.size - index:
+            pred = self.head
+            for _ in range(index):
+                pred = pred.next
+            succ = pred.next.next
+        else:
+            succ = self.tail
+            for _ in range(self.size - index - 1):
+                succ = succ.prev
+            pred = succ.prev.prev
+        self.size -= 1
+        pred.next = succ
+        succ.prev = pred
+
+
+# 146 LRU (最近最少使用) 缓存
+# 使用包括插入和查询
 class LRUCache(object):
 
     def __init__(self, capacity):
-        """
-        :type capacity: int
-        """
         self.capacity = capacity
         self.dic = dict()
-        self.head = Node(None, None)
-        self.tail = Node(None, None)
+        self.head = Node()
+        self.tail = Node()
         self.head.next = self.tail
         self.tail.pre = self.head
 
@@ -54,19 +131,19 @@ class LRUCache(object):
 
     def add(self, key, val):
         node = Node(key, val)
-        nxt = self.head.next
+        succ = self.head.next
         node.pre = self.head
-        node.next = nxt
+        node.next = succ
         self.head.next = node
-        nxt.pre = node
+        succ.pre = node
         self.dic[key] = node
 
     def remove(self, key):
         node = self.dic[key]
         pre = node.pre
-        nxt = node.next
-        pre.next = nxt
-        nxt.pre = pre
+        succ = node.next
+        pre.next = succ
+        succ.pre = pre
         del self.dic[key]
 
 
