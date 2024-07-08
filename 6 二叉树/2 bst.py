@@ -30,6 +30,22 @@ def is_valid_bst(tree):
     return helper(tree, -float('inf'), float('inf'))
 
 
+# 剑指Offer33 检查一个遍历是否为二叉搜索树的后序遍历
+def verify_postorder(post):
+    if len(post) <= 1:  # 只有一侧子树
+        return True
+    root = post[-1]
+    i, n = 0, len(post)
+    # 根据左子树 < 根 < 右子树 切分左右子树
+    while i < n - 1 and post[i] < root:
+        i += 1
+    p = i
+    while i < n - 1 and post[i] > root:
+        i += 1
+    # 只有一侧子树也可
+    return i == n - 1 and verify_postorder(post[:p]) and verify_postorder(post[p:n - 1])
+
+
 # 面试题 04.06.后继者
 # 二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
 # https://leetcode.cn/problems/successor-lcci/description/
@@ -43,23 +59,6 @@ def inorder_successor1(root, p):
         return successor
     # 无右子树时 为下一个大于他的数
     # 利用二叉搜索树的性质 找到下一个大于它的数
-    node = root
-    while node:
-        if node.val > p.val:
-            successor = node
-            node = node.left
-        else:
-            node = node.right
-    return successor
-
-
-def inorder_successor2(root, p):
-    successor = None
-    if p.right:
-        successor = p.right
-        while successor.left:
-            successor = successor.left
-        return successor
     node = root
     while node:
         if node.val > p.val:
@@ -109,22 +108,6 @@ def top_k_binary_search_tree2(node, k):
 
     helper(node)
     return res[1]
-
-
-# 剑指Offer33 检查一个遍历是否为二叉搜索树的后序遍历
-def verify_postorder(post):
-    if len(post) <= 1:  # 只有一侧子树
-        return True
-    root = post[-1]
-    i, n = 0, len(post)
-    # 根据左子树 < 根 < 右子树 切分左右子树
-    while i < n - 1 and post[i] < root:
-        i += 1
-    p = i
-    while i < n - 1 and post[i] > root:
-        i += 1
-    # 只有一侧子树也可
-    return i == n - 1 and verify_postorder(post[:p]) and verify_postorder(post[p:n - 1])
 
 
 # 450. 删除二叉搜索树中的节点
