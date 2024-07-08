@@ -35,85 +35,7 @@ def reverse(x):
     return res if res < 2 ** 31 else 0
 
 
-# 496. 下一个更大元素 I
-# Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
-# Output: [-1, 3, -1]
-def next_greater_element(nums1, nums2):
-    dic = dict()
-    stack = []
-
-    for i, v in enumerate(nums2):
-        while stack and stack[-1] < v:
-            v1 = stack.pop(-1)
-            dic[v1] = v
-        stack.append(v)
-
-    res = [-1] * len(nums1)
-    for i, v in enumerate(nums1):
-        if v in dic:
-            res[i] = dic[v]
-    return res
-
-
-# 739 需要多少天 气温会升高
-def daily_temperatures(t):
-    if not t:
-        return
-    res = [0] * len(t)
-    stack = []
-    for i, v in enumerate(t):
-        while stack and t[stack[-1]] < v:
-            j = stack.pop(-1)
-            res[j] = i - j
-        stack.append(i)
-    return res
-
-
-# 剑指Offer 09. 用两个栈实现队列
-class CQueue:
-    def __init__(self):
-        self.A = []
-        self.B = []
-
-    def appendTail(self, value):
-        self.A.append(value)
-
-    def deleteHead(self):
-        if self.B:
-            return self.B.pop()
-        if not self.A:
-            return -1
-        while self.A:
-            self.B.append(self.A.pop())
-        return self.B.pop()
-
-
-# 用两个栈实现最小栈
-class MinStack():
-    def __init__(self):
-        self.stack = []
-        self.min = []
-
-    def push(self, v):
-        self.stack.append(v)
-        if self.min:
-            if self.min[-1] <= v:
-                self.min.append(self.min[-1])
-            else:
-                self.min.append(v)
-        else:
-            self.min.append(v)
-
-    def pop(self):
-        if self.stack and self.min:
-            self.stack.pop(-1)
-            self.min.pop(-1)
-
-    def get_min(self):
-        return self.min[-1]
-
-
-# 循环删除字符串中的连续重复字母
+# 1047 循环删除字符串中的连续重复字母
 # 类似俄罗斯方块的消去
 # 相当于指针 用到了stack最后一个数
 def remove_duplicates(S):
@@ -196,6 +118,104 @@ def min_remove_to_make_valid(s):
     for i in range(n):
         if i in valid:
             res += s[i]
+    return res
+
+
+# 剑指Offer 09.
+# 用两个栈实现队列
+class CQueue:
+    def __init__(self):
+        self.A = []
+        self.B = []
+
+    def appendTail(self, value):
+        self.A.append(value)
+
+    def deleteHead(self):
+        if self.B:
+            return self.B.pop()
+        if not self.A:
+            return -1
+        while self.A:
+            self.B.append(self.A.pop())
+        return self.B.pop()
+
+
+# 155 用两个栈实现最小栈
+class MinStack():
+    def __init__(self):
+        self.stack = []
+        self.min = []
+
+    def push(self, v):
+        self.stack.append(v)
+        if self.min:
+            if self.min[-1] <= v:
+                self.min.append(self.min[-1])
+            else:
+                self.min.append(v)
+        else:
+            self.min.append(v)
+
+    def pop(self):
+        if self.stack and self.min:
+            self.stack.pop(-1)
+            self.min.pop(-1)
+
+    def get_min(self):
+        return self.min[-1]
+
+
+# 单调栈
+# 496. 下一个更大元素 I
+# Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
+# Output: [-1, 3, -1]
+def next_greater_element(nums1, nums2):
+    dic = dict()
+    stack = []
+
+    for i, v in enumerate(nums2):
+        while stack and stack[-1] < v:
+            v1 = stack.pop(-1)
+            dic[v1] = v
+        stack.append(v)
+
+    res = [-1] * len(nums1)
+    for i, v in enumerate(nums1):
+        if v in dic:
+            res[i] = dic[v]
+    return res
+
+
+# 739 需要多少天 气温会升高
+def daily_temperatures(t):
+    if not t:
+        return
+    res = [0] * len(t)
+    stack = []
+    for i, v in enumerate(t):
+        while stack and t[stack[-1]] < v:
+            j = stack.pop(-1)
+            res[j] = i - j
+        stack.append(i)
+    return res
+
+
+# 42 接雨水
+def trap(height):
+    n = len(height)
+    if n <= 2:
+        return 0
+    stack = []
+    res = 0
+    for i, v in enumerate(height):
+        while stack and height[stack[-1]] < v:
+            j = stack.pop(-1)
+            if stack:
+                h = min(height[stack[-1]], v) - height[j]
+                w = i - stack[-1] - 1
+                res += h * w
+        stack.append(i)
     return res
 
 
