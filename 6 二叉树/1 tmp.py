@@ -8,19 +8,6 @@ from collections import defaultdict, deque
 from binary_tree import *
 
 
-# 236 最近公共祖先 关注一个节点就是根节点
-def lowest_common_ancestor(tree, p, q):
-    if not tree:
-        return None
-    if tree == p or tree == q:
-        return tree
-    left = lowest_common_ancestor(tree.left, p, q)
-    right = lowest_common_ancestor(tree.right, p, q)
-    if left and right:
-        return tree
-    return left or right
-
-
 # 序列化
 def serialize(tree):
     if not tree:
@@ -49,8 +36,47 @@ def deserialize(s):
     return helper()
 
 
+# 右侧看到的节点 层次遍历
+def right_side_view(tree):
+    if not tree:
+        return
+    curr_level = [tree]
+    res = []
+    while curr_level:
+        next_level = []
+        for node in curr_level:
+            left, right = node.left, node.right
+            if left:
+                next_level.append(left)
+            if right:
+                next_level.append(right)
+        res.append(curr_level[-1].val)
+        curr_level = next_level
+    return res
+
+
+# 662
+def width_of_tree(tree):
+    if not tree:
+        return 0
+    current_level = [(tree, 0)]
+    res = 1
+    while current_level:
+        next_level = []
+        res = max(res, current_level[-1][1] - current_level[0][1] + 1)
+        for node, idx in current_level:
+            left, right = node.left, node.right
+            if left:
+                next_level.append((left, idx * 2))
+            if right:
+                next_level.append((right, idx * 2 + 1))
+        current_level = next_level
+
+    return res
+
+
 # 锯齿形层次遍历。
-# 即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行
+# 先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行
 def zigzag_level_order(tree):
     if not tree:
         return
@@ -75,25 +101,6 @@ def zigzag_level_order(tree):
     return res
 
 
-# 右侧看到的节点 层次遍历
-def right_side_view(tree):
-    if not tree:
-        return
-    curr_level = [tree]
-    res = []
-    while curr_level:
-        next_level = []
-        for node in curr_level:
-            left, right = node.left, node.right
-            if left:
-                next_level.append(left)
-            if right:
-                next_level.append(right)
-        res.append(curr_level[-1].val)
-        curr_level = next_level
-    return res
-
-
 # 105 根据先序遍历 和 中序遍历 构造树 找到根节点!!
 def build_tree(preorder, inorder):
     if not preorder and not inorder:
@@ -110,30 +117,17 @@ def build_tree(preorder, inorder):
     return root
 
 
-# 中序遍历节点的后继
-# 含有父节点 node含有父节点
-def inorder_tra_next_node(node):
-    if not node:
-        return
-    # 1 有右子树时 下一个节点为右子树的最小值
-    if node.right:
-        node = node.right
-        while node.left:
-            node = node.left
-        return node.val
-    # 2 无右子树时 下一个节点为右子树的最小值
-    # 无父节点
-    if not node.parent:
-        return
-    # 2.1 节点是左孩子
-    if node.parent.left == node:
-        return node.parent.val
-    # 2.2 节点是右孩子
-    while node.parent:
-        if node == node.parent.left:
-            return node.parent.val
-        node = node.parent
-    return
+# 236 最近公共祖先 关注一个节点就是根节点
+def lowest_common_ancestor(tree, p, q):
+    if not tree:
+        return None
+    if tree == p or tree == q:
+        return tree
+    left = lowest_common_ancestor(tree.left, p, q)
+    right = lowest_common_ancestor(tree.right, p, q)
+    if left and right:
+        return tree
+    return left or right
 
 
 # 110 返回是否平衡 已经树的高度
@@ -172,35 +166,20 @@ def is_balanced2(tree):
     return res[0]
 
 
-# 返回值具体不同语义
+# 返回值具体多重语义
 def is_balanced3(tree):
     def helper(tree):
         if not tree:
             return 0
         left = helper(tree.left)
         right = helper(tree.right)
-        if left == -1 or right == -1:  # 可以先判断left 在判断right
+        if left == -1 or right == -1:  # 先判断left, 再判断right
             return -1
         if abs(right - left) > 1:
             return -1
         return max(left, right) + 1
 
     return helper(tree) != -1
-
-
-# 543. 二叉树的直径
-def diameter_of_binary_tree(root):
-    res = [-1]
-
-    def helper(root):  # 包含节点的最大深度
-        if not root:
-            return 0
-        l, r = helper(root.left), helper(root.right)
-        res[0] = max(res[0], l + r)
-        return max(l, r) + 1
-
-    helper(root)
-    return res[0]
 
 
 # 257. 二叉树的所有路径
@@ -240,6 +219,21 @@ def binary_tree_paths2(root):
     return res
 
 
+# 543. 二叉树的直径
+def diameter_of_binary_tree(root):
+    res = [-1]
+
+    def helper(root):  # 包含节点的最大深度
+        if not root:
+            return 0
+        l, r = helper(root.left), helper(root.right)
+        res[0] = max(res[0], l + r)
+        return max(l, r) + 1
+
+    helper(root)
+    return res[0]
+
+
 # 112
 # 是否存在路径和为某个target
 # 二叉树可能为空
@@ -276,13 +270,18 @@ def path_sum1(root, target):
     return res
 
 
-# 437 找出路径和等于给定数值的路径总数。路径不需要从根节点开始，也不需要在叶子节点结束，
+# 437 找出路径和等于给定数值的路径总数
+# 路径不需要从根节点开始，也不需要在叶子节点结束，
 # 但是路径方向必须是向下的（只能从父节点到子节点）
 # 时间复杂度：O(N2)
-def path_sum2(root, target):
+def path_sum1(root, target):
     res = [0]
+    '''
+    尝试从每一个节点出发 对树进行遍历
+    '''
 
-    def from_root(tree, total):  # 尝试从当前节点出发 到任一子节点的路径
+    # 尝试从当前节点向下
+    def from_root(tree, total):
         if not tree:
             return
         total += tree.val
@@ -291,6 +290,7 @@ def path_sum2(root, target):
         from_root(tree.left, total)
         from_root(tree.right, total)
 
+    # 共用一个全局变量 因此新定义一个函数
     def helper(tree):
         if not tree:
             return
@@ -303,15 +303,16 @@ def path_sum2(root, target):
     return res[0]
 
 
-# 437
 # 解法一中存在重复计算。可以使用前缀和思想
 # 我们定义节点的前缀和为：由根结点到当前结点的路径上所有节点的和。
-def path_sum3(root, target):
+def path_sum2(root, target):
     if not root:
         return 0
-    res = [0]
+
     dic = defaultdict(int)
     dic[0] = 1
+
+    res = [0]
 
     def helper(root, total):  # 包含根节点
         if not root:
@@ -320,7 +321,7 @@ def path_sum3(root, target):
         # 先计数
         if total - target in dic:
             res[0] += dic[total - target]
-        # 后修改字典
+        # 修改字典
         dic[total] += 1
         helper(root.left, total)
         helper(root.right, total)
@@ -392,26 +393,6 @@ def is_complete_tree(root):
     return True
 
 
-# 662
-def width_of_tree(tree):
-    if not tree:
-        return 0
-    current_level = [(tree, 0)]
-    res = 1
-    while current_level:
-        next_level = []
-        res = max(res, current_level[-1][1] - current_level[0][1] + 1)
-        for node, idx in current_level:
-            left, right = node.left, node.right
-            if left:
-                next_level.append((left, idx * 2))
-            if right:
-                next_level.append((right, idx * 2 + 1))
-        current_level = next_level
-
-    return res
-
-
 # 337 抢钱问题 节点之间不能存在父子关系
 # 动态规划
 def rob2(tree):
@@ -419,17 +400,17 @@ def rob2(tree):
         if not tree:
             return 0, 0  # inc, exc
 
-        l = helper(tree.left)
-        r = helper(tree.right)
-        inc = tree.val + l[1] + r[1]
-        exc = max(l) + max(r)
+        left = helper(tree.left)
+        right = helper(tree.right)
+        inc = tree.val + left[1] + right[1]
+        exc = max(left) + max(right)
         return inc, exc
 
     return max(helper(tree))
 
 
 # 124. 二叉树中的最大路径和
-def max_sum_path(tree):
+def max_sum_path1(tree):
     res = [-float('inf')]
 
     def helper(tree):  # 当前节点向下的路径!!
@@ -451,15 +432,16 @@ def max_sum_path(tree):
 def max_sum_path2(tree):
     res = [-float('inf')]  # 可能存在负数
 
-    def helper(tree):  # 包含根节点的最大值
+    def from_node(tree):  # 包含根节点的最大值
         if not tree:
             return 0
-        left, right = helper(tree.left), helper(tree.right)
-        res[0] = max(res[0], tree.val, tree.val + left, tree.val + right, tree.val + left + right)
+        left, right = from_node(tree.left), from_node(tree.right)
+        val = max(tree.val, tree.val + left, tree.val + right)
+        res[0] = max(res[0], val, tree.val + left + right)
 
-        return max(tree.val, tree.val + left, tree.val + right)
+        return val
 
-    helper(tree)
+    from_node(tree)
     return res[0]
 
 
@@ -571,6 +553,32 @@ def substructure(s, t):
     return is_subtree(s.left, t) or is_subtree(s.right, t)
 
 
+# 中序遍历节点的后继
+# 含有父节点 node含有父节点
+def inorder_tra_next_node(node):
+    if not node:
+        return
+    # 1 有右子树时 下一个节点为右子树的最小值
+    if node.right:
+        node = node.right
+        while node.left:
+            node = node.left
+        return node.val
+    # 2 无右子树时 下一个节点为右子树的最小值
+    # 无父节点
+    if not node.parent:
+        return
+    # 2.1 节点是左孩子
+    if node.parent.left == node:
+        return node.parent.val
+    # 2.2 节点是右孩子
+    while node.parent:
+        if node == node.parent.left:
+            return node.parent.val
+        node = node.parent
+    return
+
+
 # 863 到target 长度为k的节点
 def distance_k1(root, target, k):
     res = []
@@ -603,7 +611,6 @@ def distance_k1(root, target, k):
     from_node(target, k)
 
     # 向上访问 + 访问兄弟节点
-    print(target.val)
     while target.val in dic:
         print(target.val)
         parent = dic[target.val]
@@ -733,7 +740,7 @@ if __name__ == '__main__':
 
     print('\n子树最大路径之和')
     tree = create_full_binary_tree([-10, 9, 20, 0, 0, 15, 7])
-    print(max_sum_path(tree))
+    print(max_sum_path1(tree))
 
     print('\n中序遍历的下一个节点')
     tree = construct_parent()[3]

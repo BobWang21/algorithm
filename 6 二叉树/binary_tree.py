@@ -63,7 +63,7 @@ def preorder2(tree):
     return res
 
 
-# 中序遍历 左子树一直向下 访问到头就出栈
+# 中序遍历 左子树一直向下 访问到叶节点就出栈
 def inorder_traversal(tree):
     if not tree:
         return
@@ -91,17 +91,20 @@ def postorder_traversal(tree):
             stack.append(node)
             node = node.left
         node = stack[-1]
+        # 没有右子树 或上一个节点是右子树
         if not node.right or node.right == pre:
             node = stack.pop(-1)
             res.append(node.val)
             pre = node
             node = None
         else:
+            # 访问右子树
             node = node.right
     return res
 
 
-# 层次遍历二叉树 使用一个queue bfs
+# 层次遍历二叉树
+# bfs 使用一个queue
 def level_traversal(tree):
     if not tree:
         return

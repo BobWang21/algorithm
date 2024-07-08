@@ -100,7 +100,7 @@ def top_k_binary_search_tree2(node, k):
             return
         # 第k大, 先访问右子树
         helper(tree.right)
-        res[0] -= 1  # 理解递归
+        res[0] -= 1  # 理解递归 最先出栈的k个数
         if not res[0]:
             res.append(tree.val)
             return
