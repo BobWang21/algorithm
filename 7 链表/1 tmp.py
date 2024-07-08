@@ -34,15 +34,6 @@ def construct_list_node(nums):
     return head
 
 
-def construct_list_nodex(nums):
-    head = NodeX(nums[0])
-    cur = head
-    for i in range(1, len(nums)):
-        cur.next = NodeX(nums[i])
-        cur = cur.next
-    return head
-
-
 def print_list_node(head):
     res = []
     node = head
@@ -394,6 +385,11 @@ def merge_k_sorted_lists2(lists):
 
 # 23 或者定义node 的 __lt__(m, n) 函数
 def merge_k_sorted_lists3(lists):
+    def __lt__(self, other):
+        return self.val < other.val
+
+    ListNode.__lt__ = __lt__
+
     if not lists:
         return
     if len(lists) == 1:
@@ -747,9 +743,9 @@ if __name__ == '__main__':
     l3 = construct_list_node([10, 11, 12, 13])
     print_list_node(merge_k_sorted_lists2([l1, l2, l3]))
 
-    l1 = construct_list_nodex([1, 3, 5, 7])
-    l2 = construct_list_nodex([2, 4, 6, 8])
-    l3 = construct_list_nodex([10, 11, 12, 13])
+    l1 = construct_list_node([1, 3, 5, 7])
+    l2 = construct_list_node([2, 4, 6, 8])
+    l3 = construct_list_node([10, 11, 12, 13])
     print_list_node(merge_k_sorted_lists3([l1, l2, l3]))
 
     print('\n删除链表中重复元素')
