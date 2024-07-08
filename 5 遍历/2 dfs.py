@@ -347,7 +347,7 @@ def longest_increasing_path(matrix):
 
 # 抢钱问题 记忆化深度搜索
 def rob(tree):
-    dic = {}
+    dic = dict()
 
     def helper(root):
         if not root:
