@@ -15,16 +15,6 @@ class Node:
         self.random = random
 
 
-class NodeX:
-    def __init__(self, x, next=None, random=None):
-        self.val = int(x)
-        self.next = next
-        self.random = random
-
-    def __lt__(self, other):
-        return self.val < other.val
-
-
 def construct_list_node(nums):
     head = ListNode(nums[0])
     cur = head

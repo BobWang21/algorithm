@@ -74,8 +74,7 @@ def unbounded_knapsack2(values, weights, capacity):
 def unbounded_knapsack3(values, weights, capacity):
     dp = [0] * (capacity + 1)
     n = len(weights)
-    for i in range(n):
-        weight, value = weights[i], values[i]
+    for weight, value in zip(weights, values):
         for j in range(weight, capacity + 1):
             dp[j] = max(dp[j], dp[j - weight] + value)
     return dp[-1]
@@ -267,20 +266,6 @@ def can_partition(nums):
     return dp[-1] == capacity
 
 
-# 先遍历金额 会重复计数
-# def coin_change3(coins, amount):
-#     if amount < 0:
-#         return 0
-#     dp = [0] * (amount + 1)
-#     dp[0] = 1
-#
-#     for v in range(amount + 1):
-#         for coin in coins:
-#             if v >= coin:
-#                 dp[v] += dp[v - coin]
-#     return dp[-1]
-
-
 if __name__ == '__main__':
     print('\n0-1背包问题')
     values = [1, 3, 4, 8]
@@ -309,5 +294,6 @@ if __name__ == '__main__':
     print(coin_change1([1, 2, 5, 10], 11))
     print(coin_change2([1, 2, 5], 5))
     print(coin_change3([2, 3, 2, 5], 9))
+
     print('\n找到子序列和相等的两个分区')
     print(can_partition([3, 1, 5, 9, 12]))

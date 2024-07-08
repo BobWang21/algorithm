@@ -120,17 +120,9 @@ def find_target_sum_ways(nums, target):
     return res[0]
 
 
-# 39
-# Given a set of candidate numbers (candidates) (without duplicates)
-# and a target number (target), find all unique combinations in candidates
-# where the candidate numbers sums to target.
-# The same repeated number may be chosen from candidates unlimited number of times.
+# 39 和为target 数字可以重复使用；组合数为dp问题
 # Input: candidates = [2, 3, 6, 7], target = 7,
-# A solution set is:
-# [
-#   [7],
-#   [2, 2, 3]
-# ]
+# A solution set is:  [[7], [2, 2, 3]]
 def combination_sum(nums, target):
     if not nums or target == 0:
         return []
@@ -290,52 +282,6 @@ def find_sub_sequences(nums):
                 helper(i + 1, path + [nums[i]])
 
     helper(0, [])
-    return res
-
-
-# 背包问题
-def knapsack(costs, values, capacity):
-    def dfs(capacity, idx, amount, res):
-        for i in range(idx, len(costs)):
-            cost, val = costs[i], values[i]
-            if capacity - cost < 0:  # base 1
-                res[0] = max(res[0], amount)
-                continue
-            elif capacity == cost:  # base 2
-                res[0] = max(res[0], amount + val)
-            else:
-                dfs(capacity - cost, i + 1, amount + val, res)
-
-    res = [-1]
-    dfs(capacity, 0, 0, res)
-    return res[0]
-
-
-"""
-W=<90, 80, 40, 30, 20, 12, 10> c1 =152, c2 =130
-有n个集装箱，需要装上两艘载重分别为 c1 和 c2 的轮船。
-wi 为第i个集装箱的重量，且 w1+w2+...+wn ≤ c1+c2。
-问是否存在一种合理的装载方 案把这n个集装箱装上船? 如果有，给出一种方案。
-算法思想: 令第一艘船的载入量为W1
-1. 用回溯法求使得c1 -W1 达到最小的装载方案
-2. 若满足 w1+w2+...+wn -W1 ≤ c2
-"""
-
-
-def pack(candidates, c1, c2):
-    candidates.sort()
-    res = []
-
-    def dfs(candidates, index, c1, path, res):
-        if sum(candidates) - sum(path) <= c2:  # 加了新的后 开始小于0
-            res.append(path)
-            return
-        for i in range(index, len(candidates)):
-            if c1 - candidates[i] < 0:
-                break
-            dfs(candidates, i + 1, c1 - candidates[i], path + [candidates[i]], res)
-
-    dfs(candidates, 0, c1, [], res)
     return res
 
 
@@ -566,12 +512,6 @@ if __name__ == '__main__':
     print(permute1([1, 2, 3]))
     print(permute2([1, 2, 1]))
     print(permute_unique1([1, 2, 1]))
-
-    print('\n背包问题')
-    print(knapsack([1, 2, 3, 4], [1, 3, 5, 8], 5))
-
-    print('\n两个轮船分集装箱')
-    print(pack([90, 80, 40, 30, 20, 12, 10], 152, 130))
 
     print('\nLetter Case Permutation')
     print(letter_case_permutation("a1b2"))

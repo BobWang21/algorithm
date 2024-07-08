@@ -58,7 +58,7 @@ def rob1(nums):
 
 # 滚动数组
 def rob2(nums):
-    inc = exc = 0  # 是否包括当前值
+    inc = exc = 0  # 是否包括当前值 状态
     for num in nums:
         inc, exc = exc + num, max(exc, inc)
     return max(inc, exc)
@@ -455,8 +455,6 @@ if __name__ == '__main__':
     print('\n最长上升子序列')
     print(LIS([2, 5, 3, 4, 1, 7, 6]))
 
-
-
     print('\n数字由平方组合')
     print(num_squares(13))
 
@@ -491,10 +489,8 @@ if __name__ == '__main__':
     print('\n股票买卖 ')
     print('最佳盈利')
     print(max_profit1([5, 10, 15, 1, 20]))
-
     print('包含冷冻期')
     print(max_profit3([1, 2, 3, 0, 2]))
-
     print('有交易次数限制')
     print(max_profit4([3, 3, 5, 0, 0, 3, 1, 4]))
 
