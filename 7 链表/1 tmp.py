@@ -15,11 +15,30 @@ class Node:
         self.random = random
 
 
+class NodeX:
+    def __init__(self, x, next=None, random=None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+
+    def __lt__(self, other):
+        return self.val < other.val
+
+
 def construct_list_node(nums):
     head = ListNode(nums[0])
     cur = head
     for i in range(1, len(nums)):
         cur.next = ListNode(nums[i])
+        cur = cur.next
+    return head
+
+
+def construct_list_nodex(nums):
+    head = NodeX(nums[0])
+    cur = head
+    for i in range(1, len(nums)):
+        cur.next = NodeX(nums[i])
         cur = cur.next
     return head
 
@@ -49,7 +68,7 @@ def reverse2(head):
     if not head or not head.next:
         return head
     new_head = reverse2(head.next)
-    head.next.next = head  # head还连接着next, head.next为反转后的尾结点
+    head.next.next = head  # head指向new_head的尾结点
     head.next = None
     return new_head
 
@@ -166,37 +185,37 @@ def remove_duplicates2(head):
 def tail(head, k):
     if not head:
         return
-    fast = head
-    while k > 0 and fast:
-        fast = fast.next
+    first = head
+    while k > 0 and first:
+        first = first.next
         k -= 1
     if k > 0:
         return
-    slow = head
-    while fast:
-        fast = fast.next
-        slow = slow.next
-    return slow.val
+    second = head
+    while first:
+        first = first.next
+        second = second.next
+    return second.val
 
 
 # 19 前后指针
 def remove_nth_from_end(head, n):
     if not head:
         return
-    slow = fast = head
+    first = second = head
     while n > 0:
-        fast = fast.next
+        first = first.next
         n -= 1
 
     pre = None
-    while fast:
-        fast = fast.next
-        pre = slow
-        slow = slow.next
+    while first:
+        first = first.next
+        pre = second
+        second = second.next
 
     if not pre:
         return head.next
-    pre.next = slow.next  # pre赋值前需要判断
+    pre.next = second.next  # pre赋值前需要判断
     return head
 
 
@@ -204,12 +223,12 @@ def remove_nth_from_end(head, n):
 def middle_node(head):
     if not head:
         return
-    fast = head
-    slow = head
-    while fast and fast.next:
-        fast = fast.next.next
-        slow = slow.next
-    return slow.val
+    first = head
+    second = head
+    while first and first.next:
+        first = first.next.next
+        second = second.next
+    return second.val
 
 
 # 148 链表排序
@@ -228,8 +247,9 @@ def sort_list(head):
         head.next = merge(l1, l2)
         return head
 
-    if not head or not head.next:
+    if not head or not head.next:  # 单节点
         return head
+
     fast = slow = head
     pre_slow = None
     while fast and fast.next:
@@ -237,7 +257,7 @@ def sort_list(head):
         pre_slow = slow
         slow = slow.next
 
-    pre_slow.next = None
+    pre_slow.next = None  # 一定不为空
 
     l1 = sort_list(head)
     l2 = sort_list(slow)
@@ -289,10 +309,10 @@ def merge_two_sorted_lists3(l1, l2):
         a = l1.val if l1 else float('inf')
         b = l2.val if l2 else float('inf')
         if a < b:
-            curr.next = ListNode(a)
+            curr.next = l1
             l1 = l1.next
         else:
-            curr.next = ListNode(b)
+            curr.next = l2
             l2 = l2.next
         curr = curr.next
     return dummy.next
@@ -352,7 +372,7 @@ def merge_k_sorted_lists1(lists):
     return merge_two_sorted_lists1(a, b)
 
 
-# 23
+# 23 或者定义node 的 __lt__(m, n) 函数
 def merge_k_sorted_lists2(lists):
     if not lists:
         return
@@ -369,6 +389,26 @@ def merge_k_sorted_lists2(lists):
         curr = curr.next
         if node.next:
             hq.heappush(heap, (node.next.val, node.next))
+    return dummy.next
+
+
+# 23 或者定义node 的 __lt__(m, n) 函数
+def merge_k_sorted_lists3(lists):
+    if not lists:
+        return
+    if len(lists) == 1:
+        return lists[0]
+    heap = []
+    for l in lists:
+        if l:
+            hq.heappush(heap, l)  # 加入value为了排序
+    dummy = curr = ListNode(-1)
+    while heap:
+        node = hq.heappop(heap)
+        curr.next = node
+        curr = curr.next
+        if node.next:
+            hq.heappush(heap, node.next)
     return dummy.next
 
 
@@ -662,10 +702,10 @@ if __name__ == '__main__':
     print_list_node(reverse1(head))
 
     head = construct_list_node([1, 3, 5])
-    print_list_node(reverse2(head)[0])
+    print_list_node(reverse2(head))
 
     head = construct_list_node([1, 3, 5, 7])
-    print_list_node(reverse3(head))
+    print_list_node(reverse3(head)[0])
 
     print('\n链表倒数第K个节点')
     head = construct_list_node([1, 3, 5, 7])
@@ -696,10 +736,6 @@ if __name__ == '__main__':
     l2 = construct_list_node([2, 4, 6, 8])
     print_list_node(merge_two_sorted_lists2(l1, l2))
 
-    l1 = construct_list_node([1, 3, 5, 7])
-    l2 = construct_list_node([2, 4, 6, 8])
-    print_list_node(merge_two_sorted_lists3(l1, l2))
-
     print('\n合并K个排序链表')
     l1 = construct_list_node([1, 3, 5, 7])
     l2 = construct_list_node([2, 4, 6, 8])
@@ -710,6 +746,11 @@ if __name__ == '__main__':
     l2 = construct_list_node([2, 4, 6, 8])
     l3 = construct_list_node([10, 11, 12, 13])
     print_list_node(merge_k_sorted_lists2([l1, l2, l3]))
+
+    l1 = construct_list_nodex([1, 3, 5, 7])
+    l2 = construct_list_nodex([2, 4, 6, 8])
+    l3 = construct_list_nodex([10, 11, 12, 13])
+    print_list_node(merge_k_sorted_lists3([l1, l2, l3]))
 
     print('\n删除链表中重复元素')
     head = construct_list_node([1, 1, 2, 3, 3])
