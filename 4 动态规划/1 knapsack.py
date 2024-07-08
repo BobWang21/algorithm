@@ -73,7 +73,6 @@ def unbounded_knapsack2(values, weights, capacity):
 # 无穷背包3 最优解 状态压缩 使用1维数组表示
 def unbounded_knapsack3(values, weights, capacity):
     dp = [0] * (capacity + 1)
-    n = len(weights)
     for weight, value in zip(weights, values):
         for j in range(weight, capacity + 1):
             dp[j] = max(dp[j], dp[j - weight] + value)

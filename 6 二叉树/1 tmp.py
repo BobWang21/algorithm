@@ -125,10 +125,10 @@ def inorder_tra_next_node(node):
     # 无父节点
     if not node.parent:
         return
-    # 2.1节点是左孩子
+    # 2.1 节点是左孩子
     if node.parent.left == node:
         return node.parent.val
-    # 2.2 节点右孩子
+    # 2.2 节点是右孩子
     while node.parent:
         if node == node.parent.left:
             return node.parent.val
