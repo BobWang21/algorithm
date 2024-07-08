@@ -115,45 +115,25 @@ def build_tree(preorder, inorder):
 def inorder_tra_next_node(node):
     if not node:
         return
-    # 有右子树
+    # 1 有右子树时 下一个节点为右子树的最小值
     if node.right:
         node = node.right
         while node.left:
             node = node.left
         return node.val
+    # 2 无右子树时 下一个节点为右子树的最小值
     # 无父节点
     if not node.parent:
         return
-    # 节点是左孩子
+    # 2.1节点是左孩子
     if node.parent.left == node:
         return node.parent.val
-    # 节点右孩子
+    # 2.2 节点右孩子
     while node.parent:
         if node == node.parent.left:
             return node.parent.val
         node = node.parent
     return
-
-
-# https://leetcode.cn/problems/successor-lcci/description/
-def inorder_successor(root, p):
-    if not root:
-        return None
-    if p.right:
-        node = p.right
-        while node.left:
-            node = node.left
-        return node
-
-    node = root
-    pre = None
-    while node:
-        if node.val > p.val:
-            pre = node
-            node = node.left
-        else:
-            node = node.right
-    return pre
 
 
 # 110 返回是否平衡 已经树的高度

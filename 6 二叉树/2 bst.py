@@ -3,6 +3,9 @@
 from binary_tree import *
 
 
+# 二叉搜索树
+# 左子树小于根节点 右子树大于根节点
+
 class BSTNode(object):
     def __init__(self, val):
         self.val = val
@@ -27,6 +30,46 @@ def is_valid_bst(tree):
     return helper(tree, -float('inf'), float('inf'))
 
 
+# 面试题 04.06.后继者
+# 二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
+# https://leetcode.cn/problems/successor-lcci/description/
+def inorder_successor1(root, p):
+    successor = None
+    # 有右子树时 为右子树的最小值
+    if p.right:
+        successor = p.right
+        while successor.left:
+            successor = successor.left
+        return successor
+    # 无右子树时 为下一个大于他的数
+    # 利用二叉搜索树的性质 找到下一个大于它的数
+    node = root
+    while node:
+        if node.val > p.val:
+            successor = node
+            node = node.left
+        else:
+            node = node.right
+    return successor
+
+
+def inorder_successor2(root, p):
+    successor = None
+    if p.right:
+        successor = p.right
+        while successor.left:
+            successor = successor.left
+        return successor
+    node = root
+    while node:
+        if node.val > p.val:
+            successor = node
+            node = node.left
+        else:
+            node = node.right
+    return successor
+
+
 # 二叉搜索树第K大的数 非递归
 def top_k_binary_search_tree(node, k):
     if not node:
@@ -49,7 +92,7 @@ def top_k_binary_search_tree(node, k):
 def top_k_binary_search_tree2(node, k):
     if not node:
         return
-    res = [k]
+    res = [k]  # 全局变量
 
     def helper(tree):
         if not tree:
@@ -58,7 +101,7 @@ def top_k_binary_search_tree2(node, k):
             return
         # 第k大, 先访问右子树
         helper(tree.right)
-        res[0] -= 1
+        res[0] -= 1  # 理解递归
         if not res[0]:
             res.append(tree.val)
             return
@@ -66,6 +109,48 @@ def top_k_binary_search_tree2(node, k):
 
     helper(node)
     return res[1]
+
+
+# 剑指Offer33 检查一个遍历是否为二叉搜索树的后序遍历
+def verify_postorder(post):
+    if len(post) <= 1:  # 只有一侧子树
+        return True
+    root = post[-1]
+    i, n = 0, len(post)
+    # 根据左子树 < 根 < 右子树 切分左右子树
+    while i < n - 1 and post[i] < root:
+        i += 1
+    p = i
+    while i < n - 1 and post[i] > root:
+        i += 1
+    # 只有一侧子树也可
+    return i == n - 1 and verify_postorder(post[:p]) and verify_postorder(post[p:n - 1])
+
+
+# 450. 删除二叉搜索树中的节点
+def delete_node(root, key):
+    if not root:
+        return None
+
+    if key < root.val:
+        root.left = delete_node(root.left, key)
+        return root
+
+    if key > root.val:
+        root.right = delete_node(root.right, key)
+        return root
+    # key == root.val
+    if not root.left or not root.right:
+        return root.left or root.right
+
+    # 选择左子树最大点 作为根节点
+    node = root.left
+    while node.right:
+        node = node.right
+    val = node.val
+    root.val = val
+    root.left = delete_node(root.left, val)
+    return root
 
 
 # 538. Convert BST to Greater Tree
@@ -98,22 +183,6 @@ def convertBST2(root):
     return helper(root)
 
 
-# 剑指Offer33 检查一个遍历是否为二叉搜索树的后序遍历
-def verify_postorder(post):
-    if len(post) <= 1:  # 只有一侧子树
-        return True
-    root = post[-1]
-    i, n = 0, len(post)
-    # 根据左子树 < 根 < 右子树 切分左右子树
-    while i < n - 1 and post[i] < root:
-        i += 1
-    p = i
-    while i < n - 1 and post[i] > root:
-        i += 1
-    # 只有一侧子树也可
-    return i == n - 1 and verify_postorder(post[:p]) and verify_postorder(post[p:n - 1])
-
-
 # 669 trim 二叉搜索树
 def trimBST(root, low, high):
     if not root:
@@ -129,34 +198,6 @@ def trimBST(root, low, high):
 
     if root.val > high:
         return trimBST(root.left, low, high)
-
-
-# 450. 删除二叉搜索树中的节点
-def delete_node(root, key):
-    if not root:
-        return None
-
-    if root.val == key:
-        if not root.left:
-            return root.right
-        if not root.right:
-            return root.left
-        # 选择左子树最大点 作为根节点
-        cur_node = root.left
-        while cur_node.right:
-            cur_node = cur_node.right
-        val = cur_node.val
-        root.val = val
-        root.left = delete_node(root.left, val)
-        return root
-
-    if key < root.val:
-        root.left = delete_node(root.left, key)
-        return root
-
-    if key > root.val:
-        root.right = delete_node(root.right, key)
-        return root
 
 
 # 315. 计算右侧小于当前元素的个数

@@ -363,7 +363,7 @@ def merge_k_sorted_lists1(lists):
     return merge_two_sorted_lists1(a, b)
 
 
-# 23 或者定义node 的 __lt__(m, n) 函数
+# 23 或者定义
 def merge_k_sorted_lists2(lists):
     if not lists:
         return
@@ -383,8 +383,9 @@ def merge_k_sorted_lists2(lists):
     return dummy.next
 
 
-# 23 或者定义node 的 __lt__(m, n) 函数
+# 23 或者定义
 def merge_k_sorted_lists3(lists):
+    # 定义ListNode类比较大小函数 __lt__(self, other)
     def __lt__(self, other):
         return self.val < other.val
 
@@ -408,20 +409,14 @@ def merge_k_sorted_lists3(lists):
     return dummy.next
 
 
+# 160 相交链表
 # a + l + b = b + l + a
-# 寻找公共点 和 环 差不多
 def get_intersection_node(headA, headB):
     s1, s2 = headA, headB
     while s1 != s2:
-        if not s1:
-            s1 = headB
-        else:
-            s1 = s1.next
-
-        if not s2:
-            s2 = headA
-        else:
-            s2 = s2.next
+        s1 = s1.next if s1 else headB
+        s2 = s2.next if s2 else headA
+    # 如果不相交最后共同移动到空
     return s1
 
 
