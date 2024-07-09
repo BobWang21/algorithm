@@ -29,6 +29,7 @@ class MaxQueue():
 
 
 # 239. 滑动窗口最大值
+# 单调队列
 def max_sliding_window1(nums, k):
     n = len(nums)
     res = []
@@ -131,9 +132,9 @@ def trap2(height):
             j = stack.pop(-1)
             if not stack:
                 break
-            d = i - stack[-1] - 1
             h = min(height[i], height[stack[-1]]) - height[j]
-            res += d * h  # 可以多加的水
+            w = i - stack[-1] - 1
+            res += w * h  # 可以多加的水
         stack.append(i)
 
     return res
@@ -174,12 +175,12 @@ if __name__ == '__main__':
     print('\n滑动窗口的最大值')
     print(max_sliding_window1([9, 10, 9, -7, -4, -8, 2, -6], 5))
 
+    print('\n接雨水')
+    print(trap1([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
+    print(trap2([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
+
     print('\n柱状图最大矩形')
     print((largest_rectangle_area2([2, 1, 5, 6, 2, 3])))
 
     print('\n区间数字和与区间最小值乘积最大')
     print(max_area_min_sum_product([81, 87, 47, 59, 81, 18, 25, 40, 56, 0]))
-
-    print('\n接雨水')
-    print(trap1([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
-    print(trap2([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
