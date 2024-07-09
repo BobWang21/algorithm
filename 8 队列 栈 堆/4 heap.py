@@ -83,7 +83,7 @@ class MedianFinder(object):
         self.right = []  # 右半部分 小顶堆
 
     def add_num(self, num):  # 大顶堆多一个
-        if not self.right or num >= self.right[0]:
+        if self.right and num >= self.right[0]:
             hq.heappush(self.right, num)
         else:
             hq.heappush(self.left, -num)
@@ -101,7 +101,7 @@ class MedianFinder(object):
         n = len(self.left)
         if m > n:
             return self.right[0]
-        return (self.right[0] - self.left[0]) / 2.0
+        return (self.right[0] - self.left[0]) / 2.0  # 此处为2.0
 
 
 def check():

@@ -6,6 +6,50 @@
 # 括号匹配
 # 单调栈 适用于结果和数组当前值的前后缀相关的问题
 
+# 剑指Offer 09.
+# 用两个栈实现队列 尾部入队列和头部出队列
+class CQueue:
+    def __init__(self):
+        self.A = []
+        self.B = []
+
+    def appendTail(self, value):
+        self.A.append(value)
+
+    def deleteHead(self):
+        if self.B:
+            return self.B.pop()
+        if not self.A:
+            return -1
+        while self.A:
+            self.B.append(self.A.pop())
+        return self.B.pop()
+
+
+# 155 用两个栈实现最小栈
+class MinStack():
+    def __init__(self):
+        self.stack = []
+        self.min = []
+
+    def push(self, v):
+        self.stack.append(v)
+        if self.min:
+            if self.min[-1] <= v:
+                self.min.append(self.min[-1])
+            else:
+                self.min.append(v)
+        else:
+            self.min.append(v)
+
+    def pop(self):
+        if self.stack and self.min:
+            self.stack.pop(-1)
+            self.min.pop(-1)
+
+    def get_min(self):
+        return self.min[-1]
+
 
 def ten_2_binary(value):
     stack = []
@@ -121,49 +165,25 @@ def min_remove_to_make_valid(s):
     return res
 
 
-# 剑指Offer 09.
-# 用两个栈实现队列
-class CQueue:
-    def __init__(self):
-        self.A = []
-        self.B = []
-
-    def appendTail(self, value):
-        self.A.append(value)
-
-    def deleteHead(self):
-        if self.B:
-            return self.B.pop()
-        if not self.A:
-            return -1
-        while self.A:
-            self.B.append(self.A.pop())
-        return self.B.pop()
-
-
-# 155 用两个栈实现最小栈
-class MinStack():
-    def __init__(self):
-        self.stack = []
-        self.min = []
-
-    def push(self, v):
-        self.stack.append(v)
-        if self.min:
-            if self.min[-1] <= v:
-                self.min.append(self.min[-1])
-            else:
-                self.min.append(v)
+# 150 波兰表达式
+def eval_RPN(tokens):
+    stack = []
+    for c in tokens:
+        if c not in {'+', '-', '*', '/'}:
+            stack.append(int(c))
+            continue
+        c2 = stack.pop(-1)
+        c1 = stack.pop(-1)
+        if c == '+':
+            s = c1 + c2
+        elif c == '-':
+            s = c1 - c2
+        elif c == '*':
+            s = c1 * c2
         else:
-            self.min.append(v)
-
-    def pop(self):
-        if self.stack and self.min:
-            self.stack.pop(-1)
-            self.min.pop(-1)
-
-    def get_min(self):
-        return self.min[-1]
+            s = int(c1 / c2)
+        stack.append(s)
+    return stack[-1]
 
 
 # 单调栈
@@ -202,6 +222,8 @@ def daily_temperatures(t):
 
 
 # 42 接雨水
+# 积水的条件为左右高于当前值
+# 前缀都高于当前值
 def trap(height):
     n = len(height)
     if n <= 2:
@@ -219,43 +241,58 @@ def trap(height):
     return res
 
 
-# 71. 简化路径
-def simplify_path(path):
-    if not path:
-        return '/'
-    stack, res = [], '/'
-    string = path.split('/')
-    for c in string:
-        if not c or c == '.':
-            continue
-        if c == '..':
-            if stack:
-                stack.pop(-1)
-        else:
-            stack.append(c)
-    res += '/'.join(stack)
+# 84. 柱状图中最大的矩形
+# 暴力法O(n^2)
+def largest_rectangle_area1(heights):
+    res = 0
+    n = len(heights)
+    for i, h in enumerate(heights):
+        l = r = i
+        while l > 0 and heights[l - 1] >= h:  # 前面第一个小于该数
+            l -= 1
+        while r < n - 1 and heights[r + 1] >= h:  # 后面第一个小于该数
+            r += 1
+        res = max(res, (r - l - 1) * h)
     return res
 
 
-# 150 波兰表达式
-def eval_RPN(tokens):
+# s = w * h
+# 当柱子左右都比它小是 确定面积
+def largest_rectangle_area2(height):
+    height.append(0)  # 为了让剩余元素出栈
     stack = []
-    for c in tokens:
-        if c not in {'+', '-', '*', '/'}:
-            stack.append(int(c))
-            continue
-        c2 = stack.pop(-1)
-        c1 = stack.pop(-1)
-        if c == '+':
-            s = c1 + c2
-        elif c == '-':
-            s = c1 - c2
-        elif c == '*':
-            s = c1 * c2
-        else:
-            s = int(c1 / c2)
-        stack.append(s)
-    return stack[-1]
+    res = 0
+    n = len(height)
+    for i in range(n):
+        while stack and height[stack[-1]] > height[i]:
+            h = height[stack.pop()]
+            w = i - stack[-1] - 1 if stack else i  # 当前值为最小值长度为i
+            res = max(res, h * w)
+        stack.append(i)
+    return res
+
+
+def max_area_min_sum_product(nums):
+    if not nums:
+        return 0
+    nums.append(-1)  # 为了使栈中剩余元素出栈
+    n = len(nums)
+    stack = []
+    total = [0] * n
+    res = 0
+
+    for i, v in enumerate(nums):
+        v = v if v >= 0 else 0
+        total[i] = total[i - 1] + v
+
+        while stack and nums[stack[-1]] > v:
+            j = stack.pop(-1)
+            pre_total = 0
+            if stack:
+                pre_total = total[stack[-1]]
+            res = max(res, (total[i - 1] - pre_total) * nums[j])
+        stack.append(i)
+    return res
 
 
 # 227. 基本计算器 II
@@ -406,3 +443,12 @@ if __name__ == '__main__':
     # queue.push(6)
     # for _ in range(3):
     #     print(queue.pop())
+
+    print('\n接雨水')
+    print(trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
+
+    print('\n柱状图最大矩形')
+    print((largest_rectangle_area2([2, 1, 5, 6, 2, 3])))
+
+    print('\n区间数字和与区间最小值乘积最大')
+    print(max_area_min_sum_product([81, 87, 47, 59, 81, 18, 25, 40, 56, 0]))
