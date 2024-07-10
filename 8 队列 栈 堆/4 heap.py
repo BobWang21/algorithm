@@ -26,7 +26,7 @@ def kth_smallest(matrix, k):
     if not matrix or not matrix[0]:
         return
     n = len(matrix)
-    heap = [(matrix[i][0], i, 0) for i in range(n)]  # value, row, col
+    heap = [(matrix[i][0], i, 0) for i in range(n)]  # (value, row, col)
     hq.heapify(heap)
     for i in range(k):
         v, row, col = hq.heappop(heap)
@@ -82,7 +82,7 @@ class MedianFinder(object):
         self.left = []  # 左半部分 大顶堆
         self.right = []  # 右半部分 小顶堆
 
-    def add_num(self, num):  # 大顶堆多一个
+    def add_num(self, num):
         if self.right and num >= self.right[0]:
             hq.heappush(self.right, num)
         else:
@@ -90,7 +90,7 @@ class MedianFinder(object):
 
         m = len(self.right)
         n = len(self.left)
-        # 0 <= m - n <= 1
+        # 大顶堆多一个 0 <= m - n <= 1
         if m - n > 1:
             hq.heappush(self.left, -hq.heappop(self.right))
         if n - m > 0:

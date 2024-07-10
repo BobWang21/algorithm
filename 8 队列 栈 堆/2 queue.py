@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # 单调队列 满足单调性的双端队列(可以同时弹出队首和队尾的元素的队列)
+
 from collections import deque
 import heapq as hq
 

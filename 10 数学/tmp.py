@@ -30,16 +30,16 @@ def sqrt1(n):
 def sqrt2(n, precision):
     if n == 1:
         return 1
-    l, r = 1.0, n
+    l, r = 0.0, n * 1.0
     while l <= r:
         mid = l + (r - l) / 2.0
         s = mid * mid
         if abs(s - n) <= precision:
             return mid
         if s < n:
-            l = mid + precision * precision
+            l = mid
         else:
-            r = mid - precision * precision
+            r = mid
     return r
 
 

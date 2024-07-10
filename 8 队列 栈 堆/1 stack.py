@@ -80,8 +80,8 @@ def reverse(x):
 
 
 # 1047 循环删除字符串中的连续重复字母
-# 类似俄罗斯方块的消去
-# 相当于指针 用到了stack最后一个数
+# 前面的数字后的到处理
+# '12332' 先删除的是3
 def remove_duplicates(S):
     if not S:
         return S
@@ -125,9 +125,7 @@ def useless_parentheses(s):
 
 # 20 有效的括号
 def valid_parentheses(s):
-    pair_dic = {']': '[',
-                '}': '{',
-                ')': '('}
+    pair_dic = {']': '[', '}': '{', ')': '('}
     stack = []
     for c in s:
         if c not in pair_dic:
@@ -190,6 +188,7 @@ def eval_RPN(tokens):
 # 496. 下一个更大元素 I
 # Input: nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2].
 # Output: [-1, 3, -1]
+# nums1 中的所有整数同样出现在 nums2 中
 def next_greater_element(nums1, nums2):
     dic = dict()
     stack = []
@@ -257,7 +256,8 @@ def largest_rectangle_area1(heights):
 
 
 # s = w * h
-# 当柱子左右都比它小是 确定面积
+# 当柱子左右都比它小时
+# 可以确定以当前柱子为高的的区域面积达到最值
 def largest_rectangle_area2(height):
     height.append(0)  # 为了让剩余元素出栈
     stack = []
