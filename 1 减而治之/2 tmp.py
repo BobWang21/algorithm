@@ -119,6 +119,33 @@ def find_unsorted_subarray(nums):
     return right - left + 1
 
 
+# 下一个排列
+def next_permutation(nums):
+    if not nums:
+        return
+    n = len(nums)
+
+    i = n - 1
+    while i > 0 and nums[i - 1] >= nums[i]:
+        i -= 1
+    if not i:
+        nums.reverse1()
+        return nums
+    k = i - 1
+    while i < n and nums[i] > nums[k]:  # 找到最后一个大于该数的位置
+        i += 1
+    i -= 1  # 大于该数的最小值
+    nums[k], nums[i] = nums[i], nums[k]
+
+    # reverse
+    l, i = k + 1, n - 1
+    while l < i:
+        nums[l], nums[i] = nums[i], nums[l]
+        l += 1
+        i -= 1
+    return nums
+
+
 # 128 无序数组 最长连续区间
 # 把数字及关系抽象为图
 # 最大连通图问题 也可以使用并查集
@@ -291,32 +318,6 @@ def merge(intervals):
             pre_end = end
 
     return res
-
-
-def next_permutation(nums):
-    if not nums:
-        return
-    n = len(nums)
-
-    r = n - 1
-    while r > 0 and nums[r - 1] >= nums[r]:
-        r -= 1
-    if not r:
-        nums.reverse1()
-        return nums
-    k = r - 1
-    while r < n and nums[r] > nums[k]:  # 找到第一个小于等于该数的位置
-        r += 1
-    r -= 1  # 大于该数的最小值
-    nums[k], nums[r] = nums[r], nums[k]
-
-    # reverse
-    l, r = k + 1, n - 1
-    while l < r:
-        nums[l], nums[r] = nums[r], nums[l]
-        l += 1
-        r -= 1
-    return nums
 
 
 # 66. 加一 [1, 2, 3] -> [1, 2, 4]

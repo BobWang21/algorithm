@@ -1,5 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+
+# dfs 时间复杂度：O(edge)
+# 类似联通区域的个数
+def find_circle_num2(M):
+    n = len(M)
+    seen = set()
+
+    def helper(i):
+        if i in seen:
+            return
+
+        seen.add(i)
+        for j in range(n):
+            if M[i][j] and i != j:
+                helper(j)
+
+    res = 0
+    for i in range(n):
+        if i not in seen:
+            res += 1
+            helper(i)
+    return res
+
+
 # 是否存在环
 def check_circle(M):
     if not M or not M[0]:
@@ -72,28 +97,6 @@ def find_circle_num(M):
             if M[i][j]:
                 union(i, j)
     return res[0]
-
-
-# dfs 时间复杂度：O(edge)
-def find_circle_num2(M):
-    n = len(M)
-    seen = set()
-
-    def helper(i):
-        if i in seen:
-            return
-
-        seen.add(i)
-        for j in range(n):
-            if M[i][j] and i != j:
-                helper(j)
-
-    res = 0
-    for i in range(n):
-        if i not in seen:
-            res += 1
-            helper(i)
-    return res
 
 
 def are_sentences_similar_two(words1, words2, pairs):
