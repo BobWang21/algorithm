@@ -4,39 +4,70 @@
 from collections import defaultdict, deque
 
 
-# 深度优先
+# 回溯版本 计算超时 节点会重复计算
+def can_finish1(num_courses, prerequisites):
+    visited = [False] * num_courses
+
+    edges = defaultdict(set)
+
+    for i, j in prerequisites:
+        edges[i].add(j)
+
+    def dfs(i):
+        if visited[i]:
+            return False
+
+        visited[i] = True
+
+        for j in edges[i]:
+            if not dfs(j):
+                visited[i] = False
+                return False
+        visited[i] = False
+        return True
+
+    for i, j in prerequisites:
+        if not dfs(i):
+            return False
+    return True
+
+
+# 深度优先 考虑出度
 def can_finish2(num_courses, prerequisites):
     edges = defaultdict(list)
     visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过节点及子节点
-    valid = [True]
 
-    for info in prerequisites:
-        edges[info[1]].append(info[0])
+    visited = [0] * num_courses
 
-    def dfs(u):
-        visited[u] = 1
-        for v in edges[u]:
-            if visited[v] == 0:
-                dfs(v)
-                if not valid[0]:
-                    return
-            # 正在访问，存在环
-            elif visited[v] == 1:
-                valid[0] = False
-                return
-            # visited=2 如果访问过，忽略
-        # 已访问
-        visited[u] = 2
+    edges = defaultdict(set)
 
-    for i in range(num_courses):
-        if valid[0] and not visited[i]:
-            dfs(i)
+    for i, j in prerequisites:
+        edges[i].add(j)
 
-    return valid[0]
+    def dfs(i):
+        if visited[i] == 1:
+            return False
+
+        if visited[i] == 2:
+            return True
+
+        visited[i] = 1
+
+        for j in edges[i]:
+            if not dfs(j):
+                return False
+        visited[i] = 2
+        return True
+
+    for i, j in prerequisites:
+        if not dfs(i):
+            return False
+    return True
 
 
-# 207. 课程表 广度优先
-def can_finish(num_courses, prerequisites):
+# 207. 课程表 拓扑排序(广度优先)
+# 考虑入度
+def can_finish3(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u 邻接表
     indegree = [0] * num_courses  # 入度
     for u, v in prerequisites:
@@ -140,7 +171,7 @@ def alien_order(words):
 
 if __name__ == '__main__':
     print('\n是否可以完课')
-    print(can_finish(2, [[1, 0]]))
+    print(can_finish1(2, [[1, 0]]))
 
     print('\n火星字典')
     print(alien_order(['wrt', 'wrf', 'er', 'ett', 'rftt']))
