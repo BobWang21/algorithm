@@ -189,6 +189,23 @@ def find_peak_element2(nums):
     return l
 
 
+# 带精度的求平方根
+def sqrt2(n, precision):
+    if n == 1:
+        return 1
+    l, r = 0.0, n * 1.0
+    while l <= r:
+        mid = l + (r - l) / 2.0
+        s = mid * mid
+        if abs(s - n) <= precision:
+            return mid
+        if s < n:
+            l = mid
+        else:
+            r = mid
+    return r
+
+
 # 441 排列硬币
 # 潜在递增函数 数组中小于等于某个值的最大值
 # 可给出解析解

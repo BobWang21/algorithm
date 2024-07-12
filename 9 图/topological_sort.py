@@ -32,7 +32,8 @@ def can_finish1(num_courses, prerequisites):
     return True
 
 
-# 深度优先 考虑出度
+# 207
+# 深度优先|考虑出度
 def can_finish2(num_courses, prerequisites):
     edges = defaultdict(list)
     visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过节点及子节点
@@ -65,8 +66,7 @@ def can_finish2(num_courses, prerequisites):
     return True
 
 
-# 207. 课程表 拓扑排序(广度优先)
-# 考虑入度
+# 广度优先 拓扑排序 | 考虑入度
 def can_finish3(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u 邻接表
     indegree = [0] * num_courses  # 入度
