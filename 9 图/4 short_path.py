@@ -9,6 +9,7 @@ class Edge():
         self.w = w
 
 
+# 单源最短路径 | 点出发
 def dijkstra(graph, f, t):
     heap = [(0, f, ())]  # [(cost1, v1, path)]
     p_set = set()  # 永久标记
@@ -35,7 +36,7 @@ def dijkstra(graph, f, t):
     return
 
 
-# 从边出发 O(VE) 
+# # 单源最短路径 | 从边出发 O(VE)
 def bellman_ford(edges, s, node_num):
     # 初始化dist
     dist = [float('inf')] * node_num
@@ -111,9 +112,6 @@ def get_edges(graph):
 
 
 # 752
-import heapq
-
-
 class AStar:
     # 计算启发函数
     @staticmethod
