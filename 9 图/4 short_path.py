@@ -9,72 +9,28 @@ class Edge():
         self.w = w
 
 
-# graph:{a:{b: w}}, s: start, n: point num
-def dijkstra(graph, s, n):
-    p = [False] * n
-    p[0] = True
-    res = [float('inf')] * n
-    res[0] = 0
-
-    for dest, dist in graph[s].items():
-        res[dest] = dist
-
-    # 从非永久集合中选择距离最小的顶点进入永久集合
-    def get_vertex_from_q():
-        min_vertex = -1
-        min_w = float("inf")
-        # 可使用堆
-        for i, w in enumerate(res):
-            if p[i]:
-                continue
-            if w <= min_w:
-                min_w = w
-                min_vertex = i
-        return min_vertex
-
-    while len(p) < n:
-        u = get_vertex_from_q()
-        p[u] = True
-        if u not in graph:
+def dijkstra(graph, f, t):
+    heap = [(0, f, ())]  # [(cost1, v1, path)]
+    p_set = set()  # 永久标记
+    res = {f: 0}
+    while heap:
+        cost1, v1, path = heappop(heap)
+        if v1 in p_set:
             continue
-        for v in graph[u]:
-            if v in p:
-                continue
-            # ac < ab + bc
-            new_dist = res[u] + graph[u][v]
-            if res[v] > new_dist:
-                res[v] = new_dist
-    return res
-
-
-def dijkstra2(edges, f, t):
-    graph = defaultdict(list)
-    for edge in edges:
-        graph[edge.u].append((edge.v, edge.w))
-        graph[edge.v].append((edge.u, edge.w))
-
-    if t not in edges:
-        return float("inf"), None
-
-    queue, seen, res = [(0, f, ())], set(), {f: 0}
-    while queue:
-        cost1, v1, path = heappop(queue)
-        if v1 in seen:
-            continue
-        seen.add(v1)
+        p_set.add(v1)
         path = (path, v1)  # 记录路径
         if v1 == t:
             return cost1, path
 
-        for v2, cost2 in graph[v1]:
-            if v2 in seen:
+        for v2, cost2 in graph[v1].items():
+            if v2 in p_set:
                 continue
             # 松弛
             prev = res.get(v2, float('inf'))
-            next = cost1 + cost2
-            if next < prev:
-                res[v2] = next
-                heappush(queue, (next, v2, path))
+            curr = cost1 + cost2
+            if curr < prev:
+                res[v2] = curr
+                heappush(heap, (curr, v2, path))
 
     return
 
@@ -111,6 +67,7 @@ def bellman_ford(edges, s, node_num):
 
 
 # shortest path faster algorithm
+# 带有队列优化的Bellman-Ford算法
 def spfa(graph, s, node_num):
     queue = [s]
     enqueue = [False] * node_num
@@ -160,7 +117,7 @@ if __name__ == '__main__':
              2: {3: 50},
              3: {5: 10},
              4: {3: 20, 5: 50}}
-    print(dijkstra(graph, s=0, n=6))
+    print(dijkstra(graph, f=0, t=3))
     edges = get_edges(graph)
     print(bellman_ford(edges, s=0, node_num=6))
     print(spfa(graph, s=0, node_num=6))

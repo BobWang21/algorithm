@@ -66,15 +66,15 @@ def can_finish2(num_courses, prerequisites):
     return True
 
 
-# 广度优先 拓扑排序 | 考虑入度
+# 广度优先 拓扑排序 | 考虑入度 时间复杂度为O(E+V)
 def can_finish3(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u 邻接表
     indegree = [0] * num_courses  # 入度
-    for u, v in prerequisites:
+    for u, v in prerequisites:  # O(E)
         dic[v].add(u)
         indegree[u] += 1
 
-    queue = deque()  # 多向bfs
+    queue = deque()  # 多向bfs O(E)
     for i in range(num_courses):
         if not indegree[i]:
             queue.append(i)
