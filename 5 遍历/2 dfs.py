@@ -3,6 +3,14 @@
 from pprint import pprint
 
 
+class Node(object):
+    def __init__(self, val=0, neighbors=None):
+        if neighbors is None:
+            neighbors = []
+        self.val = val
+        self.neighbors = neighbors
+
+
 # 200 岛屿数量 也可用union-find
 def num_islands(grid):
     if not grid:
@@ -369,6 +377,25 @@ def rob(tree):
         return include, max_v
 
     return helper(tree)[1]
+
+
+# 133 复制图
+def clone_graph(node):
+    dic = {}
+
+    def dfs(node):
+        if not node:
+            return
+        if node in dic:
+            return dic[node]
+
+        new_node = Node(node.val)
+        dic[node] = new_node  # 防止循环必须在此数标记状态
+
+        new_node.neighbors = [dfs(n) for n in node.neighbors]
+        return new_node
+
+    return dfs(node)
 
 
 if __name__ == '__main__':
