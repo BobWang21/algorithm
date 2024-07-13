@@ -397,15 +397,15 @@ def calculate3(s):
     return helper(queue)
 
 
-# 946 验证栈序列
+# 946 验证栈序列 判断是否为出栈 入栈序列 模拟
 def validate_stack_sequences(pushed, popped):
-    stack = []
-    while pushed:
-        stack.append(pushed.pop(0))
-        while stack and stack[-1] == popped[0]:
-            stack.pop(-1)
-            popped.pop(0)
-    return False if stack else True
+    st, j = [], 0
+    for x in pushed:
+        st.append(x)
+        while st and st[-1] == popped[j]:
+            st.pop()
+            j += 1
+    return len(st) == 0
 
 
 if __name__ == '__main__':
