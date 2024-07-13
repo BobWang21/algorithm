@@ -48,8 +48,7 @@ def bellman_ford(edges, s, node_num):
 
     # 松弛函数
     def relax(u, v, weight):
-        if dist[v] > dist[u] + weight:
-            dist[v] = dist[u] + weight
+        dist[v] = min(dist[u] + weight, dist[v])
 
     # v-1次松弛, 每次有1个点得到松弛
     for i in range(node_num - 1):
@@ -66,8 +65,8 @@ def bellman_ford(edges, s, node_num):
     return dist, flag
 
 
-# shortest path faster algorithm
 # 带有队列优化的Bellman-Ford算法
+# shortest path faster algorithm
 def spfa(graph, s, node_num):
     queue = [s]
     enqueue = [False] * node_num
@@ -109,6 +108,70 @@ def get_edges(graph):
         for v, w in dic.items():
             res.append(Edge(u, v, w))
     return res
+
+
+# 752
+import heapq
+
+
+class AStar:
+    # 计算启发函数
+    @staticmethod
+    def getH(status, target):
+        ret = 0
+        for i in range(4):
+            dist = abs(int(status[i]) - int(target[i]))
+            ret += min(dist, 10 - dist)
+        return ret
+
+    def __init__(self, status, target, g):
+        self.status = status
+        self.g = g
+        self.h = AStar.getH(status, target)
+        self.f = self.g + self.h
+
+    def __lt__(self, other):
+        return self.f < other.f
+
+
+# A* 算法
+class Solution:
+    def openLock(self, deadends, target):
+        if target == "0000":
+            return 0
+
+        dead = set(deadends)
+        if "0000" in dead:
+            return -1
+
+        def num_prev(x):
+            return "9" if x == "0" else str(int(x) - 1)
+
+        def num_succ(x):
+            return "0" if x == "9" else str(int(x) + 1)
+
+        def get(status):
+            s = list(status)
+            for i in range(4):
+                num = s[i]
+                s[i] = num_prev(num)
+                yield "".join(s)
+                s[i] = num_succ(num)
+                yield "".join(s)
+                s[i] = num
+
+        q = [AStar("0000", target, 0)]
+        seen = set(["0000"])
+        while q:
+            node = heapq.heappop(q)
+            for next_status in get(node.status):
+                if next_status not in seen and next_status not in dead:
+                    if next_status == target:
+                        return node.g + 1
+                    heapq.heappush(q, AStar(next_status, target, node.g + 1))
+                    seen.add(next_status)
+
+        return -1
 
 
 if __name__ == '__main__':
