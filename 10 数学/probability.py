@@ -6,6 +6,8 @@ import random as rd
 from collections import Counter
 
 
+# 先从从n个数中，无放回抽取
+# 每个人抽到某个数的概率相同
 def shuffle(nums):
     n = len(nums)
     for i in range(n):
@@ -124,7 +126,7 @@ if __name__ == '__main__':
         res.append(rand2to5())
     print(Counter(res))
 
-    print('\n均匀分布生成正太分布')
+    print('\n均匀分布生成正态分布')
     res = []
     n = 10000
     for i in range(n):

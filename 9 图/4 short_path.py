@@ -1,5 +1,5 @@
 from collections import defaultdict
-from heapq import *
+import heapq as hq
 
 
 class Edge():
@@ -15,7 +15,7 @@ def dijkstra(graph, f, t):
     p_set = set()  # 永久标记
     res = {f: 0}
     while heap:
-        cost1, v1, path = heappop(heap)
+        cost1, v1, path = hq.heappop(heap)
         if v1 in p_set:
             continue
         p_set.add(v1)
@@ -31,7 +31,7 @@ def dijkstra(graph, f, t):
             curr = cost1 + cost2
             if curr < prev:
                 res[v2] = curr
-                heappush(heap, (curr, v2, path))
+                hq.heappush(heap, (curr, v2, path))
 
     return
 
@@ -159,14 +159,14 @@ class Solution:
                 s[i] = num
 
         q = [AStar("0000", target, 0)]
-        seen = set(["0000"])
+        seen = set("0000")
         while q:
-            node = heapq.heappop(q)
+            node = hq.heappop(q)
             for next_status in get(node.status):
                 if next_status not in seen and next_status not in dead:
                     if next_status == target:
                         return node.g + 1
-                    heapq.heappush(q, AStar(next_status, target, node.g + 1))
+                    hq.heappush(q, AStar(next_status, target, node.g + 1))
                     seen.add(next_status)
 
         return -1
