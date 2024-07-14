@@ -5,6 +5,34 @@ import heapq as hq
 from collections import defaultdict
 
 
+# 55 是否可以跳到最后
+# 如果某一个作为 起跳点 的格子可以跳跃的距离是 3，那么表示后面 3 个格子都可以作为 起跳点。
+# 可以对每一个能作为 起跳点 的格子都尝试跳一次，把 能跳到最远的距离 不断更新
+# 如果可以一直跳到最后，就成功了
+def can_jump(nums):
+    n = len(nums)
+    total = 0
+    for i in range(n - 1):
+        if total >= i:
+            total = max(total, i + nums[i])
+            if total >= n - 1:
+                return True
+    return False
+
+
+# 45 最小跳跃次数
+def jump2(nums):
+    n = len(nums)
+    max_pos, end, step = 0, 0, 0
+    for i in range(n - 1):
+        if max_pos >= i:
+            max_pos = max(max_pos, i + nums[i])
+            if i == end:
+                end = max_pos
+                step += 1
+    return step
+
+
 # 253. 会议室 II
 def min_meeting_rooms(intervals):
     if not intervals:
@@ -119,34 +147,6 @@ def is_subsequence(s, t):
         else:
             return False
     return True
-
-
-# 是否可以跳到最后
-# 如果某一个作为 起跳点 的格子可以跳跃的距离是 3，那么表示后面 3 个格子都可以作为 起跳点。
-# 可以对每一个能作为 起跳点 的格子都尝试跳一次，把 能跳到最远的距离 不断更新
-# 如果可以一直跳到最后，就成功了
-def can_jump(nums):
-    n = len(nums)
-    total = 0
-    for i in range(n - 1):
-        if total >= i and i + nums[i] > total:
-            total = i + nums[i]
-    return total >= n - 1
-
-
-def can_jump2(nums):
-    n = len(nums)
-    if len(nums) == 1:
-        return 0
-    l = r = 0
-    num = 0
-    while r < n:
-        max_r = 0
-        for j in range(l, r + 1):
-            max_r = max(max_r, nums[j] + j)
-        l, r = r + 1, max_r
-        num += 1
-    return num
 
 
 def min_meeting_rooms(intervals):

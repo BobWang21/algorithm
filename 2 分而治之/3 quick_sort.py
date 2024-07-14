@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from functools import cmp_to_key
+
 
 def partition1(nums, l, r):  # 原地修改
     pivot = nums[l]  # pivot可以随机选择
@@ -169,7 +171,7 @@ def sort_colors(nums):
 
 
 # 179 输入: [3, 30, 34, 5, 9] 输出: 9534330
-def largest_number(nums):
+def largest_number1(nums):
     if not nums:
         return ''
 
@@ -199,6 +201,28 @@ def largest_number(nums):
     quick_sort(0, len(nums) - 1)
     s = ''.join(nums)
     return '0' if s[0] == '0' else s
+
+
+def largest_number2(nums):
+    # 将数字转换为字符串
+    strs = [str(num) for num in nums]
+
+    # 自定义比较函数
+    def compare(x, y):
+        # 如果 xy > yx，则 x 应该排在 y 前面
+        if x + y > y + x:
+            return -1
+        else:
+            return 1
+
+    # 使用自定义比较函数对字符串进行排序
+    strs.sort(key=cmp_to_key(compare))
+
+    # 连接排序后的字符串
+    result = ''.join(strs)
+
+    # 处理结果为 '0...' 的特殊情况
+    return result if result[0] != '0' else '0'
 
 
 if __name__ == '__main__':

@@ -156,6 +156,80 @@ def missing_number(nums):
     return miss_value
 
 
+# 560. 和为K的子数组 前缀和
+def subarray_sum(nums, k):
+    res = 0
+    total = 0
+    dic = dict()
+    dic[0] = 1  # 初始化 可能nums[0] = k
+    for num in nums:
+        total += num  # 以num为结尾的连续数组
+        if total - k in dic:  # pre_sum+k=total -> total-k in dic
+            res += dic[total - k]
+        dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
+    return res
+
+
+# 523 给定一个包含 非负数 的数组和一个目标 整数k，
+# 编写一个函数来判断该数组是否含有连续的子数组，其大小至少为 2，
+# 且总和为k的倍数，即总和为 n*k，其中 n 也是一个整数。
+def check_subarray_sum(nums, k):
+    if len(nums) < 2:
+        return False
+    dic, total = {0: -1}, 0
+    for i, num in enumerate(nums):
+        total += num
+        if k:
+            total %= k
+        j = dic.setdefault(total, i)
+        if i - j >= 2:
+            return True
+    return False
+
+
+# 加油站 有点前缀和的意思
+def can_complete_circuit(gas, cost):
+    n = len(gas)
+    if sum(gas) - sum(cost) < 0:
+        return -1
+    total = 0
+    start = 0
+    for i in range(n):
+        if total + gas[i] - cost[i] >= 0:
+            total += gas[i] - cost[i]
+        else:
+            total = 0
+            start = i + 1
+    if start == n:
+        return -1
+    return start
+
+
+# 581. 最短无序连续子数组 [2, 4, 8, |10, 7, 9|, 15, 20]
+# 找到数组中需要排序的最小连续部分，对该部分排序后整个数组升序。
+# 单调性 也可用单调栈
+def find_unsorted_subarray(nums):
+    n = len(nums)
+    max_v, min_v = -float('inf'), float('inf')
+    left, right = n - 1, 0
+    # 从左向右遍历, 获取右边界
+    for i in range(n):
+        if nums[i] >= max_v:  # 比左侧最大值大
+            max_v = nums[i]
+        else:
+            right = i  # right右侧的数都比左侧最大值大(递增)
+    # 从右向左遍历, 获取左边界
+    for i in range(n - 1, -1, -1):
+        if nums[i] <= min_v:  # 比右侧最小值大
+            min_v = nums[i]
+        else:
+            left = i  # left左侧数数都比右侧最小值小
+
+    if left == n - 1 and right == 0:
+        return 0
+    return right - left + 1
+
+
 if __name__ == '__main__':
     print('\ncyclic sort')
     print(cyclic_sort([7, 5, 8, 1, 2, 9, 3, 4, 6, 10]))
@@ -167,3 +241,12 @@ if __name__ == '__main__':
     print('\n找到数组中重复元素')
     print(find_duplicate_num1([1, 2, 4, 3, 2]))
     print(find_duplicate_num2([1, 2, 3, 2, 0]))
+
+    print('\n数组连续和为K')
+    print(subarray_sum([1, 2, 3, -3, 4], 0))
+
+    print('\n加油站问题')
+    print(can_complete_circuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
+
+    print('\n未排序区间长度')
+    print(find_unsorted_subarray([2, 6, 4, 8, 10, 9, 15]))
