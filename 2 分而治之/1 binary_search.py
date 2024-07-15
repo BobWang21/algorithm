@@ -42,7 +42,7 @@ def search_first_pos(nums, target):
             l = mid + 1  # nums[l-1] < target
         else:
             r = mid  # nums[r] >= target
-    # 在l < r时， nums[l-1] < target nums[r] >= target
+    # 在l < r时， nums[l-1] < target <= nums[r]
     return l if nums[l] == target else -1
 
 
