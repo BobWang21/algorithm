@@ -1,5 +1,6 @@
 from collections import defaultdict
 import heapq as hq
+from collections import deque
 
 
 class Edge():
@@ -52,7 +53,7 @@ def bellman_ford(edges, s, node_num):
         dist[v] = min(dist[u] + weight, dist[v])
 
     # v-1次松弛, 每次有1个点得到松弛
-    for i in range(node_num - 1):
+    for _ in range(node_num - 1):
         for j in range(edges_num):
             relax(edges[j].u, edges[j].v, edges[j].w)
 
@@ -69,9 +70,9 @@ def bellman_ford(edges, s, node_num):
 # 带有队列优化的Bellman-Ford算法
 # shortest path faster algorithm
 def spfa(graph, s, node_num):
-    queue = [s]
-    enqueue = [False] * node_num
-    enqueue[0] = True
+    queue = deque([s])
+    in_queue = [False] * node_num
+    in_queue[0] = True
     visited_cnt = {s: 1}  # 进入队列次数
 
     # 初始化dist
@@ -85,16 +86,16 @@ def spfa(graph, s, node_num):
 
     flag = False
     while queue:
-        u = queue.pop(0)
-        enqueue[u] = False
+        u = queue.popleft()
+        in_queue[u] = False
         if u not in graph:
             continue
         for v in graph[u]:
             tmp = dist[v]
             relax(u, v)
-            if tmp != dist[v] and not enqueue[v]:
+            if dist[v] < tmp and not in_queue[v]:
                 queue.append(v)
-                enqueue[v] = True
+                in_queue[v] = True
                 visited_cnt[v] = visited_cnt.get(v, 0) + 1
                 if visited_cnt[v] > node_num:  # 不存在负权环 最多访问node num次
                     flag = True
