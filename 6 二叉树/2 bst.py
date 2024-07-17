@@ -30,7 +30,7 @@ def is_valid_bst(tree):
     return helper(tree, -float('inf'), float('inf'))
 
 
-# 剑指Offer33 检查一个遍历是否为二叉搜索树的后序遍历
+# LCR 152 剑指Offer33 检查一个遍历是否为二叉搜索树的后序遍历
 def verify_postorder(post):
     if len(post) <= 1:  # 只有一侧子树
         return True

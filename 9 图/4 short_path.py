@@ -52,7 +52,7 @@ def bellman_ford(edges, s, node_num):
     def relax(u, v, weight):
         dist[v] = min(dist[u] + weight, dist[v])
 
-    # v-1次松弛, 每次有1个点得到松弛
+    # 对所有的边进行v-1次松弛, 每次有1个点得到松弛
     for _ in range(node_num - 1):
         for j in range(edges_num):
             relax(edges[j].u, edges[j].v, edges[j].w)
@@ -60,6 +60,7 @@ def bellman_ford(edges, s, node_num):
     # 判断是否有负权环
     flag = False
     for i in range(edges_num):
+        # 继续松弛，仍有收益。说明存在负向边
         if dist[edges[i].v] > dist[edges[i].u] + edges[i].w:
             flag = True
             break
@@ -69,6 +70,9 @@ def bellman_ford(edges, s, node_num):
 
 # 带有队列优化的Bellman-Ford算法
 # shortest path faster algorithm
+# 优化思想:
+# 松弛操作必定只会发生在最短路径前导节点松弛成功过的节点上，
+# 用一个队列记录松弛过的节点，可以避免了冗余计算。
 def spfa(graph, s, node_num):
     queue = deque([s])
     in_queue = [False] * node_num
