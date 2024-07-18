@@ -23,6 +23,7 @@ def can_finish1(num_courses, prerequisites):
             if not dfs(j):
                 visited[i] = False
                 return False
+
         visited[i] = False
         return True
 
@@ -46,9 +47,10 @@ def can_finish2(num_courses, prerequisites):
         edges[i].add(j)
 
     def dfs(i):
+        # 正在访问
         if visited[i] == 1:
             return False
-
+        # 完全访问
         if visited[i] == 2:
             return True
 

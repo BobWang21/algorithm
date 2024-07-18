@@ -7,6 +7,43 @@ from collections import deque
 import heapq as hq
 
 
+# 225 使用两个队列实现栈
+class MyStack:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.queue1 = deque()
+        self.queue2 = deque()
+
+    def push(self, x):
+        """
+        Push element x onto stack.
+        """
+        self.queue2.append(x)
+        while self.queue1:
+            self.queue2.append(self.queue1.popleft())
+        self.queue1, self.queue2 = self.queue2, self.queue1
+
+    def pop(self):
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+        return self.queue1.popleft()
+
+    def top(self):
+        """
+        Get the top element.
+        """
+        return self.queue1[0]
+
+    def empty(self):
+        """
+        Returns whether the stack is empty.
+        """
+        return not self.queue1
+
+
 # 面试题59 队列的最大值
 # 单调队列
 class MaxQueue():
