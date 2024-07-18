@@ -4,6 +4,7 @@
 from collections import defaultdict, deque
 
 
+# 207
 # 回溯版本 计算超时 节点会重复计算
 def can_finish1(num_courses, prerequisites):
     visited = [False] * num_courses
@@ -33,7 +34,6 @@ def can_finish1(num_courses, prerequisites):
     return True
 
 
-# 207
 # 深度优先|考虑出度
 def can_finish2(num_courses, prerequisites):
     edges = defaultdict(list)
@@ -173,7 +173,7 @@ def alien_order(words):
 
 if __name__ == '__main__':
     print('\n是否可以完课')
-    print(can_finish1(2, [[1, 0]]))
+    print(can_finish1(3, [[1, 0], [1, 2], [2, 0]]))
 
     print('\n火星字典')
     print(alien_order(['wrt', 'wrf', 'er', 'ett', 'rftt']))
