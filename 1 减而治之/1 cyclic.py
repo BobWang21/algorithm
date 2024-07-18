@@ -21,8 +21,8 @@ def cyclic_sort(nums):
     for i in range(n):
         while nums[i] != i + 1:
             j = nums[i] - 1
-            # if nums[j] == j + 1:  # 该位置已经排好
-            #     break
+            if nums[j] == j + 1:  # 该位置已经排好
+                break
             nums[i], nums[j] = nums[j], nums[i]
     return nums
 
@@ -237,6 +237,9 @@ if __name__ == '__main__':
 
     print('\n找到缺失的最小正数')
     print(first_missing_positive([3, 4, -1, 1]))
+
+    print('\n连续数列中缺失的数')
+    print(missing_number([0, 1, 2, 4]))
 
     print('\n找到数组中重复元素')
     print(find_duplicate_num1([1, 2, 4, 3, 2]))

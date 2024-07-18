@@ -390,6 +390,8 @@ def missing_number(nums):
     return miss_value
 
 
+
+
 # 获取数值对应的二进制 第k位取值 idx从0开始
 def find_bit_k_value(val, k):
     return (val >> k) & 1
