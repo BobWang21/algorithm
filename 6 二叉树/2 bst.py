@@ -70,7 +70,7 @@ def inorder_successor1(root, p):
 
 
 # 二叉搜索树第K大的数 非递归
-def top_k_binary_search_tree(node, k):
+def top_k_binary_search_tree1(node, k):
     if not node:
         return
 
@@ -224,7 +224,8 @@ if __name__ == '__main__':
 
     print('\n二叉搜索树的第k大节点')
     tree = create_full_binary_tree([5, 3, 7, 2, 4, 6, 8])
-    print(top_k_binary_search_tree2(tree, 1))
+    print(top_k_binary_search_tree1(tree, 3))
+    print(top_k_binary_search_tree2(tree, 3))
 
     print('\ntrimBST')
     tree = create_full_binary_tree([10, 1, 15, 3, 4, 12, 17])

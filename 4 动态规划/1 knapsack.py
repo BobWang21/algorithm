@@ -74,7 +74,7 @@ def unbounded_knapsack2(values, weights, capacity):
 def unbounded_knapsack3(values, weights, capacity):
     dp = [0] * (capacity + 1)
     for weight, value in zip(weights, values):
-        for j in range(weight, capacity + 1):
+        for j in range(weight, capacity + 1):  # 因为无穷 不需要逆序
             dp[j] = max(dp[j], dp[j - weight] + value)
     return dp[-1]
 
