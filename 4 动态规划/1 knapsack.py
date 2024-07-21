@@ -163,10 +163,10 @@ def mckp3(groups, capacity):
     for group in groups:
         # 逆序遍历 保证每个人容量引用上一分组的状态
         for i in range(capacity, -1, -1):
+            # dp[i] 依赖于分组的所有动作
             for value, volume in group:
                 if i >= volume:
                     dp[i] = max(dp[i], dp[i - volume] + value)
-            # 更新 dp 数组为当前组的最大价值
     return dp[-1]
 
 
@@ -258,11 +258,12 @@ def can_partition(nums):
             return False
 
     dp = [0] * (capacity + 1)
+    dp[0] = True
     for value in values:
         for j in range(capacity, value - 1, -1):
-            dp[j] = max(dp[j], dp[j - value] + value)
+            dp[j] = dp[j] or dp[j - value]
     # print(dp)
-    return dp[-1] == capacity
+    return dp[-1]
 
 
 if __name__ == '__main__':
