@@ -128,6 +128,7 @@ def next_permutation(nums):
 def longest_consecutive(nums):
     if not nums:
         return 0
+
     dic = dict()
     for v in nums:
         dic[v] = False
@@ -137,11 +138,10 @@ def longest_consecutive(nums):
         if not dic[v]:
             continue
         cnt = 1
-        dic[v] = True
-        while v + 1 in dic:  # 序
+        while v in dic:  # 序
+            dic[v] = True
             cnt += 1
             v += 1
-            dic[v] = True
         res = max(res, cnt)
 
     return res
