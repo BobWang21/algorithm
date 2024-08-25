@@ -104,8 +104,9 @@ def next_permutation(nums):
     while i > 0 and nums[i - 1] >= nums[i]:
         i -= 1
     if not i:
-        nums.reverse1()
+        nums.reverse()
         return nums
+
     k = i - 1
     while i < n and nums[i] > nums[k]:  # 找到最后一个大于该数的位置
         i += 1
@@ -113,11 +114,11 @@ def next_permutation(nums):
     nums[k], nums[i] = nums[i], nums[k]
 
     # reverse
-    l, i = k + 1, n - 1
+    l, r = k + 1, n - 1
     while l < i:
-        nums[l], nums[i] = nums[i], nums[l]
+        nums[l], nums[r] = nums[r], nums[l]
         l += 1
-        i -= 1
+        r -= 1
     return nums
 
 
