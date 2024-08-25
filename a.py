@@ -4,6 +4,26 @@
 from pprint import pprint
 
 
+def diagnose_traverse(matrix):
+    if not matrix or not matrix[0]:
+        return
+    rows, cols = len(matrix), len(matrix[0])
+    res = []
+    for j in range(cols):
+        i = 0
+        while j >= 0 and i < rows:
+            res.append(matrix[i][j])
+            i += 1
+            j -= 1
+    for i in range(1, rows):
+        j = cols - 1
+        while j >= 0 and i < rows:
+            res.append(matrix[i][j])
+            i += 1
+            j -= 1
+    return res
+
+
 # m个人 n个车 每车最多k个人 需要对结果去重
 def permute(m, n, k):
     visited = [False] * m
@@ -261,27 +281,6 @@ def cyclic_sort(nums):
                 return nums[j]
             nums[i], nums[j] = nums[j], nums[i]
     return -1
-
-
-def diagnose_traverse(matrix):
-    if not matrix or not matrix[0]:
-        return []
-    rows, cols = len(matrix), len(matrix[0])
-    res = []
-    for j in range(cols):
-        i = 0
-        while j > -1:
-            res.append((matrix[i][j]))
-            j -= 1
-            i += 1
-
-    for i in range(1, rows):
-        j = cols - 1
-        while i < rows:
-            res.append((matrix[i][j]))
-            i += 1
-            j -= 1
-    return res
 
 
 def p():

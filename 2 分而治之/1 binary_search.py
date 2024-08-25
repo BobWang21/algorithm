@@ -400,7 +400,7 @@ def find_median_sorted_arrays(nums1, nums2):
         return find_median_sorted_arrays(nums2, nums1)
 
     k = (m + n + 1) // 2  # 取左中位数
-    l, r = 0, m  # m表示nums1可取的长度
+    l, r = 0, m  # 二分查找取第一个数组中数字的个数
     while l < r:
         i = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
         j = k - i  # 数组2左侧的数字个数
