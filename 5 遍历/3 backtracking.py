@@ -4,7 +4,7 @@ from collections import defaultdict
 
 
 # 78 子集问题 不回溯
-def subset(nums):
+def subset_1(nums):
     res = []
     n = len(nums)
 
@@ -492,7 +492,7 @@ def can_partition_k_subsets(nums, k):
 
 if __name__ == '__main__':
     print('\n全集')
-    print(subset([1, 2, 3]))
+    print(subset_1([1, 2, 3]))
     print(subsets_with_dup([1, 2, 2, 3]))
 
     print('\ncombination sum')

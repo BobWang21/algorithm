@@ -167,7 +167,7 @@ def max_profit4(prices):
 
 
 # 最长上升子序列
-def LIS(nums):
+def LIS1(nums):
     dp = [1] * len(nums)
     res = 1
     for i, val in enumerate(nums):
@@ -453,7 +453,7 @@ if __name__ == '__main__':
     print(max_continuous_product([-1, 2, 3, 0.1, -10]))
 
     print('\n最长上升子序列')
-    print(LIS([2, 5, 3, 4, 1, 7, 6]))
+    print(LIS1([2, 5, 3, 4, 1, 7, 6]))
 
     print('\n数字由平方组合')
     print(num_squares(13))

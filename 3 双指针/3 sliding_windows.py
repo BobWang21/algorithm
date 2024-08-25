@@ -32,8 +32,8 @@ def length_of_longest_substring2(s):
         # left滑出窗口
         if c in dic and dic[c] >= l:
             l = dic[c] + 1
-        dic[c] = r
         res = max(res, r - l + 1)
+        dic[c] = r
         r += 1
 
     return res
@@ -47,8 +47,7 @@ def length_of_longest_substring_k_distinct(s, k):
     dic = defaultdict(int)
     res, n = 0, len(s)
     l, r = 0, 0
-    for r in range(len(s)):
-        c = s[r]
+    for r, c in enumerate(s):
         dic[c] += 1
         # left滑出窗口
         while len(dic) > k:
@@ -101,8 +100,8 @@ def min_window2(s, t):
         return all(cnt[c] >= target[c] for c in target)  # 替代check函数
 
     l, r = 0, -1
-    len_min = float('inf')
-    ans = ""
+    len_min = len(s) + 1
+    res = ""
 
     while r < len(s) - 1:
         r += 1
@@ -112,12 +111,12 @@ def min_window2(s, t):
         while check() and l <= r:
             if r - l + 1 < len_min:
                 len_min = r - l + 1
-                ans = s[l:r + 1]
+                res = s[l:r + 1]
             if s[l] in target:
                 cnt[s[l]] -= 1
             l += 1
 
-    return ans
+    return res
 
 
 # 567 s1的全排列之一是s2的子串

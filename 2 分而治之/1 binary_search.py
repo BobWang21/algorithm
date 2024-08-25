@@ -147,6 +147,7 @@ def find_min2(nums):
 
 # 33.旋转排序数组查找target
 # [1 2 3 4]的旋转数组[3 4 1 2]
+# [nums[k], nums[k+1]...nums[n-1], nums[0], nums[1], ..., nums[k-1]]
 def search(nums, target):
     if not nums:
         return -1
@@ -400,14 +401,15 @@ def find_median_sorted_arrays(nums1, nums2):
         return find_median_sorted_arrays(nums2, nums1)
 
     k = (m + n + 1) // 2  # 取左中位数
-    l, r = 0, m  # 二分查找取第一个数组中数字的个数
+    # 二分查找取第一个数组中数字的个数
+    l, r = 0, m
     while l < r:
-        i = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
-        j = k - i  # 数组2左侧的数字个数
-        if nums1[i - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
-            l = i
+        mid = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
+        j = k - mid  # 数组2左侧的数字个数
+        if nums1[mid - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
+            l = mid
         else:
-            r = i - 1  # nums1[l] > nums2[k-l-1]
+            r = mid - 1  # nums1[l] > nums2[k-l-1]
 
     x1, x2 = l - 1, k - l - 1  # nums1[l-1] <= nums2[k-l] and nums1[l] > nums2[k-l-1]
     # 分割线左侧的最大值

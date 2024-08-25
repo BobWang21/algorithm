@@ -4,6 +4,35 @@
 from pprint import pprint
 
 
+def permute1(nums):
+    if not nums:
+        return []
+
+    n = len(nums)
+    visited = [False] * n
+
+    res = []
+
+    path = []
+
+    def helper():
+        if len(path) == n:
+            res.append(path[:])
+            return
+        for i in range(n):
+            if visited[i]:
+                continue
+            visited[i] = True
+            path.append(nums[i])
+            helper()
+            visited[i] = False
+            path.pop()
+
+    helper()
+
+    return res
+
+
 def diagnose_traverse(matrix):
     if not matrix or not matrix[0]:
         return
@@ -650,25 +679,27 @@ def unseries(s):
 
 def subset(nums):
     if not nums:
-        return [[]]
+        return []
 
-    n = len(nums)
     res = []
     path = []
+    n = len(nums)
 
-    def helper(idx):
+    def helper(i):
         res.append(path[:])
 
-        for i in range(idx, n):
-            path.append(nums[i])
-            helper(i + 1)
+        for j in range(i, n):
+            path.append(nums[j])
+            helper(j + 1)
             path.pop()
+        return
 
     helper(0)
     return res
 
 
 if __name__ == '__main__':
+    print(permute1([1, 2, 3, 4]))
     print(subset([1, 2, 3]))
     nums = [1, 2, 3, 4]
     sort_array_by_parity(nums)
