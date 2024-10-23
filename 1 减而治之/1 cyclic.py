@@ -102,6 +102,28 @@ def find_duplicate_num2(nums):
             return j
 
 
+# 287
+# 1 - n 的 n + 1 个数中 只有一个数字重复 数字重复一次或多次
+# 要求 O(1)空间复杂度!!!
+# 不能修改列表
+# Floyd 判圈算法
+def find_duplicate_num3(nums):
+    fast = slow = 0
+    # 证明有环
+    while True:
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+        if fast == slow:
+            break
+    # 入口
+    ptr1 = 0
+    ptr2 = fast
+    while ptr1 != ptr2:
+        ptr1 = nums[ptr1]
+        ptr2 = nums[ptr2]
+    return ptr1
+
+
 # 287. 寻找重复数
 def find_duplicate(nums):
     n = len(nums)
@@ -117,28 +139,6 @@ def find_duplicate(nums):
         else:
             r = mid
     return l
-
-
-# 287
-# 1 - n 的 n + 1 个数中 只有一个数字重复 数字重复一次或多次
-# 要求 O(1)空间复杂度!!!
-# 不能修改列表
-# Floyd 判圈算法
-def find_duplicate_num3(nums):
-    fast = slow = nums[0]
-    # 证明有环
-    while True:
-        slow = nums[slow]
-        fast = nums[nums[fast]]
-        if fast == slow:
-            break
-    # 入口
-    ptr1 = nums[0]
-    ptr2 = fast
-    while ptr1 != ptr2:
-        ptr1 = nums[ptr1]
-        ptr2 = nums[ptr2]
-    return ptr1
 
 
 # 268 给定一个包含[0, n]中 n 个数的序列，不含重复数字
