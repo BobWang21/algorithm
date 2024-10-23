@@ -1,5 +1,37 @@
 import heapq as hq
-from collections import defaultdict
+from collections import defaultdict, Counter
+
+
+# 347 出现次数最多的K个数 类似倒排索引
+def top_k_frequent(nums, k):
+    dic = defaultdict(int)
+    for v in nums:
+        dic[v] += 1
+
+    # 反向索引
+    fre = defaultdict(set)
+    for k, v in dic.items():  # 将出现次数相同的数字放在一个列表中 类似链表
+        fre[v].add(k)
+
+    res = []
+    for i in range(len(nums), 0, -1):  # 计数次数已知
+        if i not in fre:
+            continue
+
+        for v in fre[i]:
+            res.append(v)
+            if len(res) == k:
+                return res[:k]
+
+
+def top_k_frequent(nums, k):
+    counter = Counter(nums)
+    min_hq = []
+    for value, cnt in counter.items():
+        hq.heappush(min_hq, (cnt, value))
+        if len(min_hq) > k:
+            hq.heappop(min_hq)
+    return [value for cnt, value in min_hq]
 
 
 # 合并K个有序数组[[1, 1], [2, 3]]
@@ -133,6 +165,9 @@ if __name__ == '__main__':
     print('\n合并K个有序数组')
     print(merge([[1, 1, 1, 1], [2, 2, 2, 2], [3, 4, 5, 6]]))
     heap = []
+
+    print('\n出现次数最多的K个数')
+    print(top_k_frequent([1, 1, 1, 2, 2, 3], 2))
 
     print('\n最小的k个pair')
     print(k_smallest_pairs([1, 7, 11], [2, 4, 6], 3))

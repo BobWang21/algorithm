@@ -7,13 +7,14 @@
  - 循环排序 适合于数值区间在一定范围内的数组
  - 标记正负 适合正数
 3 不修改列表
- - 二分查找
- - 快慢双指针 数组关系抽象为链表
+ - 二分查找 构建单调函数
+ - 快慢双指针 数组抽象为链表
  - 异或操作
 """
 
 
 # 不包含重复数字的循环排序
+# 使用列表模拟字典
 def cyclic_sort(nums):
     if not nums:
         return []
@@ -28,7 +29,6 @@ def cyclic_sort(nums):
 
 
 # 0 ~ n-1之间的n个数 可能有多个数字重复 返回任意重复的数字
-# 使用列表模拟字典
 def find_duplicate_num1(nums):
     n = len(nums)
     for i in range(n):
@@ -156,7 +156,7 @@ def missing_number(nums):
     return miss_value
 
 
-# 560. 和为K的子数组 前缀和
+# 560. 前缀和(和为K的子数组)
 def subarray_sum(nums, k):
     res = 0
     total = 0
@@ -205,25 +205,25 @@ def can_complete_circuit(gas, cost):
     return start
 
 
-# 581. 最短无序连续子数组 [2, 4, 8, |10, 7, 9|, 15, 20]
+# 581. 最短无序连续子数组 [2,4,8,|10,7,9|,15,20]
 # 找到数组中需要排序的最小连续部分，对该部分排序后整个数组升序。
 # 单调性 也可用单调栈
 def find_unsorted_subarray(nums):
     n = len(nums)
     max_v, min_v = -float('inf'), float('inf')
     left, right = n - 1, 0
-    # 从左向右遍历, 获取右边界
-    for i in range(n):
-        if nums[i] >= max_v:  # 比左侧最大值大
-            max_v = nums[i]
-        else:
-            right = i  # right右侧的数都比左侧最大值大(递增)
-    # 从右向左遍历, 获取左边界
+    # 从右向左遍历, 找到最后一个大于右侧最小值的数值位置
     for i in range(n - 1, -1, -1):
         if nums[i] <= min_v:  # 比右侧最小值大
             min_v = nums[i]
         else:
             left = i  # left左侧数数都比右侧最小值小
+    # 从左向右遍历, 找到最后一个小于左侧最大值的数值位置
+    for i in range(n):
+        if nums[i] >= max_v:  # 比左侧最大值大
+            max_v = nums[i]
+        else:
+            right = i  # right右侧的数都比左侧最大值大(递增)
 
     if left == n - 1 and right == 0:
         return 0
