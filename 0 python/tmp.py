@@ -56,8 +56,7 @@ if __name__ == '__main__':
     nums = [2, 3, 4, 5]
     nums.remove(2)  # 移除数值
     nums.append(2)  # 增加一个数
-    tail = nums.pop()  # 按位置移除, pop(0) -> o(n)
-    print('list pop: ', tail)
+    print('list pop: ', nums.pop())  # 按位置移除, pop(0) -> o(n)
     print('list.index', nums.index(3))  # 查找数据在列表中索引, 返回第一个
     nums.reverse()  # 反转
     nums = [[1, 3], [2, 2], [3, 6]]

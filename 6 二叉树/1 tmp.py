@@ -200,22 +200,23 @@ def binary_tree_paths1(root):
 # 回溯
 def binary_tree_paths2(root):
     res = []
+    path = []
 
-    def helper(path, node):
+    def helper(node):
         # if not node:
         #    return path 会返回两次!!
         if not node.left and not node.right:  # 递归基 叶节点
             res.append('->'.join(path + [str(node.val)]))
 
         path.append(str(node.val))
-        if node.left:
-            helper(path, node.left)
 
+        if node.left:
+            helper(node.left)
         if node.right:
-            helper(path, node.right)
+            helper(node.right)
         path.pop()
 
-    helper([], root)
+    helper(root)
     return res
 
 
