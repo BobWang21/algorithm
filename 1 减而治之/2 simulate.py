@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from collections import defaultdict
+from collections import defaultdict, Counter
+import heapq as hq
 
 '''
 TopK 问题的几种解法
@@ -15,12 +16,9 @@ TopK 问题的几种解法
 # 有序数组, 可能含有重复值，找到nums[i]==i的最小索引
 # 时间复杂度可能退化成o(n), 对比二分很好的例子
 def find_magic_index(nums):
-    if not nums:
-        return -1
-
     def find(l, r):
         # 终止条件
-        if l > r:
+        if l >= r:
             return -1
         mid = l + (r - l) // 2
         # 先左侧
@@ -31,8 +29,7 @@ def find_magic_index(nums):
         if nums[mid] == mid:
             return mid
         # 右侧
-        right = find(mid + 1, r)
-        return right if right != -1 else -1
+        return find(mid + 1, r)
 
     return find(0, len(nums) - 1)
 
@@ -53,28 +50,6 @@ def sort_colors(nums):
             nums[start] = i
             start += 1
     return nums
-
-
-# 347 出现次数最多的K个数 类似计数排序
-def top_k_frequent(nums, k):
-    dic = defaultdict(int)
-    for v in nums:
-        dic[v] += 1
-
-    # 反向索引
-    fre = defaultdict(set)
-    for k, v in dic.items():  # 将出现次数相同的数字放在一个列表中 类似链表
-        fre[v].add(k)
-
-    res = []
-    for i in range(len(nums), 0, -1):  # 计数次数已知
-        if i not in fre:
-            continue
-
-        for v in fre[i]:
-            res.append(v)
-            if len(res) == k:
-                return res[:k]
 
 
 # 238. 除自身以外数组的乘积 左右各扫描一遍
@@ -389,9 +364,6 @@ if __name__ == '__main__':
 
     print('\n计数排序')
     print(sort_colors([2, 0, 2, 1, 1, 0]))
-
-    print('\n出现次数最多的K个数')
-    print(top_k_frequent([1, 1, 1, 2, 2, 3], 2))
 
     print('\n连续区间最大长度')
     print(longest_consecutive([1, 2, 3, 7, 8, 10, 11, 12, 13, 14]))
