@@ -131,7 +131,7 @@ def find_duplicate(nums):
     def count(target):
         return sum([1 if v <= target else 0 for v in nums])
 
-    l, r = 0, n - 1
+    l, r = 1, n - 1
     while l < r:
         mid = l + (r - l) // 2
         if count(mid) <= mid:
@@ -166,7 +166,7 @@ def subarray_sum(nums, k):
         total += num  # 以num为结尾的连续数组
         if total - k in dic:  # pre_sum+k=total -> total-k in dic
             res += dic[total - k]
-        dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k = total
+        dic[total] = dic.get(total, 0) + 1  # 后增加1 防止total - k == total
     return res
 
 
@@ -205,7 +205,7 @@ def can_complete_circuit(gas, cost):
     return start
 
 
-# 581. 最短无序连续子数组 [2,4,8,|10,7,9|,15,20]
+# 581. 最短无序连续子数组[2,4,8,|10,7,9|,15,20]
 # 找到数组中需要排序的最小连续部分，对该部分排序后整个数组升序。
 # 单调性 也可用单调栈
 def find_unsorted_subarray(nums):

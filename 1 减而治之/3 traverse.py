@@ -194,7 +194,7 @@ def set_zeroes(matrix):
 
     rows, cols = len(matrix), len(matrix[0])
     first_row_zero = first_col_zero = False
-    # 将于改变 必先保存
+    # 将预改变 必先保存
     for j in range(cols):
         if not matrix[0][j]:
             first_row_zero = True

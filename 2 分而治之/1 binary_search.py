@@ -33,7 +33,7 @@ def binary_search2(nums, target, l, r):
     return binary_search2(nums, target, l, mid - 1)
 
 
-# 非标准-非降序排序数组, 有重复数字, 返回第一个等于target
+# 有重复数字, 返回第一个等于target
 def search_first_pos(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:  # 取不到l=r, 需要补丁!
@@ -46,7 +46,7 @@ def search_first_pos(nums, target):
     return l if nums[l] == target else -1
 
 
-# 非降序排序数组, 有重复数字, 返回最后一个等于target
+# 有重复数字, 返回最后一个等于target
 def search_last_pos(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:
@@ -84,7 +84,7 @@ def find_missed_value(nums):
     return l
 
 
-# 34. 在排序数组中查找元素出现的次数
+# 34. 在排序数组中查找元素出现位置
 def get_number_of_k(nums, target):
     if not nums:
         return 0
@@ -98,9 +98,10 @@ def get_number_of_k(nums, target):
             l = mid + 1
         else:
             r = mid
-    if nums[l] != target:
-        return 0
-    left = l
+    left = l if nums[l] == target else -1
+
+    if left == -1:
+        return [-1, -1]
 
     # 最后一个出现的位置
     l, r = 0, n - 1
@@ -110,9 +111,23 @@ def get_number_of_k(nums, target):
             l = mid
         else:
             r = mid - 1
-    right = l
+    right = l if nums[l] == target else -1
+    return [left, right]
 
-    return right - left + 1
+
+# 带精度的求平方根
+def sqrt(n, precision):
+    l, r = 0, n
+    while l <= r:
+        mid = l + (r - l) / 2.0
+        s = mid * mid
+        if abs(s - n) <= precision:
+            return mid
+        if s < n:
+            l = mid  # 浮点数 不会出现相等的情况
+        else:
+            r = mid
+    return r
 
 
 # 153 旋转数组中的最小值
@@ -132,13 +147,14 @@ def find_min1(nums):
     return nums[l]
 
 
-# 和队尾比
+# 153 和队尾比
 # num[l-1]>=nums[-1] && nums[l]<nums[-1]
+# [1 2 3 4]的旋转数组[3 4 1 2], [1 2 3 4]
 def find_min2(nums):
     l, r = 0, len(nums) - 1
     while l < r:
         mid = l + (r - l) // 2
-        if nums[mid] >= nums[-1]:  # nums[l-1] >= nums[-1], 左侧虚拟边界(哨兵)无穷大，数组越界时，仍成立
+        if nums[mid] >= nums[-1]:  # nums[l-1] >= nums[-1]; l == 0时, nums[-1] == nums[-1]
             l = mid + 1
         else:
             r = mid  # nums[l] < nums[-1]
@@ -190,21 +206,36 @@ def find_peak_element2(nums):
     return l
 
 
-# 带精度的求平方根
-def sqrt2(n, precision):
-    if n == 1:
-        return 1
-    l, r = 0.0, n * 1.0
-    while l <= r:
-        mid = l + (r - l) / 2.0
-        s = mid * mid
-        if abs(s - n) <= precision:
-            return mid
-        if s < n:
+# 4. 寻找两个正序数组的中位数
+def find_median_sorted_arrays(nums1, nums2):
+    m, n = len(nums1), len(nums2)
+    if m > n:
+        return find_median_sorted_arrays(nums2, nums1)
+
+    k = (m + n + 1) // 2  # 取左中位数
+    # 二分查找取第一个数组中数字的个数
+    l, r = 0, m
+    while l < r:
+        mid = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
+        j = k - mid  # 数组2左侧的数字个数
+        if nums1[mid - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
             l = mid
         else:
-            r = mid
-    return r
+            r = mid - 1  # nums1[l] > nums2[k-l-1]
+
+    x1, x2 = l - 1, k - l - 1  # nums1[l-1] <= nums2[k-l] and nums1[l] > nums2[k-l-1]
+    # 分割线左侧的最大值
+    v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
+             nums2[x2] if 0 <= x2 < n else -float('inf'))
+
+    if (m + n) % 2:
+        return v1
+
+    # 分割线右侧的最小值
+    v2 = min(nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
+             nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf'))
+
+    return (v1 + v2) / 2
 
 
 # 441 排列硬币
@@ -392,38 +423,6 @@ def find_kth_number3(n, k):
             i += num
             prefix += 1
     return prefix
-
-
-# 4. 寻找两个正序数组的中位数
-def find_median_sorted_arrays(nums1, nums2):
-    m, n = len(nums1), len(nums2)
-    if m > n:
-        return find_median_sorted_arrays(nums2, nums1)
-
-    k = (m + n + 1) // 2  # 取左中位数
-    # 二分查找取第一个数组中数字的个数
-    l, r = 0, m
-    while l < r:
-        mid = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
-        j = k - mid  # 数组2左侧的数字个数
-        if nums1[mid - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
-            l = mid
-        else:
-            r = mid - 1  # nums1[l] > nums2[k-l-1]
-
-    x1, x2 = l - 1, k - l - 1  # nums1[l-1] <= nums2[k-l] and nums1[l] > nums2[k-l-1]
-    # 分割线左侧的最大值
-    v1 = max(nums1[x1] if 0 <= x1 < m else -float('inf'),
-             nums2[x2] if 0 <= x2 < n else -float('inf'))
-
-    if (m + n) % 2:
-        return v1
-
-    # 分割线右侧的最小值
-    v2 = min(nums1[x1 + 1] if 0 <= x1 + 1 < m else float('inf'),
-             nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf'))
-
-    return (v1 + v2) / 2
 
 
 if __name__ == '__main__':

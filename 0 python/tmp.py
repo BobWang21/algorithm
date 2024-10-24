@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
     print('\nheapq')
     heap = [3, 4, 1, 2]
-    hq.heapify(heap)  # 改成堆, 默认小顶堆 原地修改
+    hq.heapify(heap)  # 原地修改成堆, 默认小顶堆
     hq.heappush(heap, 5)
     while heap:
         print(hq.heappop(heap))

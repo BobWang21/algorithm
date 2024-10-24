@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from collections import defaultdict, Counter
-import heapq as hq
+
 
 '''
 TopK 问题的几种解法
 1 堆排序
 2 对于未排序的 使用partition
-3 二分查找 需要构造递增序列
+3 二分查找 构造递增序列
 4 桶排序
 '''
 
@@ -69,28 +68,24 @@ def product_except_self(nums):
     return l
 
 
-# 下一个排列
+# 31 下一个排列
 def next_permutation(nums):
-    if not nums:
-        return
     n = len(nums)
-
     i = n - 1
-    while i > 0 and nums[i - 1] >= nums[i]:
+    while i > 0 and nums[i] <= nums[i - 1]:
         i -= 1
-    if not i:
+    if i == 0:
         nums.reverse()
         return nums
 
     k = i - 1
-    while i < n and nums[i] > nums[k]:  # 找到最后一个大于该数的位置
-        i += 1
-    i -= 1  # 大于该数的最小值
-    nums[k], nums[i] = nums[i], nums[k]
+    j = i
+    while j < n and nums[j] > nums[k]:
+        j += 1
+    nums[k], nums[j - 1] = nums[j - 1], nums[k]
 
-    # reverse
     l, r = k + 1, n - 1
-    while l < i:
+    while l < r:
         nums[l], nums[r] = nums[r], nums[l]
         l += 1
         r -= 1
@@ -98,7 +93,7 @@ def next_permutation(nums):
 
 
 # 128 无序数组 最长连续区间
-# 把数字及关系抽象为图
+# 把数字及顺序关系抽象为图
 # 最大连通图问题 也可以使用并查集
 def longest_consecutive(nums):
     if not nums:
@@ -109,7 +104,8 @@ def longest_consecutive(nums):
         dic[v] = False
 
     res = 1
-    for v in dic.keys():
+    # dfs
+    for v in dic:
         if not dic[v]:
             continue
         cnt = 1
