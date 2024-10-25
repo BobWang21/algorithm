@@ -6,7 +6,7 @@ def length_of_longest_substring(s):
     if not s:
         return 0
     dic = dict()  # 更新l和r窗口之间的信息
-    l, r = 0, 0
+    l = 0
     res = 0
     for r in range(len(s)):
         c = s[r]

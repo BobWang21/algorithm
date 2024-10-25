@@ -216,7 +216,7 @@ def find_median_sorted_arrays(nums1, nums2):
     # 二分查找取第一个数组中数字的个数
     l, r = 0, m
     while l < r:
-        mid = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
+        mid = l + (r - l + 1) // 2  # mid可取到m, 取不到0
         j = k - mid  # 数组2左侧的数字个数
         if nums1[mid - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
             l = mid

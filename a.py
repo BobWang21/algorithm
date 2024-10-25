@@ -350,3 +350,105 @@ def search(nums, target):
 
 for v in [4, 5, 6, 7, 0, 1, 2]:
     print('x', search([4], v + 10))
+
+
+def merge_sort(nums):
+    if len(nums) <= 1:
+        return nums
+    mid = len(nums) // 2
+    left = merge_sort(nums[:mid])
+    right = merge_sort(nums[mid:])
+    return merge(left, right)
+
+
+def merge(nums1, nums2):
+    res = []
+    i = j = 0
+    m, n = len(nums1), len(nums2)
+    while i < m or j < n:
+        v1 = nums1[i] if i < m else float('inf')
+        v2 = nums2[j] if j < n else float('inf')
+        if v1 <= v2:
+            res.append(v1)
+            i += 1
+        else:
+            res.append(v2)
+            j += 1
+
+    return res
+
+
+print(merge_sort([1, 3, 5, 2, 4, 6]))
+
+
+def quick_sort(nums, l, r):
+    if l >= r:
+        return nums
+    pivot = partition(l, r)
+    quick_sort(nums, l, pivot - 1)
+    quick_sort(nums, pivot + 1, r)
+    return nums
+
+
+def partition(l, r):
+    pivot = nums[l]
+    while l < r:
+        while l < r and nums[r] >= pivot:
+            r -= 1
+        nums[l] = nums[r]
+
+        while l < r and nums[l] < pivot:
+            l += 1
+        nums[r] = nums[l]
+    nums[l] = pivot
+    return l
+
+
+nums = [1, 3, 5, 2, 4, 6]
+
+print(quick_sort(nums, 0, 5))
+
+
+def odd_partition(nums):
+    l, r = 0, len(nums) - 1
+    pivot = nums[l]
+
+    def is_odd(v):
+        return v % 2 == 1
+
+    while l < r:
+        while l < r and not is_odd(nums[r]):
+            r -= 1
+
+        nums[l] = nums[r]
+
+        while l < r and is_odd(nums[l]):
+            l += 1
+
+        nums[r] = nums[l]
+    nums[l] = pivot
+    return nums
+
+
+print(odd_partition([1, 2, 3, 4, 5]))
+
+
+def s(nums, target):
+    nums.sort()
+
+    n = len(nums)
+    for i in range(n - 2):
+        v = nums[i]
+        l, r = i + 1, n - 1
+        while l < r:
+            total = v + nums[l] + nums[r]
+            if total == target:
+                return [nums[i], nums[l], nums[r]]
+            if total > target:
+                r -= 1
+            else:
+                l += 1
+    return [-1, -1, -1]
+
+
+print(s([1, 2, 3, 4, 2], 5))

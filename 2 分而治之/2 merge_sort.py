@@ -24,17 +24,6 @@ def merge_sort(nums):
     return merge1(left, right)
 
 
-def merge_k_sorted_nums1(nums):
-    if not nums:
-        return
-    if len(nums) == 1:  # base
-        return nums[0]
-    mid = len(nums) // 2
-    a = merge_k_sorted_nums1(nums[:mid])
-    b = merge_k_sorted_nums1(nums[mid:])
-    return merge3(a, b)
-
-
 # 合并两个有序数组
 def merge1(a, b):
     if not a:
@@ -93,6 +82,17 @@ def merge3(a, b):
         res.append(b[0])
         res += merge3(a, b[1:])
     return res
+
+
+def merge_k_sorted_nums1(nums):
+    if not nums:
+        return
+    if len(nums) == 1:  # base
+        return nums[0]
+    mid = len(nums) // 2
+    a = merge_k_sorted_nums1(nums[:mid])
+    b = merge_k_sorted_nums1(nums[mid:])
+    return merge3(a, b)
 
 
 def merge_k_sorted_nums2(nums):
