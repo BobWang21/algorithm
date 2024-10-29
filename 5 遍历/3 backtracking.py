@@ -128,8 +128,9 @@ def combination_sum(nums, target):
         return []
     res = []
     n = len(nums)
+    path = []
 
-    def dfs(i, total, path):
+    def dfs(i, total):
         if total > target:  # 不满足条件
             return
         if total == target:
@@ -139,46 +140,16 @@ def combination_sum(nums, target):
         for j in range(i, n):
             path.append(nums[j])
             # 索引不加1, 表示数字可以用多次!!!
-            dfs(j, target + nums[j], path)
+            dfs(j, total + nums[j])
             path.pop(-1)
 
     nums.sort()
-    dfs(0, target, [])
+    dfs(0, 0)
     return res
 
 
 # 46 全排列 输入数组中不含重复数字
 def permute1(nums):
-    """
-    Given a collection of distinct integers, return all possible permutations.
-    Example:
-    Input: [1, 2, 3]
-    Output:
-    [
-      [1, 2, 3],
-      [1, 3, 2],
-      [2, 1, 3],
-      [2, 3, 1],
-      [3, 1, 2],
-      [3, 2, 1]
-    ]
-    """
-
-    def dfs(candidates, path, res):
-        if len(candidates) == len(path):
-            res.append(path)
-            return
-        candidate = candidates - set(path)  # 从未访问过的集合中选取元素
-        for val in candidate:
-            dfs(candidates, path + [val], res)
-
-    res = []
-    dfs(set(nums), [], res)
-    return res
-
-
-# 46
-def permute2(nums):
     if not nums:
         return []
 
@@ -510,7 +481,6 @@ if __name__ == '__main__':
 
     print('\n排列问题')
     print(permute1([1, 2, 3]))
-    print(permute2([1, 2, 1]))
     print(permute_unique1([1, 2, 1]))
 
     print('\nLetter Case Permutation')

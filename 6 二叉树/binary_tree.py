@@ -34,13 +34,12 @@ def create_full_binary_tree(nums):
 
 
 # 先序遍历(递归)
-def preorder_traversal(tree):
-    res = []
-    if tree:
-        res.append(tree.val)
-        preorder_traversal(tree.left)
-        preorder_traversal(tree.right)
-    return res
+def preorder1(tree):
+    if not tree:
+        return []
+    left = preorder1(tree.left)
+    right = preorder1(tree.right)
+    return [tree.val] + left + right
 
 
 # 先序遍历(非递归)
@@ -73,7 +72,7 @@ def inorder_traversal(tree):
         while node:  # 一直往左
             stack.append(node)
             node = node.left
-        node = stack.pop(-1)
+        node = stack.pop()
         res.append(node.val)
         node = node.right
     return res
@@ -206,7 +205,7 @@ def deserialize(s):
 if __name__ == '__main__':
     print('\n先序遍历')
     tree = create_full_binary_tree([i for i in range(7)])
-    print(preorder2(tree))
+    print(preorder1(tree))
 
     print('\n中序遍历')
     print(inorder_traversal(tree))

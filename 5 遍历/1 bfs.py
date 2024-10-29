@@ -66,7 +66,7 @@ def word_ladder(begin_word, end_word, word_list):
     if end_word not in word_set:
         return 0
     while queue:
-        word, l = queue.pop(0)
+        word, l = queue.popleft()
         for i in range(len(word)):
             for j in range(26):  # 访问每个字符串的近邻
                 new_word = word[:i] + chr(ord('a') + j) + word[i + 1:]

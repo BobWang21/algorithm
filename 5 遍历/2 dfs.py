@@ -3,14 +3,6 @@
 from pprint import pprint
 
 
-class Node(object):
-    def __init__(self, val=0, neighbors=None):
-        if neighbors is None:
-            neighbors = []
-        self.val = val
-        self.neighbors = neighbors
-
-
 # 200 岛屿数量 也可用union-find
 def num_islands(grid):
     if not grid:
@@ -77,7 +69,7 @@ def has_path(maze, start, destination):
             return False
 
         # 到达目的地
-        if [i, j] == destination[1]:
+        if [i, j] == destination:
             return True
 
         # 标记访问的点
@@ -133,25 +125,25 @@ def has_path2(maze, start, destination):
     return res
 
 
-# 490 小球是否能在目的地停留 你可以假定迷宫的边缘都是墙壁(参考示例)
+# 490 小球是否能在目的地停留 你可以假定迷宫的边缘都是墙壁
+# 由空地（用 0 表示）和墙（用 1 表示）
 def has_path_3(maze, start, destination):
     rows, cols = len(maze), len(maze[0])
     directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
-    def dfs(x, y):
-        maze[x][y] = -1  # 不能用wall标记
-        if [x, y] == destination:
+    def dfs(i, j):
+        maze[i][j] = -1
+        if [i, j] == destination:
             return True
 
         for dx, dy in directions:
-            temp_x, temp_y = x, y
-            while 0 <= temp_x + dx < rows and 0 <= temp_y + dy < cols \
-                    and maze[temp_y + dx][temp_y + dy] != 1:
-                temp_x = x + dx
-                temp_y = y + dy
+            x, y = i, j
+            while 0 <= x + dx < rows and 0 <= y + dy < cols and maze[x + dx][y + dy] != 1:
+                x = x + dx
+                y = y + dy
 
-            if maze[temp_x][temp_y] != -1:  # 如果该点的值不为-1，即未遍历过
-                if dfs(temp_x, temp_y):
+            if maze[x][y] != -1:  # 如果该点的值不为-1，即未遍历过
+                if dfs(x, y):
                     return True
 
         return False
@@ -323,14 +315,14 @@ def closed_island(grid):
 # dfs + 记忆 dp[i][j]
 # max(dp[x][y]) + 1
 def longest_increasing_path(matrix):
-    visited = {}
+    memory = {}
     rows, cols = len(matrix), len(matrix[0])
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     def helper(i, j):
         # 递归开始满足约束，此处约束放在了下面
-        if (i, j) in visited:
-            return visited[(i, j)]
+        if (i, j) in memory:
+            return memory[(i, j)]
 
         res = 0
         for direction in directions:
@@ -343,7 +335,7 @@ def longest_increasing_path(matrix):
             res = max(res, helper(dx, dy))
 
         res += 1  # 本身
-        visited[(i, j)] = res
+        memory[(i, j)] = res
         return res
 
     res = 1
@@ -377,6 +369,14 @@ def rob(tree):
         return include, max_v
 
     return helper(tree)[1]
+
+
+class Node(object):
+    def __init__(self, val=0, neighbors=None):
+        if neighbors is None:
+            neighbors = []
+        self.val = val
+        self.neighbors = neighbors
 
 
 # 133 复制图

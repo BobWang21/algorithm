@@ -267,6 +267,23 @@ def can_partition(nums):
     return dp[-1]
 
 
+# 无穷背包 是否能组成
+# 结合字典树 Trie
+def word_break(s, word_dict):
+    word_set = set(word_dict)
+
+    n = len(s)
+    dp = [False] * (n + 1)
+    dp[0] = True
+
+    for i in range(1, n + 1):
+        for j in range(i, n + 1):
+            s1 = s[i - 1: j]
+            if dp[i - 1] and s1 in word_set:
+                dp[j] = True
+    return dp[-1]
+
+
 if __name__ == '__main__':
     print('\n0-1背包问题')
     values = [1, 3, 4, 8]

@@ -9,12 +9,28 @@ def LCS(s1, s2):
     dp = [[0] * l2 for _ in range(l1)]
     for i in range(1, l1):
         for j in range(1, l2):
-            if s1[i - 1] == s2[j - 1]:
+            if s1[i - 1] == s2[j - 1]:  # 包含两个端点
                 dp[i][j] = dp[i - 1][j - 1] + 1
             else:
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])  # 最多包含一个端点
     pprint(dp)
     return dp[-1][-1]
+
+
+# 516 最长回文子序列
+def longest_palindrome_subsequence2(s):
+    n = len(s)
+    dp = [[0] * (n + 1) for i in range(n + 1)]
+    ss = s[::-1]
+
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if s[i - 1] == ss[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
+
+    return dp[n][n]
 
 
 # 最长公共子串 子串连续
@@ -54,21 +70,6 @@ def longest_palindrome_subsequence1(s):
         return dic[(l, r)]
 
     return helper(0, n - 1)
-
-
-def longest_palindrome_subsequence2(s):
-    n = len(s)
-    dp = [[0] * (n + 1) for i in range(n + 1)]
-    ss = s[::-1]
-
-    for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            if s[i - 1] == ss[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1] + 1
-            else:
-                dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
-
-    return dp[n][n]
 
 
 # 409 最长回文子串

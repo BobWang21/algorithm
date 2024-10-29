@@ -20,6 +20,7 @@ def serialize(tree):
 def deserialize(s):
     if not s:
         return
+
     nums = deque(s.split())
 
     def helper():

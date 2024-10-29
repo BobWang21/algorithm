@@ -646,3 +646,245 @@ def numSquares(n):
 
 
 print(numSquares(1))
+
+
+def longest_increasing_path(matrix):
+    rows, cols = len(matrix), len(matrix[0])
+
+    memory = {}
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    def dfs(i, j):
+        if i < 0 or i == rows or j < 0 or j == cols:
+            return 0
+        if (i, j) in memory:
+            return memory[(i, j)]
+        res = 0
+        for di, dj in directions:
+            new_i, new_j = i + di, j + dj
+            if 0 <= new_i < rows and 0 <= new_j < cols and matrix[new_i][new_j] > matrix[i][j]:
+                res = max(res, dfs(new_i, new_j))
+        memory[(i, j)] = res + 1
+        return res + 1
+
+    res = 0
+
+    for i in range(rows):
+        for j in range(cols):
+            res = max(res, dfs(i, j))
+    return res
+
+
+print(longest_increasing_path([[1]]))
+
+
+def subsets(nums):
+    n = len(nums)
+    res = []
+    path = []
+
+    def helper(i):
+        res.append(path[:])
+
+        for j in range(i, n):
+            path.append(nums[j])
+            helper(j + 1)
+            path.pop()
+
+    helper(0)
+
+    return res
+
+
+print(subsets([1, 2, 3]))
+
+'''
+输入：nums = [1,2,2]
+输出：[[],[1],[1,2],[1,2,2],[2],[2,2]]
+'''
+
+
+def subsets2(nums):
+    nums.sort()
+    n = len(nums)
+    res = []
+    path = []
+
+    def helper(i):
+        res.append(path[:])
+
+        for j in range(i, n):
+            if j > i and nums[j] == nums[j - 1]:
+                continue
+            path.append(nums[j])
+            helper(j + 1)
+            path.pop()
+
+    helper(0)
+
+    return res
+
+
+print(subsets2([1, 2, 2]))
+
+
+def permute(nums):
+    nums.sort()
+
+    res = []
+    path = []
+    n = len(nums)
+    visited = [False] * n
+
+    def helper():
+        if len(path) == n:
+            res.append(path[:])
+
+        for i in range(n):
+            if visited[i]:
+                continue
+            if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
+                continue
+            visited[i] = True
+            path.append(nums[i])
+            helper()
+            visited[i] = False
+            path.pop()
+
+    helper()
+    return res
+
+
+print(permute([1, 2, 2]))
+
+'''
+输入: candidates = [2,3,5], target = 8
+输出: [[2,2,2,2],[2,3,3],[3,5]]
+'''
+
+
+def combinationSum(candidates, target):
+    path = []
+    res = []
+    n = len(candidates)
+
+    def helper(total, i):
+        if total > target:
+            return
+
+        if total == target:
+            res.append(path[:])
+            return
+
+        for j in range(i, n):
+            path.append(candidates[j])
+            helper(total + candidates[j], j)
+            path.pop()
+
+        return
+
+    candidates.sort()
+
+    helper(0, 0)
+    return res
+
+
+# , target = 7
+print('combinationSum', combinationSum([2, 3, 5], 8))
+
+
+def preorder_traverse(root):
+    if not root:
+        return []
+    stack = [root]
+    res = []
+    while stack:
+        node = stack.pop()
+        res.append(node.val)
+        if node.right:
+            stack.append(node.right)
+        if node.left:
+            stack.append(node.left)
+    return res
+
+
+def inorder_traverse(root):
+    node = root
+    stack = []
+    res = []
+    while node or stack:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        res.append(node.val)
+        node = node.right
+    return res
+
+
+def post_order(root):
+    if not root:
+        return []
+
+    res = []
+
+    pre_node = None
+
+    stack, node = [], root
+
+    while node or stack:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack[-1]
+        if not node.right or pre_node == node.left:
+            node = stack.pop()
+            pre_node = node
+            res.append(node.val)
+            node = None
+        else:
+            node = node.right
+
+
+def lca(root, p, q):
+    def helper(node):
+        if not node:
+            return None
+        if node.val == p or node.val == q:
+            return node
+        left = helper(node.left)
+        right = helper(node.right)
+        if left and right:
+            return node
+        return left or right
+
+    return helper(root)
+
+
+def is_balanced(root):
+    def helper(node):
+        if not node:
+            return 0
+        left = helper(node.left)
+        if left == -1:
+            return -1
+        right = helper(node.right)
+        if right == -1:
+            return -1
+        if abs(left - right) > 1:
+            return -1
+        return max(left, right) + 1
+
+    return helper(root) != -1
+
+
+def have_path_sum(root, target):
+    def helper(total, node):
+        if not root:
+            return False
+        total += node.val
+        if not node.left and not node.right:
+            return total == target
+        return helper(total, node.left) or helper(total, node.right)
+
+    return helper(0, root)
