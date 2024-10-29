@@ -36,7 +36,7 @@ def binary_search2(nums, target, l, r):
 # 有重复数字, 返回第一个等于target
 def search_first_pos(nums, target):
     l, r = 0, len(nums) - 1
-    while l < r:  # 取不到l=r, 需要补丁!
+    while l < r:  # 取不到l==r, 需要补丁!
         mid = l + (r - l) // 2  # 左中位数
         if nums[mid] < target:
             l = mid + 1  # nums[l-1] < target
@@ -119,7 +119,7 @@ def get_number_of_k(nums, target):
 def sqrt(n, precision):
     l, r = 0, n
     while l <= r:
-        mid = l + (r - l) / 2.0
+        mid = l + (r - l) / 2
         s = mid * mid
         if abs(s - n) <= precision:
             return mid
@@ -187,14 +187,13 @@ def search(nums, target):
     return -1
 
 
-# 162.寻找峰值
+# 162.寻找峰值 [1,2,1,3,5,6,4]
+# 对于所有有效的 i 都有 nums[i] != nums[i + 1]
 def find_peak_element2(nums):
     n = len(nums)
 
     def get(i):
-        if 0 <= i <= n:
-            return nums[i]
-        return -float('inf')
+        return nums[i] if 0 <= i <= n else -float('inf')
 
     l, r = 0, n - 1
     while l < r:
@@ -207,18 +206,20 @@ def find_peak_element2(nums):
 
 
 # 4. 寻找两个正序数组的中位数
+# [1| 3 5 7]
+# [2 4 6 10| 11]
 def find_median_sorted_arrays(nums1, nums2):
     m, n = len(nums1), len(nums2)
     if m > n:
         return find_median_sorted_arrays(nums2, nums1)
 
-    k = (m + n + 1) // 2  # 取左中位数
+    k = (m + n + 1) // 2  # 总数为奇数时，取中位数
+
     # 二分查找取第一个数组中数字的个数
     l, r = 0, m
     while l < r:
         mid = l + (r - l + 1) // 2  # 数组1左侧的数字个数, i可取到m
-        j = k - mid  # 数组2左侧的数字个数
-        if nums1[mid - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
+        if nums1[mid - 1] <= nums2[k - mid]:  # nums1[l-1] <= nums2[k-l]
             l = mid
         else:
             r = mid - 1  # nums1[l] > nums2[k-l-1]
@@ -431,7 +432,7 @@ if __name__ == '__main__':
     print(binary_search1(nums, 3))
 
     print('\n最小索引')
-    print(search_first_pos([1, 2, 3, 3, 10], 9))
+    print(search_first_pos([1, 2, 3, 3, 10], 3))
 
     print('\n最大索引')
     print(search_last_pos([1, 2, 3, 3, 9], 3))

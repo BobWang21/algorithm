@@ -350,3 +350,60 @@ def search(nums, target):
 
 for v in [4, 5, 6, 7, 0, 1, 2]:
     print('x', search([4], v + 10))
+
+
+def find_median(nums1, nums2):
+    if len(nums1) > len(nums2):
+        return find_median(nums2, nums1)
+
+    m, n = len(nums1), len(nums2)
+    k = (m + n + 1) // 2  #
+    l, r = 0, m - 1
+    while l < r:
+        mid = l + (r - l + 1) // 2
+        if nums1[mid] <= nums2[k - mid - 1]:  # nums1[l] <= nums2[k - l - 1]
+            l = mid
+        else:
+            r = mid - 1  # nums1[l + 1] > nums2[k - mid -2]
+    l = -1 if nums1[l] > nums2[k - l - 1] else l
+
+    left = max(nums1[l] if m > l >= 0 else -float('inf'),
+               nums2[k - l - 2] if n > k - l - 2 >= 0 else -float('inf'))
+
+    if (m + n) % 2:
+        print('xx')
+        return left
+
+    right = min(nums1[l + 1] if m > l + 1 >= 0 else float('inf'),
+                nums2[k - l - 1] if n > k - l - 1 >= 0 else float('inf'))
+    return (left + right) / 2.0
+
+
+def find_median2(nums1, nums2):
+    if len(nums1) > len(nums2):
+        return find_median(nums2, nums1)
+
+    m, n = len(nums1), len(nums2)
+    k = (m + n + 1) // 2  #
+    l, r = 0, m
+    while l < r:
+        mid = l + (r - l + 1) // 2
+        if nums1[mid - 1] <= nums2[k - mid]:  # nums1[l-1] <= nums2[k - l]
+            l = mid
+        else:
+            r = mid - 1  # nums1[l] > nums2[k-mid-1]
+    l = -1 if nums1[l] > nums2[k - l - 1] else l
+
+    left = max(nums1[l] if m > l >= 0 else -float('inf'),
+               nums2[k - l - 2] if n > k - l - 2 >= 0 else -float('inf'))
+
+    if (m + n) % 2:
+        print('xx')
+        return left
+
+    right = min(nums1[l + 1] if m > l + 1 >= 0 else float('inf'),
+                nums2[k - l - 1] if n > k - l - 1 >= 0 else float('inf'))
+    return (left + right) / 2.0
+
+
+print(find_median([1, 3], [5]))
