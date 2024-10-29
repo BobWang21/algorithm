@@ -3,7 +3,56 @@
 from collections import Counter, defaultdict
 
 
-##############################前后指针-关注点####################################
+#############################首尾指针-关注端点##################################
+def partition(nums, left, right):
+    def swap(i, j):
+        nums[i], nums[j] = nums[j], nums[i]
+
+    l, r = left, right
+    pivot = nums[l]
+    while l < r:
+        # 找到
+        while l < r and nums[r] >= pivot:
+            r -= 1
+        while l < r and nums[l] < pivot:
+            l += 1
+        if l < r:
+            swap(l, r)  # 保证 nums[l] < pivot <= nums[r]
+    return nums
+
+
+# 奇数在左边 偶数在右边
+def sort_array_by_parity(nums):
+    n = len(nums)
+    if n < 2:
+        return nums
+    l, r = 0, n - 1
+    while l < r:
+        while l < r and not nums[r] % 2:
+            r -= 1
+        while l < r and nums[l] % 2:
+            l += 1
+        if l < r:
+            nums[l], nums[r] = nums[r], nums[l]
+    return nums
+
+
+# 922.按偶奇交替排序数组
+def sort_array_by_parity2(nums):
+    n = len(nums)
+
+    left, right = 0, 1
+    while left < n and right < n:
+        while left < n and nums[left] % 2 == 0:
+            left += 2
+        while right < n and nums[right] % 2 == 1:
+            right += 2
+        if right < n and left < n:
+            nums[left], nums[right] = nums[right], nums[left]
+    return nums
+
+
+##############################前后指针-关注端点####################################
 # 26 原地删除升序数组中的重复数字 并返回非重复数组的长度
 # nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
 def remove_duplicates1(nums):
@@ -63,55 +112,6 @@ def move_zeros(nums):
             k += 1
     for i in range(k, n):
         nums[i] = 0
-    return nums
-
-
-#############################首尾指针-关注点##################################
-def partition(nums, left, right):
-    def swap(i, j):
-        nums[i], nums[j] = nums[j], nums[i]
-
-    l, r = left, right
-    pivot = nums[l]
-    while l < r:
-        # 找到
-        while l < r and nums[r] >= pivot:
-            r -= 1
-        while l < r and nums[l] < pivot:
-            l += 1
-        if l < r:
-            swap(l, r)  # 保证 nums[l] < pivot <= nums[r]
-    return nums
-
-
-# 奇数在左边 偶数在右边
-def sort_array_by_parity(nums):
-    n = len(nums)
-    if n < 2:
-        return nums
-    l, r = 0, n - 1
-    while l < r:
-        while l < r and not nums[r] % 2:
-            r -= 1
-        while l < r and nums[l] % 2:
-            l += 1
-        if l < r:
-            nums[l], nums[r] = nums[r], nums[l]
-    return nums
-
-
-# 922.按奇偶排序数组
-def sort_array_by_parity2(nums):
-    n = len(nums)
-
-    left, right = 0, 1
-    while left < n and right < n:
-        while left < n and nums[left] % 2 == 0:
-            left += 2
-        while right < n and nums[right] % 2 == 1:
-            right += 2
-        if right < n and left < n:
-            nums[left], nums[right] = nums[right], nums[left]
     return nums
 
 

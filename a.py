@@ -352,6 +352,7 @@ for v in [4, 5, 6, 7, 0, 1, 2]:
     print('x', search([4], v + 10))
 
 
+<<<<<<< HEAD
 def find_median(nums1, nums2):
     if len(nums1) > len(nums2):
         return find_median(nums2, nums1)
@@ -407,3 +408,230 @@ def find_median2(nums1, nums2):
 
 
 print(find_median([1, 3], [5]))
+=======
+def merge_sort(nums):
+    if len(nums) <= 1:
+        return nums
+    mid = len(nums) // 2
+    left = merge_sort(nums[:mid])
+    right = merge_sort(nums[mid:])
+    return merge(left, right)
+
+
+def merge(nums1, nums2):
+    res = []
+    i = j = 0
+    m, n = len(nums1), len(nums2)
+    while i < m or j < n:
+        v1 = nums1[i] if i < m else float('inf')
+        v2 = nums2[j] if j < n else float('inf')
+        if v1 <= v2:
+            res.append(v1)
+            i += 1
+        else:
+            res.append(v2)
+            j += 1
+
+    return res
+
+
+print(merge_sort([1, 3, 5, 2, 4, 6]))
+
+
+def quick_sort(nums, l, r):
+    if l >= r:
+        return nums
+    pivot = partition(l, r)
+    quick_sort(nums, l, pivot - 1)
+    quick_sort(nums, pivot + 1, r)
+    return nums
+
+
+def partition(l, r):
+    pivot = nums[l]
+    while l < r:
+        while l < r and nums[r] >= pivot:
+            r -= 1
+        nums[l] = nums[r]
+
+        while l < r and nums[l] < pivot:
+            l += 1
+        nums[r] = nums[l]
+    nums[l] = pivot
+    return l
+
+
+nums = [1, 3, 5, 2, 4, 6]
+
+print(quick_sort(nums, 0, 5))
+
+
+def odd_partition(nums):
+    l, r = 0, len(nums) - 1
+    pivot = nums[l]
+
+    def is_odd(v):
+        return v % 2 == 1
+
+    while l < r:
+        while l < r and not is_odd(nums[r]):
+            r -= 1
+
+        nums[l] = nums[r]
+
+        while l < r and is_odd(nums[l]):
+            l += 1
+
+        nums[r] = nums[l]
+    nums[l] = pivot
+    return nums
+
+
+print(odd_partition([1, 2, 3, 4, 5]))
+
+
+def s(nums, target):
+    nums.sort()
+
+    n = len(nums)
+    for i in range(n - 2):
+        v = nums[i]
+        l, r = i + 1, n - 1
+        while l < r:
+            total = v + nums[l] + nums[r]
+            if total == target:
+                return [nums[i], nums[l], nums[r]]
+            if total > target:
+                r -= 1
+            else:
+                l += 1
+    return [-1, -1, -1]
+
+
+print(s([1, 2, 3, 4, 2], 5))
+
+
+def lengthOfLongestSubstringKDistinct(s, k):
+    if len(s) <= k:
+        return len(s)
+
+    dic = defaultdict(int)
+    n = len(s)
+    l = 0
+    res = 0
+    for i in range(n):
+        c = s[i]
+        dic[c] += 1
+        while len(dic) > k:
+            c = s[l]
+            dic[c] -= 1
+            if dic[c] == 0:
+                del dic[c]
+            l += 1
+        res = max(res, i - l + 1)
+    return res
+
+
+print('lengthOfLongestSubstringKDistinct', lengthOfLongestSubstringKDistinct('eceba', 2))
+
+
+def min_window1(s, t):
+    if len(s) < len(t):
+        return ''
+    counter = Counter(t)
+    match = 0
+    l, r = 0, 0
+    m, n = len(s), len(t)
+    min_len = m + 1
+    dic = defaultdict(int)
+    res = ''
+    for r in range(m):
+        c = s[r]
+        if c not in counter:
+            continue
+        dic[c] += 1
+        if dic[c] == counter[c]:
+            match += 1
+        while match == len(counter):
+            if r - l + 1 < min_len:
+                min_len = r - l + 1
+                res = s[l:r + 1]
+            char = s[l]
+            if char in dic:
+                dic[char] -= 1
+                if dic[char] < counter[char]:
+                    match -= 1
+            l += 1
+    return res
+
+
+s = "ADOBECODEBANC"
+t = "ABC"
+print(min_window1(s, t))
+
+
+def knapsack2(values, weights, capacity):
+    dp = [0] * (capacity + 1)
+    for val, weight in zip(values, weights):
+        for cap in range(capacity, weight - 1, -1):
+            dp[cap] = max(dp[cap - weight] + val, dp[cap])
+    print(dp)
+    return dp[-1]
+
+
+values = [1, 5, 4, 8]
+weights = [1, 2, 3, 4]
+print(knapsack2(values, weights, 7))
+
+
+def coin_change1(coins, amount):
+    dp = [float('inf')] * (amount + 1)
+    dp[0] = 0
+
+    for coin in coins:
+        for amt in range(coin, amount + 1):
+            dp[amt] = min(dp[amt], dp[amt - coin] + 1)
+    return dp[-1]
+
+
+def coin_change2(coins, amount):
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+
+    for coin in coins:
+        for amt in range(coin, amount + 1):
+            dp[amt] += dp[amt - coin]
+    print(dp)
+    return dp[-1]
+
+
+print(coin_change1([1, 2, 5, 10], 11))
+print(coin_change2([1, 2, 5, 10], 11))
+
+
+def LIS(nums):
+    dp = [nums[0]]
+
+    def search(target):
+        l, r = 0, len(dp) - 1
+        while l < r:
+            mid = l + (r - l) // 2
+            if dp[mid] <= target:
+                l = mid + 1
+            else:
+                r = mid
+        return l
+
+    n = len(nums)
+    for i in range(1, n):
+        if dp[-1] < nums[i]:
+            dp.append(nums[i])
+            continue
+        idx = search(nums[i])
+        dp[idx] = nums[i]
+    print(dp)
+    return len(dp)
+
+
+print(LIS([0, 1, 0, 3, 2, 3]))
+>>>>>>> eee6ba39777c3db2c9964a1a632a15d4c0656e82

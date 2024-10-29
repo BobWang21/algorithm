@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from collections import Counter, defaultdict
-
 
 # 字符串不能原处更改
 
