@@ -206,8 +206,9 @@ def coin_change3(coins, amount):
 
 
 # 279. Perfect Squares 12 = 4 + 4 + 4
+# 返回和为n的完全平方数的最少数量
 def num_squares(n):
-    dp = [float('inf')] * (n + 1)
+    dp = [n] * (n + 1)
     dp[0] = 0  # coin=amount时使用
 
     for coin in range(1, int(n ** 0.5) + 1):

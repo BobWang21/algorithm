@@ -352,7 +352,6 @@ for v in [4, 5, 6, 7, 0, 1, 2]:
     print('x', search([4], v + 10))
 
 
-<<<<<<< HEAD
 def find_median(nums1, nums2):
     if len(nums1) > len(nums2):
         return find_median(nums2, nums1)
@@ -408,7 +407,8 @@ def find_median2(nums1, nums2):
 
 
 print(find_median([1, 3], [5]))
-=======
+
+
 def merge_sort(nums):
     if len(nums) <= 1:
         return nums
@@ -616,7 +616,7 @@ def LIS(nums):
         l, r = 0, len(dp) - 1
         while l < r:
             mid = l + (r - l) // 2
-            if dp[mid] <= target:
+            if dp[mid] < target:
                 l = mid + 1
             else:
                 r = mid
@@ -634,4 +634,15 @@ def LIS(nums):
 
 
 print(LIS([0, 1, 0, 3, 2, 3]))
->>>>>>> eee6ba39777c3db2c9964a1a632a15d4c0656e82
+
+
+def numSquares(n):
+    dp = [n] * (n + 1)
+    dp[0] = 0
+    for i in range(1, n // 2 + 1):
+        for j in range(i ** 2, n + 1):
+            dp[j] = min(dp[j], dp[j - i ** 2] + 1)
+    return dp[-1]
+
+
+print(numSquares(1))

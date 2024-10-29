@@ -166,7 +166,7 @@ def max_profit4(prices):
     return dp[-1][-1][0]
 
 
-# 最长上升子序列
+# 400 最长上升子序列
 def LIS1(nums):
     dp = [1] * len(nums)
     res = 1
@@ -178,7 +178,7 @@ def LIS1(nums):
     return res
 
 
-# res[i] 保存长度为i+1的子串的最小值 nlog(n)
+# 400 res[i] 保存长度为i+1的子串的最小值 nlog(n)
 def LIS2(nums):
     if not nums:
         return 0

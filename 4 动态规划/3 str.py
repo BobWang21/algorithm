@@ -3,7 +3,7 @@
 from pprint import pprint
 
 
-# 1143 最长公共子序列。子串连续 子序列不连续
+# 1143 最长公共子序列。子序列不连续，子串连续
 def LCS(s1, s2):
     l1, l2 = len(s1) + 1, len(s2) + 1
     dp = [[0] * l2 for _ in range(l1)]
@@ -17,7 +17,7 @@ def LCS(s1, s2):
     return dp[-1][-1]
 
 
-# 最长公共子串
+# 最长公共子串 子串连续
 def longest_common_str(s1, s2):
     l1, l2 = len(s1), len(s2)
     dp = [[0] * (l2 + 1) for _ in range(l1 + 1)]
