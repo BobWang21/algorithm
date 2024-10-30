@@ -957,6 +957,39 @@ class LRUCache(object):
         return
 
         # Your LRUCache object will be instantiated and called as such:
+
+
 # obj = LRUCache(capacity)
 # param_1 = obj.get(key)
 # obj.put(key,value)
+
+
+def trap(height):
+    if len(height) == 1:
+        return 0
+    res = 0
+    stack = []
+    for i, h in enumerate(height):
+        while stack and h > height[stack[-1]]:
+            j = stack.pop()
+            if stack:
+                left = stack[-1]
+                res += (min(height[left], h) - height[j]) * (i - left - 1)
+        stack.append(i)
+
+    return res
+
+
+print(trap([4, 2, 0, 3, 2, 5]))
+
+
+def max_area(heights):
+    stack = []
+    res = 0
+    for i, height in enumerate(heights):
+        while stack and height < heights[stack[-1]]:
+            j = stack.pop()
+            w = i - stack[-1] + 1 if stack else i
+            res = max(res, heights * w)
+
+    return res
