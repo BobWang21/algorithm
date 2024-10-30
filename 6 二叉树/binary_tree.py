@@ -90,7 +90,7 @@ def postorder_traversal(tree):
             stack.append(node)
             node = node.left
         node = stack[-1]
-        # 没有右子树 或上一个节点是右子树
+        # 出栈:没有右子树或上一个节点是右子树
         if not node.right or node.right == pre:
             node = stack.pop(-1)
             res.append(node.val)
@@ -176,29 +176,23 @@ def serialize(tree):
 def deserialize(s):
     if not s:
         return
-    nums = s.split()  # 空格
-    root = TreeNode(eval(nums.pop(0)))
+    nums = deque(s.split())  # 空格
+    root = TreeNode(eval(nums.popleft()))
     queue = deque([root])
     is_set_left = False
     while nums:
         node = queue[0]
-        val = nums.pop(0)
-        if val == '#':
-            if not is_set_left:
-                is_set_left = True
-            else:
-                queue.popleft()
-                is_set_left = False
+        val = nums.popleft()
+        child = None if val == '#' else TreeNode(eval(val))
+        queue.append(child)
+        if not is_set_left:
+            node.left = child
+            is_set_left = True
         else:
-            child = TreeNode(eval(val))
-            queue.append(child)
-            if not is_set_left:
-                node.left = child
-                is_set_left = True
-            else:
-                node.right = child
-                queue.popleft()
-                is_set_left = False
+            node.right = child
+            queue.popleft()
+            is_set_left = False
+    print(queue)
     return root
 
 

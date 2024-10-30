@@ -215,6 +215,7 @@ def binary_tree_paths2(root):
             helper(node.left)
         if node.right:
             helper(node.right)
+
         path.pop()
 
     helper(root)
@@ -277,32 +278,28 @@ def path_sum1(root, target):
 # 但是路径方向必须是向下的（只能从父节点到子节点）
 # 时间复杂度：O(N2)
 def path_sum1(root, target):
-    res = [0]
-    '''
-    尝试从每一个节点出发 对树进行遍历
-    '''
+    # 包含当前节点
+    def from_root(root, target):
+        if root is None:
+            return 0
 
-    # 尝试从当前节点向下
-    def from_root(tree, total):
-        if not tree:
-            return
-        total += tree.val
-        if total == target:
-            res[0] += 1
-        from_root(tree.left, total)
-        from_root(tree.right, total)
+        res = 0
+        if root.val == target:
+            res += 1
 
-    # 共用一个全局变量 因此新定义一个函数
-    def helper(tree):
-        if not tree:
-            return
-        # 每个节点都作为路径的起点
-        from_root(tree, 0)  # 当前节点作为路径起点
-        helper(tree.left)
-        helper(tree.right)
+        res += from_root(root.left, target - root.val)
+        res += from_root(root.right, target - root.val)
+        return res
 
-    helper(root)
-    return res[0]
+    if root is None:
+        return 0
+    # 包含当前节点
+    res = from_root(root, target)
+    # 不包含当前节点
+    res += path_sum1(root.left, target)
+    res += path_sum1(root.right, target)
+
+    return res
 
 
 # 解法一中存在重复计算。可以使用前缀和思想

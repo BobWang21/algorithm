@@ -888,3 +888,43 @@ def have_path_sum(root, target):
         return helper(total, node.left) or helper(total, node.right)
 
     return helper(0, root)
+
+
+def path_sum2(root, target):
+    dic = defaultdict(int)
+    dic[0] = 1
+    res = [0]
+
+    def from_root(total, node):
+        if not node:
+            return
+        total += node.val
+        if total - target in dic:
+            res[0] += dic[total - target]
+        dic[total] += 1
+        from_root(total, node.left)
+        from_root(total, node.right)
+        dic[total] -= 1
+
+    from_root(0, root)
+    return res[0]
+
+
+def max_sum_path1(root):
+    if not root:
+        return 0
+
+    res = [-float('inf')]
+
+    def from_root(node):
+        if not root:
+            return -float('inf'), -float('inf')  # fixme
+        left = from_root(node.left)
+        right = from_root(node.right)
+        inc = max(node.val, node.val + left[0], node.val + right[0])
+        exc = max(max(left), max(right))
+        res[0] = max(res[0], inc, exc, node.val + right[0] + left[0])
+        return inc, exc
+
+    from_root(root)
+    return res[0]

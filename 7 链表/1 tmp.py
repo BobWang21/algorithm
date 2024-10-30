@@ -49,7 +49,7 @@ def reverse2(head):
     if not head or not head.next:
         return head
     new_head = reverse2(head.next)
-    head.next.next = head  # head指向new_head的尾结点
+    head.next.next = head  # new_head的尾结点指向原来head
     head.next = None
     return new_head
 
@@ -61,10 +61,6 @@ def reverse3(head):
     node = head.next
     head.next = None
     new_head, new_tail = reverse3(node)
-    # if not new_tail:
-    #     new_head.next = head
-    # else:
-    #     new_tail.next = head
     new_tail.next = head
     return new_head, head
 
@@ -106,16 +102,16 @@ def reverse_k_group(head, k):
         return pre
 
     i = 1
-    cur = head
-    while i < k and cur:  # i = 1 包含k个节点
+    node = head
+    while i < k and node:  # i = 1 包含k个节点
         i += 1
-        cur = cur.next
+        node = node.next
 
-    if not cur:  # 下面用到cur.next 需要判断cur是否为空
+    if not node:  # 下面用到cur.next 需要判断cur是否为空
         return head
 
-    nxt = cur.next  #
-    cur.next = None  # 切断
+    nxt = node.next  #
+    node.next = None  # 切断
     new_head = reverse(head)
     head.next = reverse_k_group(nxt, k)
     return new_head
