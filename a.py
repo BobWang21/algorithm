@@ -888,3 +888,75 @@ def have_path_sum(root, target):
         return helper(total, node.left) or helper(total, node.right)
 
     return helper(0, root)
+
+
+class LinkNode():
+    def __init__(self, key=None, val=0):
+        self.key = key
+        self.val = val
+        self.pre = None
+        self.next = None
+
+
+class LRUCache(object):
+    def __init__(self, capacity):
+        """
+        :type capacity: int
+        """
+        self.capacity = capacity
+        self.dic = dict()
+        self.head = LinkNode()
+        self.tail = LinkNode()
+        self.head.next = self.tail
+        self.tail.pre = self.head
+
+    def get(self, key):
+        """
+        :type key: int
+        :rtype: int
+        """
+        if key not in self.dic:
+            return -1
+        node = self.dic[key]
+        value = node.val
+        self.remove(key)
+        self.add(key, value)
+        return value
+
+    def put(self, key, value):
+        """
+        :type key: int
+        :type value: int
+        :rtype: None
+        """
+
+        if len(self.dic) == self.capacity:
+            self.remove(self.tail.pre.key)
+
+        if key in self.dic:
+            self.remove(key)
+        self.add(key, value)
+
+    def add(self, key, value):
+        succ = self.head.next
+        node = LinkNode(key, value)
+        node.next = succ
+        node.pre = self.head
+        self.head.next = node
+        succ.pre = node
+        self.dic[key] = self.dic.get(key, node)
+        return
+
+    def remove(self, key):
+        node = self.dic[key]
+        pre = node.pre
+        succ = node.next
+        pre.next = succ
+        succ.pre = node
+        del self.dic[key]
+        return
+
+        # Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
