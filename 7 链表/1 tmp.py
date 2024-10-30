@@ -69,14 +69,14 @@ def reverse3(head):
 def swap_pairs1(head):
     if not head or head.next:
         return head
-    dummy = pre = ListNode(None)
+    dummy = tail = ListNode(None)
     while head and head.next:
         nxt = head.next.next  # 每次移动两步
-        pre.next = head.next
+        tail.next = head.next
         head.next.next = head
-        pre = pre.next.next
+        tail = tail.next.next
         head = nxt
-    pre.next = head  # head可能为空或尾结点
+    tail.next = head  # head可能为空或尾结点
     return dummy.next
 
 
@@ -128,13 +128,13 @@ def delete_node(node):
 def remove_duplicates(head):
     if not head:
         return
-    dummy = pre = ListNode(None)
+    dummy = tail = ListNode(None)
     while head:
-        if head.val != pre.val:  # 向前看
-            pre.next = head
-            pre = pre.next
+        if head.val != tail.val:  # 向前看
+            tail.next = head
+            tail = tail.next
         head = head.next
-    pre.next = None  # 截尾
+    tail.next = None  # 截尾
     return dummy.next
 
 
@@ -143,17 +143,17 @@ def remove_duplicates2(head):
     if not head or not head.next:
         return head
 
-    dummy = pre = ListNode(-101)
+    dummy = tail = ListNode(-101)
 
     while head and head.next:
         if head.val != head.next.val:  # 向后看
-            pre.next = head
-            pre = pre.next
+            tail.next = head
+            tail = tail.next
         else:  # 类似数组去重 移动到下一个节点
             while head and head.next and head.val == head.next.val:
                 head = head.next
         head = head.next
-    pre.next = head  # head 可能为空或不相同的尾结点
+    tail.next = head  # head 可能为空或不相同的尾结点
     return dummy.next
 
 
@@ -200,98 +200,49 @@ def remove_nth_from_end(head, n):
 def middle_node(head):
     if not head:
         return
-    first = head
-    second = head
-    while first and first.next:
-        first = first.next.next
-        second = second.next
-    return second.val
+    fast = head
+    slow = head
+    while fast and fast.next:
+        fast = fast.next.next
+        slow = slow.next
+    return slow.val
 
 
 # 148 链表排序
 def sort_list(head):
-    def merge(l1, l2):
-        if not l1:
-            return l2
-        if not l2:
-            return l1
-        if l1.val < l2.val:
-            head = l1
-            l1 = l1.next
-        else:
-            head = l2
-            l2 = l2.next
-        head.next = merge(l1, l2)
-        return head
-
     if not head or not head.next:  # 单节点
         return head
 
-    fast = slow = head
-    pre_slow = None
+    slow = head
+    fast = head.next
     while fast and fast.next:
         fast = fast.next.next
-        pre_slow = slow
         slow = slow.next
-
-    pre_slow.next = None  # 一定不为空
+    mid = slow.next
+    slow.next = None
 
     l1 = sort_list(head)
-    l2 = sort_list(slow)
+    l2 = sort_list(mid)
 
     return merge(l1, l2)
 
 
-# 合并连个排序链表 归并 o(min(m, n))
-def merge_two_sorted_lists1(l1, l2):
-    if not l1:
-        return l2
-    if not l2:
-        return l1
-    dummy = curr = ListNode(-1)
-    while l1 and l2:
-        if l1.val < l2.val:
-            curr.next = l1
-            l1 = l1.next
+def merge(left, right):
+    dummy = ListNode(-1)
+    tail = dummy
+
+    while left and right:
+        if left.val < right.val:
+            tail.next = left
+            left = left.next
         else:
-            curr.next = l2
-            l2 = l2.next
-        curr = curr.next
-    if not l1:
-        curr.next = l2
-    if not l2:
-        curr.next = l1
-    return dummy.next
+            tail.next = right
+            right = right.next
+        tail = tail.next
 
+    # 连接剩余部分
+    tail.next = left or right
 
-# o(m+n)
-def merge_two_sorted_lists2(l1, l2):
-    if not l1:
-        return l2
-    if not l2:
-        return l1
-    if l1.val < l2.val:
-        head = l1
-        l1 = l1.next
-    else:
-        head = l2
-        l2 = l2.next
-    head.next = merge_two_sorted_lists2(l1, l2)
-    return head
-
-
-def merge_two_sorted_lists3(l1, l2):
-    dummy = curr = ListNode(None)
-    while l1 or l2:
-        a = l1.val if l1 else float('inf')
-        b = l2.val if l2 else float('inf')
-        if a < b:
-            curr.next = l1
-            l1 = l1.next
-        else:
-            curr.next = l2
-            l2 = l2.next
-        curr = curr.next
     return dummy.next
 
 
@@ -346,7 +297,7 @@ def merge_k_sorted_lists1(lists):
     a = merge_k_sorted_lists1(lists[:m])
     b = merge_k_sorted_lists1(lists[m:])
 
-    return merge_two_sorted_lists1(a, b)
+    return merge(a, b)
 
 
 # 23 或者定义
@@ -451,7 +402,8 @@ def is_palindrome(head):
     return True
 
 
-# 1->2->3->4, 重新排列为 1->4->2->3.
+# 143 1->2->3->4, 重新排列为 1->4->2->3.
+# L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
 def reorder_list(head):
     if not head or not head.next:
         return head
@@ -465,12 +417,12 @@ def reorder_list(head):
 
     second = reverse1(slow)
     first = head
-    dummy = pre = ListNode(-1)
+    dummy = tail = ListNode(-1)
     while first:
-        pre.next = first
+        tail.next = first
         curr = first.next
         first.next = second
-        pre = pre.next.next
+        tail = tail.next.next
         first = curr
         second = second.next
     return dummy.next
@@ -711,7 +663,7 @@ if __name__ == '__main__':
     print('\n合并两个排序链表')
     l1 = construct_list_node([1, 3, 5, 7])
     l2 = construct_list_node([2, 4, 6, 8])
-    print_list_node(merge_two_sorted_lists2(l1, l2))
+    print_list_node(merge(l1, l2))
 
     print('\n合并K个排序链表')
     l1 = construct_list_node([1, 3, 5, 7])

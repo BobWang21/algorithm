@@ -2,16 +2,15 @@ import random as rd
 
 
 class Node():
-    def __init__(self, key=None, val=None, pre=None, next=None):
+    def __init__(self, key=None, val=None):
         self.key = key
         self.val = val
-        self.pre = pre
-        self.next = next
+        self.pre = None
+        self.next = None
 
 
 # 707 双向链表
 class ListNode:
-
     def __init__(self, x):
         self.val = x
         self.next = None
@@ -19,7 +18,6 @@ class ListNode:
 
 
 class MyLinkedList:
-
     def __init__(self):
         self.size = 0
         self.head = ListNode(0)
@@ -90,7 +88,6 @@ class MyLinkedList:
 # 146 LRU (最近最少使用) 缓存
 # 使用包括插入和查询
 class LRUCache(object):
-
     def __init__(self, capacity):
         self.capacity = capacity
         self.dic = dict()
@@ -104,14 +101,13 @@ class LRUCache(object):
         :type key: int
         :rtype: int
         """
-        if key in self.dic:
-            node = self.dic[key]
-            val = node.val
-            self.remove(key)
-            self.add(key, val)
-            return val
-        else:
+        if key not in self.dic:
             return -1
+        node = self.dic[key]
+        val = node.val
+        self.remove(key)
+        self.add(key, val)
+        return val
 
     def put(self, key, value):
         """
@@ -119,15 +115,13 @@ class LRUCache(object):
         :type value: int
         :rtype: None
         """
+        if len(self.dic) == self.capacity:
+            self.remove(self.tail.pre.key)
+
         if key in self.dic:
             self.remove(key)
-            self.add(key, value)
-        elif len(self.dic) < self.capacity:
-            self.add(key, value)
-        else:
-            node = self.tail.pre
-            self.remove(node.key)
-            self.add(key, value)
+
+        self.add(key, value)
 
     def add(self, key, val):
         node = Node(key, val)
