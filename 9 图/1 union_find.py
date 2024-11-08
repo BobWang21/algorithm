@@ -4,6 +4,33 @@
 
 # dfs 时间复杂度：O(edge)
 # 类似联通区域的个数
+from collections import deque
+
+
+def find_circle_num1(is_connected):
+    n = len(is_connected)
+    visited = [False] * n
+    province_count = 0
+
+    def bfs(start):
+        queue = deque([start])
+        visited[start] = True
+        while queue:
+            city = queue.popleft()
+            for i in range(n):
+                if is_connected[city][i] == 1 and not visited[i]:
+                    visited[i] = True
+                    queue.append(i)
+
+    # 遍历每个城市
+    for i in range(n):
+        if not visited[i]:  # 如果城市没有被访问过，说明是一个新的省份
+            bfs(i)
+            province_count += 1
+
+    return province_count
+
+
 def find_circle_num2(M):
     n = len(M)
     seen = set()
@@ -26,7 +53,7 @@ def find_circle_num2(M):
 
 
 # 是否存在环
-def check_circle(M):
+def check_circle3(M):
     if not M or not M[0]:
         return 0
     n = len(M)
