@@ -12,10 +12,10 @@ def partition1(nums, l, r):  # 原地修改
             r -= 1
         nums[l] = nums[r]  # 替换已保存nums[l]
         # 从左向右遍历
-        while l < r and nums[l] <= pivot:  # 左右必须有一个包含等于号
+        while l < r and nums[l] < pivot:  # 左右必须有一个包含等于号
             l += 1
         nums[r] = nums[l]  # 替换已保存nums[l]
-    nums[l] = pivot  # 1 nums[l]已经复制到其他位置 nums[l-1]<pivot  nums[r+1] >= pivot
+    nums[l] = pivot  # 1 nums[l]已经复制到其他位置 nums[l-1]< pivot <= nums[l]
     return l
 
 
@@ -26,7 +26,7 @@ def partition2(nums, l, r):
         while l < r and nums[r] >= pivot:
             r -= 1
         # 从左侧找到大于pivot的位置
-        while l < r and nums[l] < pivot:  # 左右必须有一个包含等于号
+        while l < r and nums[l] < pivot:  # 左右仅有一个等于号
             l += 1
         # 交换
         if l < r:
@@ -65,9 +65,9 @@ def quick_sort1(nums, l, r):
 
 
 def quick_sort2(nums, l, r):
-    if l < r:  # 长度为1不用排序, 两侧向中间靠
+    if l < r:
         mid = partition2(nums, l, r)
-        quick_sort2(nums, l, mid)  # 因为mid为排序 需要包含mid
+        quick_sort2(nums, l, mid)  # 因为mid左侧小于pivot为排序 需要包含mid
         quick_sort2(nums, mid + 1, r)
 
 
@@ -226,8 +226,15 @@ def largest_number2(nums):
 
 
 if __name__ == '__main__':
+    print('\npartition1')
+    nums = [5, 2, 1, 10, 4]
+    print(partition1(nums, 0, 4))
+    print(nums)
+
     print('\npartition2')
-    print(partition2([5, 2, 1, 10, 4], 0, 4))
+    nums = [5, 2, 1, 10, 4]
+    print(partition2(nums, 0, 4))
+    print(nums)
 
     print('\n快排1')
     nums = [4, 3, 1, 3, 9, 10]
@@ -235,8 +242,8 @@ if __name__ == '__main__':
     print(nums)
 
     print('\n快排2')
-    nums = [4, 3, 1, 3, 9, 10]
-    quick_sort2(nums, 0, 5)
+    nums = [5, 2, 3, 1]
+    quick_sort2(nums, 0, 3)
     print(nums)
 
     print('\n快排3')

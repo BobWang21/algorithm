@@ -17,7 +17,8 @@ def partition(nums, left, right):
         while l < r and nums[l] < pivot:
             l += 1
         if l < r:
-            swap(l, r)  # 保证 nums[l] < pivot <= nums[r]
+            swap(l, r)  # 保证 nums[l] < pivot <= nums[r]、
+    # nums[, l] <pivot nums[l + 1, ] >= pivot
     return nums
 
 

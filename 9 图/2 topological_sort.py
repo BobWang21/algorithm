@@ -68,7 +68,7 @@ def can_finish2(num_courses, prerequisites):
     return True
 
 
-# 广度优先 拓扑排序 | 考虑入度 时间复杂度为O(E+V)
+# 拓扑排序 广度优先 | 考虑入度 时间复杂度为O(E+V)
 def can_finish3(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u 邻接表
     indegree = [0] * num_courses  # 入度
@@ -82,12 +82,12 @@ def can_finish3(num_courses, prerequisites):
             queue.append(i)
 
     while queue:
-        u = queue.popleft()
-        for v in dic[u]:
-            indegree[v] -= 1
-            if not indegree[v]:
-                queue.append(v)
-        del dic[u]
+        v = queue.popleft()
+        for u in dic[v]:
+            indegree[u] -= 1
+            if not indegree[u]:
+                queue.append(u)
+        del dic[v]
     return False if dic else True
 
 
@@ -173,7 +173,7 @@ def alien_order(words):
 
 if __name__ == '__main__':
     print('\n是否可以完课')
-    print(can_finish1(3, [[1, 0], [1, 2], [2, 0]]))
+    print(can_finish3(3, [[1, 0], [1, 2], [2, 0]]))
 
     print('\n火星字典')
     print(alien_order(['wrt', 'wrf', 'er', 'ett', 'rftt']))

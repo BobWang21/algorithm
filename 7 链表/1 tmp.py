@@ -44,12 +44,12 @@ def reverse1(head):
     return pre
 
 
-# 递归1
+# 递归1 1-> 2->3->4 4->3->2 ->1
 def reverse2(head):
     if not head or not head.next:
         return head
     new_head = reverse2(head.next)
-    head.next.next = head  # new_head的尾结点指向原来head
+    head.next.next = head  # head的next节点为new_head的尾结点，指向原head
     head.next = None
     return new_head
 
@@ -208,13 +208,13 @@ def middle_node(head):
     return slow.val
 
 
-# 148 链表排序
+# 148 链表排序 | 归并排序
 def sort_list(head):
     if not head or not head.next:  # 单节点
         return head
 
     slow = head
-    fast = head.next
+    fast = head.next  # 需要知道mid节点前个节点 方便截尾
     while fast and fast.next:
         fast = fast.next.next
         slow = slow.next
@@ -310,11 +310,11 @@ def merge_k_sorted_lists2(lists):
     for l in lists:
         if l:
             hq.heappush(heap, (l.val, l))  # 加入value为了排序
-    dummy = curr = ListNode(-1)
+    dummy = tail = ListNode(-1)
     while heap:
         v, node = hq.heappop(heap)
-        curr.next = node
-        curr = curr.next
+        tail.next = node
+        tail = tail.next
         if node.next:
             hq.heappush(heap, (node.next.val, node.next))
     return dummy.next
@@ -336,11 +336,11 @@ def merge_k_sorted_lists3(lists):
     for l in lists:
         if l:
             hq.heappush(heap, l)  # 加入value为了排序
-    dummy = curr = ListNode(-1)
+    dummy = tail = ListNode(-1)
     while heap:
         node = hq.heappop(heap)
-        curr.next = node
-        curr = curr.next
+        tail.next = node
+        tail = tail.next
         if node.next:
             hq.heappush(heap, node.next)
     return dummy.next
@@ -640,10 +640,6 @@ if __name__ == '__main__':
     head = construct_list_node([1, 3, 5, 7])
     print(tail(head, 1))
 
-    head = construct_list_node([1, 3, 5, 7, 9])
-    print('\n链表中间节点')
-    print(middle_node(head))
-
     print('\n链表对翻转')
     head = construct_list_node([1, 3, 5, 7])
     print_list_node(swap_pairs1(head))
@@ -655,6 +651,10 @@ if __name__ == '__main__':
     print('\npartition')
     head = construct_list_node([1, 4, 3, 2, 5, 2])
     print_list_node(partition(head, 4))
+
+    head = construct_list_node([1, 3, 5, 7, 9])
+    print('\n链表中间节点')
+    print(middle_node(head))
 
     print('\n链表排序')
     l1 = construct_list_node([8, 1, 3, 7])
