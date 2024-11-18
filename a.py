@@ -890,7 +890,6 @@ def have_path_sum(root, target):
     return helper(0, root)
 
 
-
 def path_sum2(root, target):
     dic = defaultdict(int)
     dic[0] = 1
@@ -929,6 +928,7 @@ def max_sum_path1(root):
 
     from_root(root)
     return res[0]
+
 
 class LinkNode():
     def __init__(self, key=None, val=0):
@@ -1033,3 +1033,67 @@ def max_area(heights):
             res = max(res, heights * w)
 
     return res
+
+
+from collections import deque, defaultdict
+
+
+def slide_windows(nums, k):
+    s = set()
+    queue = deque([])
+    res = []
+    for i, v1 in enumerate(nums):
+        if len(queue) == k:
+            v2 = queue.popleft()
+            res.append(v2)
+            s.remove(v2)
+        if v1 not in s:
+            queue.append(v1)
+            s.add(v1)
+
+    for v in queue:
+        res.append(v)
+    return res
+
+
+print(slide_windows([1, 2, 3, 1, 2, 3, 4, 5, 1], 4))
+
+
+# set(i,val) get(i) set_all(val)
+# 这三个方法的时间复杂度要求都是O(1)基于数组或者hashmap都可以。
+class MyDict():
+    def __init__(self):
+        self.__default_value = -1
+        self.dic_v = dict()
+        self.dic_t = dict()
+        self.i = 0
+        self.j = 0
+
+    def get(self, index):
+        if index not in self.dic_v:
+            return -1
+        if self.j > self.dic_t[index]:
+            return self.default_value
+        return self.dic_v[index]
+
+    def set(self, index, value):
+        self.i += 1
+        self.dic_v[index] = value
+        self.dic_t[index] = self.i
+
+    def set_all(self, value):
+        self.j = self.i + 1
+        self.default_value = value
+
+
+dic = MyDict()
+
+print(dic.get(1))
+
+dic.set(1, 2)
+dic.set(1, 3)
+dic.set(1, 4)
+
+dic.set_all(0)
+dic.set(2, 10)
+print(dic.get(2))
