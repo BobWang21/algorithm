@@ -1040,7 +1040,7 @@ from collections import deque, defaultdict
 
 def slide_windows(nums, k):
     s = set()
-    queue = deque([])
+    queue = deque()
     res = []
     for i, v1 in enumerate(nums):
         if len(queue) == k:
@@ -1063,7 +1063,7 @@ print(slide_windows([1, 2, 3, 1, 2, 3, 4, 5, 1], 4))
 # 这三个方法的时间复杂度要求都是O(1)基于数组或者hashmap都可以。
 class MyDict():
     def __init__(self):
-        self.__default_value = -1
+        self.default_value = -1
         self.dic_v = dict()
         self.dic_t = dict()
         self.i = 0
@@ -1097,3 +1097,50 @@ dic.set(1, 4)
 dic.set_all(0)
 dic.set(2, 10)
 print(dic.get(2))
+
+
+# 合并数组topK
+# [1 3 5| 7]
+# [2| 4 6 8]
+
+def find_k(nums1, nums2, k):
+    if len(nums1) > len(nums2):
+        return find_k(nums2, nums1, k)
+
+    l, r = 0, min(k, len(nums1))
+    while l < r:
+        mid = l + (r - l + 1) // 2
+        j = k - mid
+        value = nums2[j] if j < len(nums2) else float('inf')
+        if nums1[mid - 1] <= value:  # nums1[l-1] <= nums2[k-l]
+            l = mid
+        else:
+            r = mid - 1
+    print(l)
+    # 取了l个数
+    value = max(
+        nums1[l - 1] if 0 <= l - 1 < len(nums1) else -float('inf'),
+        nums2[k - l - 1] if 0 <= k - l - 1 < len(nums2) else -float('inf')
+    )
+    return value
+
+
+print('*' * 10)
+nums1 = [1, 3, 5, 7]
+nums2 = [2, 4, 6, 8]
+print(find_k(nums1, nums2, k=3))
+
+
+# 120 triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+def minimum_total(triangle):
+    n = len(triangle[-1])
+    res = [float('inf')] * n
+    res[0] = triangle[0][0]
+    for j in range(1, len(triangle)):
+        nums = triangle[j]
+        n = len(nums)
+        # 逆序
+        for i in range(n - 1, -1, -1):
+            res[i] = min(res[i] if n - 1 > i > -1 else float('inf'),
+                         res[i - 1] if n - 1 > i - 1 > -1 else float('inf')) + nums[i]
+    return min(res)

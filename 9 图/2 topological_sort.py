@@ -78,23 +78,23 @@ def can_finish3(num_courses, prerequisites):
     for i in range(num_courses):
         if not indegree[i]:
             queue.append(i)
-
+    num = 0
     while queue:
         v = queue.popleft()
+        num += 1
         for u in dic[v]:
             indegree[u] -= 1
             if not indegree[u]:
                 queue.append(u)
-        del dic[v]
-    return False if dic else True
+    return num == num_courses
 
 
 def find_order(num_courses, prerequisites):
     dic = defaultdict(set)  # v -> u
     indegree = [0] * num_courses  # 入度
     for u, v in prerequisites:
-        dic[v].add(u)
-        indegree[u] += 1
+        dic[v].add(u)  # 指向的节点
+        indegree[u] += 1  # 节点入度
 
     queue = deque()
     for i in range(num_courses):

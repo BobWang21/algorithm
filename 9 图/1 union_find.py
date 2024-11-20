@@ -2,12 +2,69 @@
 # -*- coding: utf-8 -*-
 
 
-# dfs 时间复杂度：O(edge)
-# 类似联通区域的个数
 from collections import deque
 
 
-def find_circle_num1(is_connected):
+# 是否存在环
+def check_circle(M):
+    if not M or not M[0]:
+        return 0
+    n = len(M)
+    parent = list(range(n))
+    rank = [0] * n
+
+    def find(x):
+        while x != parent[x]:
+            parent[x] = parent[parent[x]]  # 路径减半
+            x = parent[x]
+        return x
+
+    def union(x, y):
+        x = find(x)
+        y = find(y)
+        if x == y:  # 有环等价于相连且公共的祖先
+            return True
+        if rank[x] < rank[y]:
+            parent[x] = y
+        elif rank[x] > rank[y]:
+            parent[y] = x
+        else:
+            parent[y] = x
+            rank[x] += 1
+        return False
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if M[i][j] and union(i, j):
+                return True
+    return False
+
+
+# 547 朋友圈数
+# dfs 时间复杂度：O(edge)
+def find_circle_num1(M):
+    n = len(M)
+    seen = set()
+
+    def helper(i):
+        if i in seen:
+            return
+
+        seen.add(i)
+        for j in range(n):
+            if M[i][j] and i != j:
+                helper(j)
+
+    res = 0
+    for i in range(n):
+        if i not in seen:
+            res += 1
+            helper(i)
+    return res
+
+
+# 547 bfs
+def find_circle_num2(is_connected):
     n = len(is_connected)
     visited = [False] * n
     province_count = 0
@@ -31,65 +88,9 @@ def find_circle_num1(is_connected):
     return province_count
 
 
-def find_circle_num2(M):
-    n = len(M)
-    seen = set()
-
-    def helper(i):
-        if i in seen:
-            return
-
-        seen.add(i)
-        for j in range(n):
-            if M[i][j] and i != j:
-                helper(j)
-
-    res = 0
-    for i in range(n):
-        if i not in seen:
-            res += 1
-            helper(i)
-    return res
-
-
-# 是否存在环
-def check_circle3(M):
-    if not M or not M[0]:
-        return 0
-    n = len(M)
-    parent = list(range(n))
-    rank = [0] * n
-
-    def find(x):
-        while x != parent[x]:
-            parent[x] = parent[parent[x]]  # 路径减半
-            x = parent[x]
-        return x
-
-    def union(x, y):
-        x = find(x)
-        y = find(y)
-        if x == y:
-            return True
-        if rank[x] < rank[y]:
-            parent[x] = y
-        elif rank[x] > rank[y]:
-            parent[y] = x
-        else:
-            parent[y] = x
-            rank[x] += 1
-        return False
-
-    for i in range(n):
-        for j in range(i + 1, n):
-            if M[i][j] and union(i, j):
-                return True
-    return False
-
-
 # 547 朋友圈总数 o(n^3)
 # 访问矩阵一次，并查集操作需要最坏O(n)的时间。
-def find_circle_num(M):
+def find_circle_num3(M):
     if not M or not M[0]:
         return 0
     n = len(M)
@@ -268,19 +269,19 @@ def longest_consecutive2(nums):
 
 
 if __name__ == '__main__':
-    print('\nfriend circle')
-    m = [[1, 0, 0, 1],
-         [0, 1, 1, 0],
-         [0, 1, 1, 1],
-         [1, 0, 1, 1]]
-    print(find_circle_num(m))
-
     print('\ncheck graph circle')
     m = [[1, 1, 0, 1],
          [0, 1, 1, 0],
          [0, 1, 1, 1],
          [1, 0, 1, 1]]
     print(check_circle(m))
+
+    print('\nfriend circle')
+    m = [[1, 0, 0, 1],
+         [0, 1, 1, 0],
+         [0, 1, 1, 1],
+         [1, 0, 1, 1]]
+    print(find_circle_num1(m))
 
     print('\n句子相似性')
     a = ["great", "acting", "skills"]

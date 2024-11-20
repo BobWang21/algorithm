@@ -281,6 +281,22 @@ def minimum_total(nums):
     return min(nums[-1])
 
 
+# 120
+def minimum_total_(triangle):
+    n = len(triangle[-1])
+    res = [float('inf')] * n
+    res[0] = triangle[0][0]
+    for j in range(1, len(triangle)):
+        nums = triangle[j]
+        n = len(nums)
+        # 逆序
+        for i in range(n - 1, -1, -1):
+            res[i] = min(res[i] if n - 1 > i > -1 else float('inf'),
+                         res[i - 1] if n - 1 > i - 1 > -1 else float('inf')
+                         ) + nums[i]
+    return min(res)
+
+
 # 最大正方形面积 1277
 def maximal_square(matrix):
     if not matrix or not matrix[0]:
