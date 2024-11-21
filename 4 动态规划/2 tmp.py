@@ -281,7 +281,7 @@ def minimum_total(nums):
     return min(nums[-1])
 
 
-# 120
+# 120 状态压缩
 def minimum_total_(triangle):
     n = len(triangle[-1])
     res = [float('inf')] * n

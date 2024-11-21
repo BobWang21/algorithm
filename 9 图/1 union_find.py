@@ -13,12 +13,14 @@ def check_circle(M):
     parent = list(range(n))
     rank = [0] * n
 
+    # 找到所属集合
     def find(x):
         while x != parent[x]:
             parent[x] = parent[parent[x]]  # 路径减半
             x = parent[x]
         return x
 
+    # 合并两个集合
     def union(x, y):
         x = find(x)
         y = find(y)

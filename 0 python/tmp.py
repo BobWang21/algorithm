@@ -61,8 +61,8 @@ if __name__ == '__main__':
     nums.reverse()  # 反转
     nums = [[1, 3], [2, 2], [3, 6]]
     nums.sort(key=lambda x: x[1] - x[0])  # 排序
-    print(nums + [4])  # 生成一个新的变量
-    print(nums[1:])  # 切片和[:] 生成一个新列表
+    print(nums + [4])  # 生成新列表
+    print(nums[1:])  # 切片和[:] 生成新列表
     print(nums[3:10:2])  # [star, end, step]
 
     print('\n字典')
@@ -95,11 +95,11 @@ if __name__ == '__main__':
     dic = defaultdict(int)
     dic[1] += 5
 
-    print('\nCounter')
     # Counter 是一个字典子类，用于计数可哈希对象
+    print('\nCounter')
     nums = [2, 3, 3, 5]
-    dic = Counter(nums)
-    print(dic)
+    counter = Counter(nums)
+    print(counter)
 
     # 双端队列
     # Python’s deque is a low-level and highly optimized double-ended queue

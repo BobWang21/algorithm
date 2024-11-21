@@ -1,9 +1,24 @@
 import heapq as hq
 from collections import defaultdict, Counter
 
+'''
+Partition  
+- 数组规模不大
+堆排序
+- 数组规模大
+- 堆中保存K个数
+二分查找  
+- f(key)存在单调递增关系
+- 计数: 小等于某个key的数目
+- 二分查找第一个value大于等于target的key
+计数排序 
+- 适用于没有单调关系的情况
+'''
 
-# 347 出现次数最多的K个数 类似倒排索引
-def top_k_frequent(nums, k):
+
+# 347 出现次数最多的K个数 可以按任意顺序返回答案。
+# 类似倒排索引
+def top_k_frequent1(nums, k):
     dic = defaultdict(int)
     for v in nums:
         dic[v] += 1
@@ -24,14 +39,28 @@ def top_k_frequent(nums, k):
                 return res[:k]
 
 
-def top_k_frequent(nums, k):
+def top_k_frequent2(nums, k):
     counter = Counter(nums)
     min_hq = []
     for value, cnt in counter.items():
         hq.heappush(min_hq, (cnt, value))
         if len(min_hq) > k:
             hq.heappop(min_hq)
-    return [value for cnt, value in min_hq]
+    return [value for cnt, value in hq.heappop(min_hq)]
+
+
+# 速度最快的方式 一定小于nlogk
+def top_k_frequent3(nums, k):
+    counter = Counter(nums)
+    min_hq = []
+    for val, cnt in counter.items():
+        if len(min_hq) == k:
+            if min_hq[0][0] < cnt:
+                hq.heappop(min_hq)
+                hq.heappush(min_hq, (cnt, val))
+        else:
+            hq.heappush(min_hq, (cnt, val))
+    return [value for cnt, value in hq.heappop(min_hq)]
 
 
 # 合并K个有序数组[[1, 1], [2, 3]]
@@ -167,7 +196,8 @@ if __name__ == '__main__':
     heap = []
 
     print('\n出现次数最多的K个数')
-    print(top_k_frequent([1, 1, 1, 2, 2, 3], 2))
+    print(top_k_frequent2([1, 2, 2, 3, 4, 4, 4], 2))
+    print(top_k_frequent3([1, 2, 2, 3, 4, 4, 4], 2))
 
     print('\n最小的k个pair')
     print(k_smallest_pairs([1, 7, 11], [2, 4, 6], 3))
