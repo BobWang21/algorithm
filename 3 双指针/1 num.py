@@ -25,8 +25,6 @@ def partition(nums, left, right):
 # 奇数在左边 偶数在右边
 def sort_array_by_parity(nums):
     n = len(nums)
-    if n < 2:
-        return nums
     l, r = 0, n - 1
     while l < r:
         while l < r and not nums[r] % 2:
@@ -185,7 +183,7 @@ def three_sum(nums, target):
                 r -= 1
             else:
                 res.append([nums[i], nums[l], nums[r]])
-                while l < r and nums[l] == nums[l + 1]:
+                while l < r and nums[l] == nums[l + 1]:  # 防止第二个数重复
                     l += 1
                 l += 1
     return res

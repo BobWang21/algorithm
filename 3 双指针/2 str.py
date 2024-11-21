@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-# 字符串不能原处更改
+# 字符串不能原地更改
 
 # 判断是否为回文
 def is_palindrome(s):

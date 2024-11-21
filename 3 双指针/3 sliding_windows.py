@@ -1,6 +1,24 @@
 from collections import Counter, defaultdict
 
 
+# 11. 盛最多水的容器
+# s = min(h[l], h[r]) * (r-l)
+# 关注移动后的短板会不会变长
+# 向内移动短板大于等于当前面积;
+# 向内移动长板小于当前面积 --这部分可以减枝
+# 因此我们选择向内移动短板
+def max_area(height):
+    res = 0
+    l, r = 0, len(height) - 1
+    while l < r:
+        res = max(res, min(height[l], height[r]) * (r - l))
+        if height[l] < height[r]:
+            l += 1
+        else:
+            r -= 1
+    return res
+
+
 # 3 最长非重复子串
 def length_of_longest_substring(s):
     if not s:
@@ -32,33 +50,9 @@ def length_of_longest_substring2(s):
         # left滑出窗口
         if c in dic and dic[c] >= l:
             l = dic[c] + 1
-        res = max(res, r - l + 1)
         dic[c] = r
-        r += 1
-
-    return res
-
-
-# 340 包含k个不同字符的最大长度
-def length_of_longest_substring_k_distinct(s, k):
-    if not s or len(s) <= k:
-        return len(s)
-
-    dic = defaultdict(int)
-    res, n = 0, len(s)
-    l, r = 0, 0
-    for r, c in enumerate(s):
-        dic[c] += 1
-        # left滑出窗口
-        while len(dic) > k:
-            c = s[l]
-            dic[c] -= 1
-            if not dic[c]:
-                del dic[c]  # 用到len 所以需要删除
-            l += 1
-        # len(dic) == k
         res = max(res, r - l + 1)
-
+        r += 1
     return res
 
 
@@ -74,6 +68,7 @@ def min_window1(s, t):
     l = 0
     for r in range(n):
         c = s[r]
+        # 满足条件 进入窗口
         if c in dic1:
             dic2[c] += 1
             if dic2[c] == dic1[c]:
@@ -115,6 +110,29 @@ def min_window2(s, t):
             if s[l] in target:
                 cnt[s[l]] -= 1
             l += 1
+
+    return res
+
+
+# 340 包含k个不同字符的最大长度
+def length_of_longest_substring_k_distinct(s, k):
+    if not s or len(s) <= k:
+        return len(s)
+
+    dic = defaultdict(int)
+    res, n = 0, len(s)
+    l, r = 0, 0
+    for r, c in enumerate(s):
+        dic[c] += 1
+        # left滑出窗口
+        while len(dic) > k:
+            c = s[l]
+            dic[c] -= 1
+            if not dic[c]:
+                del dic[c]  # 用到len 所以需要删除
+            l += 1
+        # len(dic) == k
+        res = max(res, r - l + 1)
 
     return res
 
@@ -243,24 +261,6 @@ def min_sub_array_len(nums, s):
             total -= nums[i]
             i += 1
     return res if res == n + 1 else 0
-
-
-# 11. 盛最多水的容器
-# s = min(h[l], h[r]) * (r-l)
-# 关注移动后的短板会不会变长
-# 向内移动短板大于等于当前面积;
-# 向内移动长板小于当前面积 --这部分可以减枝
-# 因此我们选择向内移动短板
-def max_area(height):
-    res = 0
-    l, r = 0, len(height) - 1
-    while l < r:
-        res = max(res, min(height[l], height[r]) * (r - l))
-        if height[l] < height[r]:
-            l += 1
-        else:
-            r -= 1
-    return res
 
 
 # 适合判断多个s是否在t中

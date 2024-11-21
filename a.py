@@ -1102,7 +1102,6 @@ print(dic.get(2))
 # 合并数组topK
 # [1 3 5| 7]
 # [2| 4 6 8]
-
 def find_k(nums1, nums2, k):
     if len(nums1) > len(nums2):
         return find_k(nums2, nums1, k)
@@ -1116,7 +1115,7 @@ def find_k(nums1, nums2, k):
             l = mid
         else:
             r = mid - 1
-    print(l)
+    # print(l)
     # 取了l个数
     value = max(
         nums1[l - 1] if 0 <= l - 1 < len(nums1) else -float('inf'),
@@ -1126,9 +1125,10 @@ def find_k(nums1, nums2, k):
 
 
 print('*' * 10)
-nums1 = [1, 3, 5, 7]
+nums1 = [1, 3, 5]
 nums2 = [2, 4, 6, 8]
-print(find_k(nums1, nums2, k=3))
+for k in range(1, 8):
+    print(find_k(nums1, nums2, k))
 
 
 # 120 triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]

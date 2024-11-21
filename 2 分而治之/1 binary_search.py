@@ -55,6 +55,7 @@ def search_last_pos(nums, target):
             l = mid  # l==mid & mid取左节点时, l,r=0,1会无限循环
         else:
             r = mid - 1  # nums[r+1] > target
+    # 在l < r时， nums[l] <= target < nums[l+1]
     return l if nums[l] == target else -1
 
 
@@ -119,7 +120,7 @@ def get_number_of_k(nums, target):
 def sqrt(n, precision):
     l, r = 0, n
     while l <= r:
-        mid = l + (r - l) / 2
+        mid = l + (r - l) / 2  # 小数
         s = mid * mid
         if abs(s - n) <= precision:
             return mid
@@ -132,7 +133,6 @@ def sqrt(n, precision):
 
 # 153 旋转数组中的最小值
 # [1 2 3 4]的旋转数组[3 4 1 2], [1 2 3 4]
-# 和队首比 num[l-1]>=nums[0], nums[l]<nums[0]
 def find_min1(nums):
     if nums[0] <= nums[-1]:
         return nums[0]
@@ -143,7 +143,7 @@ def find_min1(nums):
         if nums[mid] >= nums[0]:  # nums[l-1] >= nums[0]
             l = mid + 1
         else:
-            r = mid  # nums[r] < nums[0]
+            r = mid  # nums[l] < nums[0]
     return nums[l]
 
 
@@ -213,13 +213,13 @@ def find_median_sorted_arrays(nums1, nums2):
     if m > n:
         return find_median_sorted_arrays(nums2, nums1)
 
-    k = (m + n + 1) // 2  # 总数为奇数时，取中位数
+    k = (m + n + 1) // 2  # 取个数的左中位数
 
     # 二分查找取第一个数组中数字的个数
     l, r = 0, m
     while l < r:
         mid = l + (r - l + 1) // 2  # mid可取到m, 取不到0
-        j = k - mid  # 数组2左侧的数字个数
+        j = k - mid  # 数组2左侧的数字个数 j 最大取k-1 证明 k-1 <= n - 1, k <= n
         if nums1[mid - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
             l = mid
         else:
@@ -238,6 +238,30 @@ def find_median_sorted_arrays(nums1, nums2):
              nums2[x2 + 1] if 0 <= x2 + 1 < n else float('inf'))
 
     return (v1 + v2) / 2
+
+
+# 有序数组合并后的第K个数
+# [1 3 5| 7]
+# [2| 4 6 8]
+def find_kth_num(nums1, nums2, k):
+    if len(nums1) > len(nums2):
+        return find_kth_num(nums2, nums1, k)
+
+    l, r = 0, min(k, len(nums1))
+    while l < r:
+        mid = l + (r - l + 1) // 2
+        j = k - mid
+        value = nums2[j] if j < len(nums2) else float('inf')  # 如果数组2越界 假设越界数无穷大
+        if nums1[mid - 1] <= value:  # nums1[l-1] <= nums2[k-l]
+            l = mid
+        else:
+            r = mid - 1
+    # 取了l个数
+    value = max(
+        nums1[l - 1] if 0 <= l - 1 < len(nums1) else -float('inf'),
+        nums2[k - l - 1] if 0 <= k - l - 1 < len(nums2) else -float('inf')
+    )
+    return value
 
 
 # 441 排列硬币
@@ -470,6 +494,7 @@ if __name__ == '__main__':
 
     print('\n中位数')
     print(find_median_sorted_arrays([1, 2], [3, 4, 5]))
+    print(find_kth_num([1, 2], [3, 4, 5], 3))
 
     print('\n最小距离')
     print(smallest_distance_pair_3([1, 6, 1], 3))
