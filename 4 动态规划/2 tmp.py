@@ -86,7 +86,7 @@ def rob_with_cycle(nums):
 def max_sub_array(nums):
     if not nums:
         return 0
-    inc = exc = -float('inf')  # 负无穷适用与目标值最大时的初始化
+    inc = exc = -float('inf')  # 目标值最大时初始化使用负无穷
     for num in nums:
         inc, exc = max(inc + num, num), max(inc, exc)
     return max(inc, exc)
@@ -166,7 +166,7 @@ def max_profit4(prices):
     return dp[-1][-1][0]
 
 
-# 400 最长上升子序列
+# 300 最长上升子序列
 def LIS1(nums):
     dp = [1] * len(nums)
     res = 1
@@ -178,7 +178,7 @@ def LIS1(nums):
     return res
 
 
-# 400 res[i] 保存长度为i+1的子串的最小值 nlog(n)
+# 300 res[i] 保存长度为i+1的子串的最小值 nlog(n)
 def LIS2(nums):
     if not nums:
         return 0

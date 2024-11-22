@@ -3,7 +3,8 @@
 from pprint import pprint
 
 
-# 200 岛屿数量 也可用union-find
+# 200 岛屿数量
+# union-find也可
 def num_islands(grid):
     if not grid:
         return 0
@@ -15,10 +16,8 @@ def num_islands(grid):
         if grid[i][j] == '0':
             return
         grid[i][j] = '0'
-        dfs(i - 1, j)
-        dfs(i + 1, j)
-        dfs(i, j - 1)
-        dfs(i, j + 1)
+        for di, dj in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            dfs(i + di, j + dj)
         return
 
     num = 0
@@ -132,6 +131,8 @@ def has_path_3(maze, start, destination):
     directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
     def dfs(i, j):
+        if maze[i][j] == -1:
+            return False
         maze[i][j] = -1
         if [i, j] == destination:
             return True
@@ -142,9 +143,8 @@ def has_path_3(maze, start, destination):
                 x = x + dx
                 y = y + dy
 
-            if maze[x][y] != -1:  # 如果该点的值不为-1，即未遍历过
-                if dfs(x, y):
-                    return True
+            if dfs(x, y):
+                return True
 
         return False
 
@@ -185,6 +185,66 @@ def surrounded_regions1(board):
     return board
 
 
+# 329. 矩阵中的最长递增路径
+# dfs + 记忆 dp[i][j]
+# max(dp[x][y]) + 1
+def longest_increasing_path(matrix):
+    memory = {}
+    rows, cols = len(matrix), len(matrix[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    def helper(i, j):
+        # 递归开始满足约束，此处约束放在了下面
+        if (i, j) in memory:
+            return memory[(i, j)]
+
+        num = 0
+        for direction in directions:
+            dx, dy = i + direction[0], j + direction[1]
+            # 将约束放在这
+            if dx < 0 or dy < 0 or dx == rows or dy == cols:
+                continue
+            if matrix[i][j] <= matrix[dx][dy]:
+                continue
+            num = max(num, helper(dx, dy))
+
+        num += 1  # 本身
+        memory[(i, j)] = num
+        return num
+
+    res = 1
+    for i in range(rows):
+        for j in range(cols):
+            res = max(res, helper(i, j))
+    return res
+
+
+# 抢钱问题 记忆化深度搜索
+def rob(tree):
+    dic = dict()
+
+    def helper(root):
+        if not root:
+            return 0, 0  # inc, max
+        if root in dic:
+            return dic[root]
+        left = helper(root.left)
+        right = helper(root.right)
+        include = root.val
+        if root.left:
+            include += helper(root.left.left)[1]  # 涉及到重复计算
+            include += helper(root.left.right)[1]
+        if root.right:
+            include += helper(root.right.left)[1]
+            include += helper(root.right.right)[1]
+        exclude = left[1] + right[1]
+        max_v = max(include, exclude)
+        dic.setdefault(root, (include, max_v))
+        return include, max_v
+
+    return helper(tree)[1]
+
+
 # 130 回溯思想
 def surrounded_regions2(board):
     if not board:
@@ -213,38 +273,6 @@ def surrounded_regions2(board):
                 dfs(i, j, set())
     return board
 
-
-# 错误版# # # # # # # # # # # # # # # # # # # # # #
-def surrounded_regions_wrong(board):
-    if not board:
-        return
-    rows, cols = len(board), len(board[0])
-    directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-
-    def dfs(i, j):
-        if i < 0 or j < 0 or i == rows or j == cols:
-            return False
-
-        if board[i][j] == 'X':
-            return True
-
-        board[i][j] = 'X'
-        for direction in directions:
-            # 若之前的三个方向正确 则无法回溯
-            if not dfs(i + direction[0], j + direction[1]):
-                board[i][j] = 'O'
-                return False
-
-        return True
-
-    for i in range(rows):
-        for j in range(cols):
-            if board[i][j] == 'O':
-                dfs(i, j)
-    return board
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # 回溯过程
 def max_gift(board):
@@ -309,66 +337,6 @@ def closed_island(grid):
                 num += 1
                 dfs(i, j)
     return num
-
-
-# 329. 矩阵中的最长递增路径
-# dfs + 记忆 dp[i][j]
-# max(dp[x][y]) + 1
-def longest_increasing_path(matrix):
-    memory = {}
-    rows, cols = len(matrix), len(matrix[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-
-    def helper(i, j):
-        # 递归开始满足约束，此处约束放在了下面
-        if (i, j) in memory:
-            return memory[(i, j)]
-
-        res = 0
-        for direction in directions:
-            dx, dy = i + direction[0], j + direction[1]
-            # 将约束放在这
-            if dx < 0 or dy < 0 or dx == rows or dy == cols:
-                continue
-            if matrix[i][j] <= matrix[dx][dy]:
-                continue
-            res = max(res, helper(dx, dy))
-
-        res += 1  # 本身
-        memory[(i, j)] = res
-        return res
-
-    res = 1
-    for i in range(rows):
-        for j in range(cols):
-            res = max(res, helper(i, j))
-    return res
-
-
-# 抢钱问题 记忆化深度搜索
-def rob(tree):
-    dic = dict()
-
-    def helper(root):
-        if not root:
-            return 0, 0  # inc, max
-        if root in dic:
-            return dic[root]
-        left = helper(root.left)
-        right = helper(root.right)
-        include = root.val
-        if root.left:
-            include += helper(root.left.left)[1]  # 涉及到重复计算
-            include += helper(root.left.right)[1]
-        if root.right:
-            include += helper(root.right.left)[1]
-            include += helper(root.right.right)[1]
-        exclude = left[1] + right[1]
-        max_v = max(include, exclude)
-        dic.setdefault(root, (include, max_v))
-        return include, max_v
-
-    return helper(tree)[1]
 
 
 class Node(object):
