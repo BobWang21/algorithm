@@ -116,13 +116,6 @@ def longest_palindrome(s):
 
 # 编辑距离
 def edit_distance(word1, word2):
-    if not word1 and not word2:
-        return 0
-    if not word1:
-        return len(word2)
-    if not word2:
-        return len(word1)
-
     rows, cols = len(word1) + 1, len(word2) + 1
     dp = [[0] * cols for _ in range(rows)]
     for i in range(rows):  # base
@@ -134,7 +127,7 @@ def edit_distance(word1, word2):
         for j in range(1, cols):
             if word1[i - 1] == word2[j - 1]:
                 dp[i][j] = dp[i - 1][j - 1]
-            else:  # 新增 dp[i][j - 1], 删除 dp[i - 1][j]; dp[i - 1][j - 1]  replace
+            else:  # 删除 dp[i][j - 1], dp[i - 1][j]; 替换 dp[i - 1][j - 1]
                 dp[i][j] = min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1]) + 1
     return dp[-1][-1]
 

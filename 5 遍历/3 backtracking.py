@@ -3,22 +3,22 @@
 from collections import defaultdict
 
 
-# 78 子集问题 不回溯
+# 78 不包含重复元素子集问题  不回溯
 def subset_1(nums):
     res = []
     n = len(nums)
 
-    def dfs(i, path):
+    def helper(i, path):
         res.append(path)
 
-        for j in range(i, n):
-            dfs(j + 1, path + [nums[j]])  # 生成新的路径,不需回溯
+        for j in range(i, n):  # 从i开始迭代, 保证不重复
+            helper(j + 1, path + [nums[j]])  # 生成新的路径,不需回溯
 
-    dfs(0, [])
+    helper(0, [])
     return res
 
 
-# 子集问题 回溯
+# 78 不包含重复元素回溯
 def subsets_2(nums):
     n = len(nums)
     res = []
@@ -30,12 +30,12 @@ def subsets_2(nums):
         for j in range(i, n):  # i==n时跳出
             path.append(nums[j])
             helper(j + 1)
-            path.pop(-1)
+            path.pop(-1)  # 回溯
 
     helper(0)
 
 
-# 90. 子集包含重复
+# 90. 包含重复元素子集问题
 def subsets_with_dup(nums):
     if not nums:
         return []
@@ -44,7 +44,7 @@ def subsets_with_dup(nums):
 
     def helper(i=0):
         res.append(path[:])
-        for j in range(i, n):
+        for j in range(i, n):  # 同一层
             if j > i and nums[j] == nums[j - 1]:  # 相同数字不能出现在同一层
                 continue
             path.append(nums[j])
@@ -52,6 +52,95 @@ def subsets_with_dup(nums):
             path.pop(-1)
 
     nums.sort()
+    helper()
+    return res
+
+
+# 46 全排列 输入数组中不含重复数字
+def permute1(nums):
+    if not nums:
+        return []
+
+    res = []
+    n = len(nums)
+    visited = [False] * n
+    path = []
+
+    def helper():
+        if len(path) == n:
+            res.append(path[:])  # 复制
+
+        for i in range(n):  # 从头开始
+            if visited[i]:
+                continue
+            visited[i] = True
+            path.append(nums[i])
+            helper()
+            path.pop(-1)
+            visited[i] = False
+
+    helper()
+    return res
+
+
+# 47. 全排列 输入数组中含重复数字
+def permute_unique1(nums):
+    nums.sort()
+
+    n = len(nums)
+    visited = [False] * n
+
+    res = []
+
+    def helper(path):
+        if len(path) == n:
+            res.append(path[:])
+            return
+
+        for i in range(n):
+            if visited[i]:
+                continue
+            # 前面的数字未使用时，nums[i-1] 和 nums[i] 不能用 [1, 2_1, 2_2, 3]
+            # [1, 2_1, 2_2, ] 可以 [1, 2_2, 2_1, ]不可以
+            if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
+                continue
+            visited[i] = True
+            path.append(nums[i])
+            helper(path)
+            path.pop(-1)
+            visited[i] = False
+
+    helper([])
+
+    return res
+
+
+def permute_seq(n):
+    if not n:
+        return []
+    res, path = [], []
+    status = [2] * n
+
+    def helper():
+        if len(path) == 2 * n:
+            res.append(path[:])
+            return
+
+        for i in range(n):
+            if not status[i]:
+                continue
+
+            if status[i] == 2:
+                path.append(str(i) + '_B')
+            else:
+                path.append(str(i) + '_C')
+            status[i] -= 1
+
+            helper()
+
+            path.pop(-1)
+            status[i] += 1
+
     helper()
     return res
 
@@ -101,7 +190,7 @@ def four_sum_count(A, B, C, D):
 
 
 # 494 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数
-# 最优解使用动态规划
+# 最优解为使用动态规划
 def find_target_sum_ways(nums, target):
     n = len(nums)
     res = [0]
@@ -120,7 +209,8 @@ def find_target_sum_ways(nums, target):
     return res[0]
 
 
-# 39 和为target 数字可以重复使用；组合数为dp问题
+# 39 和为target 数字可以重复使用
+# 求组合个数为dp问题
 # Input: candidates = [2, 3, 6, 7], target = 7,
 # A solution set is:  [[7], [2, 2, 3]]
 def combination_sum(nums, target):
@@ -130,7 +220,7 @@ def combination_sum(nums, target):
     n = len(nums)
     path = []
 
-    def dfs(i, total):
+    def helper(i, total):
         if total > target:  # 不满足条件
             return
         if total == target:
@@ -140,100 +230,11 @@ def combination_sum(nums, target):
         for j in range(i, n):
             path.append(nums[j])
             # 索引不加1, 表示数字可以用多次!!!
-            dfs(j, total + nums[j])
+            helper(j, total + nums[j])
             path.pop(-1)
 
     nums.sort()
-    dfs(0, 0)
-    return res
-
-
-# 46 全排列 输入数组中不含重复数字
-def permute1(nums):
-    if not nums:
-        return []
-
-    res = []
-    n = len(nums)
-    visited = [False] * n
-    path = []
-
-    def dfs():
-        if len(path) == n:
-            res.append(path[:])  # 复制
-
-        for i in range(n):  # 从头开始
-            if visited[i]:
-                continue
-            visited[i] = True
-            path.append(nums[i])
-            dfs()
-            path.pop(-1)
-            visited[i] = False
-
-    dfs()
-    return res
-
-
-# 47. 全排列 输入数组中含重复数字
-def permute_unique1(nums):
-    nums.sort()
-
-    n = len(nums)
-    visited = [False] * n
-
-    res = []
-
-    def dfs(path):
-        if len(path) == n:
-            res.append(path[:])
-            return
-
-        for i in range(n):
-            if visited[i]:
-                continue
-            # 前面的数字未使用时，nums[i-1] 和 nums[i] 不能用 [1, 2_1, 2_2, 3]
-            # [1, 2_1, 2_2, ] 可以 [1, 2_2, 2_1, ]不可以
-            if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
-                continue
-            visited[i] = True
-            path.append(nums[i])
-            dfs(path)
-            path.pop(-1)
-            visited[i] = False
-
-    dfs([])
-
-    return res
-
-
-def permute_seq(n):
-    if not n:
-        return []
-    res, path = [], []
-    status = [2] * n
-
-    def helper():
-        if len(path) == 2 * n:
-            res.append(path[:])
-            return
-
-        for i in range(n):
-            if not status[i]:
-                continue
-
-            if status[i] == 2:
-                path.append(str(i) + '_B')
-            else:
-                path.append(str(i) + '_C')
-            status[i] -= 1
-
-            helper()
-
-            path.pop(-1)
-            status[i] += 1
-
-    helper()
+    helper(0, 0)
     return res
 
 
@@ -367,56 +368,54 @@ def remove_invalid_parentheses(s):
 
     n, res = len(s), set()  # 因为可能存在重复值 所以使用set保存结果
 
-    def dfs(i, l, r, left, path):  # left 表示未匹配的左括号
+    def helper(i, l, r, left, path):  # left 表示未匹配的左括号
         if i == n and not l and not r and not left:
             res.add(path)
         if i == n:
             return
         if s[i] not in {'(', ')'}:
-            dfs(i + 1, l, r, left, path + s[i])
+            helper(i + 1, l, r, left, path + s[i])
             return
         if s[i] == '(':
-            dfs(i + 1, l, r, left + 1, path + s[i])  # 加
+            helper(i + 1, l, r, left + 1, path + s[i])  # 加
             if l:
-                dfs(i + 1, l - 1, r, left, path)  # 不加
+                helper(i + 1, l - 1, r, left, path)  # 不加
         else:
             if left:
-                dfs(i + 1, l, r, left - 1, path + s[i])  # 加
+                helper(i + 1, l, r, left - 1, path + s[i])  # 加
             if r:
-                dfs(i + 1, l, r - 1, left, path)  # 不加
+                helper(i + 1, l, r - 1, left, path)  # 不加
 
-    dfs(0, l, r, 0, '')
+    helper(0, l, r, 0, '')
     return list(res)
 
 
 # 79 单词搜索
+# 判断是否存在路径
 def exist(board, word):
     rows, cols = len(board), len(board[0])
-    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
     n = len(word)
+    visited = [[0] * cols for _ in range(rows)]
 
-    def dfs(i, j, k):
-        if k == n:
+    def helper(i, j, idx):
+        if idx == n:
             return True
-
-        if i < 0 or i == rows or j < 0 or j == cols or board[i][j] == '.':
+        if i < 0 or i == rows or j < 0 or j == cols or visited[i][j]:
             return False
 
-        if board[i][j] != word[k]:
-            return False
-
-        char = board[i][j]
-        board[i][j] = '.'
-        for d in directions:
-            row, col = i + d[0], j + d[1]
-            if dfs(row, col, k + 1):
-                return True
-        board[i][j] = char
-        return False
+        visited[i][j] = True
+        res = False
+        if board[i][j] == word[idx]:
+            for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                if helper(i + di, j + dj, idx + 1):
+                    res = True
+                    break
+        visited[i][j] = False
+        return res
 
     for i in range(rows):
         for j in range(cols):
-            if dfs(i, j, 0):
+            if helper(i, j, 0):
                 return True
     return False
 
