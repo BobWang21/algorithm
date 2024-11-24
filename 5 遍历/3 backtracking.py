@@ -145,6 +145,33 @@ def permute_seq(n):
     return res
 
 
+# 39 数组子集和为target 数字可以重复使用
+# 求组合个数为dp问题
+def combination_sum(nums, target):
+    if not nums or target == 0:
+        return []
+    res = []
+    n = len(nums)
+    path = []
+
+    def helper(i, total):
+        if total > target:  # 不满足条件
+            return
+        if total == target:
+            res.append(path[:])
+            return
+
+        for j in range(i, n):
+            path.append(nums[j])
+            # 索引不加1, 表示数字可以重复使用!!!
+            helper(j, total + nums[j])
+            path.pop(-1)
+
+    nums.sort()
+    helper(0, 0)
+    return res
+
+
 def n_sum1(nums, k, target):
     if not nums or len(nums) < k or target < 0:
         return []
@@ -189,96 +216,6 @@ def four_sum_count(A, B, C, D):
     return res
 
 
-# 494 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数
-# 最优解为使用动态规划
-def find_target_sum_ways(nums, target):
-    n = len(nums)
-    res = [0]
-
-    def helper(idx, total):
-        if idx == n and total == target:
-            res[0] = res[0] + 1
-            return
-        if idx == n:
-            return
-
-        helper(idx + 1, total + nums[idx])
-        helper(idx + 1, total - nums[idx])
-
-    helper(0, 0)
-    return res[0]
-
-
-# 39 和为target 数字可以重复使用
-# 求组合个数为dp问题
-# Input: candidates = [2, 3, 6, 7], target = 7,
-# A solution set is:  [[7], [2, 2, 3]]
-def combination_sum(nums, target):
-    if not nums or target == 0:
-        return []
-    res = []
-    n = len(nums)
-    path = []
-
-    def helper(i, total):
-        if total > target:  # 不满足条件
-            return
-        if total == target:
-            res.append(path[:])
-            return
-
-        for j in range(i, n):
-            path.append(nums[j])
-            # 索引不加1, 表示数字可以用多次!!!
-            helper(j, total + nums[j])
-            path.pop(-1)
-
-    nums.sort()
-    helper(0, 0)
-    return res
-
-
-# 递增子序列
-def find_sub_sequences(nums):
-    if not nums:
-        return []
-    res = set()  # 使用集合去重
-    n = len(nums)
-
-    def helper(idx, path):
-        if len(path) >= 2:
-            res.add(tuple(path))  # 使用tuple hash list
-
-        for i in range(idx, n):
-            if not path or path[-1] <= nums[i]:
-                helper(i + 1, path + [nums[i]])
-
-    helper(0, [])
-    return res
-
-
-def letter_case_permutation(s):
-    if not s:
-        return
-    l = list(s)
-    res = []
-
-    def helper(l, idx, path):
-        if len(path) == len(l):
-            res.append(''.join(path))
-            return
-        for i in range(idx, len(l)):
-            c = l[i]
-            if c.isalpha():
-                helper(l, i + 1, path + [c.lower()])
-                helper(l, i + 1, path + [c.upper()])
-            else:
-                helper(l, i + 1, path + [c])
-
-    helper(l, 0, [])
-    return res
-
-
 # 93. 复原IP地址 '010010' 恢复ip
 def restore_ip_addresses(s):
     def valid(string):
@@ -296,6 +233,7 @@ def restore_ip_addresses(s):
         if len(path) == 4 and idx == n:
             res.append('.'.join(path))
 
+        # 每一位有1-3三种选择
         for i in range(1, 4):
             end = idx + i
             if end > n:
@@ -305,49 +243,33 @@ def restore_ip_addresses(s):
                 continue
             path.append(sub_string)
             helper(end)
-            path.pop(-1)
+            path.pop()
 
     helper(0)
 
     return res
 
 
-def nested_list_weight_sum(nums):
-    if not nums:
-        return 0
-    res = [0]
-
-    def helper(nums, k):
-        if not nums:
-            return
-        for v in nums:
-            if isinstance(v, list):  # 判断是否为列表
-                helper(v, k + 1)
-            else:
-                res[0] += v * k
-
-    helper(nums, 1)
-    return res[0]
-
-
 # 22. 括号生成
 def generate_parenthesis(n):
-    path, res = [], []
+    res, path = [], []
 
-    def helper(left=n, right=n):
+    def helper(left, unmatched):
         if len(path) == 2 * n:
             res.append(''.join(path))
             return
-        if left > 0:
-            path.append('(')
-            helper(left - 1, right)
-            path.pop(-1)
-        if right > left:
-            path.append(')')
-            helper(left, right - 1)
-            path.pop(-1)
 
-    helper()
+        if left < n:
+            path.append('(')
+            helper(left + 1, unmatched + 1)
+            path.pop()
+
+        if unmatched > 0:
+            path.append(')')
+            helper(left, unmatched - 1)
+            path.pop()
+
+    helper(0, 0)
     return res
 
 
@@ -420,6 +342,93 @@ def exist(board, word):
     return False
 
 
+# 递增子序列
+def find_sub_sequences(nums):
+    if not nums:
+        return []
+    res = set()  # 使用集合去重
+    n = len(nums)
+
+    def helper(idx, path):
+        if len(path) >= 2:
+            res.add(tuple(path))  # 使用tuple hash list
+
+        for i in range(idx, n):
+            if not path or path[-1] <= nums[i]:
+                helper(i + 1, path + [nums[i]])
+
+    helper(0, [])
+    return res
+
+
+# 494 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数
+# 最优解为使用动态规划
+def find_target_sum_ways(nums, target):
+    n = len(nums)
+    res = [0]
+
+    def helper(idx, total):
+        if idx == n and total == target:
+            res[0] = res[0] + 1
+            return
+        if idx == n:
+            return
+
+        helper(idx + 1, total + nums[idx])
+        helper(idx + 1, total - nums[idx])
+
+    helper(0, 0)
+    return res[0]
+
+
+def letter_case_permutation(s):
+    if not s:
+        return
+    n = len(s)
+    res = []
+    path = []
+
+    def helper(i):
+        if len(path) == n:
+            res.append(''.join(path))
+            return
+        for j in range(i, n):
+            c = s[j]
+            if c.isalpha():
+                path.append(c.lower())
+                helper(j + 1)
+                path.pop()
+
+                path.append(c.upper())
+                helper(j + 1)
+                path.pop()
+            else:
+                path.append(c)
+                helper(j + 1)
+                path.pop()
+
+    helper(0)
+    return res
+
+
+def nested_list_weight_sum(nums):
+    if not nums:
+        return 0
+    res = [0]
+
+    def helper(nums, k):
+        if not nums:
+            return
+        for v in nums:
+            if isinstance(v, list):  # 判断是否为列表
+                helper(v, k + 1)
+            else:
+                res[0] += v * k
+
+    helper(nums, 1)
+    return res[0]
+
+
 # 698 10000 > nums[i] > 0
 def can_partition_k_subsets(nums, k):
     if len(nums) < k:
@@ -465,6 +474,13 @@ if __name__ == '__main__':
     print(subset_1([1, 2, 3]))
     print(subsets_with_dup([1, 2, 2, 3]))
 
+    print('\n排列问题')
+    print(permute1([1, 2, 3]))
+    print(permute_unique1([1, 2, 1]))
+
+    print('\n数组中包含重复数字 一个数字只能用一次')
+    print(combination_sum([1, 1, 2, 3, 4], 4))
+
     print('\ncombination sum')
     print(n_sum1([1, 1, 2, 3, 4], 3, 6))
 
@@ -474,13 +490,6 @@ if __name__ == '__main__':
     print('\nk个和相等的子数组')
     nums = [114, 96, 18, 190, 207, 111, 73, 471, 99, 20, 1037, 700, 295, 101, 39, 649]
     print(can_partition_k_subsets(nums, 4))
-
-    print('\n数组中包含重复数字 一个数字只能用一次')
-    print(combination_sum([1, 1, 2, 3, 4], 4))
-
-    print('\n排列问题')
-    print(permute1([1, 2, 3]))
-    print(permute_unique1([1, 2, 1]))
 
     print('\nLetter Case Permutation')
     print(letter_case_permutation("a1b2"))
