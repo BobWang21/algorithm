@@ -13,10 +13,10 @@ class CQueue:
         self.A = []
         self.B = []
 
-    def appendTail(self, value):
+    def append_tail(self, value):
         self.A.append(value)
 
-    def deleteHead(self):
+    def delete_head(self):
         if self.B:
             return self.B.pop()
         if not self.A:
@@ -163,6 +163,17 @@ def min_remove_to_make_valid(s):
     return res
 
 
+# 946 验证栈序列 判断是否为出栈 入栈序列 模拟
+def validate_stack_sequences(pushed, popped):
+    stack, j = [], 0
+    for x in pushed:
+        stack.append(x)
+        while stack and stack[-1] == popped[j]:
+            stack.pop()
+            j += 1
+    return True if not len(stack) else False
+
+
 # 150 波兰表达式
 def eval_RPN(tokens):
     stack = []
@@ -222,7 +233,7 @@ def daily_temperatures(t):
 
 # 42 接雨水
 # 积水的条件为左右高于当前值
-# 前缀都高于当前值
+# 前后缀都高于当前值
 def trap(height):
     n = len(height)
     if n <= 2:
@@ -234,15 +245,33 @@ def trap(height):
             j = stack.pop(-1)
             if stack:
                 h = min(height[stack[-1]], v) - height[j]
-                w = i - stack[-1] - 1
+                # [5 1 2 4] 在j和stack[-1]可能存在存在小于height[j]的柱子 因此使用stack[-1]
+                w = i - stack[-1] - 1  #
                 res += h * w
         stack.append(i)
     return res
 
 
 # 84. 柱状图中最大的矩形
+# 前后缀都低于当前值 以当前柱子为高的区域面积达到最值
+def largest_rectangle_area1(height):
+    height.append(0)  # 为了让剩余元素出栈
+    stack = []
+    res = 0
+    n = len(height)
+    for i in range(n):
+        while stack and height[stack[-1]] > height[i]:
+            h = height[stack.pop()]  # 左右都比它矮
+            # stack不为空时，stack[-1]和j之间可能存在比heigh[j]高的柱子
+            # stack为空时, h为最低高度
+            w = i - stack[-1] - 1 if stack else i
+            res = max(res, h * w)
+        stack.append(i)
+    return res
+
+
 # 暴力法O(n^2)
-def largest_rectangle_area1(heights):
+def largest_rectangle_area2(heights):
     res = 0
     n = len(heights)
     for i, h in enumerate(heights):
@@ -252,23 +281,6 @@ def largest_rectangle_area1(heights):
         while r < n - 1 and heights[r + 1] >= h:  # 后面第一个小于该数
             r += 1
         res = max(res, (r - l - 1) * h)
-    return res
-
-
-# s = w * h
-# 当柱子左右都比它小时
-# 可以确定以当前柱子为高的的区域面积达到最值
-def largest_rectangle_area2(height):
-    height.append(0)  # 为了让剩余元素出栈
-    stack = []
-    res = 0
-    n = len(height)
-    for i in range(n):
-        while stack and height[stack[-1]] > height[i]:
-            h = height[stack.pop()]
-            w = i - stack[-1] - 1 if stack else i  # 当前值为最小值长度为i
-            res = max(res, h * w)
-        stack.append(i)
     return res
 
 
@@ -397,18 +409,17 @@ def calculate3(s):
     return helper(queue)
 
 
-# 946 验证栈序列 判断是否为出栈 入栈序列 模拟
-def validate_stack_sequences(pushed, popped):
-    st, j = [], 0
-    for x in pushed:
-        st.append(x)
-        while st and st[-1] == popped[j]:
-            st.pop()
-            j += 1
-    return len(st) == 0
-
-
 if __name__ == '__main__':
+    print('\n两个栈实现队列')
+    queue = CQueue()
+    queue.append_tail(3)
+    queue.append_tail(4)
+    queue.append_tail(5)
+    print(queue.delete_head())
+
+    print('\n是否为出栈路径')
+    print(validate_stack_sequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]))
+
     print('\n下一个比其大数值')
     print(next_greater_element([4, 1, 2], [1, 3, 4, 2]))
 
@@ -429,20 +440,6 @@ if __name__ == '__main__':
     print(calculate1('1 + 1 * 5 * 4 - 9 + 45'))
     print(calculate2('(1+(4+5+2)-3)+(6+8)'))
     print(calculate3('(2+6* 3+5- (3*14/7+2)*5)+3'))  # -12
-
-    print('\n是否为出栈路径')
-    print(validate_stack_sequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]))
-
-    print('\n两个栈实现队列')
-    # queue = CQueue()
-    # queue.push(3)
-    # queue.push(4)
-    # queue.push(5)
-    #
-    # queue.pop()
-    # queue.push(6)
-    # for _ in range(3):
-    #     print(queue.pop())
 
     print('\n接雨水')
     print(trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]))
