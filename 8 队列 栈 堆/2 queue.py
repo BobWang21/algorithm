@@ -10,37 +10,22 @@ import heapq as hq
 # 225 使用两个队列实现栈
 class MyStack:
     def __init__(self):
-        """
-        Initialize your data structure here.
-        """
         self.queue1 = deque()
         self.queue2 = deque()
 
     def push(self, x):
-        """
-        Push element x onto stack.
-        """
         self.queue2.append(x)
         while self.queue1:
             self.queue2.append(self.queue1.popleft())
         self.queue1, self.queue2 = self.queue2, self.queue1
 
     def pop(self):
-        """
-        Removes the element on top of the stack and returns that element.
-        """
         return self.queue1.popleft()
 
     def top(self):
-        """
-        Get the top element.
-        """
         return self.queue1[0]
 
     def empty(self):
-        """
-        Returns whether the stack is empty.
-        """
         return not self.queue1
 
 
@@ -48,22 +33,22 @@ class MyStack:
 # 单调队列
 class MaxQueue():
     def __init__(self):
-        self.enqueue = deque()
-        self.dequeue = deque()
+        self.queue = deque()
+        self.max_queue = deque()
 
     def en(self, v):
-        self.enqueue.append(v)
-        while self.dequeue and self.dequeue[-1] < v:  # 此处为严格的小于号
-            self.dequeue.pop()
-        self.dequeue.append(v)  # <=
+        self.queue.append(v)
+        while self.max_queue and self.max_queue[-1] < v:  # 此处为严格的小于号
+            self.max_queue.pop()
+        self.max_queue.append(v)  # <=
 
     def de(self):
-        v = self.enqueue.popleft()
-        if self.dequeue[0] == v:  # popleft
-            self.dequeue.popleft()
+        v = self.queue.popleft()
+        if self.max_queue[0] == v:  # popleft
+            self.max_queue.popleft()
 
     def get_max(self):
-        return self.dequeue[0]
+        return self.max_queue[0]
 
 
 # 239. 滑动窗口最大值
@@ -90,7 +75,7 @@ def max_sliding_window1(nums, k):
     return res
 
 
-# 0(nlogn)
+# 堆 0(nlogn)
 def max_sliding_window2(nums, k):
     n = len(nums)
     heap, res = [], []

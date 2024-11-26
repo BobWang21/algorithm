@@ -27,9 +27,9 @@ def subsets_2(nums):
     def helper(i):
         res.append(path[:])
 
-        for j in range(i, n):  # i==n时跳出
+        for j in range(i, n):  # 所有选择
             path.append(nums[j])
-            helper(j + 1)
+            helper(j + 1)  # 新递归从i+1开始 保证不会出现重复元素
             path.pop(-1)  # 回溯
 
     helper(0)
@@ -44,7 +44,7 @@ def subsets_with_dup(nums):
 
     def helper(i=0):
         res.append(path[:])
-        for j in range(i, n):  # 同一层
+        for j in range(i, n):  # 所有选择
             if j > i and nums[j] == nums[j - 1]:  # 相同数字不能出现在同一层
                 continue
             path.append(nums[j])
@@ -70,7 +70,7 @@ def permute1(nums):
         if len(path) == n:
             res.append(path[:])  # 复制
 
-        for i in range(n):  # 从头开始
+        for i in range(n):  # 所有选择 从头开始遍历
             if visited[i]:
                 continue
             visited[i] = True

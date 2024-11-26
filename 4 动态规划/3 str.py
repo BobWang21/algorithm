@@ -68,7 +68,7 @@ def longest_palindrome_subseq3(s):
         dp[i][i] = 1
         for j in range(i + 1, n):
             if s[i] == s[j]:
-                # 依赖i+1, 因此i逆序
+                # i依赖i+1, 因此i逆序
                 dp[i][j] = dp[i + 1][j - 1] + 2
             else:
                 dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
@@ -127,7 +127,7 @@ def edit_distance(word1, word2):
         for j in range(1, cols):
             if word1[i - 1] == word2[j - 1]:
                 dp[i][j] = dp[i - 1][j - 1]
-            else:  # 删除 dp[i][j - 1], dp[i - 1][j]; 替换 dp[i - 1][j - 1]
+            else:  # 删除j dp[i][j - 1], 删除i dp[i - 1][j]; 替换 dp[i - 1][j - 1]
                 dp[i][j] = min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1]) + 1
     return dp[-1][-1]
 
