@@ -9,11 +9,17 @@ from binary_tree import *
 
 
 # 序列化
+# def serialize(tree):
+#     if not tree:
+#         return '#'
+#     res = [str(tree.val), serialize(tree.left), serialize(tree.right)]
+#     return '-'.join(res)
+
+
 def serialize(tree):
     if not tree:
         return '#'
-    res = [str(tree.val), serialize(tree.left), serialize(tree.right)]
-    return ' '.join(res)
+    return str(tree.val) + '-' + serialize(tree.left) + '-' + serialize(tree.right)
 
 
 # 反序列化 递归
@@ -21,12 +27,12 @@ def deserialize(s):
     if not s:
         return
 
-    nums = deque(s.split())
+    queue = deque(s.split('-'))
 
     def helper():
-        if not nums:
+        if not queue:
             return
-        val = nums.popleft()
+        val = queue.popleft()
         if val == '#':
             return None
         root = TreeNode(int(val))
@@ -131,7 +137,8 @@ def lowest_common_ancestor(tree, p, q):
     return left or right
 
 
-# 110 返回是否平衡 已经树的高度
+# 110 返回是否平衡
+# 时间复杂度：O(n) 自底向上的递归 已经树的高度
 def is_balanced1(tree):
     def helper(root):
         if not root:
@@ -174,9 +181,7 @@ def is_balanced3(tree):
             return 0
         left = helper(tree.left)
         right = helper(tree.right)
-        if left == -1 or right == -1:  # 先判断left, 再判断right
-            return -1
-        if abs(right - left) > 1:
+        if left == -1 or right == -1 or abs(right - left) > 1:  # 先判断left, 再判断right
             return -1
         return max(left, right) + 1
 
@@ -684,6 +689,15 @@ def construct_parent():
 
 
 if __name__ == '__main__':
+    print('二叉树序列化')
+    tree = create_full_binary_tree([1, 2, 3])
+    string = serialize(tree)
+    print(string)
+
+    print('\n二叉树反序列化')
+    tree = deserialize(string)
+    print(level_traversal(tree))
+
     print('\n根据先序遍历和中序遍历构建数')
     preorder = [3, 9, 20, 15, 7]
     inorder = [9, 3, 15, 20, 7]
@@ -693,15 +707,6 @@ if __name__ == '__main__':
     print('\n最近公共祖先')
     tree = create_full_binary_tree([i for i in range(7)])
     print(lowest_common_ancestor(tree, 1, 5))
-
-    print('\n二叉树序列化')
-    tree = create_full_binary_tree([1, 2, 3])
-    string = serialize(tree)
-    print(string)
-
-    print('\n二叉树反序列化')
-    tree = deserialize(string)
-    print(level_traversal(tree))
 
     print('\n判断树是否平衡')
     unbalanced_tree = TreeNode(3)

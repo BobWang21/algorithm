@@ -33,7 +33,7 @@ def create_full_binary_tree(nums):
     return root
 
 
-# 先序遍历(递归)
+# 先序遍历 递归
 def preorder1(tree):
     if not tree:
         return []
@@ -42,7 +42,7 @@ def preorder1(tree):
     return [tree.val] + left + right
 
 
-# 先序遍历(非递归)
+# 先序遍历 非递归
 def preorder2(tree):
     if not tree:
         return
@@ -92,7 +92,7 @@ def postorder_traversal(tree):
         node = stack[-1]
         # 出栈:没有右子树或上一个节点是右子树
         if not node.right or node.right == pre:
-            node = stack.pop(-1)
+            node = stack.pop()
             res.append(node.val)
             pre = node
             node = None
@@ -160,10 +160,10 @@ def min_depth(tree):
 def serialize(tree):
     if not tree:
         return
-    queue = [tree]
+    queue = deque([tree])
     res = []
     while queue:
-        node = queue.pop(0)
+        node = queue.popleft()
         if not node:
             res.append('#')
         else:
@@ -197,7 +197,7 @@ def deserialize(s):
 
 
 if __name__ == '__main__':
-    print('\n先序遍历')
+    print('先序遍历')
     tree = create_full_binary_tree([i for i in range(7)])
     print(preorder1(tree))
 
