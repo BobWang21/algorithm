@@ -70,6 +70,20 @@ def search_first_large(nums, target):
     return l if nums[l] > target else -1
 
 
+# 35 插入位置 nums = [1,3,5,6], target = 2
+def search_insert(nums, target):
+    l, r = 0, len(nums) - 1
+    while l <= r:
+        mid = l + (r - l) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[mid] < target:
+            l = mid + 1
+        else:
+            r = mid - 1
+    return l
+
+
 # 0 ~n-1的n个有序数组中，缺少一个数
 def find_missed_value(nums):
     n = len(nums) - 1
@@ -118,6 +132,8 @@ def get_number_of_k(nums, target):
 
 # 带精度的求平方根
 def sqrt(n, precision):
+    if n < 1:
+        return 1 / sqrt(1 / n, precision)
     l, r = 0, n
     while l <= r:
         mid = l + (r - l) / 2  # 小数
@@ -498,3 +514,5 @@ if __name__ == '__main__':
 
     print('\n最小距离')
     print(smallest_distance_pair_3([1, 6, 1], 3))
+
+    print(sqrt(0.5, 0.1))
