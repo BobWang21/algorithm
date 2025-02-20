@@ -72,18 +72,22 @@ def product_except_self(nums):
 def next_permutation(nums):
     n = len(nums)
     i = n - 1
+    # 找到第一个后边数大于前面数的位置
     while i > 0 and nums[i] <= nums[i - 1]:
         i -= 1
     if i == 0:
         nums.reverse()
         return nums
-
+    # 较大数字的位置
     k = i - 1
     j = i
+    # 最后一个大于较小数字的的位置
     while j < n and nums[j] > nums[k]:
         j += 1
+    # 交换
     nums[k], nums[j - 1] = nums[j - 1], nums[k]
 
+    # 翻转
     l, r = k + 1, n - 1
     while l < r:
         nums[l], nums[r] = nums[r], nums[l]
