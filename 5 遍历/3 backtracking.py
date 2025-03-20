@@ -198,7 +198,7 @@ def n_sum1(nums, k, target):
     return res
 
 
-# 四个数组 每个数组中选一个数字 要求四个数和为0 返回和为0的数组个数
+# 454 四个数组 每个数组中选一个数字 要求四个数和为0 返回和为0的数组个数
 def four_sum_count(A, B, C, D):
     dic = defaultdict(int)
     n = len(A)

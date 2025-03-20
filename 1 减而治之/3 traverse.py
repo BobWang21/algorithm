@@ -7,19 +7,46 @@ def diagnose_traverse(matrix):
     rows, cols = len(matrix), len(matrix[0])
     res = []
     # 上三角
-    for j in range(cols):
-        i = 0
-        while j >= 0:
-            res.append(matrix[i][j])
-            i += 1
-            j -= 1
+    for col in range(cols):
+        row = 0
+        while row < rows and col >= 0:
+            res.append(matrix[row][col])
+            row += 1
+            col -= 1
     # 下三角
-    for i in range(1, rows):
-        j = cols - 1
-        while i < rows:
-            res.append(matrix[i][j])
-            i += 1  # 不影响外层i的遍历
-            j -= 1
+    for row in range(1, rows):
+        col = cols - 1
+        while row < rows and col >= 0:
+            res.append(matrix[row][col])
+            row += 1  # 不影响外层i的遍历
+            col -= 1
+    return res
+
+
+# 498对角线遍历
+def find_diagonal_order(mat):
+    rows, cols = len(mat), len(mat[0])
+    order = -1
+    res = []
+    for col in range(cols):
+        line = []
+        row = 0
+        while row < rows and col >= 0:
+            line.append(mat[row][col])
+            row += 1
+            col -= 1
+        res.extend(line[::order])
+        order *= -1
+
+    for row in range(1, rows):
+        col = cols - 1
+        line = []
+        while row < rows and col >= 0:
+            line.append(mat[row][col])
+            row += 1
+            col -= 1
+        res.extend(line[::order])
+        order *= -1
     return res
 
 
@@ -60,38 +87,6 @@ def spiral_order(matrix):
         if left > right:
             break
     return res
-
-
-# 6 z变换
-def convert1(s, numRows):
-    k = 0
-    res = ['' for _ in range(numRows)]
-    while k < len(s):
-        for i in range(numRows):
-            if k == len(s):
-                break
-            res[i] += s[k]
-            k += 1
-        for _ in range(numRows - 2):
-            if k == len(s):
-                break
-            i -= 1
-            res[i] += s[k]
-            k += 1
-    return ''.join(res)
-
-
-def convert2(s, numRows):
-    if numRows < 2:
-        return s
-    res = ['' for _ in range(numRows)]
-    i, flag = 0, -1
-    for c in s:
-        res[i] += c
-        if i == 0 or i == numRows - 1:
-            flag = -flag
-        i += flag
-    return ''.join(res)
 
 
 # 错误写法!!!
@@ -173,6 +168,38 @@ def spiral_order2(matrix):
                     v = matrix[i].pop(0)
                     res.append(v)
     return res
+
+
+# 6 z变换
+def convert1(s, numRows):
+    k = 0
+    res = ['' for _ in range(numRows)]
+    while k < len(s):
+        for i in range(numRows):
+            if k == len(s):
+                break
+            res[i] += s[k]
+            k += 1
+        for _ in range(numRows - 2):
+            if k == len(s):
+                break
+            i -= 1
+            res[i] += s[k]
+            k += 1
+    return ''.join(res)
+
+
+def convert2(s, numRows):
+    if numRows < 2:
+        return s
+    res = ['' for _ in range(numRows)]
+    i, flag = 0, -1
+    for c in s:
+        res[i] += c
+        if i == 0 or i == numRows - 1:  # 触底or到订 反向
+            flag = -flag
+        i += flag
+    return ''.join(res)
 
 
 def generate_matrix(n):

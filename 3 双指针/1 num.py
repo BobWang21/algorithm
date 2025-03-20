@@ -214,6 +214,24 @@ def three_sum_closet(nums, target):
     return closet_sum
 
 
+# 454 四个数组 每个数组中选一个数字 要求四个数和为0 返回和为0的数组个数
+def four_sum_count(A, B, C, D):
+    dic = defaultdict(int)
+    n = len(A)
+    for i in range(n):
+        for j in range(n):
+            s = A[i] + B[j]
+            dic[s] += 1
+
+    res = 0
+    for i in range(n):
+        for j in range(n):
+            s = C[i] + D[j]
+            if -s in dic:
+                res += dic[-s]
+    return res
+
+
 if __name__ == '__main__':
     print('\n2 sum')
     print(two_sum1([7, 8, 2, 3], 9))
