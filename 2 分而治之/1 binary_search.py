@@ -19,6 +19,34 @@ def binary_search1(nums, target):
     return -1
 
 
+# 69 非负整数求平方根
+def sqrt1(x):
+    l, r = 0, x
+    while l <= r:
+        mid = (l + r) // 2
+        if mid * mid <= x:
+            l = mid + 1  # (l-1) ** 2 <= x
+        else:
+            r = mid - 1  # (l+1) ** 2 <= x
+    # 跳出循环时, l=r+1, nums[l-1] <= target < nums[l]
+    return r
+
+
+# 带精度的求平方根
+def sqrt2(x, precision):
+    l, r = (0, x) if x > 1 else (x, 1)
+    while l <= r:
+        mid = l + (r - l) / 2  # 小数
+        s = mid * mid
+        if abs(s - x) <= precision:
+            return mid
+        if s < x:
+            l = mid  # 浮点数 不会出现相等的情况
+        else:
+            r = mid
+    # 跳出循环时, l > r, nums[l] < target | nums[r] > target
+
+
 # 标准-递归版本
 def binary_search2(nums, target, l, r):
     if l > r:
@@ -33,7 +61,7 @@ def binary_search2(nums, target, l, r):
     return binary_search2(nums, target, l, mid - 1)
 
 
-# 有重复数字, 返回第一个等于target
+# 非标准版二分查找。有重复数字, 返回第一个等于target
 def search_first_pos(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:  # 取不到l==r, 需要补丁!
@@ -130,21 +158,6 @@ def get_number_of_k(nums, target):
     return [left, right]
 
 
-# 带精度的求平方根
-def sqrt(x, precision):
-    l, r = (0, x) if x > 1 else (x, 1)
-    while l <= r:
-        mid = l + (r - l) / 2  # 小数
-        s = mid * mid
-        if abs(s - x) <= precision:
-            return mid
-        if s < x:
-            l = mid  # 浮点数 不会出现相等的情况
-        else:
-            r = mid
-    return r
-
-
 # 153 旋转数组中的最小值
 # [1 2 3 4]的旋转数组[3 4 1 2], [1 2 3 4]
 def find_min1(nums):
@@ -233,8 +246,7 @@ def find_median_sorted_arrays(nums1, nums2):
     l, r = 0, m
     while l < r:
         mid = l + (r - l + 1) // 2  # mid可取到m, 取不到0
-        j = k - mid  # 数组2左侧的数字个数 j 最大取k-1 证明 k-1 <= n - 1, k <= n
-        if nums1[mid - 1] <= nums2[j]:  # nums1[l-1] <= nums2[k-l]
+        if nums1[mid - 1] <= nums2[k - mid]:  # nums1[l-1] <= nums2[k-l]
             l = mid
         else:
             r = mid - 1  # nums1[l] > nums2[k-l-1]
@@ -470,6 +482,12 @@ if __name__ == '__main__':
     nums = [1, 3, 5, 9, 10, 16, 17]
     print(binary_search1(nums, 3))
 
+    print('\nsqrt1')
+    print(sqrt1(15))
+
+    print('\nsqrt2')
+    print(sqrt2(0.04, 0.0001))
+
     print('\n最小索引')
     print(search_first_pos([1, 2, 3, 3, 10], 3))
 
@@ -478,9 +496,6 @@ if __name__ == '__main__':
 
     print('\n第一个大于target的数值索引')
     print(search_first_large([1, 2, 3, 3, 9], 6))
-
-    print('\nsqrt')
-    print(sqrt(0.04, 0.01))
 
     print('\n矩阵查找')
     matrix = [
@@ -515,5 +530,3 @@ if __name__ == '__main__':
 
     print('\n最小距离')
     print(smallest_distance_pair_3([1, 6, 1], 3))
-
-
