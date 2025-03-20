@@ -39,15 +39,15 @@ def weighted_random(nums, weight):
     return nums[idx]
 
 
-def reservoir_sampling(nums, m):
-    res = [0] * m
+def reservoir_sampling(nums, k):
+    res = [0] * k
     for i, value in enumerate(nums):
         # 保存前n个数，保证至少有n个数
-        if i < m:
+        if i < k:
             res[i] = value
         else:
-            if rd.randint(1, i + 1) <= m:  # 第i个数被选中概率为 m/i i start from 1!!!
-                idx = rd.randint(0, m - 1)
+            if rd.randint(1, i + 1) <= k:  # 第i个数被选中概率为 m/i i start from 1!!!
+                idx = rd.randint(0, k - 1)
                 res[idx] = value
     return res
 
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
     print('\n蓄水池')
     data = list(range(100))
-    print(reservoir_sampling(data, m=10))
+    print(reservoir_sampling(data, k=10))
 
     print('\n加权抽样')
     res = []
