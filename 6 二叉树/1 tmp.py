@@ -8,6 +8,13 @@ from collections import defaultdict, deque
 from binary_tree import *
 
 
+class TreeNode():
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+
 # 序列化
 # def serialize(tree):
 #     if not tree:

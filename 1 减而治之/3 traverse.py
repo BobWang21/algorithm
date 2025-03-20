@@ -62,6 +62,38 @@ def spiral_order(matrix):
     return res
 
 
+# 6 z变换
+def convert1(s, numRows):
+    k = 0
+    res = ['' for _ in range(numRows)]
+    while k < len(s):
+        for i in range(numRows):
+            if k == len(s):
+                break
+            res[i] += s[k]
+            k += 1
+        for _ in range(numRows - 2):
+            if k == len(s):
+                break
+            i -= 1
+            res[i] += s[k]
+            k += 1
+    return ''.join(res)
+
+
+def convert2(s, numRows):
+    if numRows < 2:
+        return s
+    res = ['' for _ in range(numRows)]
+    i, flag = 0, -1
+    for c in s:
+        res[i] += c
+        if i == 0 or i == numRows - 1:
+            flag = -flag
+        i += flag
+    return ''.join(res)
+
+
 # 错误写法!!!
 def spiral_order_wrong(matrix):
     if not matrix or not len(matrix[0]):

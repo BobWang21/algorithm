@@ -131,16 +131,14 @@ def get_number_of_k(nums, target):
 
 
 # 带精度的求平方根
-def sqrt(n, precision):
-    if n < 1:
-        return 1 / sqrt(1 / n, precision)
-    l, r = 0, n
+def sqrt(x, precision):
+    l, r = (0, x) if x > 1 else (x, 1)
     while l <= r:
         mid = l + (r - l) / 2  # 小数
         s = mid * mid
-        if abs(s - n) <= precision:
+        if abs(s - x) <= precision:
             return mid
-        if s < n:
+        if s < x:
             l = mid  # 浮点数 不会出现相等的情况
         else:
             r = mid
@@ -481,6 +479,9 @@ if __name__ == '__main__':
     print('\n第一个大于target的数值索引')
     print(search_first_large([1, 2, 3, 3, 9], 6))
 
+    print('\nsqrt')
+    print(sqrt(0.04, 0.01))
+
     print('\n矩阵查找')
     matrix = [
         [1, 3, 5, 7],
@@ -515,4 +516,4 @@ if __name__ == '__main__':
     print('\n最小距离')
     print(smallest_distance_pair_3([1, 6, 1], 3))
 
-    print(sqrt(0.5, 0.1))
+

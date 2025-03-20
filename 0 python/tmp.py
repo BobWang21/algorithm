@@ -17,11 +17,16 @@ def change1(nums):
 
 if __name__ == '__main__':
     print('\n计算操作')
-    print(4 / 2)  # 2.0,  2.0 = 2, 列表索引必须是整数
+    print(4 / 2)  # 默认小数
     nums = float('inf')
     print(math.isinf(nums))
     print(round(3.1, 1))  # 四舍五入
     print(divmod(6, 4))
+
+    # 跳出循环时 i = 9
+    for i in range(10):
+        continue
+    print(i)
 
     print('\n随机数')
     print(random.random())  # 0-1
@@ -102,7 +107,7 @@ if __name__ == '__main__':
     print(counter)
 
     # 双端队列
-    # Python’s deque is a low-level and highly optimized double-ended queue
+    # deque is a low-level and highly optimized double-ended queue
     # list-like container with fast appends and pops on either end
     print('\n双端队列')
     queue = deque()

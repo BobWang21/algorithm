@@ -1144,3 +1144,27 @@ def minimum_total(triangle):
             res[i] = min(res[i] if n - 1 > i > -1 else float('inf'),
                          res[i - 1] if n - 1 > i - 1 > -1 else float('inf')) + nums[i]
     return min(res)
+
+
+def topK(root, k):
+    if not root:
+        return
+
+    res = [k]
+
+    def search(node):
+        if not node:
+            return -1
+        if res[0]:
+            return -1
+
+        k = search(node.right)
+        if k != -1:
+            return k
+
+        res[0] -= 1
+        if res[0] == 0:
+            return node.val
+        return search(node.left)
+
+    return search(root)
