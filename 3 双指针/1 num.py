@@ -232,6 +232,21 @@ def four_sum_count(A, B, C, D):
     return res
 
 
+# 两个平方数之和 4 = 0**2 + 2**2
+def judge_square_sum(c):
+    l, r = 0, int(c ** 0.5 + 1)
+    # print(l, r**2 * 2)
+    while l <= r:  # l 可以等于r; 2 = 1 ** 2 + 1** 1
+        s = l * l + r * r
+        if s == c:
+            return True
+        if s < c:
+            l += 1
+        else:
+            r -= 1
+    return False
+
+
 if __name__ == '__main__':
     print('\n2 sum')
     print(two_sum1([7, 8, 2, 3], 9))

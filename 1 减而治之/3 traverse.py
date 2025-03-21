@@ -62,7 +62,7 @@ def spiral_order(matrix):
             res.append(matrix[top][i])
         # 该行访问完后, 行index+1
         top += 1
-        # corner case
+
         if top > down:
             break
 
@@ -196,7 +196,7 @@ def convert2(s, numRows):
     i, flag = 0, -1
     for c in s:
         res[i] += c
-        if i == 0 or i == numRows - 1:  # 触底or到订 反向
+        if i == 0 or i == numRows - 1:  # 触底or到顶, 反向。两次循环
             flag = -flag
         i += flag
     return ''.join(res)

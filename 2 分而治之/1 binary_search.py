@@ -20,6 +20,7 @@ def binary_search1(nums, target):
 
 
 # 69 非负整数求平方根
+# 查找第一个小于等于 target 的下标
 def sqrt1(x):
     l, r = 0, x
     while l <= r:
@@ -27,8 +28,8 @@ def sqrt1(x):
         if mid * mid <= x:
             l = mid + 1  # (l-1) ** 2 <= x
         else:
-            r = mid - 1  # (l+1) ** 2 <= x
-    # 跳出循环时, l=r+1, nums[l-1] <= target < nums[l]
+            r = mid - 1  # (r+1) ** 2 <= x
+    # 跳出循环时, r=l-1, nums[r] <= target < nums[l]
     return r
 
 
@@ -45,6 +46,20 @@ def sqrt2(x, precision):
         else:
             r = mid
     # 跳出循环时, l > r, nums[l] < target | nums[r] > target
+
+
+# 35 插入位置 nums = [1,3,5,6], target = 2
+# 查找第一个大于等于 target 的下标
+def search_insert(nums, target):
+    l, r = 0, len(nums) - 1
+    while l <= r:
+        mid = l + (r - l) // 2
+        if nums[mid] < target:
+            l = mid + 1  # nums[l-1] < target
+        else:
+            r = mid - 1  # nums[r+1] >= target
+        # nums[l-1] < target <= nums[l]
+    return l  # 跳出时可取到len(nums)
 
 
 # 标准-递归版本
@@ -96,20 +111,6 @@ def search_first_large(nums, target):
         else:
             r = mid
     return l if nums[l] > target else -1
-
-
-# 35 插入位置 nums = [1,3,5,6], target = 2
-def search_insert(nums, target):
-    l, r = 0, len(nums) - 1
-    while l <= r:
-        mid = l + (r - l) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[mid] < target:
-            l = mid + 1
-        else:
-            r = mid - 1
-    return l
 
 
 # 0 ~n-1的n个有序数组中，缺少一个数
