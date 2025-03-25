@@ -278,9 +278,9 @@ def word_break(s, word_dict):
 
     for i in range(1, n + 1):
         for j in range(i, n + 1):
-            s1 = s[i - 1: j]
-            if dp[i - 1] and s1 in word_set:
-                dp[j] = True
+            if s[i - 1: j] in word_set:
+                dp[j] |= dp[i - 1]
+                break
     return dp[-1]
 
 
