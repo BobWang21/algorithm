@@ -3,6 +3,24 @@
 from pprint import pprint
 
 
+# 72 编辑距离
+def edit_distance(word1, word2):
+    rows, cols = len(word1) + 1, len(word2) + 1
+    dp = [[0] * cols for _ in range(rows)]
+    for i in range(rows):  # base1 word2为空
+        dp[i][0] = i
+    for j in range(cols):  # base2 word1为空
+        dp[0][j] = j
+
+    for i in range(1, rows):
+        for j in range(1, cols):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:  # 删除, 增加, 替换
+                dp[i][j] = min(dp[i - 1][j], dp[i - 1][j], dp[i - 1][j - 1]) + 1
+    return dp[-1][-1]
+
+
 # 1143 最长公共子序列。子序列不连续，子串连续
 def LCS(s1, s2):
     l1, l2 = len(s1) + 1, len(s2) + 1
@@ -103,24 +121,6 @@ def longest_common_str(s1, s2):
                 dp[i][j] = dp[i - 1][j - 1] + 1
 
     pprint(dp)
-    return dp[-1][-1]
-
-
-# 编辑距离
-def edit_distance(word1, word2):
-    rows, cols = len(word1) + 1, len(word2) + 1
-    dp = [[0] * cols for _ in range(rows)]
-    for i in range(rows):  # base
-        dp[i][0] = i
-    for j in range(cols):  # base
-        dp[0][j] = j
-
-    for i in range(1, rows):
-        for j in range(1, cols):
-            if word1[i - 1] == word2[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
-            else:  # 删除j dp[i][j - 1], 删除i dp[i - 1][j]; 替换 dp[i - 1][j - 1]
-                dp[i][j] = min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1]) + 1
     return dp[-1][-1]
 
 
