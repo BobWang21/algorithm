@@ -3,6 +3,20 @@
 from pprint import pprint
 
 
+# 1143 最长公共子序列。子序列不连续，子串连续
+def LCS(s1, s2):
+    l1, l2 = len(s1) + 1, len(s2) + 1
+    dp = [[0] * l2 for _ in range(l1)]
+    for i in range(1, l1):
+        for j in range(1, l2):
+            if s1[i - 1] == s2[j - 1]:  # 包含两个端点
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])  # 最多包含一个端点
+    pprint(dp)
+    return dp[-1][-1]
+
+
 # 72 编辑距离
 def edit_distance(word1, word2):
     rows, cols = len(word1) + 1, len(word2) + 1
@@ -18,20 +32,6 @@ def edit_distance(word1, word2):
                 dp[i][j] = dp[i - 1][j - 1]
             else:  # 删除, 增加, 替换
                 dp[i][j] = min(dp[i - 1][j], dp[i - 1][j], dp[i - 1][j - 1]) + 1
-    return dp[-1][-1]
-
-
-# 1143 最长公共子序列。子序列不连续，子串连续
-def LCS(s1, s2):
-    l1, l2 = len(s1) + 1, len(s2) + 1
-    dp = [[0] * l2 for _ in range(l1)]
-    for i in range(1, l1):
-        for j in range(1, l2):
-            if s1[i - 1] == s2[j - 1]:  # 包含两个端点
-                dp[i][j] = dp[i - 1][j - 1] + 1
-            else:
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])  # 最多包含一个端点
-    pprint(dp)
     return dp[-1][-1]
 
 

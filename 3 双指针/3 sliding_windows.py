@@ -58,8 +58,8 @@ def length_of_longest_substring2(s):
 
 # 76 最小覆盖子串 滑动窗口
 def min_window1(s, t):
-    dic1 = Counter(t)
-    dic2 = defaultdict(int)
+    counter = Counter(t)
+    dic = defaultdict(int)
 
     n = len(s)
     min_len = n + 1
@@ -69,19 +69,19 @@ def min_window1(s, t):
     for r in range(n):
         c = s[r]
         # 满足条件 进入窗口
-        if c in dic1:
-            dic2[c] += 1
-            if dic2[c] == dic1[c]:
+        if c in counter:
+            dic[c] += 1
+            if dic[c] == counter[c]:
                 match += 1  # 字母匹配数
         # left滑出窗口
-        while match == len(dic1):
+        while match == len(counter):
             if r - l + 1 < min_len:
                 min_len = r - l + 1
                 res = s[l:r + 1]
             c = s[l]
-            if c in dic1:
-                dic2[c] -= 1
-                if dic2[c] < dic1[c]:
+            if c in counter:
+                dic[c] -= 1
+                if dic[c] < counter[c]:
                     match -= 1
             l += 1
     return res

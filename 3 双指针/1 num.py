@@ -22,20 +22,21 @@ def partition(nums, left, right):
     return nums
 
 
-# 奇数在左边 偶数在右边
+# 905 偶数在左边 奇数在右边
 def sort_array_by_parity(nums):
     n = len(nums)
     l, r = 0, n - 1
     while l < r:
-        while l < r and not nums[r] % 2:
+        while l < r and nums[r] % 2:
             r -= 1
-        while l < r and nums[l] % 2:
+        while l < r and not nums[l] % 2:
             l += 1
         if l < r:
             nums[l], nums[r] = nums[r], nums[l]
     return nums
 
 
+##############################前后指针-关注端点####################################
 # 922.按偶奇交替排序数组
 def sort_array_by_parity2(nums):
     n = len(nums)
@@ -51,19 +52,18 @@ def sort_array_by_parity2(nums):
     return nums
 
 
-##############################前后指针-关注端点####################################
 # 26 原地删除升序数组中的重复数字 并返回非重复数组的长度
 # nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
 def remove_duplicates1(nums):
     if not nums:
         return 0
     n = len(nums)
-    i = 1  # 第一个指针 下一个不重复数字放置的位置 类似 三指针的lt
+    i = 0  # 第一个指针 下一个不重复数字放置的位置 类似 三指针的lt
     for j in range(1, n):  # 第二个指针
-        if nums[j - 1] != nums[j]:  # 非重复数字
-            nums[i] = nums[j]
+        if nums[j] != nums[i]:  # 非重复数字
+            nums[i + 1] = nums[j]
             i += 1
-    return i
+    return i + 1
 
 
 # 80

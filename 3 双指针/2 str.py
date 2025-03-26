@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-# 字符串不能原地更改
-
 # 判断是否为回文
 def is_palindrome(s):
     if not s:
@@ -23,7 +20,7 @@ def is_palindrome(s):
     return True
 
 
-# 左右指针 977 关注端点
+# 977 左右指针  关注端点
 def sorted_squares(nums):
     if not nums:
         return []
