@@ -11,8 +11,8 @@ from collections import Counter
 def shuffle(nums):
     n = len(nums)
     for i in range(n):
-        idx = rd.randint(i, n - 1)  # 包含左右端点
-        nums[i], nums[idx] = nums[idx], nums[i]
+        j = rd.randint(i, n - 1)  # 包含左右端点
+        nums[i], nums[j] = nums[j], nums[i]
     return nums
 
 

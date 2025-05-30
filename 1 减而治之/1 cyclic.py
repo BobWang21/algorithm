@@ -41,21 +41,19 @@ def find_duplicate_num1(nums):
 
 # 41 没有出现的最小的正整数, 可能含有重复数字
 def first_missing_positive(nums):
-    if not nums:
-        return 1
-
     n = len(nums)
+
     for i in range(n):
-        while 0 < nums[i] <= n and nums[i] != i + 1:
+        while 1 <= nums[i] < n:
             j = nums[i] - 1
-            if nums[j] == j + 1:  # nums[j] == nums[i] 防止无限循环
+            if nums[j] == nums[i]:
                 break
             nums[i], nums[j] = nums[j], nums[i]
 
     for i in range(n):
         if nums[i] != i + 1:
             return i + 1
-    return n + 1  # 如果数组是[1, 2, 3] !!!
+    return n + 1
 
 
 # 448 使用负数标记 已存在的数

@@ -23,11 +23,6 @@ if __name__ == '__main__':
     print(round(3.1, 1))  # 四舍五入
     print(divmod(6, 4))
 
-    # 跳出循环时 i = 9
-    for i in range(10):
-        continue
-    print(i)
-
     print('\n随机数')
     print(random.random())  # 0-1
     print(random.randint(0, 10))  # [0, 10]
@@ -56,6 +51,8 @@ if __name__ == '__main__':
     print('/a'.split('/'))  # ['', 'a']
     print(int('001'))  # ✔️
     print(eval('1'))  # eval('001') ×
+    print(isinstance([], list))  # 判断类型
+    print(type({}))  # {}表示字典
 
     print('\n列表')
     nums = [2, 3, 4, 5]
@@ -75,7 +72,7 @@ if __name__ == '__main__':
     print(dic.get(3, -1))  # -1 default value
     for k, v in dic.items():
         print(k, v)
-    print(dic.setdefault(1, 0))  # 如果字典中包含key，返回对应value，否则返回为设置value。
+    print(dic.setdefault(1, 0))  # 如果字典中包含key，返回对应value，否则返回为设置value
 
     print('\n集合')
     nums = {1, 2, 3}  # set(v) v 需要可迭代
@@ -90,9 +87,6 @@ if __name__ == '__main__':
     F = A - B  # B在A的补集 {1, 2}
     G = B - A  # A在B的补集 {4, 5}
     print(E, F, G)
-
-    print(isinstance([], list))  # 判断类型
-    print(type({}))  # {}表示字典
 
     print('\ndefaultdict')
     dic = defaultdict(set)
