@@ -22,7 +22,7 @@ def cyclic_sort(nums):
     for i in range(n):
         while nums[i] != i + 1:
             j = nums[i] - 1
-            if nums[j] == j + 1:  # 该位置已经排好
+            if nums[j] == nums[i]:  # 该位置已经排好
                 break
             nums[i], nums[j] = nums[j], nums[i]
     return nums
@@ -34,7 +34,7 @@ def find_duplicate_num1(nums):
     for i in range(n):
         while i != nums[i]:
             j = nums[i]
-            if j == nums[j]:  # 说明数字j重复了
+            if nums[j] == nums[i]:  # 说明数字j重复了
                 return j
             nums[i], nums[j] = nums[j], nums[i]
 

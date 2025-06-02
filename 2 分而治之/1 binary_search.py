@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # 适用于排序或部分排序的数组
-# 递推思想，可使用循环不变性证明其正确性!
+# 递推思想:可使用循环不变性证明其正确性!
 
 # 标准-非递归版本
 def binary_search1(nums, target):
@@ -45,7 +45,6 @@ def sqrt2(x, precision):
             l = mid  # 浮点数 不会出现相等的情况
         else:
             r = mid
-    # 跳出循环时, l > r, nums[l] < target | nums[r] > target
 
 
 # 35 插入位置 nums = [1,3,5,6], target = 2
@@ -76,7 +75,8 @@ def binary_search2(nums, target, l, r):
     return binary_search2(nums, target, l, mid - 1)
 
 
-# 非标准版二分查找。有重复数字, 返回第一个等于target
+# 非标准版二分查找
+# 有重复数字, 返回第一个等于target
 def search_first_pos(nums, target):
     l, r = 0, len(nums) - 1
     while l < r:  # 取不到l==r, 需要补丁!
@@ -95,7 +95,7 @@ def search_last_pos(nums, target):
     while l < r:
         mid = l + (r - l + 1) // 2  # 右中位数
         if nums[mid] <= target:
-            l = mid  # l==mid & mid取左节点时, l,r=0,1会无限循环
+            l = mid  # l==mid & mid取左中位数, 会无限循环
         else:
             r = mid - 1  # nums[r+1] > target
     # 在l < r时， nums[l] <= target < nums[l+1]
@@ -113,7 +113,7 @@ def search_first_large(nums, target):
     return l if nums[l] > target else -1
 
 
-# 0 ~n-1的n个有序数组中，缺少一个数
+# 0 ~ n-1的n个有序数组中，缺少一个数
 def find_missed_value(nums):
     n = len(nums) - 1
     if n == 1:

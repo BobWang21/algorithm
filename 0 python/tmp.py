@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import math
-import random
+import random as rd
 import heapq as hq
 from collections import defaultdict, deque, Counter
 
@@ -24,12 +24,12 @@ if __name__ == '__main__':
     print(divmod(6, 4))
 
     print('\n随机数')
-    print(random.random())  # 0-1
-    print(random.randint(0, 10))  # [0, 10]
+    print(rd.random())  # 0-1
+    print(rd.randint(0, 10))  # [0, 10]
     nums = [1, 2, 3]
-    random.shuffle(nums)
+    rd.shuffle(nums)
     print(nums)
-    print(random.choice([1, 2, 3]))  # 随机抽取一个点
+    print(rd.choice([1, 2, 3]))  # 随机抽取一个点
 
     # 进制转换
     print('\n位操作')

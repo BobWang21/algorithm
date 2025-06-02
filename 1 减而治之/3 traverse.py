@@ -23,7 +23,7 @@ def diagnose_traverse(matrix):
     return res
 
 
-# 498对角线遍历
+# 498 对角线遍历
 def find_diagonal_order(mat):
     rows, cols = len(mat), len(mat[0])
     order = -1
@@ -62,7 +62,6 @@ def spiral_order(matrix):
             res.append(matrix[top][i])
         # 该行访问完后, 行index+1
         top += 1
-
         if top > down:
             break
 

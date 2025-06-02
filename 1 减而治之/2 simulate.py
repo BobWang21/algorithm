@@ -17,10 +17,10 @@ TopK 问题的几种解法
 def find_magic_index(nums):
     def find(l, r):
         # 终止条件
-        if l >= r:
+        if l > r:
             return -1
         mid = l + (r - l) // 2
-        # 先左侧
+        # 左侧
         left = find(l, mid - 1)
         if left != -1:
             return left
@@ -51,7 +51,7 @@ def sort_colors(nums):
     return nums
 
 
-# 238. 除自身以外数组的乘积 左右各扫描一遍
+# 238 除自身以外数组的乘积 左右各扫描一遍
 def product_except_self(nums):
     n = len(nums)
 
@@ -107,13 +107,12 @@ def longest_consecutive(nums):
     for v in nums:
         dic[v] = False
 
-    res = 1
-    # dfs
+    res = 0
     for v in dic:
-        if not dic[v]:
+        if dic[v]:  # 访问过
             continue
-        cnt = 1
-        while v in dic:  # 序
+        cnt = 0
+        while v in dic:  # dfs
             dic[v] = True
             cnt += 1
             v += 1
@@ -353,7 +352,7 @@ def multiply(num1, num2):
 
 
 if __name__ == '__main__':
-    print('\nmagic index')
+    print('magic index')
     print(find_magic_index([2, 3, 4, 4, 5, 5, 5]))
 
     print('\n众数')
@@ -366,7 +365,7 @@ if __name__ == '__main__':
     print(sort_colors([2, 0, 2, 1, 1, 0]))
 
     print('\n连续区间最大长度')
-    print(longest_consecutive([1, 2, 3, 7, 8, 10, 11, 12, 13, 14]))
+    print(longest_consecutive([1, 2, 3, 7, 8]))
 
     print('\n区间合并')
     print(merge([[1, 3], [2, 6], [8, 10], [15, 18]]))
