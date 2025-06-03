@@ -3,7 +3,7 @@
 from pprint import pprint
 
 
-# 1143 最长公共子序列。子序列不连续，子串连续
+# 1143 最长公共子序列 子序列可不连续
 def LCS(s1, s2):
     rows, cols = len(s1) + 1, len(s2) + 1
     dp = [[0] * cols for _ in range(rows)]
@@ -35,7 +35,7 @@ def edit_distance(word1, word2):
     return dp[-1][-1]
 
 
-# 5 最长回文子串
+# 5 最长回文子串 子串必须连续
 def longest_palindrome1(s):
     if len(s) == 1:
         return s
@@ -80,12 +80,13 @@ def longest_palindrome2(s):
     dp = [[0] * n for _ in range(n)]
     max_len = 1
     res = s[0]
+
+    # i依赖i+1, 因此i逆序
     for i in range(n - 1, -1, -1):
         dp[i][i] = 1
         for j in range(i + 1, n):
             if j - i == 1 and s[i] == s[j]:
                 dp[i][j] = 2  # 递归基
-            # i依赖i+1, 因此i逆序
             elif s[i] == s[j] and dp[i + 1][j - 1]:
                 dp[i][j] = dp[i + 1][j - 1] + 2
                 # print(dp[i][j])

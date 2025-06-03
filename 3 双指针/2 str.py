@@ -20,7 +20,7 @@ def is_palindrome(s):
     return True
 
 
-# 977 左右指针  关注端点
+# 977 左右指针 关注端点
 def sorted_squares(nums):
     if not nums:
         return []

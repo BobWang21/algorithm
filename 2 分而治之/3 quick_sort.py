@@ -4,6 +4,13 @@
 from functools import cmp_to_key
 
 
+def quick_sort1(nums, l, r):
+    if l < r:  # 长度为1不用排序, 两侧向中间靠
+        mid = partition1(nums, l, r)
+        quick_sort1(nums, l, mid - 1)
+        quick_sort1(nums, mid + 1, r)
+
+
 def partition1(nums, l, r):  # 原地修改
     pivot = nums[l]  # pivot可以随机选择
     while l < r:
@@ -15,8 +22,15 @@ def partition1(nums, l, r):  # 原地修改
         while l < r and nums[l] < pivot:  # 左右必须有一个包含等于号
             l += 1
         nums[r] = nums[l]  # 替换已保存nums[l]
-    nums[l] = pivot  # 1 nums[l]已经复制到其他位置 nums[l-1]< pivot <= nums[l]
+    nums[l] = pivot  # nums[l]已经复制到其他位置 nums[l-1]< pivot <= nums[l]
     return l
+
+
+def quick_sort2(nums, l, r):
+    if l < r:
+        mid = partition2(nums, l, r)
+        quick_sort2(nums, l, mid)  # 因为mid左侧小于pivot为排序 需要包含mid
+        quick_sort2(nums, mid + 1, r)
 
 
 def partition2(nums, l, r):
@@ -30,8 +44,15 @@ def partition2(nums, l, r):
             l += 1
         # 交换
         if l < r:
-            nums[l], nums[r] = nums[r], nums[l]  # 替换已保存nums[l]
+            nums[l], nums[r] = nums[r], nums[l]
     return l
+
+
+def quick_sort3(nums, l, r):
+    if l < r:  # 长度为1不用排序
+        lt, mt = partition3(nums, l, r)
+        quick_sort3(nums, l, lt - 1)
+        quick_sort3(nums, mt + 1, r)
 
 
 # 三个指针
@@ -55,27 +76,6 @@ def partition3(nums, l, r):
             mt -= 1  # # nums[mt+1] > pivot!
             # 后边换过来的数 不知道其数值 因此不移动i
     return lt, mt
-
-
-def quick_sort1(nums, l, r):
-    if l < r:  # 长度为1不用排序, 两侧向中间靠
-        mid = partition1(nums, l, r)
-        quick_sort1(nums, l, mid - 1)
-        quick_sort1(nums, mid + 1, r)
-
-
-def quick_sort2(nums, l, r):
-    if l < r:
-        mid = partition2(nums, l, r)
-        quick_sort2(nums, l, mid)  # 因为mid左侧小于pivot为排序 需要包含mid
-        quick_sort2(nums, mid + 1, r)
-
-
-def quick_sort3(nums, l, r):
-    if l < r:  # 长度为1不用排序
-        lt, mt = partition3(nums, l, r)
-        quick_sort3(nums, l, lt - 1)
-        quick_sort3(nums, mt + 1, r)
 
 
 # 奇数在左边 偶数在右边
@@ -170,7 +170,7 @@ def sort_colors(nums):
     return nums
 
 
-# 179 输入: [3, 30, 34, 5, 9] 输出: 9534330
+# 179 输入:[3, 30, 34, 5, 9] 输出:'9534330'
 def largest_number1(nums):
     if not nums:
         return ''
