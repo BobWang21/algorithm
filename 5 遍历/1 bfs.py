@@ -42,9 +42,9 @@ def walls_and_gates(rooms):
 
     directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
     while queue:
-        row, col, layer = queue.popleft()
-        for direction in directions:
-            i, j = row + direction[0], col + direction[1]
+        i, j, layer = queue.popleft()
+        for di, dj in directions:
+            i, j = i + di, j + dj
             if i < 0 or i == rows or j < 0 or j == cols:
                 continue
             if rooms[i][j] == inf:  # 过滤墙和已经访问过的位置
@@ -59,12 +59,15 @@ def walls_and_gates(rooms):
 def word_ladder(begin_word, end_word, word_list):
     if not word_list:
         return 0
+
     queue = deque()
+    word_set = set(word_list)
     queue.append((begin_word, 0))  # 记录层数
     visited = {begin_word}  # 保存已加入过队列的字符串
-    word_set = set(word_list)
+
     if end_word not in word_set:
         return 0
+
     while queue:
         word, l = queue.popleft()
         for i in range(len(word)):

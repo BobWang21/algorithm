@@ -332,7 +332,7 @@ def path_sum2(root, target):
         # 先计数
         if total - target in dic:
             res[0] += dic[total - target]
-        # 修改字典
+        # 再修改字典
         dic[total] += 1
         helper(root.left, total)
         helper(root.right, total)

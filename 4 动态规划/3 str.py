@@ -41,7 +41,7 @@ def longest_palindrome1(s):
         return s
     n = len(s)
     dp = [[0] * n for _ in range(n)]
-    # dp[i][j] 表示s[i:j+1]子串最长回文长度
+    # dp[i][j]表示以s[i]和s[j]为端点的最长回文子串
     for i in range(n):
         dp[i][i] = 1  # 递归基
 
@@ -85,11 +85,10 @@ def longest_palindrome2(s):
     for i in range(n - 1, -1, -1):
         dp[i][i] = 1
         for j in range(i + 1, n):
-            if j - i == 1 and s[i] == s[j]:
+            if s[i] == s[j] and j - i == 1:
                 dp[i][j] = 2  # 递归基
             elif s[i] == s[j] and dp[i + 1][j - 1]:
                 dp[i][j] = dp[i + 1][j - 1] + 2
-                # print(dp[i][j])
             if dp[i][j] > max_len:
                 max_len = dp[i][j]
                 res = s[i:j + 1]

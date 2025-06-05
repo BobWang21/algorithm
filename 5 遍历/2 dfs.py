@@ -9,6 +9,7 @@ def num_islands(grid):
     if not grid:
         return 0
     rows, cols = len(grid), len(grid[0])
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
     def dfs(i, j):
         if i < 0 or j < 0 or i == rows or j == cols:
@@ -16,7 +17,7 @@ def num_islands(grid):
         if grid[i][j] == '0':
             return
         grid[i][j] = '0'
-        for di, dj in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+        for di, dj in directions:
             dfs(i + di, j + dj)
         return
 

@@ -3,23 +3,8 @@
 from collections import defaultdict
 
 
-# 78 不包含重复元素子集问题  不回溯
-def subset_1(nums):
-    res = []
-    n = len(nums)
-
-    def helper(i, path):
-        res.append(path)
-
-        for j in range(i, n):  # 从i开始迭代, 保证不重复
-            helper(j + 1, path + [nums[j]])  # 生成新的路径,不需回溯
-
-    helper(0, [])
-    return res
-
-
 # 78 不包含重复元素回溯
-def subsets_2(nums):
+def subset(nums):
     n = len(nums)
     res = []
     path = []
@@ -29,17 +14,15 @@ def subsets_2(nums):
 
         for j in range(i, n):  # 所有选择
             path.append(nums[j])
-            helper(j + 1)  # 新递归从i+1开始 保证不会出现重复元素
+            helper(j + 1)  # 新递归从i+1开始 保证不出现重复元素
             path.pop(-1)  # 回溯
 
     helper(0)
+    return res
 
 
 # 90. 包含重复元素子集问题
 def subsets_with_dup(nums):
-    if not nums:
-        return []
-
     n, res, path = len(nums), [], []
 
     def helper(i=0):
@@ -61,10 +44,10 @@ def permute1(nums):
     if not nums:
         return []
 
-    res = []
     n = len(nums)
-    visited = [False] * n
     path = []
+    res = []
+    visited = [False] * n
 
     def helper():
         if len(path) == n:
@@ -100,8 +83,7 @@ def permute_unique1(nums):
         for i in range(n):
             if visited[i]:
                 continue
-            # 前面的数字未使用时，nums[i-1] 和 nums[i] 不能用 [1, 2_1, 2_2, 3]
-            # [1, 2_1, 2_2, ] 可以 [1, 2_2, 2_1, ]不可以
+            # [1, 2_1, 2_2, ]可以; [1, 2_2, 2_1, ]不可以
             if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
                 continue
             visited[i] = True
@@ -471,7 +453,7 @@ def can_partition_k_subsets(nums, k):
 
 if __name__ == '__main__':
     print('\n全集')
-    print(subset_1([1, 2, 3]))
+    print(subset([1, 2, 3]))
     print(subsets_with_dup([1, 2, 2, 3]))
 
     print('\n排列问题')
