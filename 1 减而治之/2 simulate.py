@@ -68,6 +68,7 @@ def product_except_self(nums):
     return l
 
 
+
 # 31 下一个排列
 def next_permutation(nums):
     n = len(nums)

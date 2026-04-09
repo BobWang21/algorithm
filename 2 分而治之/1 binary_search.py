@@ -8,7 +8,7 @@
 def binary_search1(nums, target):
     l, r = 0, len(nums) - 1
     while l <= r:
-        mid = l + (r - l) // 2
+        mid = l + (r - l) // 2 # 左中位数
         if target == nums[mid]:
             return mid
         if nums[mid] < target:
@@ -17,34 +17,6 @@ def binary_search1(nums, target):
             r = mid - 1  # nums[r+1] > target
     # 跳出循环时, l=r+1 nums[l-1] < target < nums[l]
     return -1
-
-
-# 69 非负整数求平方根
-# 查找第一个小于等于 target 的下标
-def sqrt1(x):
-    l, r = 0, x
-    while l <= r:
-        mid = (l + r) // 2
-        if mid * mid <= x:
-            l = mid + 1  # (l-1) ** 2 <= x
-        else:
-            r = mid - 1  # (r+1) ** 2 <= x
-    # 跳出循环时, r=l-1, nums[r] <= target < nums[l]
-    return r
-
-
-# 带精度的求平方根
-def sqrt2(x, precision):
-    l, r = (0, x) if x > 1 else (x, 1)
-    while l <= r:
-        mid = l + (r - l) / 2  # 小数
-        s = mid * mid
-        if abs(s - x) <= precision:
-            return mid
-        if s < x:
-            l = mid  # 浮点数 不会出现相等的情况
-        else:
-            r = mid
 
 
 # 35 插入位置 nums = [1,3,5,6], target = 2
@@ -100,6 +72,34 @@ def search_last_pos(nums, target):
             r = mid - 1  # nums[r+1] > target
     # 在l < r时， nums[l] <= target < nums[l+1]
     return l if nums[l] == target else -1
+
+
+# 69 非负整数求平方根
+# 查找第一个小于等于 target 的下标
+def sqrt1(x):
+    l, r = 0, x
+    while l < r:
+        mid = (l + r) // 2
+        if mid * mid <= x:
+            l = mid  # l ** 2 <= x
+        else:
+            r = mid - 1  # (r+1) ** 2 > x
+    # 跳出循环时, r=l, nums[l]**2 <= target < nums[r]**2
+    return l
+
+
+# 带精度的求平方根
+def sqrt2(x, precision):
+    l, r = (0, x) if x > 1 else (x, 1)
+    while l <= r:
+        mid = l + (r - l) / 2  # 小数
+        s = mid * mid
+        if abs(s - x) <= precision:
+            return mid
+        if s < x:
+            l = mid  # 浮点数 不会出现相等的情况
+        else:
+            r = mid
 
 
 def search_first_large(nums, target):
