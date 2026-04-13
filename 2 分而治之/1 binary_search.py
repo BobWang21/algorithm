@@ -4,11 +4,12 @@
 # 适用于排序或部分排序的数组
 # 递推思想:可使用循环不变性证明其正确性!
 
+
 # 标准-非递归版本
 def binary_search1(nums, target):
     l, r = 0, len(nums) - 1
     while l <= r:
-        mid = l + (r - l) // 2 # 左中位数
+        mid = l + (r - l) // 2  # 左中位数
         if target == nums[mid]:
             return mid
         if nums[mid] < target:

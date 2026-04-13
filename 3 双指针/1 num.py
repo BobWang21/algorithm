@@ -185,7 +185,7 @@ def three_sum(nums, target):
                 res.append([nums[i], nums[l], nums[r]])
                 while l < r and nums[l] == nums[l + 1]:  # 防止第二个数重复
                     l += 1
-                l += 1
+                l += 1 # 无论如何l都会
     return res
 
 

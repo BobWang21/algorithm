@@ -24,7 +24,7 @@ def knapsack1(values, weights, capacity):
         for j in range(1, cols):  # 所有状态
             dp[i][j] = dp[i - 1][j]  # 初始化为相同负载不装该物品
             if j >= weight:  # 状态转移2 这里从i-1开始
-                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight] + value)
+                dp[i][j] = max(dp[i][j], dp[i - 1][j - weight] + value)
     return dp[-1][-1]
 
 
@@ -250,20 +250,15 @@ def can_partition(nums):
     if total % 2 == 1:
         return False
     capacity = total // 2
-    values = []
     for v in nums:
-        if v < capacity:
-            values.append(v)
-        elif v == capacity:
-            return True
-        else:
+        if v > capacity:
             return False
 
     dp = [0] * (capacity + 1)
     dp[0] = True
-    for value in values:
-        for j in range(capacity, value - 1, -1):
-            dp[j] = dp[j] or dp[j - value]
+    for num in nums:
+        for j in range(capacity, num - 1, -1):
+            dp[j] = dp[j] or dp[j - num]
     # print(dp)
     return dp[-1]
 
