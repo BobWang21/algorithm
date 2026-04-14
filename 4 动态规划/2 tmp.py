@@ -101,7 +101,7 @@ def max_continuous_product(nums):
     return res
 
 
-# 12 只能买卖一次 滑动窗口
+# 121 只能买卖一次 滑动窗口
 def max_profit1(prices):
     n = len(prices)
     min_price = float('inf')
@@ -127,9 +127,10 @@ def max_profit2(prices):
 
 # 状态只和前一天相关
 def max_profit2_1(prices):
-    hold, empty = -float('inf'), 0
+    hold, empty = -float('inf'), 0  # 第一次不能出现hold, hold初始状态为负无穷
     for price in prices:
-        hold, empty = max(empty - price, hold), max(hold + price, empty)
+        # 买是负数，卖是正数
+        hold, empty = max(hold, empty - price), max(empty, hold + price)
     return max(hold, empty)
 
 

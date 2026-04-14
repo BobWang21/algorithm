@@ -12,7 +12,7 @@ def LCS(s1, s2):
             if s1[i - 1] == s2[j - 1]:  # 包含两个端点
                 dp[i][j] = dp[i - 1][j - 1] + 1
             else:
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])  # 最多包含一个端点
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])  # 包含一个端点
     pprint(dp)
     return dp[-1][-1]
 
@@ -36,42 +36,6 @@ def edit_distance(word1, word2):
 
 
 # 5 最长回文子串 子串必须连续
-def longest_palindrome1(s):
-    if len(s) == 1:
-        return s
-    n = len(s)
-    dp = [[0] * n for _ in range(n)]
-    # dp[i][j]表示以s[i]和s[j]为端点的最长回文子串
-    for i in range(n):
-        dp[i][i] = 1  # 递归基
-
-    # print(dp)
-    res = s[0]
-    max_len = 1
-    # 长度 回文子串的长度先短后长
-    for k in range(2, n + 1):
-        # 子串起点
-        for i in range(n):
-            # j - i + 1 = k,
-            j = k + i - 1
-            if j >= n:
-                continue
-                # [0, 1, 2, 3]
-            if s[i] != s[j]:
-                continue
-            if k == 2:
-                dp[i][j] = 2  # 递归基
-            elif dp[i + 1][j - 1]:  # dp[i+1][j-1]一定访问过
-                dp[i][j] = dp[i + 1][j - 1] + 2
-
-            # 区别dp[-1][-1]
-            if dp[i][j] > max_len:
-                max_len = dp[i][j]
-                res = s[i:j + 1]
-    return res
-
-
-# 5 最长回文子串
 def longest_palindrome2(s):
     if len(s) < 2:
         return s
@@ -87,8 +51,9 @@ def longest_palindrome2(s):
         for j in range(i + 1, n):
             if s[i] == s[j] and j - i == 1:
                 dp[i][j] = 2  # 递归基
-            elif s[i] == s[j] and dp[i + 1][j - 1]:
+            elif s[i] == s[j] and dp[i + 1][j - 1]:  # 处理连续的情况
                 dp[i][j] = dp[i + 1][j - 1] + 2
+
             if dp[i][j] > max_len:
                 max_len = dp[i][j]
                 res = s[i:j + 1]
@@ -106,7 +71,7 @@ def longest_palindrome_subseq3(s):
             if s[i] == s[j]:
                 # i依赖i+1, 因此i逆序
                 dp[i][j] = dp[i + 1][j - 1] + 2
-            else:
+            else:  # 不连续的处理情况
                 dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
     return dp[0][n - 1]
 

@@ -47,7 +47,7 @@ def walls_and_gates(rooms):
             i, j = i + di, j + dj
             if i < 0 or i == rows or j < 0 or j == cols:
                 continue
-            if rooms[i][j] == inf:  # 过滤墙和已经访问过的位置
+            if rooms[i][j] == inf:  # 过滤门和已经访问过的位置(layer不为0)
                 rooms[i][j] = layer + 1
                 queue.append((i, j, layer + 1))
 

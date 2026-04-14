@@ -33,7 +33,7 @@ def knapsack2(values, weights, capacity):
     dp = [0] * (capacity + 1)
     # 每个物品只能用一次
     for value, weight in zip(values, weights):
-        # 容量逆序排列 防止物品使用多次
+        # 容量逆序排列 避免同一物品被多次放入（若正序则变成完全背包）
         for j in range(capacity, weight - 1, -1):
             dp[j] = max(dp[j], dp[j - weight] + value)
     return dp[-1]
