@@ -5,7 +5,7 @@
 2 路径
 """
 from collections import defaultdict, deque
-from binary_tree import *
+from utils import *
 
 
 class TreeNode():
@@ -15,18 +15,10 @@ class TreeNode():
         self.right = None
 
 
-# 序列化
-# def serialize(tree):
-#     if not tree:
-#         return '#'
-#     res = [str(tree.val), serialize(tree.left), serialize(tree.right)]
-#     return '-'.join(res)
-
-
 def serialize(tree):
     if not tree:
-        return '#'
-    return str(tree.val) + '-' + serialize(tree.left) + '-' + serialize(tree.right)
+        return ['#']
+    return '-'.join([str(tree.val)] + serialize(tree.left) + serialize(tree.right))
 
 
 # 反序列化 递归
@@ -325,17 +317,17 @@ def path_sum2(root, target):
 
     res = [0]
 
-    def helper(root, total):  # 包含根节点
-        if not root:
+    def helper(node, total):  # 包含根节点
+        if not node:
             return
-        total += root.val
+        total += node.val
         # 先计数
         if total - target in dic:
             res[0] += dic[total - target]
         # 再修改字典
         dic[total] += 1
-        helper(root.left, total)
-        helper(root.right, total)
+        helper(node.left, total)
+        helper(node.right, total)
         dic[total] -= 1  # 回溯
 
     helper(root, 0)

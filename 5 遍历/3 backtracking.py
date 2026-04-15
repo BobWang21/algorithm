@@ -28,7 +28,7 @@ def subsets_with_dup(nums):
     def helper(i=0):
         res.append(path[:])
         for j in range(i, n):  # 所有选择
-            if j > i and nums[j] == nums[j - 1]:  # 相同数字不能出现在同一层
+            if j > i and nums[j] == nums[j - 1]:  # j > i 表达相同层，相同数字不能出现在同一层
                 continue
             path.append(nums[j])
             helper(j + 1)
@@ -68,11 +68,8 @@ def permute1(nums):
 
 # 47. 全排列 输入数组中含重复数字
 def permute_unique1(nums):
-    nums.sort()
-
     n = len(nums)
     visited = [False] * n
-
     res = []
 
     def helper(path):
@@ -83,7 +80,7 @@ def permute_unique1(nums):
         for i in range(n):
             if visited[i]:
                 continue
-            # [1, 2_1, 2_2, ]可以; [1, 2_2, 2_1, ]不可以
+            # [1, 2_1, 2_2,]可以; [1, 2_2, 2_1,]不可以
             if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
                 continue
             visited[i] = True
@@ -92,8 +89,8 @@ def permute_unique1(nums):
             path.pop(-1)
             visited[i] = False
 
+    nums.sort()
     helper([])
-
     return res
 
 
@@ -212,7 +209,7 @@ def restore_ip_addresses(s):
     res = []
 
     def helper(idx):
-        if len(path) == 4 and idx == n:
+        if len(path) == 4 and idx == n:  # idx == n表示使用所有数字
             res.append('.'.join(path))
 
         # 每一位有1-3三种选择
@@ -256,42 +253,52 @@ def generate_parenthesis(n):
 
 
 # 301. 删除无效的括号
-def remove_invalid_parentheses(s):
-    if not s:
-        return ['']
-
-    l = r = 0  # 多余的括号
-    for ch in s:
-        if ch in {'(', ')'}:
-            if ch == '(':
-                l += 1
-            elif l:
-                l -= 1
+def removeInvalidParentheses(s):
+    res = []
+    lremove, rremove = 0, 0
+    for c in s:
+        if c == '(':
+            lremove += 1
+        elif c == ')':
+            if lremove == 0:
+                rremove += 1
             else:
-                r += 1
+                lremove -= 1
 
-    n, res = len(s), set()  # 因为可能存在重复值 所以使用set保存结果
+    def isValid(str):
+        cnt = 0
+        for c in str:
+            if c == '(':
+                cnt += 1
+            elif c == ')':
+                cnt -= 1
+                if cnt < 0:
+                    return False
+        return cnt == 0
 
-    def helper(i, l, r, left, path):  # left 表示未匹配的左括号
-        if i == n and not l and not r and not left:
-            res.add(path)
-        if i == n:
+    def helper(s, start, lremove, rremove):
+        if lremove == 0 and rremove == 0:
+            if isValid(s):
+                res.append(s)
             return
-        if s[i] not in {'(', ')'}:
-            helper(i + 1, l, r, left, path + s[i])
-            return
-        if s[i] == '(':
-            helper(i + 1, l, r, left + 1, path + s[i])  # 加
-            if l:
-                helper(i + 1, l - 1, r, left, path)  # 不加
-        else:
-            if left:
-                helper(i + 1, l, r, left - 1, path + s[i])  # 加
-            if r:
-                helper(i + 1, l, r - 1, left, path)  # 不加
 
-    helper(0, l, r, 0, '')
-    return list(res)
+        for i in range(start, len(s)):
+            # 连续相同的括号，删除其中任意一个得到的结果相同。只保留第一次遇到的情况，跳过后续重复，有效避免重复结果
+            if i > start and s[i] == s[i - 1]:
+                continue
+            # 如果剩余的字符无法满足去掉的数量要求，直接返回
+            if lremove + rremove > len(s) - i:
+                break
+            # 尝试去掉一个左括号
+            if lremove > 0 and s[i] == '(':
+                helper(s[:i] + s[i + 1:], i, lremove - 1, rremove)
+            # 尝试去掉一个右括号
+            if rremove > 0 and s[i] == ')':
+                helper(s[:i] + s[i + 1:], i, lremove, rremove - 1)
+            # 统计当前字符串中已有的括号数量
+
+    helper(s, 0, lremove, rremove)
+    return res
 
 
 # 79 单词搜索

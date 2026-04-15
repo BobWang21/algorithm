@@ -36,11 +36,8 @@ def can_finish1(num_courses, prerequisites):
 
 # 深度优先|考虑出度
 def can_finish2(num_courses, prerequisites):
-    edges = defaultdict(list)
     visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过节点及子节点
-
     edges = defaultdict(set)
-
     for i, j in prerequisites:
         edges[i].add(j)
 

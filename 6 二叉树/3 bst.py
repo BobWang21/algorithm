@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from binary_tree import *
+from utils import *
 
 
 # 二叉搜索树
@@ -116,7 +116,7 @@ def delete_node(root, key):
         return None
 
     if key < root.val:
-        root.left = delete_node(root.left, key)
+        root.left = delete_node(root.left, key)  # 必须更新子树
         return root
 
     if key > root.val:
@@ -212,6 +212,28 @@ def counter_smaller(nums):
     for i in range(n - 1, -1, -1):
         res[i] = insert(tree, nums[i])[1]
     return res
+
+
+# 创建完全二叉树
+def create_full_binary_tree(nums):
+    if not nums:
+        return
+    root = TreeNode(nums[0])
+    queue = deque([root])
+    i, n = 1, len(nums)
+    while i < n:
+        parent = queue[0]
+        node = TreeNode(nums[i])
+        i += 1
+        if not parent.left:
+            parent.left = node
+            queue.append(node)  # 进队列
+        else:
+            parent.right = node
+            queue.append(node)  # 进队列
+            queue.popleft()  # 出队列
+
+    return root
 
 
 if __name__ == '__main__':

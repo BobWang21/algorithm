@@ -124,7 +124,7 @@ def delete_node(node):
     node.next = node.next.next
 
 
-# 83 例如链表1->2->3->3->4->4->5 处理后为 1->2-3->5
+# 83 例如链表1->2->3->3->4->4 处理后为 1->2-3
 def remove_duplicates(head):
     if not head:
         return

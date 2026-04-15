@@ -53,7 +53,7 @@ def max_area_of_island(grid):
     return res
 
 
-# 从某一位置出发, 判断是否连通 不回溯
+# 从某一位置出发, 判断是否连通, 不需要回溯
 def has_path(maze, start, destination):
     if not maze or not maze[0]:
         return False
@@ -161,9 +161,7 @@ def surrounded_regions1(board):
     rows, cols = len(board), len(board[0])
 
     def dfs(i, j):
-        if i < 0 or j < 0 or i == rows or j == cols or board[i][j] == 'X':
-            return
-        if board[i][j] == 'A':
+        if i < 0 or j < 0 or i == rows or j == cols or board[i][j] in ('X', 'A'):
             return
         board[i][j] = 'A'
         dfs(i - 1, j)
