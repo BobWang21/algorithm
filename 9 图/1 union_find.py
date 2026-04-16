@@ -42,7 +42,7 @@ def check_circle(M):
     return False
 
 
-# 547 朋友圈数
+# 547 省份数
 # dfs 时间复杂度：O(edge)
 def find_circle_num1(M):
     n = len(M)
@@ -65,7 +65,7 @@ def find_circle_num1(M):
     return res
 
 
-# 547 bfs
+# 547 省份数
 def find_circle_num2(is_connected):
     n = len(is_connected)
     visited = [False] * n
@@ -90,7 +90,7 @@ def find_circle_num2(is_connected):
     return province_count
 
 
-# 547 朋友圈总数 o(n^3)
+# 547 省份数  o(n^3)
 # 访问矩阵一次，并查集操作需要最坏O(n)的时间。
 def find_circle_num3(M):
     if not M or not M[0]:
@@ -193,11 +193,9 @@ def are_sentences_similar_two(words1, words2, pairs):
 def find_redundant_connection(edges):
     if not edges:
         return
-    max_idx = 1
-    for u, v in edges:
-        max_idx = max(max_idx, u, v)
-    par = list(range(max_idx + 1))  # 0 no use
-    rank = [0] * (max_idx + 1)
+    n = len(edges)
+    par = list(range(n + 1))  # 0 no use
+    rank = [0] * (n + 1)
 
     def find(x):
         while par[x] != x:

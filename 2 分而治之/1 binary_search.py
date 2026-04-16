@@ -130,7 +130,7 @@ def find_missed_value(nums):
 
 
 # 34. 在排序数组中查找元素出现位置
-def get_number_of_k(nums, target):
+def search_range(nums, target):
     if not nums:
         return 0
     n = len(nums)
@@ -509,7 +509,7 @@ if __name__ == '__main__':
 
     print('\n数字在升序数字中出现的次数')
     nums = [1, 2, 3, 3, 3, 3, 4, 4]
-    print(get_number_of_k(nums, -1))
+    print(search_range(nums, -1))
 
     print('\n旋转数组中的最小值')
     print(find_min1([5, 4, 3]))
