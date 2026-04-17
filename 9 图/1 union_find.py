@@ -5,6 +5,8 @@
 from collections import deque
 
 
+# 连通图数 = 顶点数 - 边数
+
 # 是否存在环
 def check_circle(M):
     if not M or not M[0]:
@@ -24,7 +26,7 @@ def check_circle(M):
     def union(x, y):
         x = find(x)
         y = find(y)
-        if x == y:  # 有环等价于相连且公共的祖先
+        if x == y:  # 有公共祖先等价于有环
             return True
         if rank[x] < rank[y]:
             parent[x] = y
@@ -92,6 +94,7 @@ def find_circle_num2(is_connected):
 
 # 547 省份数  o(n^3)
 # 访问矩阵一次，并查集操作需要最坏O(n)的时间。
+# 连通图数 = 顶点数 - 边数
 def find_circle_num3(M):
     if not M or not M[0]:
         return 0
@@ -119,7 +122,7 @@ def find_circle_num3(M):
         else:  # 相等时 合并后的rank+1
             parent[y] = x
             rank[x] += 1
-        res[0] -= 1  # 连通图数 = 顶点数 - 边数
+        res[0] -= 1
         return False
 
     for i in range(n):
@@ -127,6 +130,45 @@ def find_circle_num3(M):
             if M[i][j]:
                 union(i, j)
     return res[0]
+
+
+from collections import deque
+
+
+# 310. 最小高度树
+# 解的是无向图的问题
+def findMinHeightTrees(n, edges):
+    if n == 1:
+        return [0]
+
+    # 1. 建图
+    graph = [[] for _ in range(n)]
+    degree = [0] * n
+
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+        degree[u] += 1
+        degree[v] += 1
+
+    # 2. 叶子节点入队
+    queue = deque([i for i in range(n) if degree[i] == 1])
+
+    # 3. 逐层删除叶子
+    remaining = n
+    while remaining > 2:
+        size = len(queue)
+        remaining -= size
+        # 叶子节点 同时出队列
+        for _ in range(size):
+            leaf = queue.popleft()
+            for neighbor in graph[leaf]:
+                degree[neighbor] -= 1
+                if degree[neighbor] == 1:
+                    queue.append(neighbor)
+
+    # 4. 剩下的就是答案
+    return list(queue)
 
 
 def are_sentences_similar_two(words1, words2, pairs):
