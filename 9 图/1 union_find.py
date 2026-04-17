@@ -135,8 +135,10 @@ def find_circle_num3(M):
 from collections import deque
 
 
-# 310. 最小高度树
-# 解的是无向图的问题
+# 310. 最小高度树 解的是无向图的问题
+# 可选择树中任何一个节点作为根。
+# 当选择节点 x 作为根节点时，设结果树的高度为 h 。
+# 在所有可能的树中，具有最小高度的树（即，min(h)）被称为 最小高度树 。
 def findMinHeightTrees(n, edges):
     if n == 1:
         return [0]
