@@ -15,7 +15,7 @@ def subset(nums):
         for j in range(i, n):  # 所有选择
             path.append(nums[j])
             helper(j + 1)  # 新递归从i+1开始 保证不出现重复元素
-            path.pop(-1)  # 回溯
+            path.pop()  # 回溯
 
     helper(0)
     return res
@@ -28,11 +28,11 @@ def subsets_with_dup(nums):
     def helper(i=0):
         res.append(path[:])
         for j in range(i, n):  # 所有选择
-            if j > i and nums[j] == nums[j - 1]:  # j > i 表达相同层，相同数字不能出现在同一层
+            if j > i and nums[j] == nums[j - 1]:  # j > i 相同数字不能出现在同一层
                 continue
             path.append(nums[j])
             helper(j + 1)
-            path.pop(-1)
+            path.pop()
 
     nums.sort()
     helper()
@@ -59,7 +59,7 @@ def permute1(nums):
             visited[i] = True
             path.append(nums[i])
             helper()
-            path.pop(-1)
+            path.pop()
             visited[i] = False
 
     helper()
@@ -81,12 +81,12 @@ def permute_unique1(nums):
             if visited[i]:
                 continue
             # [1, 2_1, 2_2,]可以; [1, 2_2, 2_1,]不可以
-            if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:
+            if i > 0 and nums[i] == nums[i - 1] and not visited[i - 1]:  # i > 0 所有层都成立的
                 continue
             visited[i] = True
             path.append(nums[i])
             helper(path)
-            path.pop(-1)
+            path.pop()
             visited[i] = False
 
     nums.sort()
@@ -117,7 +117,7 @@ def permute_seq(n):
 
             helper()
 
-            path.pop(-1)
+            path.pop()
             status[i] += 1
 
     helper()
@@ -144,7 +144,7 @@ def combination_sum(nums, target):
             path.append(nums[j])
             # 索引不加1, 表示数字可以重复使用!!!
             helper(j, total + nums[j])
-            path.pop(-1)
+            path.pop()
 
     nums.sort()
     helper(0, 0)
@@ -170,7 +170,7 @@ def n_sum1(nums, k, target):
                 continue
             path.append(nums[j])
             helper(j + 1, total + nums[j])  # total不需回溯
-            path.pop(-1)
+            path.pop()
 
     nums.sort()
     helper(0, 0)
@@ -493,4 +493,4 @@ if __name__ == '__main__':
     print(generate_parenthesis(2))
 
     print('\n删除无效的括号')
-    print(remove_invalid_parentheses("(a)())()"))
+    # print(remove_invalid_parentheses("(a)())()"))
