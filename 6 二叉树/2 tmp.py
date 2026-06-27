@@ -179,15 +179,22 @@ def is_balanced3(tree):
         if not tree:
             return 0
         left = helper(tree.left)
-        right = helper(tree.right)
-        if left == -1 or right == -1 or abs(right - left) > 1:  # 先判断left, 再判断right
+        if left == -1:  # 先判断left, 再判断right
             return -1
+
+        right = helper(tree.right)
+        if right == -1:
+            return -1
+
+        if abs(right - left) > 1:
+            return -1
+
         return max(left, right) + 1
 
     return helper(tree) != -1
 
 
-# 257. 二叉树的所有路径
+# 257 二叉树所有路径 dfs
 def binary_tree_paths1(root):
     if not root:
         return []
@@ -202,7 +209,7 @@ def binary_tree_paths1(root):
     return res
 
 
-# 回溯
+# 257 二叉树所有路径 回溯
 def binary_tree_paths2(root):
     res = []
     path = []
@@ -214,12 +221,11 @@ def binary_tree_paths2(root):
             res.append('->'.join(path + [str(node.val)]))
 
         path.append(str(node.val))
-
         if node.left:
             helper(node.left)
         if node.right:
             helper(node.right)
-
+        # 回溯 访问完当前子树需要pop
         path.pop()
 
     helper(root)
@@ -241,9 +247,8 @@ def diameter_of_binary_tree(root):
     return res[0]
 
 
-# 112
-# 是否存在路径和为某个target
-# 二叉树可能为空
+# 112 是否存在路径和为某个target 二叉树可能为空
+# 也可以bfs
 def have_path_sum(root, target):
     if not root:  # 递归基1 节点为空节点
         return False
@@ -253,13 +258,13 @@ def have_path_sum(root, target):
     return have_path_sum(root.left, target - root.val) or have_path_sum(root.right, target - root.val)
 
 
-# 113 打印所有路径 根节点到叶节点
-# 路径的数目为 O(N)，并且每一条路径的节点个数也为 O(N)，
-# 因此要将这些路径全部添加进答案中，时间复杂度为 O(N^2)
+# 113 路径总和 根节点到叶节点
+# 路径的数目为 O(N)，并且每一条路径的节点个数也为 O(N)，因此要将这些路径全部添加进答案中，时间复杂度为 O(N^2)
+# 也可以bfs
 def path_sum1(root, target):
     res, path = [], []
 
-    def dfs(node, val):
+    def helper(node, val):
         if not node:
             return
 
@@ -269,22 +274,21 @@ def path_sum1(root, target):
             return
 
         path.append(node.val)
-        dfs(l, val - node.val)
-        dfs(r, val - node.val)
-        path.pop(-1)
+        helper(l, val - node.val)
+        helper(r, val - node.val)
+        path.pop()
 
-    dfs(root, target)
+    helper(root, target)
     return res
 
 
 # 437 找出路径和等于给定数值的路径总数
-# 路径不需要从根节点开始，也不需要在叶子节点结束，
-# 但是路径方向必须是向下的（只能从父节点到子节点）
+# 路径不需要从根节点开始，也不需要在叶子节点结束 但是路径方向必须是向下的（只能从父节点到子节点）
 # 时间复杂度：O(N2)
 def path_sum1(root, target):
     # 包含当前节点
     def from_root(root, target):
-        if root is None:
+        if not root:
             return 0
 
         res = 0
@@ -306,15 +310,15 @@ def path_sum1(root, target):
     return res
 
 
-# 解法一中存在重复计算。可以使用前缀和思想
-# 我们定义节点的前缀和为：由根结点到当前结点的路径上所有节点的和。
+# 437 使用前缀和思想
+# 节点的前缀和为由根结点到当前结点的路径上所有节点的和
+# 使用回溯法 遍历根节点到叶节点的所有路径
 def path_sum2(root, target):
     if not root:
         return 0
 
     dic = defaultdict(int)
     dic[0] = 1
-
     res = [0]
 
     def helper(node, total):  # 包含根节点
@@ -322,8 +326,7 @@ def path_sum2(root, target):
             return
         total += node.val
         # 先计数
-        if total - target in dic:
-            res[0] += dic[total - target]
+        res[0] += dic[total - target]
         # 再修改字典
         dic[total] += 1
         helper(node.left, total)
@@ -374,11 +377,11 @@ def vertical_order(root):
 def is_complete_tree(root):
     if not root:
         return True
-    queue = [(root, 1)]
+    queue = deque([(root, 1)])
     i = 0
     while queue:
         i += 1
-        node, idx = queue.pop(0)
+        node, idx = queue.popleft()
         if i != idx:
             return False
         l, r = node.left, node.right
@@ -583,6 +586,7 @@ def inorder_tra_next_node(node):
 
 
 # 863 到target 长度为k的节点
+# Node.val 中所有值不同
 def distance_k1(root, target, k):
     res = []
     dic = dict()
@@ -660,7 +664,7 @@ def distance_k2(root, target, k):
         if node.right != pre_node:
             find_target(node.right, node, n - 1)
         # 向上访问
-        if node.val in dic and dic[node.val] != pre_node:
+        if dic[node.val] != pre_node:
             find_target(dic[node.val], node, n - 1)
 
     find_target(target, None, k)

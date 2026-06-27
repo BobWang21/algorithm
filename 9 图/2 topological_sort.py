@@ -4,15 +4,36 @@
 from collections import defaultdict, deque
 
 
-# 207
+# 207 课程表 拓扑排序 | 广度优先 | 考虑入度 时间复杂度为O(E+V)
+def can_finish3(num_courses, prerequisites):
+    dic = defaultdict(set)  # v -> u 邻接表
+    indegree = [0] * num_courses  # 入度
+    for u, v in prerequisites:  # O(E)
+        dic[v].add(u)
+        indegree[u] += 1
+
+    queue = deque()  # 多向bfs O(E)
+    for i in range(num_courses):
+        if not indegree[i]:
+            queue.append(i)
+    num = 0
+    while queue:
+        v = queue.popleft()
+        num += 1
+        for u in dic[v]:
+            indegree[u] -= 1
+            if not indegree[u]:
+                queue.append(u)
+    return num == num_courses
+
+
 # 回溯版本 计算超时 节点会重复计算
 def can_finish1(num_courses, prerequisites):
-    visited = [False] * num_courses
-
     edges = defaultdict(set)
-
     for i, j in prerequisites:
         edges[i].add(j)
+
+    visited = [False] * num_courses
 
     def dfs(i):
         if visited[i]:
@@ -34,12 +55,13 @@ def can_finish1(num_courses, prerequisites):
     return True
 
 
-# 深度优先|考虑出度
+# 深度优先 | 考虑出度
 def can_finish2(num_courses, prerequisites):
-    visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过节点及子节点
     edges = defaultdict(set)
     for i, j in prerequisites:
         edges[i].add(j)
+
+    visited = [0] * num_courses  # 0:未访问 1:正在访问 2:访问过节点及子节点
 
     def dfs(i):
         # 正在访问
@@ -57,33 +79,10 @@ def can_finish2(num_courses, prerequisites):
         visited[i] = 2
         return True
 
-    for i, j in prerequisites:
-        if not dfs(i):
+    for i in range(num_courses):
+        if not visited[i] and not dfs(i):
             return False
     return True
-
-
-# 拓扑排序 广度优先 | 考虑入度 时间复杂度为O(E+V)
-def can_finish3(num_courses, prerequisites):
-    dic = defaultdict(set)  # v -> u 邻接表
-    indegree = [0] * num_courses  # 入度
-    for u, v in prerequisites:  # O(E)
-        dic[v].add(u)
-        indegree[u] += 1
-
-    queue = deque()  # 多向bfs O(E)
-    for i in range(num_courses):
-        if not indegree[i]:
-            queue.append(i)
-    num = 0
-    while queue:
-        v = queue.popleft()
-        num += 1
-        for u in dic[v]:
-            indegree[u] -= 1
-            if not indegree[u]:
-                queue.append(u)
-    return num == num_courses
 
 
 def find_order(num_courses, prerequisites):
