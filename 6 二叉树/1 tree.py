@@ -22,7 +22,7 @@ def preorder2(tree):
     res = []
     stack = [tree]
     while stack:
-        node = stack.pop(-1)
+        node = stack.pop()
         res.append(node.val)
         left, right = node.left, node.right
         # 右子树先进栈 
@@ -31,6 +31,20 @@ def preorder2(tree):
         # 左子树后进栈
         if left:
             stack.append(left)
+    return res
+
+
+def inorder_traverse(tree):
+    if not tree:
+        return []
+    node, stack, res = tree, [], []
+    while node or stack:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        res.append(node.val)
+        node = node.right
     return res
 
 
@@ -164,8 +178,30 @@ def deserialize(s):
             node.right = child
             queue.popleft()
             is_set_left = False
-    print(queue)
     return root
+
+
+def s1(tree):
+    if not tree:
+        return '#'
+    return str(tree.val) + ' ' + s1(tree.left) + ' ' + s1(tree.right)
+
+
+def uns1(s):
+    queue = deque(s.split())
+
+    def helper():
+        if not queue:
+            return
+        val = queue.popleft()
+        if val == '#':
+            return
+        node = TreeNode(val)
+        node.left = helper()
+        node.right = helper()
+        return node
+
+    return helper()
 
 
 if __name__ == '__main__':
@@ -175,6 +211,7 @@ if __name__ == '__main__':
 
     print('\n中序遍历')
     print(inorder_traversal(tree))
+    print(inorder_traverse(tree))
 
     print('\n后序遍历')
     print(postorder_traversal(tree))

@@ -202,7 +202,7 @@ def search(nums, target):
         mid = l + (r - l) // 2
         if nums[mid] == target:
             return mid
-        # 二分思想核心为减枝
+        # 二分查找核心思想为减枝
         if nums[mid] >= nums[0]:  # mid左侧有序
             if nums[0] <= target < nums[mid]:  # 位于有序序列中
                 r = mid - 1
@@ -245,7 +245,7 @@ def find_median_sorted_arrays(nums1, nums2):
     k = (m + n + 1) // 2  # 取个数的左中位数
 
     # 二分查找取第一个数组中数字的个数
-    l, r = 0, m
+    l, r = 0, m  # 可以取到m
     while l < r:
         mid = l + (r - l + 1) // 2  # mid可取到m, 取不到0
         if nums1[mid - 1] <= nums2[k - mid]:  # nums1[l-1] <= nums2[k-l]

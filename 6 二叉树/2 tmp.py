@@ -49,6 +49,7 @@ def right_side_view(tree):
     curr_level = [tree]
     res = []
     while curr_level:
+        res.append(curr_level[-1].val)
         next_level = []
         for node in curr_level:
             left, right = node.left, node.right
@@ -56,7 +57,6 @@ def right_side_view(tree):
                 next_level.append(left)
             if right:
                 next_level.append(right)
-        res.append(curr_level[-1].val)
         curr_level = next_level
     return res
 
@@ -65,7 +65,7 @@ def right_side_view(tree):
 def width_of_tree(tree):
     if not tree:
         return 0
-    current_level = [(tree, 0)]
+    current_level = [(tree, 1)]
     res = 1
     while current_level:
         next_level = []

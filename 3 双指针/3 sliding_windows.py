@@ -58,7 +58,7 @@ def length_of_longest_substring2(s):
 
 # 76 最小覆盖子串 滑动窗口
 def min_window1(s, t):
-    counter = Counter(t)
+    counter = Counter(t)  # 计数
     dic = defaultdict(int)
 
     n = len(s)
