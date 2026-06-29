@@ -308,7 +308,7 @@ def longest_consecutive2(nums):
     return res
 
 
-# -*- coding: utf-8 -*-
+# 399 除法求值
 class Solution(object):
     def calcEquation(self, equations, values, queries):
         """
@@ -324,7 +324,7 @@ class Solution(object):
         # 第 1 步：预处理，将变量的值与 id 进行映射
         hash_map = {}
         var_id = 0
-        for i in xrange(equations_size):
+        for i in range(equations_size):
             var1 = equations[i][0]
             var2 = equations[i][1]
 
@@ -341,7 +341,7 @@ class Solution(object):
         # 第 2 步：做查询
         queries_size = len(queries)
         res = [-1.0] * queries_size
-        for i in xrange(queries_size):
+        for i in range(queries_size):
             var1 = queries[i][0]
             var2 = queries[i][1]
 
@@ -356,7 +356,6 @@ class Solution(object):
         return res
 
 
-# 399 除法求值
 class UnionFind(object):
     def __init__(self, n):
         # parent[i] 表示节点 i 的父节点

@@ -111,3 +111,41 @@ def subset3(nums):
 print(subset1([1, 2, 3]))
 print(subset2([1, 2, 3]))
 print(subset3([1, 2, 2]))
+
+from collections import deque, defaultdict
+
+
+# 269 火星词典
+# 从给定的词典中提取出字母间的相对顺序信息
+def alien_order(words):
+    # 获取关系
+    n = len(words)
+    edges = defaultdict(set)
+    degree = defaultdict(int)
+    s = set()
+    for i in range(n):
+        s.add(list(words[i]))
+        for j in range(i + 1, n):
+            m, n = len(words[i]), len(words[j])
+            w1, w2 = words[i], words[j]
+            for k in range(min(m, n)):
+                c1, c2 = w1[k], w2[k]
+                if c1 != c2:
+                    edges[c1].add(c2)  # c1 -> c2
+                    degree[c2] += 1
+
+    # 拓扑排序
+    queue = deque([k for k, v in degree.items() if v == 0])
+
+    i = 0
+    res = ''
+    while queue:
+        chr = queue.popleft()
+        i += 1
+        res += chr
+        for new_chr in edges[chr]:
+            degree[new_chr] -= 1
+            if not degree[new_chr]:
+                queue.append(new_chr)
+
+    return res if i == len(s) else ''

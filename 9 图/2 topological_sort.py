@@ -110,6 +110,7 @@ def find_order(num_courses, prerequisites):
 
 
 # 269 火星词典
+# 从给定的词典中提取出字母间的相对顺序信息
 def alien_order(words):
     if not words:
         return
@@ -124,45 +125,64 @@ def alien_order(words):
             chr_set.add(ch)
 
     dic = defaultdict(set)
-    for i in range(n - 1):
-        for j in range(i + 1, n):
-            word1 = words[i]
-            word2 = words[j]
-            m_len = len(word1)
-            n_len = len(word2)
-            l = r = 0
-            while l < m_len or r < n_len:
-                c1 = word1[l] if l < m_len else None
-                c2 = word2[r] if r < n_len else None
-                if c1 == c2:
-                    l += 1
-                    r += 1
-                elif not c1 or not c2:
-                    break
-                else:
-                    dic[c1].add(c2)
-                    break
-
     degree = defaultdict(int)  # 入度
-    for _, v in dic.items():
-        for u in v:
-            degree[u] += 1
+    # 相邻元素对比
+    for i in range(n - 1):
+        word1, word2 = words[i], words[i + 1]
+        min_len = min(len(word1), len(word2))
+        for j in range(min_len):
+            c1, c2 = word1[j], word2[j]
+            if c1 != c2:
+                dic[c1].add(c2)
+                degree[c2] += 1
+                break
+    queue = deque([k for k, v in degree.items() if v == 0])
 
-    queue = []
-    for v in chr_set:
-        if not degree[v]:
-            queue.append(v)
-
-    res = ''
+    res = []
     while queue:
-        i = queue.pop(0)
-        res += i
+        i = queue.popleft()
+        res.append(i)
         for j in dic[i]:
             degree[j] -= 1
             if not degree[j]:
                 queue.append(j)
-        del dic[i]
-    return res if not dic else ''
+
+    return ''.join(res) if len(res) == len(chr_set) else ''
+
+
+# 329.矩阵中的最长递增路径
+def longest_increasing_path(matrix):
+    DIRS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    if not matrix:
+        return 0
+
+    rows, columns = len(matrix), len(matrix[0])
+    outdegrees = [[0] * columns for _ in range(rows)]
+    queue = deque()
+    for i in range(rows):
+        for j in range(columns):
+            for dx, dy in DIRS:
+                newRow, newColumn = i + dx, j + dy
+                if 0 <= newRow < rows and 0 <= newColumn < columns and matrix[newRow][newColumn] > matrix[i][j]:
+                    outdegrees[i][j] += 1
+            if outdegrees[i][j] == 0:
+                queue.append((i, j))
+
+    ans = 0
+    while queue:
+        ans += 1
+        size = len(queue)
+        for _ in range(size):
+            row, column = queue.popleft()
+            for dx, dy in DIRS:
+                newRow, newColumn = row + dx, column + dy
+                if 0 <= newRow < rows and 0 <= newColumn < columns and matrix[newRow][newColumn] < matrix[row][
+                    column]:
+                    outdegrees[newRow][newColumn] -= 1
+                    if outdegrees[newRow][newColumn] == 0:
+                        queue.append((newRow, newColumn))
+
+    return ans
 
 
 if __name__ == '__main__':
