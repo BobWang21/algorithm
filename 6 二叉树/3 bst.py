@@ -16,7 +16,7 @@ class BSTNode(object):
 
 
 # 98 判断二叉树是否为二叉搜索树
-# 中序遍历中判断是否递增
+# 或使用中序遍历中判断是否递增
 def is_valid_bst(tree):
     if not tree:
         return True
@@ -25,7 +25,10 @@ def is_valid_bst(tree):
         if not tree:
             return True
         v = tree.val
-        return lo < v < hi and helper(tree.left, lo, v) and helper(tree.right, v, hi)
+        if v <= lo or v >= hi:
+            return False
+
+        return helper(tree.left, lo, v) and helper(tree.right, v, hi)
 
     return helper(tree, -float('inf'), float('inf'))
 
@@ -36,14 +39,20 @@ def verify_postorder(post):
         return True
     root = post[-1]
     i, n = 0, len(post)
-    # 根据左子树 < 根 < 右子树 切分左右子树
-    while i < n - 1 and post[i] < root:
+    # 找到左子树和右子树分界点
+    i = 0
+    while post[i] < root:
         i += 1
-    p = i
-    while i < n - 1 and post[i] > root:
-        i += 1
-    # 只有一侧子树也可
-    return i == n - 1 and verify_postorder(post[:p]) and verify_postorder(post[p:n - 1])
+    # i左侧小于根节点
+    for j in range(i):
+        if post[j] > root:
+            return False
+    # # 右子树节点大于根节点
+    for j in range(i, n - 1):
+        if post[j] < root:
+            return False
+            # 只有一侧子树也可
+    return verify_postorder(post[:i]) and verify_postorder(post[i:n - 1])
 
 
 # 面试题 04.06.后继者

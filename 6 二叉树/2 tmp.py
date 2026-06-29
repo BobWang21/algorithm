@@ -194,8 +194,32 @@ def is_balanced3(tree):
     return helper(tree) != -1
 
 
-# 257 二叉树所有路径 dfs
+# 257 二叉树所有路径 bfs
 def binary_tree_paths1(root):
+    if not root:
+        return []
+
+    paths = []
+    # 队列中存储 (当前节点, 从根到该节点的路径字符串)
+    queue = deque([(root, str(root.val))])
+
+    while queue:
+        node, path = queue.popleft()
+
+        # 如果是叶子节点，将路径加入结果
+        if not node.left and not node.right:
+            paths.append(path)
+        else:
+            if node.left:
+                queue.append((node.left, path + '->' + str(node.left.val)))
+            if node.right:
+                queue.append((node.right, path + '->' + str(node.right.val)))
+
+    return paths
+
+
+# 257 二叉树所有路径 dfs1 类似遍历
+def binary_tree_paths2(root):
     if not root:
         return []
     left = binary_tree_paths1(root.left)
@@ -209,8 +233,27 @@ def binary_tree_paths1(root):
     return res
 
 
+# 257 二叉树所有路径 dfs2
+def binary_tree_paths3(root):
+    paths = []
+
+    def construct_paths(root, path):
+        if root:
+            path += str(root.val)
+            if not root.left and not root.right:  # 当前节点是叶子节点
+                paths.append(path)  # 把路径加入到答案中
+                return
+
+            path += '->'  # 当前节点不是叶子节点，继续递归遍历
+            construct_paths(root.left, path)
+            construct_paths(root.right, path)
+
+    construct_paths(root, '')
+    return paths
+
+
 # 257 二叉树所有路径 回溯
-def binary_tree_paths2(root):
+def binary_tree_paths4(root):
     res = []
     path = []
 
@@ -225,7 +268,7 @@ def binary_tree_paths2(root):
             helper(node.left)
         if node.right:
             helper(node.right)
-        # 回溯 访问完当前子树需要pop
+        # 回溯 访问完当前子树时，需要pop
         path.pop()
 
     helper(root)
@@ -284,17 +327,15 @@ def path_sum1(root, target):
 
 # 437 找出路径和等于给定数值的路径总数
 # 路径不需要从根节点开始，也不需要在叶子节点结束 但是路径方向必须是向下的（只能从父节点到子节点）
-# 时间复杂度：O(N2)
+# 时间复杂度：O(N**2)
 def path_sum1(root, target):
     # 包含当前节点
     def from_root(root, target):
         if not root:
             return 0
-
         res = 0
         if root.val == target:
             res += 1
-
         res += from_root(root.left, target - root.val)
         res += from_root(root.right, target - root.val)
         return res
@@ -331,7 +372,7 @@ def path_sum2(root, target):
         dic[total] += 1
         helper(node.left, total)
         helper(node.right, total)
-        dic[total] -= 1  # 回溯
+        dic[total] -= 1  # 回溯 访问完子树
 
     helper(root, 0)
     return res[0]

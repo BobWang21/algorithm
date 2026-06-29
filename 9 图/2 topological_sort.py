@@ -27,34 +27,6 @@ def can_finish3(num_courses, prerequisites):
     return num == num_courses
 
 
-# 回溯版本 计算超时 节点会重复计算
-def can_finish1(num_courses, prerequisites):
-    edges = defaultdict(set)
-    for i, j in prerequisites:
-        edges[i].add(j)
-
-    visited = [False] * num_courses
-
-    def dfs(i):
-        if visited[i]:
-            return False
-
-        visited[i] = True
-
-        for j in edges[i]:
-            if not dfs(j):
-                visited[i] = False
-                return False
-
-        visited[i] = False
-        return True
-
-    for i, j in prerequisites:
-        if not dfs(i):
-            return False
-    return True
-
-
 # 深度优先 | 考虑出度
 def can_finish2(num_courses, prerequisites):
     edges = defaultdict(set)
@@ -81,6 +53,34 @@ def can_finish2(num_courses, prerequisites):
 
     for i in range(num_courses):
         if not visited[i] and not dfs(i):
+            return False
+    return True
+
+
+# 回溯版本 计算超时 节点会重复计算
+def can_finish1(num_courses, prerequisites):
+    edges = defaultdict(set)
+    for i, j in prerequisites:
+        edges[i].add(j)
+
+    visited = [False] * num_courses
+
+    def dfs(i):
+        if visited[i]:
+            return False
+
+        visited[i] = True
+
+        for j in edges[i]:
+            if not dfs(j):
+                visited[i] = False
+                return False
+
+        visited[i] = False
+        return True
+
+    for i, j in prerequisites:
+        if not dfs(i):
             return False
     return True
 

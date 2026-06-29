@@ -181,29 +181,6 @@ def deserialize(s):
     return root
 
 
-def s1(tree):
-    if not tree:
-        return '#'
-    return str(tree.val) + ' ' + s1(tree.left) + ' ' + s1(tree.right)
-
-
-def uns1(s):
-    queue = deque(s.split())
-
-    def helper():
-        if not queue:
-            return
-        val = queue.popleft()
-        if val == '#':
-            return
-        node = TreeNode(val)
-        node.left = helper()
-        node.right = helper()
-        return node
-
-    return helper()
-
-
 if __name__ == '__main__':
     print('先序遍历')
     tree = create_full_binary_tree([i for i in range(7)])
