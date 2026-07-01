@@ -162,51 +162,12 @@ def find_redundant_connection(edges):
             return u, v
 
 
-# 310. 最小高度树 解的是无向图的问题
-# 可选择树中任何一个节点作为根。
-# 当选择节点 x 作为根节点时，设结果树的高度为 h 。
-# 在所有可能的树中，具有最小高度的树（即，min(h)）被称为 最小高度树 。
-def find_min_height_trees(n, edges):
-    if n == 1:
-        return [0]
-
-    # 1. 建图
-    graph = [[] for _ in range(n)]
-    degree = [0] * n
-
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-        degree[u] += 1
-        degree[v] += 1
-
-    # 2. 叶子节点入队
-    queue = deque([i for i in range(n) if degree[i] == 1])
-
-    # 3. 逐层删除叶子
-    remaining = n
-    while remaining > 2:
-        size = len(queue)
-        remaining -= size
-        # 叶子节点 同时出队列
-        for _ in range(size):
-            leaf = queue.popleft()
-            for neighbor in graph[leaf]:
-                degree[neighbor] -= 1
-                if degree[neighbor] == 1:
-                    queue.append(neighbor)
-
-    # 4. 剩下的就是答案
-    return list(queue)
-
-
 # 737 相似单词 🔐
 def are_sentences_similar_two(words1, words2, pairs):
     if len(words1) != len(words2):
         return False
 
     word_set = set()
-
     for u, v in pairs:  # 去重
         word_set.add(u)
         word_set.add(v)

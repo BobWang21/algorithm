@@ -2,75 +2,94 @@
 # -*- coding: utf-8 -*-
 
 
-# 前缀树
+# 208 前缀树
 class Trie(object):
     def __init__(self):
-        self.dic = {}  # 嵌套字典
+        self.children = {}
+        self.is_end = False
 
     def insert(self, word):
-        dic = self.dic
-        for c in word:
-            dic.setdefault(c, {})  # 如果不在字典中 新建一个key
-            dic = dic[c]
-        dic['#'] = '#'  # 结束标志
+        node = self  # 当前实例对象的引用赋值给局部变量 node
+        for chr in word:
+            if chr not in node.children:
+                node.children[chr] = Trie()
+            node = node.children[chr]
+        node.is_end = True
 
-    # 是否在树中
     def search(self, word):
-        dic = self.dic
-        for c in word:
-            if c not in dic:
-                return False
-            dic = dic[c]
-        return '#' in dic
+        node = self._find(word)
+        return True if node is not None and node.is_end else False
 
-    # 是否为树的某段
-    def starts_with(self, prefix):
-        dic = self.dic
-        for c in prefix:
-            if c not in dic:
-                return False
-            dic = dic[c]
-        return True
+    def startsWith(self, prefix):
+        node = self._find(prefix)
+        return True if node is not None else False
+
+    def _find(self, prefix):
+        node = self
+        for chr in prefix:
+            if chr in node.children:
+                node = node.children[chr]
+            else:
+                return None
+        return node
 
 
-# 212
+# 212 单词搜索II hard
+# 给定一个mxn二维字符网格board和一个单词(字符串)列表words，
+# 返回所有二维网格上的单词。
+class Trie():
+    def __init__(self):
+        self.children = {}
+        self.word = None
+
+    def insert(self, word):
+        node = self
+        for chr in word:
+            if chr not in node.children:
+                node.children[chr] = Trie()
+            node = node.children[chr]
+        node.word = word
+
+
 def find_words(board, words):
-    if not words or not board or not board[0]:
-        return []
+    """
+    :type board: List[List[str]]
+    :type words: List[str]
+    :rtype: List[str]
+    """
+
     trie = Trie()
     for word in words:
         trie.insert(word)
-    print(trie.dic)
 
-    res = set()
     rows, cols = len(board), len(board[0])
-    directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]  # ← → ↑ ↓
+    res = []
+    seen = [[False] * cols for _ in range(rows)]
 
-    def helper(i, j, word):
-        if i < 0 or j < 0 or i == rows or j == cols:
+    def dfs(trie, i, j):
+        chr = board[i][j]
+        if chr not in trie.children or seen[i][j]:
             return
 
-        if board[i][j] == '.':  # 访问过
-            return
+        seen[i][j] = True
+        trie = trie.children[chr]
+        if trie.word:
+            res.append(trie.word)
+            trie.word = None
 
-        new_word = word + board[i][j]
-        if not trie.starts_with(new_word):
-            return
+        for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            new_i, new_j = i + di, j + dj
+            if 0 <= new_i < rows and 0 <= new_j < cols:
+                dfs(trie, new_i, new_j)
 
-        if trie.search(new_word):
-            res.add(new_word)
+        seen[i][j] = False
 
-        char = board[i][j]
-        board[i][j] = '.'
-        for direction in directions:  # 四个方向独立
-            helper(i + direction[0], j + direction[1], new_word)
-        board[i][j] = char  # 回溯
-
+    # 生成字典
     for i in range(rows):
         for j in range(cols):
-            helper(i, j, '')
+            dfs(trie, i, j)
 
-    return list(res)
+    return res
 
 
 if __name__ == '__main__':

@@ -3,42 +3,6 @@
 from collections import defaultdict
 
 
-# 78 不包含重复元素回溯
-def subset(nums):
-    n = len(nums)
-    res = []
-    path = []
-
-    def helper(i):
-        res.append(path[:])
-
-        for j in range(i, n):  # 所有选择
-            path.append(nums[j])
-            helper(j + 1)  # 新递归从i+1开始 保证不出现重复元素
-            path.pop()  # 回溯
-
-    helper(0)
-    return res
-
-
-# 90. 包含重复元素子集问题
-def subsets_with_dup(nums):
-    n, res, path = len(nums), [], []
-
-    def helper(i=0):
-        res.append(path[:])
-        for j in range(i, n):  # 所有选择
-            if j > i and nums[j] == nums[j - 1]:  # j > i 相同数字不能出现在同一层
-                continue
-            path.append(nums[j])
-            helper(j + 1)
-            path.pop()
-
-    nums.sort()
-    helper()
-    return res
-
-
 # 46 全排列 输入数组中不含重复数字
 def permute1(nums):
     if not nums:
@@ -53,7 +17,7 @@ def permute1(nums):
         if len(path) == n:
             res.append(path[:])  # 复制
 
-        for i in range(n):  # 所有选择 从头开始遍历
+        for i in range(n):  # 所有选择都是从头开始遍历
             if visited[i]:
                 continue
             visited[i] = True
@@ -124,8 +88,44 @@ def permute_seq(n):
     return res
 
 
+# 78 不包含重复元素回溯
+def subset(nums):
+    n = len(nums)
+    res = []
+    path = []
+
+    def helper(i):
+        res.append(path[:])
+
+        for j in range(i, n):  # 防止重复从i开始
+            path.append(nums[j])
+            helper(j + 1)  # j + 1 这个参数保证每次递归只向后看，不会回头访问已经处理过的元素
+            path.pop()  # 回溯
+
+    helper(0)
+    return res
+
+
+# 90. 包含重复元素子集问题
+def subsets_with_dup(nums):
+    n, res, path = len(nums), [], []
+
+    def helper(i=0):
+        res.append(path[:])
+        for j in range(i, n):  # 同一层的所有选择
+            if j > i and nums[j] == nums[j - 1]:  # j > i 相同数字不能出现在同一层
+                continue
+            path.append(nums[j])
+            helper(j + 1)
+            path.pop()
+
+    nums.sort()
+    helper()
+    return res
+
+
 # 39 数组子集和为target 数字可以重复使用
-# 求组合个数为dp问题
+# 若求组合个数为dp问题
 def combination_sum(nums, target):
     if not nums or target == 0:
         return []
@@ -174,6 +174,101 @@ def n_sum1(nums, k, target):
 
     nums.sort()
     helper(0, 0)
+    return res
+
+
+# 79 单词搜索I（Word Search）
+def exist(board, word):
+    rows, cols = len(board), len(board[0])
+    dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    n = len(word)
+
+    def helper(i, j, idx):
+        # 先检查边界
+        if i < 0 or i >= rows or j < 0 or j >= cols:
+            return False
+
+        # 检查已访问
+        if board[i][j] == '.':
+            return False
+
+        # 检查字符匹配
+        if board[i][j] != word[idx]:
+            return False
+
+        # 找到完整单词
+        if idx == n - 1:
+            return True
+
+        # 标记已访问
+        temp = board[i][j]
+        board[i][j] = '.'
+
+        # 搜索四个方向
+        for di, dj in dirs:
+            if helper(i + di, j + dj, idx + 1):
+                return True
+
+        # 回溯
+        board[i][j] = temp
+        return False
+
+    for i in range(rows):
+        for j in range(cols):
+            if helper(i, j, 0):
+                return True
+    return False
+
+
+class Trie():
+    def __init__(self):
+        self.children = {}
+        self.word = None
+
+    def insert(self, word):
+        node = self
+        for chr in word:
+            if chr not in node.children:
+                node.children[chr] = Trie()
+            node = node.children[chr]
+        node.word = word
+
+
+# 212 单词搜索II hard
+# 给定一个mxn二维字符网格board和一个单词(字符串)列表words，
+# 返回所有二维网格上的单词。
+def find_words(board, words):
+    trie = Trie()
+    for word in words:
+        trie.insert(word)
+
+    rows, cols = len(board), len(board[0])
+    res = []
+    seen = [[False] * cols for _ in range(rows)]
+
+    def dfs(trie, i, j):
+        chr = board[i][j]
+        if chr not in trie.children or seen[i][j]:
+            return
+
+        seen[i][j] = True
+        trie = trie.children[chr]
+        if trie.word:
+            res.append(trie.word)
+            trie.word = None
+
+        for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            new_i, new_j = i + di, j + dj
+            if 0 <= new_i < rows and 0 <= new_j < cols:
+                dfs(trie, new_i, new_j)
+
+        seen[i][j] = False
+
+    # 生成字典
+    for i in range(rows):
+        for j in range(cols):
+            dfs(trie, i, j)
+
     return res
 
 
@@ -253,7 +348,7 @@ def generate_parenthesis(n):
 
 
 # 301. 删除无效的括号
-def remove_invalid_parentheses(s):
+def remove_invalid_parentheses1(s):
     if not s:
         return ['']
 
@@ -291,34 +386,52 @@ def remove_invalid_parentheses(s):
     return list(res)
 
 
+# 官方实现
+def remove_invalid_parentheses2(s):
+    res = []
+    lremove, rremove = 0, 0
+    for c in s:
+        if c == '(':
+            lremove += 1
+        elif c == ')':
+            if lremove == 0:
+                rremove += 1
+            else:
+                lremove -= 1
 
-# 判断是否存在路径
-def exist(board, word):
-    rows, cols = len(board), len(board[0])
-    n = len(word)
-    visited = [[0] * cols for _ in range(rows)]
+    def isValid(str):
+        cnt = 0
+        for c in str:
+            if c == '(':
+                cnt += 1
+            elif c == ')':
+                cnt -= 1
+                if cnt < 0:
+                    return False
+        return cnt == 0
 
-    def helper(i, j, idx):
-        if idx == n:
-            return True
-        if i < 0 or i == rows or j < 0 or j == cols or visited[i][j]:
-            return False
+    def helper(s, start, lremove, rremove):
+        if lremove == 0 and rremove == 0:
+            if isValid(s):
+                res.append(s)
+            return
 
-        visited[i][j] = True
-        res = False
-        if board[i][j] == word[idx]:
-            for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                if helper(i + di, j + dj, idx + 1):
-                    res = True
-                    break
-        visited[i][j] = False
-        return res
+        for i in range(start, len(s)):
+            if i > start and s[i] == s[i - 1]:  # 防止重复
+                continue
+            # 如果剩余的字符无法满足去掉的数量要求，直接返回
+            if lremove + rremove > len(s) - i:
+                break
+            # 尝试去掉一个左括号
+            if lremove > 0 and s[i] == '(':
+                helper(s[:i] + s[i + 1:], i, lremove - 1, rremove)  # 这里从i开始
+            # 尝试去掉一个右括号
+            if rremove > 0 and s[i] == ')':
+                helper(s[:i] + s[i + 1:], i, lremove, rremove - 1)
+            # 统计当前字符串中已有的括号数量
 
-    for i in range(rows):
-        for j in range(cols):
-            if helper(i, j, 0):
-                return True
-    return False
+    helper(s, 0, lremove, rremove)
+    return res
 
 
 # 递增子序列
@@ -483,6 +596,4 @@ if __name__ == '__main__':
     print(generate_parenthesis(2))
 
     print('\n删除无效的括号')
-    # print(remove_invalid_parentheses("(a)())()"))
-
-    removeInvalidParentheses("((i)")
+    print(remove_invalid_parentheses1("(a)())()"))

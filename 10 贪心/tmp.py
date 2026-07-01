@@ -34,14 +34,17 @@ def jump2(nums):
 
 
 # 253. 会议室 II
+# 给定一个会议时间安排的数组，每个会议时间都会包括开始和结束的时间 [[s1,e1],[s2,e2],...] (si < ei)，
+# 为避免会议冲突，同时要考虑充分利用会议室资源，请你计算至少需要多少间会议室，才能满足这些会议安排。
 def min_meeting_rooms(intervals):
     if not intervals:
         return 0
 
-    intervals.sort()  # 根据结束时间排序
-    heap = [intervals[0][1]]
+    intervals.sort()  # 根据开始时间排序
+    heap = [intervals[0][1]]  # 最早结束时间
 
     for s, e in intervals[1:]:
+        # 新会议开始时间大于等于最早结束时间
         if heap[0] <= s:
             hq.heappop(heap)
             hq.heappush(heap, e)

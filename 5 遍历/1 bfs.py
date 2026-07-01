@@ -60,13 +60,14 @@ def word_ladder(begin_word, end_word, word_list):
     if not word_list:
         return 0
 
-    queue = deque()
-    word_set = set(word_list)
-    queue.append((begin_word, 0))  # 记录层数
-    visited = {begin_word}  # 保存已加入过队列的字符串
 
+    word_set = set(word_list)
     if end_word not in word_set:
         return 0
+
+    queue = deque()
+    queue.append((begin_word, 1))  # 记录层数
+    visited = {begin_word}  # 保存已加入过队列的字符串
 
     while queue:
         word, l = queue.popleft()

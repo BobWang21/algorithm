@@ -53,7 +53,7 @@ def max_area_of_island(grid):
     return res
 
 
-# 从某一位置出发, 判断是否连通, 不需要回溯
+# 从某位置出发, 判断是否能到达目的地, 不需要回溯
 def has_path(maze, start, destination):
     if not maze or not maze[0]:
         return False
@@ -88,7 +88,7 @@ def has_path(maze, start, destination):
     return res
 
 
-# 从某一位置出发 判断是否连通 回溯 不改变maze
+# 从某位置出发 判断是否连通 回溯 不改变maze
 def has_path2(maze, start, destination):
     if not maze or not maze[0]:
         return False
@@ -357,7 +357,7 @@ def clone_graph(node):
             return dic[node]
 
         new_node = Node(node.val)
-        dic[node] = new_node  # 防止循环必须在此数标记状态
+        dic[node] = new_node  # 防止循环必须在此数标记状态! 变量地址已经有了, 可以新老变量映射
 
         new_node.neighbors = [dfs(n) for n in node.neighbors]
         return new_node
